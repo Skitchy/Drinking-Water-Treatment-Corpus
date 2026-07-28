@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/Skitchy/Drinking-Water-Treatment-Corpus/main/schemas/verified-answer-v0.1.schema.json",
+  "$id": "urn:dwtc:schema:verified-answer:v0.1",
   "title": "Verified Answer Envelope v0.1",
   "description": "Closed, non-narrative gateway output. A conforming renderer resolves reviewed corpus IDs and deterministic templates; it never displays arbitrary model-authored prose from this object.",
   "type": "object",
@@ -10,15 +10,14 @@
     "answer_id",
     "created_at",
     "outcome",
-    "query_sha256",
+    "query",
     "corpus",
-    "policy_version",
-    "verifier_version",
+    "runtime",
     "applicability",
     "claim_refs",
     "quote_refs",
     "checks",
-    "reason_codes",
+    "outcome_reasons",
     "renderer",
     "integrity"
   ],
@@ -41,8 +40,23 @@
         "abstention"
       ]
     },
-    "query_sha256": {
-      "$ref": "#/$defs/sha256"
+    "query": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonicalization_id",
+        "sha256"
+      ],
+      "properties": {
+        "canonicalization_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "$comment": "The query digest is an integrity fingerprint, not an anonymization boundary. The canonicalization artifact is pinned by the runtime assurance manifest."
     },
     "corpus": {
       "type": "object",
@@ -54,20 +68,29 @@
       "properties": {
         "release_id": {
           "type": "string",
-          "minLength": 1
+          "pattern": "^corpus-release\\.[a-zA-Z0-9_-]+$"
         },
         "manifest_sha256": {
           "$ref": "#/$defs/sha256"
         }
       }
     },
-    "policy_version": {
-      "type": "string",
-      "minLength": 1
-    },
-    "verifier_version": {
-      "type": "string",
-      "minLength": 1
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest_id",
+        "manifest_sha256"
+      ],
+      "properties": {
+        "manifest_id": {
+          "type": "string",
+          "pattern": "^runtime-assurance\\.[a-zA-Z0-9_-]+$"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
     },
     "applicability": {
       "type": "object",
@@ -124,6 +147,15 @@
           },
           "review_payload_sha256": {
             "$ref": "#/$defs/sha256"
+          },
+          "table_cell_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^cell\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+            }
           }
         }
       }
@@ -164,23 +196,11 @@
           "check_id",
           "version",
           "verdict",
-          "claim_ids",
-          "quote_ids"
+          "subjects"
         ],
         "properties": {
           "check_id": {
-            "enum": [
-              "schema",
-              "corpus-release",
-              "eligibility",
-              "claim-resolution",
-              "quote-resolution",
-              "span-fidelity",
-              "numeric-claim-tuple",
-              "applicability",
-              "freshness",
-              "coverage"
-            ]
+            "$ref": "#/$defs/checkId"
           },
           "version": {
             "type": "string",
@@ -193,41 +213,50 @@
               "not-run"
             ]
           },
-          "claim_ids": {
+          "subjects": {
             "type": "array",
             "uniqueItems": true,
             "items": {
-              "type": "string",
-              "pattern": "^claim\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
-            }
-          },
-          "quote_ids": {
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-              "type": "string",
-              "pattern": "^quote\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+              "$ref": "#/$defs/subject"
             }
           }
         }
       }
     },
-    "reason_codes": {
+    "outcome_reasons": {
       "type": "array",
       "uniqueItems": true,
       "items": {
-        "enum": [
-          "OUT_OF_COVERAGE",
-          "INSUFFICIENT_EVIDENCE",
-          "STALE_EVIDENCE",
-          "INELIGIBLE_EVIDENCE",
-          "APPLICABILITY_UNRESOLVED",
-          "RETRIEVAL_MISS",
-          "CHECK_FAILED",
-          "SOURCE_WATCH_FAILED",
-          "SOURCE_CHANGE_PENDING",
-          "SYNTHESIS_WITHHELD"
-        ]
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "source_kind",
+          "source_id",
+          "subjects"
+        ],
+        "properties": {
+          "code": {
+            "$ref": "#/$defs/reasonCode"
+          },
+          "source_kind": {
+            "enum": [
+              "check",
+              "policy-gate"
+            ]
+          },
+          "source_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjects": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/subject"
+            }
+          }
+        }
       }
     },
     "renderer": {
@@ -291,6 +320,7 @@
       "allOf": [
         {
           "if": {
+            "type": "object",
             "properties": {
               "mode": {
                 "const": "signed"
@@ -303,7 +333,10 @@
           "then": {
             "required": [
               "signature"
-            ]
+            ],
+            "properties": {
+              "signature": {}
+            }
           }
         }
       ]
@@ -312,6 +345,7 @@
   "allOf": [
     {
       "if": {
+        "type": "object",
         "properties": {
           "outcome": {
             "const": "evidence-backed"
@@ -324,8 +358,10 @@
       "then": {
         "properties": {
           "checks": {
+            "type": "array",
             "minItems": 1,
             "items": {
+              "type": "object",
               "properties": {
                 "verdict": {
                   "const": "pass"
@@ -333,7 +369,8 @@
               }
             }
           },
-          "reason_codes": {
+          "outcome_reasons": {
+            "type": "array",
             "maxItems": 0
           }
         },
@@ -341,6 +378,7 @@
           {
             "properties": {
               "claim_refs": {
+                "type": "array",
                 "minItems": 1
               }
             }
@@ -348,6 +386,7 @@
           {
             "properties": {
               "quote_refs": {
+                "type": "array",
                 "minItems": 1
               }
             }
@@ -357,6 +396,7 @@
     },
     {
       "if": {
+        "type": "object",
         "properties": {
           "outcome": {
             "const": "evidence-only"
@@ -368,7 +408,8 @@
       },
       "then": {
         "properties": {
-          "reason_codes": {
+          "outcome_reasons": {
+            "type": "array",
             "minItems": 1
           }
         },
@@ -376,6 +417,7 @@
           {
             "properties": {
               "claim_refs": {
+                "type": "array",
                 "minItems": 1
               }
             }
@@ -383,6 +425,7 @@
           {
             "properties": {
               "quote_refs": {
+                "type": "array",
                 "minItems": 1
               }
             }
@@ -392,6 +435,7 @@
     },
     {
       "if": {
+        "type": "object",
         "properties": {
           "outcome": {
             "const": "abstention"
@@ -404,23 +448,80 @@
       "then": {
         "properties": {
           "claim_refs": {
+            "type": "array",
             "maxItems": 0
           },
           "quote_refs": {
+            "type": "array",
             "maxItems": 0
           },
-          "reason_codes": {
+          "outcome_reasons": {
+            "type": "array",
             "minItems": 1
           }
         }
       }
     }
   ],
-  "$comment": "Semantic validation is mandatory: all IDs must resolve in the named immutable release; page, review-payload, span, and manifest digests must match; selected claims must be reviewed and eligible under policy; check references must be subsets of the envelope references; and the integrity digest must match canonical bytes. The digest canonicalization excludes integrity.artifact_sha256 and integrity.signature to avoid self-reference. Only a valid signature permits the label sealed. Auxiliary host-generated content is outside this envelope and outside its assurance claim.",
+  "$comment": "Semantic validation is mandatory: both content-addressed manifests resolve and are mutually compatible; all IDs and claim kinds resolve in the named release; page, review-payload, span, and manifest digests match; every table claim reference selects one or more existing stable cell IDs and non-table claims carry no table cell selection; the runtime manifest's required check matrix is complete for every envelope, page, claim, selected claim cell, and quote; omission is failure; each outcome reason maps to a failing or not-run check or named policy gate; and the integrity digest matches canonical bytes. The digest canonicalization excludes integrity.artifact_sha256 and integrity.signature. Only a valid signature permits the label sealed. Auxiliary host-generated content is outside this envelope and its assurance claim.",
   "$defs": {
     "sha256": {
       "type": "string",
       "pattern": "^[a-f0-9]{64}$"
+    },
+    "checkId": {
+      "enum": [
+        "schema",
+        "corpus-release",
+        "runtime-manifest",
+        "eligibility",
+        "claim-resolution",
+        "quote-resolution",
+        "span-fidelity",
+        "numeric-claim-tuple",
+        "derived-claim",
+        "table-cell-fidelity",
+        "applicability",
+        "freshness",
+        "coverage"
+      ]
+    },
+    "reasonCode": {
+      "enum": [
+        "OUT_OF_COVERAGE",
+        "INSUFFICIENT_EVIDENCE",
+        "STALE_EVIDENCE",
+        "INELIGIBLE_EVIDENCE",
+        "APPLICABILITY_UNRESOLVED",
+        "RETRIEVAL_MISS",
+        "CHECK_FAILED",
+        "SOURCE_WATCH_FAILED",
+        "SOURCE_CHANGE_PENDING",
+        "SYNTHESIS_WITHHELD"
+      ]
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "id"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "envelope",
+            "page",
+            "claim",
+            "claim-cell",
+            "quote"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     }
   }
 }

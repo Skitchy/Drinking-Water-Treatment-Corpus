@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/Skitchy/Drinking-Water-Treatment-Corpus/main/schemas/drinking-water-profile-v0.1.schema.json",
+  "$id": "urn:dwtc:schema:drinking-water-profile:v0.1",
   "title": "Drinking Water Assurance Profile v0.1",
   "description": "Normalized JSON representation of an OKF concept page using the strict regulatory-reference assurance profile.",
   "type": "object",
@@ -20,7 +20,7 @@
     "verified",
     "stale_after",
     "source_watch",
-    "sources",
+    "source_refs",
     "quotes",
     "claims"
   ],
@@ -111,20 +111,25 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "status",
-        "last_successful_at",
+        "watch_id",
+        "last_result",
+        "last_checked_at",
         "next_due_at"
       ],
       "properties": {
-        "status": {
+        "watch_id": {
+          "type": "string",
+          "pattern": "^watch\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+        },
+        "last_result": {
           "enum": [
-            "healthy",
+            "unchanged",
+            "changed",
             "failed",
-            "overdue",
-            "change-pending"
+            "not-run"
           ]
         },
-        "last_successful_at": {
+        "last_checked_at": {
           "type": "string",
           "format": "date-time"
         },
@@ -136,14 +141,56 @@
           "type": "string",
           "minLength": 1
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "last_result": {
+                "const": "changed"
+              }
+            },
+            "required": [
+              "last_result"
+            ]
+          },
+          "then": {
+            "required": [
+              "change_id"
+            ],
+            "properties": {
+              "change_id": {}
+            }
+          }
+        }
+      ],
+      "$comment": "This is a dated observation, not a live status. The reader derives effective status at evaluation time; now at or after next_due_at is overdue regardless of last_result."
     },
-    "sources": {
+    "source_refs": {
       "type": "array",
       "minItems": 1,
       "uniqueItems": true,
       "items": {
-        "$ref": "#/$defs/source"
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source_id",
+          "captured_sha256",
+          "licensing_decision_payload_sha256"
+        ],
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "pattern": "^source\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+          },
+          "captured_sha256": {
+            "$ref": "#/$defs/sha256"
+          },
+          "licensing_decision_payload_sha256": {
+            "$ref": "#/$defs/sha256"
+          }
+        }
       }
     },
     "quotes": {
@@ -162,6 +209,7 @@
   "allOf": [
     {
       "if": {
+        "type": "object",
         "properties": {
           "status": {
             "const": "stable"
@@ -174,19 +222,23 @@
       "then": {
         "properties": {
           "source_watch": {
+            "type": "object",
             "properties": {
-              "status": {
-                "const": "healthy"
+              "last_result": {
+                "const": "unchanged"
               }
             }
           },
           "verified": {
+            "type": "array",
             "minItems": 2
           },
           "quotes": {
+            "type": "array",
             "minItems": 1
           },
           "claims": {
+            "type": "array",
             "minItems": 1
           }
         },
@@ -194,12 +246,15 @@
           {
             "properties": {
               "verified": {
+                "type": "array",
                 "contains": {
+                  "type": "object",
                   "properties": {
                     "actor_type": {
                       "const": "process"
                     },
                     "scopes": {
+                      "type": "array",
                       "allOf": [
                         {
                           "contains": {
@@ -225,12 +280,15 @@
           {
             "properties": {
               "verified": {
+                "type": "array",
                 "contains": {
+                  "type": "object",
                   "properties": {
                     "actor_type": {
                       "const": "human"
                     },
                     "scopes": {
+                      "type": "array",
                       "allOf": [
                         {
                           "contains": {
@@ -263,7 +321,7 @@
     }
   ],
   "additionalProperties": true,
-  "$comment": "Unknown root fields remain permitted for OKF compatibility. Serving eligibility additionally requires semantic validation: verification review_payload_sha256 values equal the current canonical payload digest; reviewer IDs resolve to active qualified registry entries; referenced source, quote, and claim IDs are unique and resolvable; dates are current under policy; and every stable claim's support is within the recorded review scopes.",
+  "$comment": "Unknown root fields remain permitted for OKF compatibility. Serving eligibility additionally requires semantic validation: verification digests equal the current review payload; human and process scopes are authorized; source references resolve to matching captured bytes and approved content-bound licensing decisions; quote source digests match those source records; IDs are unique; population bounds are ordered; table dimensions, bands, and stable cells are unambiguous and complete; derivations are acyclic and use registered algorithms; date formats and ordering are valid; effective watch status is derived from evaluation time and next_due_at; and every stable claim's support is within the recorded review scopes.",
   "$defs": {
     "sha256": {
       "type": "string",
@@ -365,85 +423,50 @@
             ]
           }
         }
-      }
-    },
-    "source": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "source_id",
-        "resource",
-        "captured_at",
-        "captured_sha256",
-        "authority",
-        "authenticity_evidence",
-        "reproduction_basis"
-      ],
-      "properties": {
-        "source_id": {
-          "type": "string",
-          "pattern": "^source\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
-        },
-        "resource": {
-          "type": "string",
-          "format": "uri"
-        },
-        "published_at": {
-          "type": "string",
-          "format": "date"
-        },
-        "effective_from": {
-          "type": "string",
-          "format": "date"
-        },
-        "effective_through": {
-          "type": "string",
-          "format": "date"
-        },
-        "captured_at": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "captured_sha256": {
-          "$ref": "#/$defs/sha256"
-        },
-        "authority": {
-          "enum": [
-            "official-legal-record",
-            "authoritative-unofficial-government-compilation",
-            "agency-guidance",
-            "licensed-technical-authority",
-            "secondary-reference"
-          ]
-        },
-        "authenticity_evidence": {
-          "type": "string",
-          "minLength": 1
-        },
-        "reproduction_basis": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "classification",
-            "evidence"
-          ],
-          "properties": {
-            "classification": {
-              "enum": [
-                "public-domain-us-government-work",
-                "express-license",
-                "permission",
-                "quotation-only",
-                "excluded"
-              ]
+      },
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "actor_type": {
+                "const": "human"
+              }
             },
-            "evidence": {
-              "type": "string",
-              "minLength": 1
+            "required": [
+              "actor_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "scopes": {
+                "type": "array",
+                "items": {
+                  "enum": [
+                    "editorial-accuracy",
+                    "applicability",
+                    "context-completeness",
+                    "licensing"
+                  ]
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "scopes": {
+                "type": "array",
+                "items": {
+                  "enum": [
+                    "source-capture",
+                    "quote-fidelity"
+                  ]
+                }
+              }
             }
           }
         }
-      }
+      ]
     },
     "quote": {
       "type": "object",
@@ -470,8 +493,29 @@
           "$ref": "#/$defs/sha256"
         },
         "anchor": {
-          "type": "string",
-          "minLength": 1
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "selector_type",
+            "selector_version",
+            "value"
+          ],
+          "properties": {
+            "selector_type": {
+              "enum": [
+                "text-position",
+                "pdf-text-position",
+                "json-pointer"
+              ]
+            },
+            "selector_version": {
+              "const": "v0.1"
+            },
+            "value": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
         },
         "source_version": {
           "type": "string",
@@ -497,7 +541,6 @@
         "kind",
         "subject",
         "relation",
-        "value",
         "jurisdiction",
         "applicability",
         "supporting_quote_ids"
@@ -511,7 +554,8 @@
           "enum": [
             "numeric",
             "qualitative",
-            "derived"
+            "derived",
+            "table"
           ]
         },
         "subject": {
@@ -519,8 +563,38 @@
           "minLength": 1
         },
         "relation": {
-          "type": "string",
-          "minLength": 1
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operator",
+            "regulatory_metric"
+          ],
+          "properties": {
+            "operator": {
+              "enum": [
+                "eq",
+                "lt",
+                "lte",
+                "gt",
+                "gte",
+                "range-inclusive",
+                "required",
+                "prohibited"
+              ]
+            },
+            "regulatory_metric": {
+              "enum": [
+                "mcl",
+                "mclg",
+                "mrdl",
+                "mrdlg",
+                "action-level",
+                "treatment-technique",
+                "monitoring-trigger",
+                "other"
+              ]
+            }
+          }
         },
         "value": {
           "oneOf": [
@@ -576,12 +650,16 @@
             "pattern": "^quote\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
           }
         },
+        "table_value": {
+          "$ref": "#/$defs/tableValue"
+        },
         "derivation": {
           "type": "object",
           "additionalProperties": false,
           "required": [
             "input_claim_ids",
-            "expression",
+            "algorithm_id",
+            "parameters",
             "rounding"
           ],
           "properties": {
@@ -594,13 +672,51 @@
                 "pattern": "^claim\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
               }
             },
-            "expression": {
+            "algorithm_id": {
               "type": "string",
-              "minLength": 1
+              "pattern": "^algorithm\\.[a-z0-9]+(?:[._-][a-z0-9]+)*/v[0-9]+\\.[0-9]+$"
+            },
+            "parameters": {
+              "type": "object",
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
+              }
             },
             "rounding": {
-              "type": "string",
-              "minLength": 1
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "mode",
+                "decimal_places"
+              ],
+              "properties": {
+                "mode": {
+                  "enum": [
+                    "none",
+                    "half-up",
+                    "half-even",
+                    "floor",
+                    "ceiling"
+                  ]
+                },
+                "decimal_places": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
             }
           }
         }
@@ -608,6 +724,40 @@
       "allOf": [
         {
           "if": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "enum": [
+                  "numeric",
+                  "qualitative",
+                  "derived"
+                ]
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {}
+            },
+            "not": {
+              "properties": {
+                "table_value": {}
+              },
+              "required": [
+                "table_value"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
             "properties": {
               "kind": {
                 "const": "numeric"
@@ -622,6 +772,7 @@
               "unit"
             ],
             "properties": {
+              "unit": {},
               "value": {
                 "type": "number"
               }
@@ -630,6 +781,7 @@
         },
         {
           "if": {
+            "type": "object",
             "properties": {
               "kind": {
                 "const": "derived"
@@ -642,10 +794,204 @@
           "then": {
             "required": [
               "derivation"
+            ],
+            "properties": {
+              "derivation": {}
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "const": "table"
+              }
+            },
+            "required": [
+              "kind"
             ]
+          },
+          "then": {
+            "required": [
+              "table_value"
+            ],
+            "properties": {
+              "table_value": {}
+            },
+            "not": {
+              "properties": {
+                "value": {},
+                "unit": {},
+                "derivation": {}
+              },
+              "anyOf": [
+                {
+                  "required": [
+                    "value"
+                  ]
+                },
+                {
+                  "required": [
+                    "unit"
+                  ]
+                },
+                {
+                  "required": [
+                    "derivation"
+                  ]
+                }
+              ]
+            }
           }
         }
       ]
+    },
+    "tableValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "row_dimension",
+        "column_dimension",
+        "cell_unit",
+        "cells"
+      ],
+      "$comment": "Semantic validation additionally requires: distinct dimension IDs; unique, nonoverlapping band IDs and ranges within each dimension; unique stable cell IDs; every cell referencing a declared band in both dimensions; and exactly one cell for every row-band and column-band combination. The claim's relation applies uniformly to every cell value.",
+      "properties": {
+        "row_dimension": {
+          "$ref": "#/$defs/tableDimension"
+        },
+        "column_dimension": {
+          "$ref": "#/$defs/tableDimension"
+        },
+        "cell_unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cells": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "cell_id",
+              "row_band",
+              "column_band",
+              "value"
+            ],
+            "properties": {
+              "cell_id": {
+                "type": "string",
+                "pattern": "^cell\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+              },
+              "row_band": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+              },
+              "column_band": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+              },
+              "value": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      }
+    },
+    "tableDimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dimension_id",
+        "name",
+        "unit",
+        "bands"
+      ],
+      "properties": {
+        "dimension_id": {
+          "type": "string",
+          "pattern": "^dimension\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "bands": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "band_id",
+              "label"
+            ],
+            "anyOf": [
+              {
+                "properties": {
+                  "minimum": {}
+                },
+                "required": [
+                  "minimum"
+                ]
+              },
+              {
+                "properties": {
+                  "maximum": {}
+                },
+                "required": [
+                  "maximum"
+                ]
+              }
+            ],
+            "dependentRequired": {
+              "minimum": [
+                "minimum_inclusive"
+              ],
+              "minimum_inclusive": [
+                "minimum"
+              ],
+              "maximum": [
+                "maximum_inclusive"
+              ],
+              "maximum_inclusive": [
+                "maximum"
+              ]
+            },
+            "properties": {
+              "band_id": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minimum": {
+                "type": "number"
+              },
+              "maximum": {
+                "type": "number"
+              },
+              "minimum_inclusive": {
+                "type": "boolean"
+              },
+              "maximum_inclusive": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

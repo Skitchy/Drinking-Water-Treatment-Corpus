@@ -1,0 +1,187 @@
+{
+  "schema_version": "runtime-assurance-manifest/v0.1",
+  "manifest_id": "runtime-assurance.fixture-001",
+  "created_at": "2026-07-28T00:00:00Z",
+  "compatible_corpus": {
+    "release_id": "corpus-release.fixture-001",
+    "manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "assurance_contract": {
+    "artifact_id": "rfc003-assurance-contract/v0.1",
+    "sha256": "1717171717171717171717171717171717171717171717171717171717171717"
+  },
+  "required_check_baseline": {
+    "artifact_id": "assurance-check-baseline/v0.1",
+    "sha256": "4ce39cbe7eebfa178d557d7053e4ae545f24aba47435c8c19e819c31a000b1a0"
+  },
+  "answer_schema": {
+    "artifact_id": "urn:dwtc:schema:verified-answer:v0.1",
+    "sha256": "4040404040404040404040404040404040404040404040404040404040404040"
+  },
+  "audit_schema": {
+    "artifact_id": "urn:dwtc:schema:audit-envelope:v0.1",
+    "sha256": "5050505050505050505050505050505050505050505050505050505050505050"
+  },
+  "eligibility_policy": {
+    "artifact_id": "fixture-policy/v0.1",
+    "sha256": "6060606060606060606060606060606060606060606060606060606060606060"
+  },
+  "verifier": {
+    "artifact_id": "fixture-verifier/v0.1",
+    "sha256": "7070707070707070707070707070707070707070707070707070707070707070"
+  },
+  "generator": {
+    "artifact_id": "fixture-generator/v0.1",
+    "sha256": "8080808080808080808080808080808080808080808080808080808080808080"
+  },
+  "index": {
+    "artifact_id": "fixture-index/v0.1",
+    "sha256": "9090909090909090909090909090909090909090909090909090909090909090"
+  },
+  "query_canonicalization": {
+    "artifact_id": "dw-query/v0.1",
+    "sha256": "1212121212121212121212121212121212121212121212121212121212121212"
+  },
+  "algorithm_registry": {
+    "artifact_id": "fixture-algorithms/v0.1",
+    "sha256": "1313131313131313131313131313131313131313131313131313131313131313",
+    "algorithm_ids": [
+      "algorithm.fixture.identity/v0.1"
+    ]
+  },
+  "renderer_templates": {
+    "artifact_id": "fixture-renderer/v0.1",
+    "sha256": "1414141414141414141414141414141414141414141414141414141414141414"
+  },
+  "required_checks": [
+    {
+      "outcome": "evidence-backed",
+      "subject_kind": "envelope",
+      "check_ids": [
+        "schema",
+        "corpus-release",
+        "runtime-manifest",
+        "coverage"
+      ]
+    },
+    {
+      "outcome": "evidence-backed",
+      "subject_kind": "page",
+      "check_ids": [
+        "eligibility",
+        "freshness"
+      ]
+    },
+    {
+      "outcome": "evidence-backed",
+      "subject_kind": "claim",
+      "check_ids": [
+        "claim-resolution",
+        "applicability"
+      ]
+    },
+    {
+      "outcome": "evidence-backed",
+      "subject_kind": "claim",
+      "claim_kind": "numeric",
+      "check_ids": [
+        "numeric-claim-tuple"
+      ]
+    },
+    {
+      "outcome": "evidence-backed",
+      "subject_kind": "claim",
+      "claim_kind": "derived",
+      "check_ids": [
+        "derived-claim"
+      ]
+    },
+    {
+      "outcome": "evidence-backed",
+      "subject_kind": "claim-cell",
+      "check_ids": [
+        "table-cell-fidelity"
+      ]
+    },
+    {
+      "outcome": "evidence-backed",
+      "subject_kind": "quote",
+      "check_ids": [
+        "quote-resolution",
+        "span-fidelity"
+      ]
+    },
+    {
+      "outcome": "evidence-only",
+      "subject_kind": "envelope",
+      "check_ids": [
+        "schema",
+        "corpus-release",
+        "runtime-manifest"
+      ]
+    },
+    {
+      "outcome": "evidence-only",
+      "subject_kind": "quote",
+      "check_ids": [
+        "quote-resolution"
+      ]
+    },
+    {
+      "outcome": "abstention",
+      "subject_kind": "envelope",
+      "check_ids": [
+        "schema",
+        "corpus-release",
+        "runtime-manifest",
+        "coverage"
+      ]
+    }
+  ],
+  "outcome_reason_rules": [
+    {
+      "code": "STALE_EVIDENCE",
+      "source_kind": "check",
+      "source_ids": [
+        "freshness"
+      ]
+    },
+    {
+      "code": "OUT_OF_COVERAGE",
+      "source_kind": "check",
+      "source_ids": [
+        "coverage"
+      ]
+    },
+    {
+      "code": "SYNTHESIS_WITHHELD",
+      "source_kind": "policy-gate",
+      "source_ids": [
+        "fixture-policy.synthesis"
+      ]
+    },
+    {
+      "code": "CHECK_FAILED",
+      "source_kind": "check",
+      "source_ids": [
+        "schema",
+        "corpus-release",
+        "runtime-manifest",
+        "eligibility",
+        "claim-resolution",
+        "quote-resolution",
+        "span-fidelity",
+        "numeric-claim-tuple",
+        "derived-claim",
+        "table-cell-fidelity",
+        "applicability",
+        "freshness",
+        "coverage"
+      ]
+    }
+  ],
+  "integrity": {
+    "canonicalization": "dw-runtime-assurance-manifest/v0.1",
+    "artifact_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  }
+}

@@ -1,0 +1,221 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:dwtc:schema:source-registry:v0.1",
+  "title": "Drinking Water Source Registry v0.1",
+  "description": "Content-bound source, authority, authenticity, and reproduction decisions. Licensing approval is recorded once per source component and resolved by stable pages.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "registry_id",
+    "updated_at",
+    "sources"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "source-registry/v0.1"
+    },
+    "registry_id": {
+      "type": "string",
+      "pattern": "^source-registry\\.[a-zA-Z0-9_-]+$"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    }
+  },
+  "$comment": "Semantic validation rejects duplicate source and decision IDs, unverifiable authority or authenticity evidence, stale decision-payload digests, and any page source reference whose captured digest or approved reproduction decision does not match this registry snapshot.",
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id",
+        "resource",
+        "captured_at",
+        "captured_sha256",
+        "authority",
+        "authenticity_evidence",
+        "reproduction_decision"
+      ],
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "pattern": "^source\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+        },
+        "resource": {
+          "type": "string",
+          "format": "uri"
+        },
+        "published_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "effective_from": {
+          "type": "string",
+          "format": "date"
+        },
+        "effective_through": {
+          "type": "string",
+          "format": "date"
+        },
+        "captured_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "captured_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "authority": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "class",
+            "evidence"
+          ],
+          "properties": {
+            "class": {
+              "enum": [
+                "official-legal-record",
+                "authoritative-unofficial-government-compilation",
+                "agency-guidance",
+                "licensed-technical-authority",
+                "secondary-reference"
+              ]
+            },
+            "evidence": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "authenticity_evidence": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reproduction_decision": {
+          "$ref": "#/$defs/reproductionDecision"
+        }
+      }
+    },
+    "reproductionDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_id",
+        "status",
+        "classification",
+        "scope",
+        "evidence",
+        "decision_payload_sha256",
+        "reviewed_by",
+        "reviewed_at"
+      ],
+      "properties": {
+        "decision_id": {
+          "type": "string",
+          "pattern": "^license-decision\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+        },
+        "status": {
+          "enum": [
+            "approved",
+            "excluded",
+            "pending"
+          ]
+        },
+        "classification": {
+          "enum": [
+            "public-domain-us-government-work",
+            "express-license",
+            "permission",
+            "quotation-only",
+            "excluded",
+            "undetermined"
+          ]
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "covered_components",
+            "excluded_components"
+          ],
+          "properties": {
+            "covered_components": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "excluded_components": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "evidence": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decision_payload_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "reviewed_by": {
+          "type": "string",
+          "pattern": "^human\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+        },
+        "reviewed_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "approved"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "not": {
+              "properties": {
+                "classification": {
+                  "enum": [
+                    "excluded",
+                    "undetermined"
+                  ]
+                }
+              },
+              "required": [
+                "classification"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

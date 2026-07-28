@@ -3,13 +3,18 @@
   "answer_id": "answer.fixture-backed-001",
   "created_at": "2026-07-28T00:00:00Z",
   "outcome": "evidence-backed",
-  "query_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "query": {
+    "canonicalization_id": "dw-query/v0.1",
+    "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  },
   "corpus": {
-    "release_id": "fixture-release-001",
+    "release_id": "corpus-release.fixture-001",
     "manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
   },
-  "policy_version": "fixture-policy/v0.1",
-  "verifier_version": "fixture-verifier/v0.1",
+  "runtime": {
+    "manifest_id": "runtime-assurance.fixture-001",
+    "manifest_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
   "applicability": {
     "jurisdiction": "fixture-jurisdiction",
     "use_class": "regulatory-reference",
@@ -25,6 +30,14 @@
       "claim_id": "claim.dbp.synthetic-limit",
       "page_id": "dbp.synthetic-limit",
       "review_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "claim_id": "claim.dbp.synthetic-removal-matrix",
+      "page_id": "dbp.synthetic-limit",
+      "review_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "table_cell_ids": [
+        "cell.row-low_col-high"
+      ]
     }
   ],
   "quote_refs": [
@@ -39,37 +52,144 @@
       "check_id": "schema",
       "version": "v0.1",
       "verdict": "pass",
-      "claim_ids": [
-        "claim.dbp.synthetic-limit"
-      ],
-      "quote_ids": [
-        "quote.dbp.synthetic-limit"
+      "subjects": [
+        {
+          "kind": "envelope",
+          "id": "answer.fixture-backed-001"
+        }
       ]
     },
     {
       "check_id": "corpus-release",
       "version": "v0.1",
       "verdict": "pass",
-      "claim_ids": [
-        "claim.dbp.synthetic-limit"
-      ],
-      "quote_ids": [
-        "quote.dbp.synthetic-limit"
+      "subjects": [
+        {
+          "kind": "envelope",
+          "id": "answer.fixture-backed-001"
+        }
+      ]
+    },
+    {
+      "check_id": "runtime-manifest",
+      "version": "v0.1",
+      "verdict": "pass",
+      "subjects": [
+        {
+          "kind": "envelope",
+          "id": "answer.fixture-backed-001"
+        }
+      ]
+    },
+    {
+      "check_id": "coverage",
+      "version": "v0.1",
+      "verdict": "pass",
+      "subjects": [
+        {
+          "kind": "envelope",
+          "id": "answer.fixture-backed-001"
+        }
+      ]
+    },
+    {
+      "check_id": "eligibility",
+      "version": "v0.1",
+      "verdict": "pass",
+      "subjects": [
+        {
+          "kind": "page",
+          "id": "dbp.synthetic-limit"
+        }
+      ]
+    },
+    {
+      "check_id": "freshness",
+      "version": "v0.1",
+      "verdict": "pass",
+      "subjects": [
+        {
+          "kind": "page",
+          "id": "dbp.synthetic-limit"
+        }
+      ]
+    },
+    {
+      "check_id": "claim-resolution",
+      "version": "v0.1",
+      "verdict": "pass",
+      "subjects": [
+        {
+          "kind": "claim",
+          "id": "claim.dbp.synthetic-limit"
+        },
+        {
+          "kind": "claim",
+          "id": "claim.dbp.synthetic-removal-matrix"
+        }
+      ]
+    },
+    {
+      "check_id": "applicability",
+      "version": "v0.1",
+      "verdict": "pass",
+      "subjects": [
+        {
+          "kind": "claim",
+          "id": "claim.dbp.synthetic-limit"
+        },
+        {
+          "kind": "claim",
+          "id": "claim.dbp.synthetic-removal-matrix"
+        }
       ]
     },
     {
       "check_id": "numeric-claim-tuple",
       "version": "v0.1",
       "verdict": "pass",
-      "claim_ids": [
-        "claim.dbp.synthetic-limit"
-      ],
-      "quote_ids": [
-        "quote.dbp.synthetic-limit"
+      "subjects": [
+        {
+          "kind": "claim",
+          "id": "claim.dbp.synthetic-limit"
+        }
+      ]
+    },
+    {
+      "check_id": "table-cell-fidelity",
+      "version": "v0.1",
+      "verdict": "pass",
+      "subjects": [
+        {
+          "kind": "claim-cell",
+          "id": "claim.dbp.synthetic-removal-matrix#cell.row-low_col-high"
+        }
+      ]
+    },
+    {
+      "check_id": "quote-resolution",
+      "version": "v0.1",
+      "verdict": "pass",
+      "subjects": [
+        {
+          "kind": "quote",
+          "id": "quote.dbp.synthetic-limit"
+        }
+      ]
+    },
+    {
+      "check_id": "span-fidelity",
+      "version": "v0.1",
+      "verdict": "pass",
+      "subjects": [
+        {
+          "kind": "quote",
+          "id": "quote.dbp.synthetic-limit"
+        }
       ]
     }
   ],
-  "reason_codes": [],
+  "outcome_reasons": [],
   "renderer": {
     "template_set_version": "fixture-renderer/v0.1"
   },

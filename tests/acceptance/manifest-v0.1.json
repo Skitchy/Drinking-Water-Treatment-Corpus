@@ -104,7 +104,7 @@
       "normative_source": "Renderer-boundary review",
       "status": "executable-foundation",
       "artifacts": [
-        "tests/acceptance/fixtures/answer-mutations-v0.1.json"
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
       ],
       "expected": "unknown-root-field-rejected"
     },
@@ -115,8 +115,8 @@
       "normative_source": "Renderer-boundary review",
       "status": "executable-foundation",
       "artifacts": [
-        "tests/acceptance/fixtures/answer-mutations-v0.1.json",
-        "tests/acceptance/fixtures/corpus-index-v0.1.json"
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json",
+        "tests/acceptance/fixtures/corpus-release-manifest-valid.json"
       ],
       "expected": "unknown-claim-rejected"
     },
@@ -127,8 +127,8 @@
       "normative_source": "Renderer-boundary review",
       "status": "executable-foundation",
       "artifacts": [
-        "tests/acceptance/fixtures/answer-mutations-v0.1.json",
-        "tests/acceptance/fixtures/corpus-index-v0.1.json"
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json",
+        "tests/acceptance/fixtures/corpus-release-manifest-valid.json"
       ],
       "expected": "manifest-digest-mismatch-rejected"
     },
@@ -137,8 +137,10 @@
       "title": "Only a conforming renderer receives display assurance",
       "layer": "integration",
       "normative_source": "Renderer-boundary review",
-      "status": "specified",
-      "artifacts": [],
+      "status": "policy-specified",
+      "artifacts": [
+        "docs/CONFORMANCE-CLAIMS-v0.1.md"
+      ],
       "expected": "nonconforming-client-claim-denied"
     },
     {
@@ -149,6 +151,299 @@
       "status": "specified",
       "artifacts": [],
       "expected": "auxiliary-content-separated-and-disabled"
+    },
+    {
+      "id": "AT-016",
+      "title": "Evidence-backed envelope rejects a missing mandatory check",
+      "layer": "semantic",
+      "normative_source": "RFC 002 ratification finding F1",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json",
+        "tests/acceptance/fixtures/runtime-assurance-manifest-valid.json"
+      ],
+      "expected": "missing-check-rejected"
+    },
+    {
+      "id": "AT-017",
+      "title": "Required checks cover every applicable reference",
+      "layer": "semantic",
+      "normative_source": "RFC 002 ratification finding F1",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "uncovered-reference-rejected"
+    },
+    {
+      "id": "AT-018",
+      "title": "Outcome reason traces to the declared failed check or policy gate",
+      "layer": "semantic",
+      "normative_source": "RFC 002 ratification finding F2",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "floating-reason-rejected"
+    },
+    {
+      "id": "AT-019",
+      "title": "Invalid date and date-time values fail format assertion",
+      "layer": "schema",
+      "normative_source": "RFC 002 ratification finding F3",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "invalid-format-rejected"
+    },
+    {
+      "id": "AT-020",
+      "title": "Ineligible retrieval candidate records an explanation",
+      "layer": "schema",
+      "normative_source": "RFC 002 ratification finding F6",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json",
+        "tests/acceptance/fixtures/audit-envelope-valid.json"
+      ],
+      "expected": "unexplained-ineligibility-rejected"
+    },
+    {
+      "id": "AT-021",
+      "title": "Effective watch status derives overdue from evaluation time",
+      "layer": "semantic",
+      "normative_source": "RFC 003 ratification finding P3",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "overdue-watch-rejected"
+    },
+    {
+      "id": "AT-022",
+      "title": "Stable page requires an approved licensing decision",
+      "layer": "semantic",
+      "normative_source": "RFC 003 ratification finding P1",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/source-registry-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "unapproved-source-rejected"
+    },
+    {
+      "id": "AT-023",
+      "title": "Human event cannot claim process-only scopes",
+      "layer": "schema",
+      "normative_source": "RFC 003 ratification finding P2",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "actor-scope-mismatch-rejected"
+    },
+    {
+      "id": "AT-024",
+      "title": "Quote digest matches the referenced captured source",
+      "layer": "semantic",
+      "normative_source": "RFC 003 ratification finding P5",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "quote-source-digest-mismatch-rejected"
+    },
+    {
+      "id": "AT-025",
+      "title": "Applicability population bounds are ordered",
+      "layer": "semantic",
+      "normative_source": "RFC 003 ratification finding P6",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "invalid-population-range-rejected"
+    },
+    {
+      "id": "AT-026",
+      "title": "Reviewer qualification covers the review-event timestamp",
+      "layer": "semantic",
+      "normative_source": "RFC 003 ratification finding R1",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "expired-at-review-qualification-rejected"
+    },
+    {
+      "id": "AT-027",
+      "title": "Page-local source, quote, and claim IDs are unique",
+      "layer": "semantic",
+      "normative_source": "RFC 003 ratification finding P6",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "duplicate-id-rejected"
+    },
+    {
+      "id": "AT-028",
+      "title": "Derived-claim dependencies are acyclic",
+      "layer": "semantic",
+      "normative_source": "RFC 003 ratification finding P6",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "derivation-cycle-rejected"
+    },
+    {
+      "id": "AT-029",
+      "title": "Schema identifiers are immutable logical URIs",
+      "layer": "schema",
+      "normative_source": "Ratification follow-up review",
+      "status": "executable-foundation",
+      "artifacts": [
+        "schemas/README.md"
+      ],
+      "expected": "mutable-schema-id-rejected"
+    },
+    {
+      "id": "AT-030",
+      "title": "Answer rejects a mismatched runtime assurance manifest",
+      "layer": "semantic",
+      "normative_source": "RFC 002 ratification finding F9 disposition",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/runtime-assurance-manifest-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "runtime-manifest-mismatch-rejected"
+    },
+    {
+      "id": "AT-031",
+      "title": "Runtime manifest cannot weaken the assurance-contract check baseline",
+      "layer": "semantic",
+      "normative_source": "RFC 002 ratification finding F1 follow-up",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/runtime-assurance-manifest-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "weak-runtime-policy-rejected"
+    },
+    {
+      "id": "AT-032",
+      "title": "A table claim missing a row-band and column-band cell is rejected",
+      "layer": "semantic",
+      "normative_source": "First-proof page list J5 decision: table-valued claim kind",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/profile-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "incomplete-table-claim-rejected"
+    },
+    {
+      "id": "AT-033",
+      "title": "Runtime manifest pins the exact machine-readable required-check baseline",
+      "layer": "semantic",
+      "normative_source": "PR 4 follow-up finding N2",
+      "status": "executable-foundation",
+      "artifacts": [
+        "contracts/assurance-check-baseline-v0.1.json",
+        "tests/acceptance/fixtures/runtime-assurance-manifest-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "baseline-digest-mismatch-rejected"
+    },
+    {
+      "id": "AT-034",
+      "title": "An answer whose referenced claim kind cannot be resolved is rejected",
+      "layer": "semantic",
+      "normative_source": "PR 4 follow-up finding N3",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/profile-valid.json",
+        "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "unresolved-claim-kind-rejected"
+    },
+    {
+      "id": "AT-035",
+      "title": "A table claim answer must select at least one stable cell ID",
+      "layer": "semantic",
+      "normative_source": "First-proof page list J5 decision",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "missing-table-cell-selection-rejected"
+    },
+    {
+      "id": "AT-036",
+      "title": "A table claim answer cannot select an unknown cell ID",
+      "layer": "semantic",
+      "normative_source": "First-proof page list J5 decision",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/profile-valid.json",
+        "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "unknown-table-cell-rejected"
+    },
+    {
+      "id": "AT-037",
+      "title": "Every selected table cell requires a passing fidelity check",
+      "layer": "semantic",
+      "normative_source": "First-proof page list J5 decision and PR 4 finding F1",
+      "status": "executable-foundation",
+      "artifacts": [
+        "contracts/assurance-check-baseline-v0.1.json",
+        "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "missing-table-cell-fidelity-check-rejected"
+    },
+    {
+      "id": "AT-038",
+      "title": "Table dimension bands cannot overlap",
+      "layer": "semantic",
+      "normative_source": "First-proof page list J5 decision",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/profile-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "overlapping-table-bands-rejected"
+    },
+    {
+      "id": "AT-039",
+      "title": "Every table band bound declares whether it is inclusive",
+      "layer": "schema",
+      "normative_source": "First-proof page list J5 decision",
+      "status": "executable-foundation",
+      "artifacts": [
+        "schemas/drinking-water-profile-v0.1.schema.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "ambiguous-table-bound-rejected"
+    },
+    {
+      "id": "AT-040",
+      "title": "Stable table cell IDs are unique within a claim",
+      "layer": "semantic",
+      "normative_source": "First-proof page list J5 decision",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/profile-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "duplicate-table-cell-id-rejected"
     }
   ]
 }

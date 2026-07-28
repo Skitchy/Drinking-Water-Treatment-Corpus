@@ -1,0 +1,423 @@
+{
+  "schema_version": "artifact-mutations/v0.1",
+  "mutations": [
+    {
+      "id": "AT-011",
+      "base": "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+      "validator": "answer-schema",
+      "operations": [
+        {
+          "operation": "add",
+          "path": "/summary",
+          "value": "Unchecked model-authored narrative must not fit inside the answer envelope."
+        }
+      ]
+    },
+    {
+      "id": "AT-012",
+      "base": "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+      "validator": "answer-semantic",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/claim_refs/0/claim_id",
+          "value": "claim.dbp.unknown"
+        }
+      ]
+    },
+    {
+      "id": "AT-013",
+      "base": "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+      "validator": "answer-semantic",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/corpus/manifest_sha256",
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ]
+    },
+    {
+      "id": "AT-016",
+      "base": "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+      "validator": "answer-semantic",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/checks",
+          "value": [
+            {
+              "check_id": "schema",
+              "version": "v0.1",
+              "verdict": "pass",
+              "subjects": [
+                {
+                  "kind": "envelope",
+                  "id": "answer.fixture-backed-001"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "AT-017",
+      "base": "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+      "validator": "answer-semantic",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/checks/8/subjects",
+          "value": []
+        }
+      ]
+    },
+    {
+      "id": "AT-018",
+      "base": "tests/acceptance/fixtures/answer-valid-evidence-only.json",
+      "validator": "answer-semantic",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/outcome_reasons/0/source_id",
+          "value": "coverage"
+        }
+      ]
+    },
+    {
+      "id": "AT-019",
+      "base": "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+      "validator": "answer-schema",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/created_at",
+          "value": "not-a-date"
+        }
+      ]
+    },
+    {
+      "id": "AT-020",
+      "base": "tests/acceptance/fixtures/audit-envelope-valid.json",
+      "validator": "audit-schema",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/retrieval/candidates/0/eligible",
+          "value": false
+        },
+        {
+          "operation": "replace",
+          "path": "/retrieval/candidates/0/ineligibility_codes",
+          "value": []
+        }
+      ]
+    },
+    {
+      "id": "AT-021",
+      "base": "tests/acceptance/fixtures/profile-valid.json",
+      "validator": "profile-semantic",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/source_watch/next_due_at",
+          "value": "2026-07-27T00:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "AT-022",
+      "base": "tests/acceptance/fixtures/source-registry-valid.json",
+      "validator": "source-registry-semantic",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/sources/0/reproduction_decision/status",
+          "value": "pending"
+        }
+      ]
+    },
+    {
+      "id": "AT-023",
+      "base": "tests/acceptance/fixtures/profile-valid.json",
+      "validator": "profile-schema",
+      "operations": [
+        {
+          "operation": "add",
+          "path": "/verified/1/scopes/-",
+          "value": "source-capture"
+        }
+      ]
+    },
+    {
+      "id": "AT-024",
+      "base": "tests/acceptance/fixtures/profile-valid.json",
+      "validator": "profile-semantic",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/quotes/0/captured_source_sha256",
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ]
+    },
+    {
+      "id": "AT-025",
+      "base": "tests/acceptance/fixtures/profile-valid.json",
+      "validator": "profile-semantic",
+      "operations": [
+        {
+          "operation": "add",
+          "path": "/applicability/population",
+          "value": {
+            "minimum": 10,
+            "maximum": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "AT-026",
+      "base": "tests/acceptance/fixtures/reviewer-registry-valid.json",
+      "validator": "reviewer-event-semantic",
+      "operations": [
+        {
+          "operation": "add",
+          "path": "/reviewers/0/qualifications/0/expires_at",
+          "value": "2026-07-01"
+        }
+      ]
+    },
+    {
+      "id": "AT-027",
+      "base": "tests/acceptance/fixtures/profile-valid.json",
+      "validator": "profile-semantic",
+      "operations": [
+        {
+          "operation": "copy",
+          "from": "/claims/0",
+          "path": "/claims/-"
+        }
+      ]
+    },
+    {
+      "id": "AT-028",
+      "base": "tests/acceptance/fixtures/profile-valid.json",
+      "validator": "profile-semantic",
+      "operations": [
+        {
+          "operation": "add",
+          "path": "/claims/-",
+          "value": {
+            "claim_id": "claim.dbp.derived-a",
+            "kind": "derived",
+            "subject": "Synthetic derived claim A",
+            "relation": {
+              "operator": "eq",
+              "regulatory_metric": "other"
+            },
+            "value": 1,
+            "unit": "fixture-unit",
+            "jurisdiction": "fixture-jurisdiction",
+            "applicability": {
+              "system_types": [
+                "fixture-system"
+              ],
+              "conditions": [
+                "Synthetic acceptance fixture only"
+              ]
+            },
+            "supporting_quote_ids": [
+              "quote.dbp.synthetic-limit"
+            ],
+            "derivation": {
+              "input_claim_ids": [
+                "claim.dbp.derived-b"
+              ],
+              "algorithm_id": "algorithm.fixture.identity/v0.1",
+              "parameters": {},
+              "rounding": {
+                "mode": "none",
+                "decimal_places": 0
+              }
+            }
+          }
+        },
+        {
+          "operation": "add",
+          "path": "/claims/-",
+          "value": {
+            "claim_id": "claim.dbp.derived-b",
+            "kind": "derived",
+            "subject": "Synthetic derived claim B",
+            "relation": {
+              "operator": "eq",
+              "regulatory_metric": "other"
+            },
+            "value": 1,
+            "unit": "fixture-unit",
+            "jurisdiction": "fixture-jurisdiction",
+            "applicability": {
+              "system_types": [
+                "fixture-system"
+              ],
+              "conditions": [
+                "Synthetic acceptance fixture only"
+              ]
+            },
+            "supporting_quote_ids": [
+              "quote.dbp.synthetic-limit"
+            ],
+            "derivation": {
+              "input_claim_ids": [
+                "claim.dbp.derived-a"
+              ],
+              "algorithm_id": "algorithm.fixture.identity/v0.1",
+              "parameters": {},
+              "rounding": {
+                "mode": "none",
+                "decimal_places": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "AT-030",
+      "base": "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+      "validator": "answer-semantic",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/runtime/manifest_sha256",
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ]
+    },
+    {
+      "id": "AT-031",
+      "base": "tests/acceptance/fixtures/runtime-assurance-manifest-valid.json",
+      "validator": "runtime-semantic",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/required_checks",
+          "value": [
+            {
+              "outcome": "evidence-backed",
+              "subject_kind": "envelope",
+              "check_ids": [
+                "schema"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "AT-032",
+      "base": "tests/acceptance/fixtures/profile-valid.json",
+      "validator": "profile-semantic",
+      "operations": [
+        {
+          "operation": "remove",
+          "path": "/claims/1/table_value/cells/3"
+        }
+      ]
+    },
+    {
+      "id": "AT-033",
+      "base": "tests/acceptance/fixtures/runtime-assurance-manifest-valid.json",
+      "validator": "runtime-semantic",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/required_check_baseline/sha256",
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ]
+    },
+    {
+      "id": "AT-034",
+      "base": "tests/acceptance/fixtures/profile-valid.json",
+      "validator": "answer-profile-resolution-semantic",
+      "operations": [
+        {
+          "operation": "remove",
+          "path": "/claims/1"
+        }
+      ]
+    },
+    {
+      "id": "AT-035",
+      "base": "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+      "validator": "answer-semantic",
+      "operations": [
+        {
+          "operation": "remove",
+          "path": "/claim_refs/1/table_cell_ids"
+        }
+      ]
+    },
+    {
+      "id": "AT-036",
+      "base": "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+      "validator": "answer-semantic",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/claim_refs/1/table_cell_ids/0",
+          "value": "cell.unknown"
+        }
+      ]
+    },
+    {
+      "id": "AT-037",
+      "base": "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+      "validator": "answer-semantic",
+      "operations": [
+        {
+          "operation": "remove",
+          "path": "/checks/9"
+        }
+      ]
+    },
+    {
+      "id": "AT-038",
+      "base": "tests/acceptance/fixtures/profile-valid.json",
+      "validator": "profile-semantic",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/claims/1/table_value/row_dimension/bands/1/minimum",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "id": "AT-039",
+      "base": "tests/acceptance/fixtures/profile-valid.json",
+      "validator": "profile-schema",
+      "operations": [
+        {
+          "operation": "remove",
+          "path": "/claims/1/table_value/row_dimension/bands/0/minimum_inclusive"
+        }
+      ]
+    },
+    {
+      "id": "AT-040",
+      "base": "tests/acceptance/fixtures/profile-valid.json",
+      "validator": "profile-semantic",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/claims/1/table_value/cells/1/cell_id",
+          "value": "cell.row-low_col-low"
+        }
+      ]
+    }
+  ]
+}

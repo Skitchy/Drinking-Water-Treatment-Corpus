@@ -1,0 +1,13 @@
+{
+  "name": "drinking-water-treatment-corpus",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/acceptance/check-artifacts.mjs"
+  },
+  "devDependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1"
+  }
+}

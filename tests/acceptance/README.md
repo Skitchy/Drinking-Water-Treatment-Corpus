@@ -38,25 +38,55 @@ Passing a schema test does not imply passing a semantic or integration test.
 | AT-013 | A mismatched corpus manifest digest is rejected semantically. | Semantic |
 | AT-014 | Display-assurance language is available only to a conforming renderer. | Integration |
 | AT-015 | Auxiliary host content is separate, disclosed, and disabled by default in the reference verified-evidence mode. | Integration |
+| AT-016 | A missing policy-mandatory check rejects an evidence-backed envelope. | Semantic |
+| AT-017 | Mandatory checks cover every applicable claim, quote, page, and envelope subject. | Semantic |
+| AT-018 | Every outcome reason traces to a permitted failed check or policy gate. | Semantic |
+| AT-019 | Invalid dates and timestamps fail format assertion. | Schema |
+| AT-020 | Every ineligible retrieval candidate records an explanation. | Schema |
+| AT-021 | Watch status becomes overdue from time even when the stored result says unchanged. | Semantic |
+| AT-022 | Stable evidence resolves to an approved content-bound reproduction decision. | Semantic |
+| AT-023 | Human and process verification scopes cannot be interchanged. | Schema |
+| AT-024 | A quote's captured-source digest matches its resolved source snapshot. | Semantic |
+| AT-025 | Applicability population bounds are ordered. | Semantic |
+| AT-026 | Reviewer qualifications cover the review-event timestamp. | Semantic |
+| AT-027 | Page-local source, quote, and claim IDs are unique. | Semantic |
+| AT-028 | Derived-claim dependency graphs are acyclic. | Semantic |
+| AT-029 | Schema identifiers are immutable logical URIs. | Schema |
+| AT-030 | Answer and runtime assurance manifest digests agree. | Semantic |
+| AT-031 | A runtime manifest cannot weaken the assurance-contract mandatory-check baseline. | Semantic |
+| AT-032 | A table claim missing a row-band and column-band cell is rejected. | Semantic |
+| AT-033 | The runtime manifest pins the exact machine-readable required-check baseline. | Semantic |
+| AT-034 | An answer whose referenced claim kind cannot be resolved is rejected. | Semantic |
+| AT-035 | A table claim answer selects at least one stable cell ID. | Semantic |
+| AT-036 | A table claim answer cannot select an unknown cell ID. | Semantic |
+| AT-037 | Every selected table cell receives a passing fidelity check. | Semantic |
+| AT-038 | Table dimension bands cannot overlap. | Semantic |
+| AT-039 | Every table band bound explicitly declares inclusivity. | Schema |
+| AT-040 | Stable table cell IDs are unique within a claim. | Semantic |
 
 ## Foundation fixtures
 
 The fixtures are synthetic and are not regulatory evidence:
 
-- one valid reviewer registry and stable profile;
+- valid reviewer and source registries plus a stable profile;
 - one invalid profile with a stale human-review digest;
-- a synthetic release index for ID and digest resolution;
+- separate synthetic corpus-release and runtime-assurance manifests;
+- a machine-readable, exact-byte-digest-pinned required-check baseline;
+- an audit record with one rejected and one accepted generation attempt;
 - valid examples for all three answer outcomes;
-- mutations that test free-text injection, unknown claims, and release-digest
-  mismatch.
+- mutations covering the schema-ratification findings.
 
-Run the dependency-free foundation checks from the repository root:
+Install the locked test dependencies and run the foundation checks:
 
 ```sh
-node tests/acceptance/check-artifacts.mjs
+npm ci
+npm test
 ```
 
-The script checks JSON parseability, expected schema versions, review-payload
-binding, the closed answer surface, outcome invariants, and claim/quote/release
-resolution. A standards-complete JSON Schema validator and canonicalization
-test vectors remain explicit next actions in `PROJECT-STATE.md`.
+The script runs AJV 2020-12 with format assertion, then checks review-payload
+binding, licensing resolution, actor scopes, effective watch state, the closed
+answer surface, policy-mandatory check coverage, structured outcome causes,
+manifest compatibility, claim/quote/source resolution, reviewer qualification
+timing, bounds, uniqueness, derivation cycles, table-band and cell coverage,
+and answer-side table-cell selection and fidelity coverage. Canonicalization
+conformance vectors remain an explicit next action in `PROJECT-STATE.md`.

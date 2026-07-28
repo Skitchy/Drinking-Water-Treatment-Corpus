@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/Skitchy/Drinking-Water-Treatment-Corpus/main/schemas/audit-envelope-v0.1.schema.json",
+  "$id": "urn:dwtc:schema:audit-envelope:v0.1",
   "title": "Reader Audit Envelope v0.1",
   "description": "Minimal reproducibility record for retrieval, gating, generation, validation, and answer-envelope production.",
   "type": "object",
@@ -11,8 +11,7 @@
     "created_at",
     "query",
     "corpus",
-    "index_version",
-    "eligibility_policy_version",
+    "runtime",
     "retrieval",
     "generation",
     "outcome",
@@ -35,11 +34,16 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
+        "canonicalization_id",
         "sha256",
         "normalized_query_retained",
         "expansions"
       ],
       "properties": {
+        "canonicalization_id": {
+          "type": "string",
+          "minLength": 1
+        },
         "sha256": {
           "$ref": "#/$defs/sha256"
         },
@@ -59,6 +63,7 @@
       "allOf": [
         {
           "if": {
+            "type": "object",
             "properties": {
               "normalized_query_retained": {
                 "const": true
@@ -71,10 +76,17 @@
           "then": {
             "required": [
               "normalized_query"
-            ]
+            ],
+            "properties": {
+              "normalized_query": {}
+            }
           },
           "else": {
             "not": {
+              "type": "object",
+              "properties": {
+                "normalized_query": {}
+              },
               "required": [
                 "normalized_query"
               ]
@@ -93,20 +105,29 @@
       "properties": {
         "release_id": {
           "type": "string",
-          "minLength": 1
+          "pattern": "^corpus-release\\.[a-zA-Z0-9_-]+$"
         },
         "manifest_sha256": {
           "$ref": "#/$defs/sha256"
         }
       }
     },
-    "index_version": {
-      "type": "string",
-      "minLength": 1
-    },
-    "eligibility_policy_version": {
-      "type": "string",
-      "minLength": 1
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest_id",
+        "manifest_sha256"
+      ],
+      "properties": {
+        "manifest_id": {
+          "type": "string",
+          "pattern": "^runtime-assurance\\.[a-zA-Z0-9_-]+$"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
     },
     "retrieval": {
       "type": "object",
@@ -150,7 +171,41 @@
               "score": {
                 "type": "number"
               }
-            }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "type": "object",
+                  "properties": {
+                    "eligible": {
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "eligible"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "ineligibility_codes"
+                  ],
+                  "properties": {
+                    "ineligibility_codes": {
+                      "type": "array",
+                      "minItems": 1
+                    }
+                  }
+                },
+                "else": {
+                  "properties": {
+                    "ineligibility_codes": {
+                      "type": "array",
+                      "maxItems": 0
+                    }
+                  }
+                }
+              }
+            ]
           }
         },
         "selected_page_ids": {
@@ -167,34 +222,60 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "model_id",
-        "prompt_version",
-        "candidate_claim_ids",
-        "candidate_quote_ids"
+        "accepted_attempt",
+        "attempts"
       ],
       "properties": {
-        "model_id": {
-          "type": "string",
-          "minLength": 1
+        "accepted_attempt": {
+          "type": "integer",
+          "minimum": 1
         },
-        "prompt_version": {
-          "type": "string",
-          "minLength": 1
-        },
-        "candidate_claim_ids": {
+        "attempts": {
           "type": "array",
-          "uniqueItems": true,
+          "minItems": 1,
           "items": {
-            "type": "string",
-            "pattern": "^claim\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
-          }
-        },
-        "candidate_quote_ids": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "type": "string",
-            "pattern": "^quote\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "attempt",
+              "response_sha256",
+              "candidate_claim_ids",
+              "candidate_quote_ids",
+              "rejection_codes"
+            ],
+            "properties": {
+              "attempt": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "response_sha256": {
+                "$ref": "#/$defs/sha256"
+              },
+              "candidate_claim_ids": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^claim\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+                }
+              },
+              "candidate_quote_ids": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^quote\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+                }
+              },
+              "rejection_codes": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
           }
         }
       }
@@ -214,7 +295,8 @@
         "required": [
           "check_id",
           "version",
-          "verdict"
+          "verdict",
+          "subjects"
         ],
         "properties": {
           "check_id": {
@@ -232,6 +314,13 @@
               "not-run"
             ]
           },
+          "subjects": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/subject"
+            }
+          },
           "reason_codes": {
             "type": "array",
             "uniqueItems": true,
@@ -248,11 +337,34 @@
       "pattern": "^answer\\.[a-zA-Z0-9_-]+$"
     }
   },
-  "$comment": "The audit record must avoid unnecessary personal data. Retaining normalized query text requires an explicit policy; the query digest alone is not sufficient for exact replay. Semantic validation must ensure selected pages are eligible candidates, generated references are limited to selected pages, and the answer envelope agrees with this record.",
+  "$comment": "The audit record must avoid unnecessary personal data. A plain query digest is an integrity fingerprint, not anonymization; retaining normalized text or expansions requires an explicit policy. Rejected attempts record only digests and structured rejection codes by default, never unchecked model prose. Semantic validation ensures both manifests resolve, selected pages are eligible candidates, accepted_attempt identifies exactly one recorded attempt, candidate references belong to selected pages, and the answer envelope agrees with this record.",
   "$defs": {
     "sha256": {
       "type": "string",
       "pattern": "^[a-f0-9]{64}$"
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "id"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "envelope",
+            "page",
+            "claim",
+            "claim-cell",
+            "quote"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     }
   }
 }
