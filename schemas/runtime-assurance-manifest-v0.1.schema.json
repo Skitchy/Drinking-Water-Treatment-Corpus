@@ -1,0 +1,282 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:dwtc:schema:runtime-assurance-manifest:v0.1",
+  "title": "Runtime Assurance Manifest v0.1",
+  "description": "The reader-side reproducibility anchor. It pins the policy, verifier, query canonicalization, index, deterministic algorithms, renderer templates, and the exact compatible corpus release.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "manifest_id",
+    "created_at",
+    "compatible_corpus",
+    "assurance_contract",
+    "answer_schema",
+    "audit_schema",
+    "eligibility_policy",
+    "verifier",
+    "generator",
+    "index",
+    "query_canonicalization",
+    "algorithm_registry",
+    "renderer_templates",
+    "required_checks",
+    "outcome_reason_rules",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "runtime-assurance-manifest/v0.1"
+    },
+    "manifest_id": {
+      "type": "string",
+      "pattern": "^runtime-assurance\\.[a-zA-Z0-9_-]+$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "compatible_corpus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "release_id",
+        "manifest_sha256"
+      ],
+      "properties": {
+        "release_id": {
+          "type": "string",
+          "pattern": "^corpus-release\\.[a-zA-Z0-9_-]+$"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "assurance_contract": {
+      "$ref": "#/$defs/artifact"
+    },
+    "answer_schema": {
+      "$ref": "#/$defs/artifact"
+    },
+    "audit_schema": {
+      "$ref": "#/$defs/artifact"
+    },
+    "eligibility_policy": {
+      "$ref": "#/$defs/artifact"
+    },
+    "verifier": {
+      "$ref": "#/$defs/artifact"
+    },
+    "generator": {
+      "$ref": "#/$defs/artifact"
+    },
+    "index": {
+      "$ref": "#/$defs/artifact"
+    },
+    "query_canonicalization": {
+      "$ref": "#/$defs/artifact"
+    },
+    "algorithm_registry": {
+      "$ref": "#/$defs/algorithmRegistry"
+    },
+    "renderer_templates": {
+      "$ref": "#/$defs/artifact"
+    },
+    "required_checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "outcome",
+          "subject_kind",
+          "check_ids"
+        ],
+        "properties": {
+          "outcome": {
+            "enum": [
+              "evidence-backed",
+              "evidence-only",
+              "abstention"
+            ]
+          },
+          "subject_kind": {
+            "enum": [
+              "envelope",
+              "page",
+              "claim",
+              "quote"
+            ]
+          },
+          "claim_kind": {
+            "enum": [
+              "numeric",
+              "qualitative",
+              "derived"
+            ]
+          },
+          "check_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/checkId"
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "type": "object",
+              "properties": {
+                "claim_kind": {}
+              },
+              "required": [
+                "claim_kind"
+              ]
+            },
+            "then": {
+              "type": "object",
+              "properties": {
+                "subject_kind": {
+                  "const": "claim"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "outcome_reason_rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "source_kind",
+          "source_ids"
+        ],
+        "properties": {
+          "code": {
+            "$ref": "#/$defs/reasonCode"
+          },
+          "source_kind": {
+            "enum": [
+              "check",
+              "policy-gate"
+            ]
+          },
+          "source_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonicalization",
+        "artifact_sha256"
+      ],
+      "properties": {
+        "canonicalization": {
+          "const": "dw-runtime-assurance-manifest/v0.1"
+        },
+        "artifact_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$comment": "This manifest intentionally does not live inside the corpus release lifecycle. A reader policy, index, verifier, or renderer-template change produces a new runtime manifest without republishing unchanged corpus evidence. Semantic validation requires the manifest's required-check rules to meet or exceed the pinned assurance contract's v0.1 baseline; a runtime manifest cannot weaken the contract by omitting a rule. Every answer check and reason conforms to this exact manifest, and every manifest names an exact compatible corpus digest.",
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "sha256"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "algorithmRegistry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "sha256",
+        "algorithm_ids"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "algorithm_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^algorithm\\.[a-z0-9]+(?:[._-][a-z0-9]+)*/v[0-9]+\\.[0-9]+$"
+          }
+        }
+      }
+    },
+    "checkId": {
+      "enum": [
+        "schema",
+        "corpus-release",
+        "runtime-manifest",
+        "eligibility",
+        "claim-resolution",
+        "quote-resolution",
+        "span-fidelity",
+        "numeric-claim-tuple",
+        "derived-claim",
+        "applicability",
+        "freshness",
+        "coverage"
+      ]
+    },
+    "reasonCode": {
+      "enum": [
+        "OUT_OF_COVERAGE",
+        "INSUFFICIENT_EVIDENCE",
+        "STALE_EVIDENCE",
+        "INELIGIBLE_EVIDENCE",
+        "APPLICABILITY_UNRESOLVED",
+        "RETRIEVAL_MISS",
+        "CHECK_FAILED",
+        "SOURCE_WATCH_FAILED",
+        "SOURCE_CHANGE_PENDING",
+        "SYNTHESIS_WITHHELD"
+      ]
+    }
+  }
+}

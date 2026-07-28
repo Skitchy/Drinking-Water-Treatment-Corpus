@@ -1,0 +1,76 @@
+{
+  "schema_version": "audit-envelope/v0.1",
+  "audit_id": "audit.fixture-backed-001",
+  "created_at": "2026-07-28T00:00:00Z",
+  "query": {
+    "canonicalization_id": "dw-query/v0.1",
+    "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "normalized_query_retained": false,
+    "expansions": []
+  },
+  "corpus": {
+    "release_id": "corpus-release.fixture-001",
+    "manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "runtime": {
+    "manifest_id": "runtime-assurance.fixture-001",
+    "manifest_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "retrieval": {
+    "retriever_version": "fixture-retriever/v0.1",
+    "candidates": [
+      {
+        "page_id": "dbp.synthetic-limit",
+        "eligible": true,
+        "ineligibility_codes": [],
+        "score": 1
+      }
+    ],
+    "selected_page_ids": [
+      "dbp.synthetic-limit"
+    ]
+  },
+  "generation": {
+    "accepted_attempt": 2,
+    "attempts": [
+      {
+        "attempt": 1,
+        "response_sha256": "1515151515151515151515151515151515151515151515151515151515151515",
+        "candidate_claim_ids": [
+          "claim.dbp.unknown"
+        ],
+        "candidate_quote_ids": [],
+        "rejection_codes": [
+          "UNKNOWN_CLAIM"
+        ]
+      },
+      {
+        "attempt": 2,
+        "response_sha256": "1616161616161616161616161616161616161616161616161616161616161616",
+        "candidate_claim_ids": [
+          "claim.dbp.synthetic-limit"
+        ],
+        "candidate_quote_ids": [
+          "quote.dbp.synthetic-limit"
+        ],
+        "rejection_codes": []
+      }
+    ]
+  },
+  "outcome": "evidence-backed",
+  "checks": [
+    {
+      "check_id": "numeric-claim-tuple",
+      "version": "v0.1",
+      "verdict": "pass",
+      "subjects": [
+        {
+          "kind": "claim",
+          "id": "claim.dbp.synthetic-limit"
+        }
+      ],
+      "reason_codes": []
+    }
+  ],
+  "answer_id": "answer.fixture-backed-001"
+}

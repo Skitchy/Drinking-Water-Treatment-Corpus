@@ -3,13 +3,18 @@
   "answer_id": "answer.fixture-abstention-001",
   "created_at": "2026-07-28T00:00:00Z",
   "outcome": "abstention",
-  "query_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+  "query": {
+    "canonicalization_id": "dw-query/v0.1",
+    "sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+  },
   "corpus": {
-    "release_id": "fixture-release-001",
+    "release_id": "corpus-release.fixture-001",
     "manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
   },
-  "policy_version": "fixture-policy/v0.1",
-  "verifier_version": "fixture-verifier/v0.1",
+  "runtime": {
+    "manifest_id": "runtime-assurance.fixture-001",
+    "manifest_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
   "applicability": {
     "jurisdiction": "fixture-jurisdiction",
     "use_class": "regulatory-reference"
@@ -18,15 +23,62 @@
   "quote_refs": [],
   "checks": [
     {
+      "check_id": "schema",
+      "version": "v0.1",
+      "verdict": "pass",
+      "subjects": [
+        {
+          "kind": "envelope",
+          "id": "answer.fixture-abstention-001"
+        }
+      ]
+    },
+    {
+      "check_id": "corpus-release",
+      "version": "v0.1",
+      "verdict": "pass",
+      "subjects": [
+        {
+          "kind": "envelope",
+          "id": "answer.fixture-abstention-001"
+        }
+      ]
+    },
+    {
+      "check_id": "runtime-manifest",
+      "version": "v0.1",
+      "verdict": "pass",
+      "subjects": [
+        {
+          "kind": "envelope",
+          "id": "answer.fixture-abstention-001"
+        }
+      ]
+    },
+    {
       "check_id": "coverage",
       "version": "v0.1",
       "verdict": "fail",
-      "claim_ids": [],
-      "quote_ids": []
+      "subjects": [
+        {
+          "kind": "envelope",
+          "id": "answer.fixture-abstention-001"
+        }
+      ]
     }
   ],
-  "reason_codes": [
-    "OUT_OF_COVERAGE"
+  "outcome_reasons": [
+    {
+      "code": "OUT_OF_COVERAGE",
+      "source_kind": "check",
+      "source_id": "coverage",
+      "subjects": [
+        {
+          "kind": "envelope",
+          "id": "answer.fixture-abstention-001"
+        }
+      ]
+    }
   ],
   "renderer": {
     "template_set_version": "fixture-renderer/v0.1"

@@ -1,0 +1,49 @@
+{
+  "schema_version": "corpus-release-manifest/v0.1",
+  "release_id": "corpus-release.fixture-001",
+  "created_at": "2026-07-28T00:00:00Z",
+  "profile_schema": {
+    "artifact_id": "urn:dwtc:schema:drinking-water-profile:v0.1",
+    "sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+  },
+  "review_payload_canonicalization": {
+    "artifact_id": "dw-review-payload/v0.1",
+    "sha256": "1010101010101010101010101010101010101010101010101010101010101010"
+  },
+  "quote_normalization": {
+    "artifact_id": "dw-quote-normalization/v0.1",
+    "sha256": "2020202020202020202020202020202020202020202020202020202020202020"
+  },
+  "source_registry": {
+    "artifact_id": "source-registry.fixture-001",
+    "sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+  },
+  "reviewer_registry": {
+    "artifact_id": "reviewer-registry.fixture-001",
+    "sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+  },
+  "coverage": {
+    "artifact_id": "coverage.fixture-001",
+    "sha256": "3030303030303030303030303030303030303030303030303030303030303030"
+  },
+  "pages": [
+    {
+      "page_id": "dbp.synthetic-limit",
+      "content_sha256": "abababababababababababababababababababababababababababababababab",
+      "review_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_ids": [
+        "source.fixture.official-record"
+      ],
+      "claim_ids": [
+        "claim.dbp.synthetic-limit"
+      ],
+      "quote_ids": [
+        "quote.dbp.synthetic-limit"
+      ]
+    }
+  ],
+  "integrity": {
+    "canonicalization": "dw-corpus-release-manifest/v0.1",
+    "artifact_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  }
+}

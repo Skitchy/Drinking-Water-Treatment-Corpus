@@ -13,12 +13,17 @@ foundation:
 
 - the Drinking Water Assurance Profile schema;
 - the reviewer-registry schema;
+- the source-registry schema;
+- separate corpus-release and runtime-assurance manifests;
 - the verified-answer envelope schema;
 - the minimal audit-envelope schema;
 - the adversarial acceptance-test contract and foundation fixtures.
 
-The schemas are proposed v0.1 artifacts. They become release contracts only
-after project review and ratification.
+The schemas are proposed v0.1 artifacts. Ratification is a real gate: each
+schema requires an explicit ratify-or-revise disposition in RFC 003 after the
+schema-ratification pull request is reviewed. After ratification, incompatible
+schema changes require a version bump, recorded rationale, and pull-request
+review.
 
 ## Normative design record
 
@@ -39,6 +44,9 @@ wins and this file must be updated.
   missing.
 - Source authority, source authenticity, and reproduction licensing are
   separate determinations.
+- Reproduction decisions are content-bound at the source/component level and
+  resolve through the source registry; stable pages may not rely on pending or
+  unattested licensing data.
 - Numeric and derived assertions use structured claims. Qualitative
   externally verifiable assertions should carry claim-level provenance.
 - Context-completeness is an explicit human-review scope.
@@ -58,6 +66,9 @@ wins and this file must be updated.
 - Verified-evidence mode does not stream unchecked model prose.
 - The reference direction is a headless verified-answer gateway that owns
   retrieve, generate, validate, and envelope production.
+- Corpus evidence and reader behavior have separate content-addressed
+  manifests so either lifecycle can change without falsely republishing the
+  other.
 
 ### Enforcement boundary
 
@@ -93,10 +104,14 @@ coverage over an arbitrary page count and is expected to include:
 
 - [`schemas/drinking-water-profile-v0.1.schema.json`](schemas/drinking-water-profile-v0.1.schema.json)
 - [`schemas/reviewer-registry-v0.1.schema.json`](schemas/reviewer-registry-v0.1.schema.json)
+- [`schemas/source-registry-v0.1.schema.json`](schemas/source-registry-v0.1.schema.json)
+- [`schemas/corpus-release-manifest-v0.1.schema.json`](schemas/corpus-release-manifest-v0.1.schema.json)
+- [`schemas/runtime-assurance-manifest-v0.1.schema.json`](schemas/runtime-assurance-manifest-v0.1.schema.json)
 - [`schemas/verified-answer-v0.1.schema.json`](schemas/verified-answer-v0.1.schema.json)
 - [`schemas/audit-envelope-v0.1.schema.json`](schemas/audit-envelope-v0.1.schema.json)
 - [`tests/acceptance/manifest-v0.1.json`](tests/acceptance/manifest-v0.1.json)
 - [`tests/acceptance/check-artifacts.mjs`](tests/acceptance/check-artifacts.mjs)
+- [`.github/workflows/validate-artifacts.yml`](.github/workflows/validate-artifacts.yml)
 
 ## Explicit deferrals
 
@@ -120,16 +135,18 @@ coverage over an arbitrary page count and is expected to include:
 - Signature algorithm, key identity, rotation, and revocation policy.
 - The exact DBP page/dependency list and adversarial question set.
 - Approved deterministic renderer templates and renderer-conformance suite.
-- Retention and privacy policy for audit records and normalized queries.
+- Retention, keyed-fingerprint, and privacy policy for audit records and
+  low-entropy normalized queries.
 
 ## Next actions
 
-1. Review and ratify or revise the four v0.1 schemas.
-2. Add canonicalization test vectors and a real JSON Schema validator to CI.
-3. Select the dependency-complete DBP proof set.
-4. Author the 50–100 adversarial questions before tuning retrieval.
-5. Implement corpus release manifests and stable claim/quote resolution.
-6. Build the nonstreaming gateway and deliberately small conforming renderer.
+1. Review the schema-ratification pull request and disposition every finding.
+2. Record explicit ratify-or-revise decisions for each schema in RFC 003.
+3. Add canonicalization specifications and conformance vectors.
+4. Select the dependency-complete DBP proof set.
+5. Author the 50–100 adversarial questions before tuning retrieval.
+6. Implement the first real corpus release and stable claim/quote resolution.
+7. Build the nonstreaming gateway and deliberately small conforming renderer.
 
 ## Restart procedure
 

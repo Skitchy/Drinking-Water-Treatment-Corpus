@@ -1,0 +1,35 @@
+{
+  "schema_version": "source-registry/v0.1",
+  "registry_id": "source-registry.fixture-001",
+  "updated_at": "2026-07-28T00:00:00Z",
+  "sources": [
+    {
+      "source_id": "source.fixture.official-record",
+      "resource": "https://example.invalid/fixture/official-record",
+      "published_at": "2026-07-01",
+      "effective_from": "2026-07-01",
+      "captured_at": "2026-07-28T00:00:00Z",
+      "captured_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "authority": {
+        "class": "official-legal-record",
+        "evidence": "Synthetic fixture only; not an authority assertion."
+      },
+      "authenticity_evidence": "Synthetic fixture only; production evidence must identify the publisher and capture method.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.fixture.official-record",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "fixture-section-1 text"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Synthetic fixture only; production evidence is required per document and component.",
+        "decision_payload_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-28T00:00:00Z"
+      }
+    }
+  ]
+}

@@ -15,7 +15,8 @@ Devil's advocacy is invited on all three. The designs are only as good as the st
 ## Design artifacts
 
 - **[PROJECT-STATE.md](PROJECT-STATE.md):** the current checkpoint, accepted decisions, deferrals, and next actions.
-- **[Versioned schemas](schemas/README.md):** the Drinking Water Assurance Profile, reviewer registry, verified-answer envelope, and audit envelope.
+- **[Versioned schemas](schemas/README.md):** the Drinking Water Assurance Profile, reviewer and source registries, corpus/runtime manifests, verified-answer envelope, and audit envelope.
+- **[Schema ratification candidate](docs/SCHEMA-RATIFICATION-CANDIDATE-v0.1.md):** disposition of RFC 002/003 findings and the proposed F9 lifecycle split.
 - **[Acceptance-test contract](tests/acceptance/README.md):** the minimum adversarial cases and executable foundation fixtures.
 
 ## The idea in one paragraph

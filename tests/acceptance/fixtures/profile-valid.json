@@ -53,24 +53,16 @@
   ],
   "stale_after": "2026-08-28",
   "source_watch": {
-    "status": "healthy",
-    "last_successful_at": "2026-07-28T00:00:00Z",
+    "watch_id": "watch.dbp.synthetic-limit",
+    "last_result": "unchanged",
+    "last_checked_at": "2026-07-28T00:00:00Z",
     "next_due_at": "2026-08-04T00:00:00Z"
   },
-  "sources": [
+  "source_refs": [
     {
       "source_id": "source.fixture.official-record",
-      "resource": "https://example.invalid/fixture/official-record",
-      "published_at": "2026-07-01",
-      "effective_from": "2026-07-01",
-      "captured_at": "2026-07-28T00:00:00Z",
       "captured_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-      "authority": "official-legal-record",
-      "authenticity_evidence": "Synthetic fixture only; not an authority assertion.",
-      "reproduction_basis": {
-        "classification": "public-domain-us-government-work",
-        "evidence": "Synthetic fixture only; production evidence is required per document."
-      }
+      "licensing_decision_payload_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
     }
   ],
   "quotes": [
@@ -78,7 +70,11 @@
       "quote_id": "quote.dbp.synthetic-limit",
       "source_id": "source.fixture.official-record",
       "captured_source_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-      "anchor": "fixture-section-1",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "fixture-section-1:0-32"
+      },
       "source_version": "fixture-v1",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
@@ -90,7 +86,10 @@
       "claim_id": "claim.dbp.synthetic-limit",
       "kind": "numeric",
       "subject": "Synthetic DBP fixture parameter",
-      "relation": "maximum",
+      "relation": {
+        "operator": "lte",
+        "regulatory_metric": "other"
+      },
       "value": 1,
       "unit": "fixture-unit",
       "conditions": [
