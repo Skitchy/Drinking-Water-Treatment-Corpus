@@ -1,0 +1,119 @@
+{
+  "schema_version": "drinking-water-profile/v0.1",
+  "type": "concept",
+  "page_id": "dbp.synthetic-limit",
+  "title": "Synthetic DBP fixture limit",
+  "status": "stable",
+  "assurance_profile": "drinking-water/v0.1",
+  "use_class": "regulatory-reference",
+  "jurisdiction": "fixture-jurisdiction",
+  "applicability": {
+    "system_types": [
+      "fixture-system"
+    ],
+    "source_water_types": [
+      "fixture-source-water"
+    ],
+    "conditions": [
+      "Synthetic acceptance fixture only"
+    ],
+    "exclusions": []
+  },
+  "generated": {
+    "by": "process:fixture-generator/v0.1",
+    "at": "2026-07-28T00:00:00Z"
+  },
+  "review_payload": {
+    "canonicalization": "dw-review-payload/v0.1",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "normalization": "dw-quote-normalization/v0.1",
+  "verified": [
+    {
+      "by": "process:quote-verifier/v0.1",
+      "actor_type": "process",
+      "at": "2026-07-28T00:00:00Z",
+      "review_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "scopes": [
+        "source-capture",
+        "quote-fidelity"
+      ]
+    },
+    {
+      "by": "human.skitch",
+      "actor_type": "human",
+      "at": "2026-07-28T00:00:00Z",
+      "review_payload_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "scopes": [
+        "editorial-accuracy",
+        "applicability",
+        "context-completeness"
+      ]
+    }
+  ],
+  "stale_after": "2026-08-28",
+  "source_watch": {
+    "status": "healthy",
+    "last_successful_at": "2026-07-28T00:00:00Z",
+    "next_due_at": "2026-08-04T00:00:00Z"
+  },
+  "sources": [
+    {
+      "source_id": "source.fixture.official-record",
+      "resource": "https://example.invalid/fixture/official-record",
+      "published_at": "2026-07-01",
+      "effective_from": "2026-07-01",
+      "captured_at": "2026-07-28T00:00:00Z",
+      "captured_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "authority": "official-legal-record",
+      "authenticity_evidence": "Synthetic fixture only; not an authority assertion.",
+      "reproduction_basis": {
+        "classification": "public-domain-us-government-work",
+        "evidence": "Synthetic fixture only; production evidence is required per document."
+      }
+    }
+  ],
+  "quotes": [
+    {
+      "quote_id": "quote.dbp.synthetic-limit",
+      "source_id": "source.fixture.official-record",
+      "captured_source_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "anchor": "fixture-section-1",
+      "source_version": "fixture-v1",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "verified_at": "2026-07-28T00:00:00Z"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "claim.dbp.synthetic-limit",
+      "kind": "numeric",
+      "subject": "Synthetic DBP fixture parameter",
+      "relation": "maximum",
+      "value": 1,
+      "unit": "fixture-unit",
+      "conditions": [
+        "Synthetic acceptance fixture only"
+      ],
+      "exceptions": [],
+      "jurisdiction": "fixture-jurisdiction",
+      "applicability": {
+        "system_types": [
+          "fixture-system"
+        ],
+        "source_water_types": [
+          "fixture-source-water"
+        ],
+        "conditions": [
+          "Synthetic acceptance fixture only"
+        ],
+        "exclusions": []
+      },
+      "effective_from": "2026-07-01",
+      "supporting_quote_ids": [
+        "quote.dbp.synthetic-limit"
+      ]
+    }
+  ]
+}

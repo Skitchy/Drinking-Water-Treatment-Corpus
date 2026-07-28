@@ -1,0 +1,24 @@
+{
+  "schema_version": "answer-mutations/v0.1",
+  "base": "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+  "mutations": [
+    {
+      "id": "AT-011",
+      "operation": "add",
+      "path": "/summary",
+      "value": "Unchecked model-authored narrative must not fit inside the answer envelope."
+    },
+    {
+      "id": "AT-012",
+      "operation": "replace",
+      "path": "/claim_refs/0/claim_id",
+      "value": "claim.dbp.unknown"
+    },
+    {
+      "id": "AT-013",
+      "operation": "replace",
+      "path": "/corpus/manifest_sha256",
+      "value": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ]
+}

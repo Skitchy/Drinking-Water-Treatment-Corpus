@@ -1,0 +1,258 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Skitchy/Drinking-Water-Treatment-Corpus/main/schemas/audit-envelope-v0.1.schema.json",
+  "title": "Reader Audit Envelope v0.1",
+  "description": "Minimal reproducibility record for retrieval, gating, generation, validation, and answer-envelope production.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "audit_id",
+    "created_at",
+    "query",
+    "corpus",
+    "index_version",
+    "eligibility_policy_version",
+    "retrieval",
+    "generation",
+    "outcome",
+    "checks",
+    "answer_id"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "audit-envelope/v0.1"
+    },
+    "audit_id": {
+      "type": "string",
+      "pattern": "^audit\\.[a-zA-Z0-9_-]+$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "query": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sha256",
+        "normalized_query_retained",
+        "expansions"
+      ],
+      "properties": {
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "normalized_query_retained": {
+          "type": "boolean"
+        },
+        "normalized_query": {
+          "type": "string"
+        },
+        "expansions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "normalized_query_retained": {
+                "const": true
+              }
+            },
+            "required": [
+              "normalized_query_retained"
+            ]
+          },
+          "then": {
+            "required": [
+              "normalized_query"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "normalized_query"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "corpus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "release_id",
+        "manifest_sha256"
+      ],
+      "properties": {
+        "release_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "index_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "eligibility_policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "retrieval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "retriever_version",
+        "candidates",
+        "selected_page_ids"
+      ],
+      "properties": {
+        "retriever_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "page_id",
+              "eligible",
+              "score"
+            ],
+            "properties": {
+              "page_id": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+              },
+              "eligible": {
+                "type": "boolean"
+              },
+              "ineligibility_codes": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "score": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "selected_page_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+          }
+        }
+      }
+    },
+    "generation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_id",
+        "prompt_version",
+        "candidate_claim_ids",
+        "candidate_quote_ids"
+      ],
+      "properties": {
+        "model_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "prompt_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "candidate_claim_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^claim\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+          }
+        },
+        "candidate_quote_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^quote\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+          }
+        }
+      }
+    },
+    "outcome": {
+      "enum": [
+        "evidence-backed",
+        "evidence-only",
+        "abstention"
+      ]
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "check_id",
+          "version",
+          "verdict"
+        ],
+        "properties": {
+          "check_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "verdict": {
+            "enum": [
+              "pass",
+              "fail",
+              "not-run"
+            ]
+          },
+          "reason_codes": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "answer_id": {
+      "type": "string",
+      "pattern": "^answer\\.[a-zA-Z0-9_-]+$"
+    }
+  },
+  "$comment": "The audit record must avoid unnecessary personal data. Retaining normalized query text requires an explicit policy; the query digest alone is not sufficient for exact replay. Semantic validation must ensure selected pages are eligible candidates, generated references are limited to selected pages, and the answer envelope agrees with this record.",
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

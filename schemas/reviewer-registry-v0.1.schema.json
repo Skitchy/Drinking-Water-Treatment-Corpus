@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Skitchy/Drinking-Water-Treatment-Corpus/main/schemas/reviewer-registry-v0.1.schema.json",
+  "title": "Drinking Water Reviewer Registry v0.1",
+  "description": "Minimum registry for resolving stable human reviewer IDs and the review scopes they are qualified to perform.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "registry_version",
+    "updated_at",
+    "reviewers"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "reviewer-registry/v0.1"
+    },
+    "registry_version": {
+      "type": "string",
+      "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reviewers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "reviewer_id",
+          "display_name",
+          "status",
+          "qualifications",
+          "review_scopes",
+          "registry_verified_at"
+        ],
+        "properties": {
+          "reviewer_id": {
+            "type": "string",
+            "pattern": "^human\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+          },
+          "display_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": [
+              "active",
+              "inactive",
+              "suspended"
+            ]
+          },
+          "qualifications": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "description",
+                "jurisdiction",
+                "evidence"
+              ],
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "operator-certification",
+                    "professional-license",
+                    "education",
+                    "documented-experience",
+                    "other"
+                  ]
+                },
+                "description": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "jurisdiction": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "evidence": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "expires_at": {
+                  "type": "string",
+                  "format": "date"
+                }
+              }
+            }
+          },
+          "review_scopes": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "editorial-accuracy",
+                "applicability",
+                "context-completeness",
+                "licensing"
+              ]
+            }
+          },
+          "scope_constraints": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "registry_verified_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  },
+  "$comment": "Semantic validation must reject duplicate reviewer IDs, inactive or expired reviewers, qualifications that do not cover the claimed review scope, and unverifiable evidence. Registry presence does not itself prove competence."
+}

@@ -1,0 +1,154 @@
+{
+  "schema_version": "acceptance-manifest/v0.1",
+  "updated_at": "2026-07-28T00:00:00Z",
+  "cases": [
+    {
+      "id": "AT-001",
+      "title": "Review-payload mutation invalidates human review",
+      "layer": "semantic",
+      "normative_source": "RFC 003 section 11 item 1",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/profile-valid.json",
+        "tests/acceptance/fixtures/profile-invalid-review-hash.json"
+      ],
+      "expected": "invalid-profile-rejected"
+    },
+    {
+      "id": "AT-002",
+      "title": "Same number with wrong claim dimensions fails",
+      "layer": "semantic",
+      "normative_source": "RFC 003 section 11 item 2",
+      "status": "specified",
+      "artifacts": [],
+      "expected": "numeric-claim-check-fails"
+    },
+    {
+      "id": "AT-003",
+      "title": "Material exception requires context-completeness review",
+      "layer": "semantic",
+      "normative_source": "RFC 003 section 11 item 3",
+      "status": "specified",
+      "artifacts": [],
+      "expected": "stable-eligibility-denied"
+    },
+    {
+      "id": "AT-004",
+      "title": "Strict policy blocks stale evidence-backed answer",
+      "layer": "integration",
+      "normative_source": "RFC 003 section 11 item 4",
+      "status": "specified",
+      "artifacts": [],
+      "expected": "evidence-only-or-abstention"
+    },
+    {
+      "id": "AT-005",
+      "title": "Out-of-coverage question abstains explicitly",
+      "layer": "integration",
+      "normative_source": "RFC 003 section 11 item 5",
+      "status": "specified",
+      "artifacts": [
+        "tests/acceptance/fixtures/answer-valid-abstention.json"
+      ],
+      "expected": "abstention-with-out-of-coverage-code"
+    },
+    {
+      "id": "AT-006",
+      "title": "Failed or overdue source watch fails closed",
+      "layer": "integration",
+      "normative_source": "RFC 003 section 11 item 6",
+      "status": "specified",
+      "artifacts": [],
+      "expected": "verified-serving-ineligible"
+    },
+    {
+      "id": "AT-007",
+      "title": "Source correction gates all dependent pages",
+      "layer": "integration",
+      "normative_source": "RFC 003 section 11 item 7",
+      "status": "specified",
+      "artifacts": [],
+      "expected": "dependent-pages-ineligible"
+    },
+    {
+      "id": "AT-008",
+      "title": "Retrieval miss is not absence proof",
+      "layer": "integration",
+      "normative_source": "RFC 003 section 11 item 8",
+      "status": "specified",
+      "artifacts": [],
+      "expected": "retrieval-miss-disclosed"
+    },
+    {
+      "id": "AT-009",
+      "title": "MCP adapter does not claim enforcement",
+      "layer": "integration",
+      "normative_source": "RFC 003 section 11 item 9",
+      "status": "specified",
+      "artifacts": [],
+      "expected": "evidence-adapter-label-only"
+    },
+    {
+      "id": "AT-010",
+      "title": "No unchecked streaming in verified-evidence mode",
+      "layer": "integration",
+      "normative_source": "RFC 003 section 11 item 10",
+      "status": "specified",
+      "artifacts": [],
+      "expected": "zero-prevalidation-visible-bytes"
+    },
+    {
+      "id": "AT-011",
+      "title": "Answer envelope rejects arbitrary narrative",
+      "layer": "schema",
+      "normative_source": "Renderer-boundary review",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/answer-mutations-v0.1.json"
+      ],
+      "expected": "unknown-root-field-rejected"
+    },
+    {
+      "id": "AT-012",
+      "title": "Answer envelope rejects unknown claim reference",
+      "layer": "semantic",
+      "normative_source": "Renderer-boundary review",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/answer-mutations-v0.1.json",
+        "tests/acceptance/fixtures/corpus-index-v0.1.json"
+      ],
+      "expected": "unknown-claim-rejected"
+    },
+    {
+      "id": "AT-013",
+      "title": "Answer envelope rejects release-digest mismatch",
+      "layer": "semantic",
+      "normative_source": "Renderer-boundary review",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/answer-mutations-v0.1.json",
+        "tests/acceptance/fixtures/corpus-index-v0.1.json"
+      ],
+      "expected": "manifest-digest-mismatch-rejected"
+    },
+    {
+      "id": "AT-014",
+      "title": "Only a conforming renderer receives display assurance",
+      "layer": "integration",
+      "normative_source": "Renderer-boundary review",
+      "status": "specified",
+      "artifacts": [],
+      "expected": "nonconforming-client-claim-denied"
+    },
+    {
+      "id": "AT-015",
+      "title": "Auxiliary host content remains outside verified answer",
+      "layer": "integration",
+      "normative_source": "Renderer-boundary review",
+      "status": "specified",
+      "artifacts": [],
+      "expected": "auxiliary-content-separated-and-disabled"
+    }
+  ]
+}

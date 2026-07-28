@@ -1,0 +1,20 @@
+{
+  "schema_version": "fixture-corpus-index/v0.1",
+  "release_id": "fixture-release-001",
+  "manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "pages": [
+    {
+      "page_id": "dbp.synthetic-limit",
+      "review_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "claim_ids": [
+        "claim.dbp.synthetic-limit"
+      ],
+      "quotes": [
+        {
+          "quote_id": "quote.dbp.synthetic-limit",
+          "span_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "schema_version": "verified-answer/v0.1",
+  "answer_id": "answer.fixture-evidence-only-001",
+  "created_at": "2026-07-28T00:00:00Z",
+  "outcome": "evidence-only",
+  "query_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+  "corpus": {
+    "release_id": "fixture-release-001",
+    "manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "policy_version": "fixture-policy/v0.1",
+  "verifier_version": "fixture-verifier/v0.1",
+  "applicability": {
+    "jurisdiction": "fixture-jurisdiction",
+    "use_class": "regulatory-reference",
+    "system_types": [
+      "fixture-system"
+    ],
+    "source_water_types": [
+      "fixture-source-water"
+    ]
+  },
+  "claim_refs": [],
+  "quote_refs": [
+    {
+      "quote_id": "quote.dbp.synthetic-limit",
+      "page_id": "dbp.synthetic-limit",
+      "span_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  ],
+  "checks": [
+    {
+      "check_id": "freshness",
+      "version": "v0.1",
+      "verdict": "fail",
+      "claim_ids": [],
+      "quote_ids": [
+        "quote.dbp.synthetic-limit"
+      ]
+    }
+  ],
+  "reason_codes": [
+    "STALE_EVIDENCE",
+    "SYNTHESIS_WITHHELD"
+  ],
+  "renderer": {
+    "template_set_version": "fixture-renderer/v0.1"
+  },
+  "integrity": {
+    "mode": "validated",
+    "canonicalization": "dw-answer-envelope/v0.1",
+    "artifact_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+  }
+}

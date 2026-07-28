@@ -1,0 +1,29 @@
+{
+  "schema_version": "reviewer-registry/v0.1",
+  "registry_version": "v0.1.0",
+  "updated_at": "2026-07-28T00:00:00Z",
+  "reviewers": [
+    {
+      "reviewer_id": "human.skitch",
+      "display_name": "Jason \"Skitch\" Wiltsey",
+      "status": "active",
+      "qualifications": [
+        {
+          "kind": "operator-certification",
+          "description": "Synthetic fixture entry representing a drinking-water operator qualification; production evidence must replace this text.",
+          "jurisdiction": "fixture-jurisdiction",
+          "evidence": "fixture-only"
+        }
+      ],
+      "review_scopes": [
+        "editorial-accuracy",
+        "applicability",
+        "context-completeness"
+      ],
+      "scope_constraints": [
+        "Acceptance fixtures only; this is not a production registry assertion."
+      ],
+      "registry_verified_at": "2026-07-28T00:00:00Z"
+    }
+  ]
+}
