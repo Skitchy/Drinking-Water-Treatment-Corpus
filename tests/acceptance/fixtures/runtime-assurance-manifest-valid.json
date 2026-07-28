@@ -10,6 +10,10 @@
     "artifact_id": "rfc003-assurance-contract/v0.1",
     "sha256": "1717171717171717171717171717171717171717171717171717171717171717"
   },
+  "required_check_baseline": {
+    "artifact_id": "assurance-check-baseline/v0.1",
+    "sha256": "4ce39cbe7eebfa178d557d7053e4ae545f24aba47435c8c19e819c31a000b1a0"
+  },
   "answer_schema": {
     "artifact_id": "urn:dwtc:schema:verified-answer:v0.1",
     "sha256": "4040404040404040404040404040404040404040404040404040404040404040"
@@ -94,10 +98,9 @@
     },
     {
       "outcome": "evidence-backed",
-      "subject_kind": "claim",
-      "claim_kind": "table",
+      "subject_kind": "claim-cell",
       "check_ids": [
-        "table-claim-cell"
+        "table-cell-fidelity"
       ]
     },
     {
@@ -170,6 +173,7 @@
         "span-fidelity",
         "numeric-claim-tuple",
         "derived-claim",
+        "table-cell-fidelity",
         "applicability",
         "freshness",
         "coverage"

@@ -7,7 +7,7 @@ An open, verified knowledge base for drinking water treatment, built in the [Ope
 Nothing is ingested yet, deliberately. Three design proposals are open for review and adversarial critique:
 
 1. **[RFC 001: The Corpus](https://github.com/Skitchy/Drinking-Water-Treatment-Corpus/discussions/1)**: a repository of small, single-topic markdown pages where every regulatory quote is machine-verified against an authoritative source on a schedule, every page carries its provenance in the open, and a named human domain expert signs the page list.
-2. **[RFC 002: The Reader](https://github.com/Skitchy/Drinking-Water-Treatment-Corpus/discussions/2)**: a serving layer that honors OKF v0.2 trust signals at retrieval time (eligibility gating, staleness refusal, visible trust tiers) and checks whether quoted spans and declared numeric claims in a model's answer trace to the retrieved pages. It does not mechanically verify prose reasoning, completeness, applicability, legal conclusions, or operational safety.
+2. **[RFC 002: The Reader](https://github.com/Skitchy/Drinking-Water-Treatment-Corpus/discussions/2)**: a serving layer that honors OKF v0.2 trust signals at retrieval time (eligibility gating, staleness refusal, visible trust tiers) and checks whether quoted spans and declared structured claims in a model's answer trace to the retrieved pages. It does not mechanically verify prose reasoning, completeness, applicability, legal conclusions, or operational safety.
 3. **[RFC 003: Cross-RFC Assurance Contract](https://github.com/Skitchy/Drinking-Water-Treatment-Corpus/discussions/3)**: the normative profile binding both. Governing rule: every public assurance must be narrower than, or equal to, the evidence and procedure that support it.
 
 Devil's advocacy is invited on all three. The designs are only as good as the strongest objection they survive.
@@ -17,7 +17,9 @@ Devil's advocacy is invited on all three. The designs are only as good as the st
 - **[PROJECT-STATE.md](PROJECT-STATE.md):** the current checkpoint, accepted decisions, deferrals, and next actions.
 - **[Versioned schemas](schemas/README.md):** the Drinking Water Assurance Profile, reviewer and source registries, corpus/runtime manifests, verified-answer envelope, and audit envelope.
 - **[Schema ratification candidate](docs/SCHEMA-RATIFICATION-CANDIDATE-v0.1.md):** disposition of RFC 002/003 findings and the proposed F9 lifecycle split.
+- **[Machine-readable check baseline](contracts/assurance-check-baseline-v0.1.json):** the digest-pinned minimum check matrix incorporated by the v0.1 assurance contract.
 - **[Acceptance-test contract](tests/acceptance/README.md):** the minimum adversarial cases and executable foundation fixtures.
+- **[First-proof DBP page list](proposals/first-proof-dbp-page-list-v0.2.md):** the maintainer-reviewed, dependency-complete candidate scope for the first regulatory vertical slice.
 
 ## The idea in one paragraph
 

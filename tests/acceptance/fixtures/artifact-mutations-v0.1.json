@@ -326,6 +326,98 @@
           "path": "/claims/1/table_value/cells/3"
         }
       ]
+    },
+    {
+      "id": "AT-033",
+      "base": "tests/acceptance/fixtures/runtime-assurance-manifest-valid.json",
+      "validator": "runtime-semantic",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/required_check_baseline/sha256",
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ]
+    },
+    {
+      "id": "AT-034",
+      "base": "tests/acceptance/fixtures/profile-valid.json",
+      "validator": "answer-profile-resolution-semantic",
+      "operations": [
+        {
+          "operation": "remove",
+          "path": "/claims/1"
+        }
+      ]
+    },
+    {
+      "id": "AT-035",
+      "base": "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+      "validator": "answer-semantic",
+      "operations": [
+        {
+          "operation": "remove",
+          "path": "/claim_refs/1/table_cell_ids"
+        }
+      ]
+    },
+    {
+      "id": "AT-036",
+      "base": "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+      "validator": "answer-semantic",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/claim_refs/1/table_cell_ids/0",
+          "value": "cell.unknown"
+        }
+      ]
+    },
+    {
+      "id": "AT-037",
+      "base": "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+      "validator": "answer-semantic",
+      "operations": [
+        {
+          "operation": "remove",
+          "path": "/checks/9"
+        }
+      ]
+    },
+    {
+      "id": "AT-038",
+      "base": "tests/acceptance/fixtures/profile-valid.json",
+      "validator": "profile-semantic",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/claims/1/table_value/row_dimension/bands/1/minimum",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "id": "AT-039",
+      "base": "tests/acceptance/fixtures/profile-valid.json",
+      "validator": "profile-schema",
+      "operations": [
+        {
+          "operation": "remove",
+          "path": "/claims/1/table_value/row_dimension/bands/0/minimum_inclusive"
+        }
+      ]
+    },
+    {
+      "id": "AT-040",
+      "base": "tests/acceptance/fixtures/profile-valid.json",
+      "validator": "profile-semantic",
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/claims/1/table_value/cells/1/cell_id",
+          "value": "cell.row-low_col-low"
+        }
+      ]
     }
   ]
 }

@@ -11,6 +11,7 @@
     "created_at",
     "compatible_corpus",
     "assurance_contract",
+    "required_check_baseline",
     "answer_schema",
     "audit_schema",
     "eligibility_policy",
@@ -54,6 +55,9 @@
       }
     },
     "assurance_contract": {
+      "$ref": "#/$defs/artifact"
+    },
+    "required_check_baseline": {
       "$ref": "#/$defs/artifact"
     },
     "answer_schema": {
@@ -107,6 +111,7 @@
               "envelope",
               "page",
               "claim",
+              "claim-cell",
               "quote"
             ]
           },
@@ -200,7 +205,7 @@
       }
     }
   },
-  "$comment": "This manifest intentionally does not live inside the corpus release lifecycle. A reader policy, index, verifier, or renderer-template change produces a new runtime manifest without republishing unchanged corpus evidence. Semantic validation requires the manifest's required-check rules to meet or exceed the pinned assurance contract's v0.1 baseline; a runtime manifest cannot weaken the contract by omitting a rule. Every answer check and reason conforms to this exact manifest, and every manifest names an exact compatible corpus digest.",
+  "$comment": "This manifest intentionally does not live inside the corpus release lifecycle. A reader policy, index, verifier, or renderer-template change produces a new runtime manifest without republishing unchanged corpus evidence. The exact compatible_corpus digest is nevertheless a deliberate one-way coupling: every new corpus release requires a newly minted runtime manifest and an explicit compatibility declaration even when no runtime artifact changed, so clients that pin runtime manifests observe churn at the union of both lifecycles. Semantic validation loads the digest-pinned machine-readable required-check baseline and requires this manifest's rules to meet or exceed it; a runtime manifest cannot weaken the assurance contract by omitting a rule. Every answer check and reason conforms to this exact manifest.",
   "$defs": {
     "sha256": {
       "type": "string",
@@ -260,7 +265,7 @@
         "span-fidelity",
         "numeric-claim-tuple",
         "derived-claim",
-        "table-claim-cell",
+        "table-cell-fidelity",
         "applicability",
         "freshness",
         "coverage"

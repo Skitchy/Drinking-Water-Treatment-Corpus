@@ -1,0 +1,64 @@
+{
+  "schema_version": "assurance-check-baseline/v0.1",
+  "artifact_id": "assurance-check-baseline/v0.1",
+  "digest_scope": "exact-utf8-file-bytes",
+  "required_checks": [
+    {
+      "outcome": "evidence-backed",
+      "subject_kind": "envelope",
+      "check_ids": [
+        "schema",
+        "corpus-release",
+        "runtime-manifest",
+        "coverage"
+      ]
+    },
+    {
+      "outcome": "evidence-backed",
+      "subject_kind": "page",
+      "check_ids": [
+        "eligibility",
+        "freshness"
+      ]
+    },
+    {
+      "outcome": "evidence-backed",
+      "subject_kind": "claim",
+      "check_ids": [
+        "claim-resolution",
+        "applicability"
+      ]
+    },
+    {
+      "outcome": "evidence-backed",
+      "subject_kind": "claim",
+      "claim_kind": "numeric",
+      "check_ids": [
+        "numeric-claim-tuple"
+      ]
+    },
+    {
+      "outcome": "evidence-backed",
+      "subject_kind": "claim",
+      "claim_kind": "derived",
+      "check_ids": [
+        "derived-claim"
+      ]
+    },
+    {
+      "outcome": "evidence-backed",
+      "subject_kind": "claim-cell",
+      "check_ids": [
+        "table-cell-fidelity"
+      ]
+    },
+    {
+      "outcome": "evidence-backed",
+      "subject_kind": "quote",
+      "check_ids": [
+        "quote-resolution",
+        "span-fidelity"
+      ]
+    }
+  ]
+}

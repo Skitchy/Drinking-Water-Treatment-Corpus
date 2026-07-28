@@ -321,7 +321,7 @@
     }
   ],
   "additionalProperties": true,
-  "$comment": "Unknown root fields remain permitted for OKF compatibility. Serving eligibility additionally requires semantic validation: verification digests equal the current review payload; human and process scopes are authorized; source references resolve to matching captured bytes and approved content-bound licensing decisions; quote source digests match those source records; IDs are unique; population bounds are ordered; derivations are acyclic and use registered algorithms; date formats and ordering are valid; effective watch status is derived from evaluation time and next_due_at; and every stable claim's support is within the recorded review scopes.",
+  "$comment": "Unknown root fields remain permitted for OKF compatibility. Serving eligibility additionally requires semantic validation: verification digests equal the current review payload; human and process scopes are authorized; source references resolve to matching captured bytes and approved content-bound licensing decisions; quote source digests match those source records; IDs are unique; population bounds are ordered; table dimensions, bands, and stable cells are unambiguous and complete; derivations are acyclic and use registered algorithms; date formats and ordering are valid; effective watch status is derived from evaluation time and next_due_at; and every stable claim's support is within the recorded review scopes.",
   "$defs": {
     "sha256": {
       "type": "string",
@@ -856,7 +856,7 @@
         "cell_unit",
         "cells"
       ],
-      "$comment": "Semantic validation additionally requires: unique band_ids within each dimension, every cell referencing a declared band in both dimensions, exactly one cell for every row-band and column-band combination (full coverage, no duplicates), and band minimum <= maximum where both are present. The claim's relation applies uniformly to every cell value.",
+      "$comment": "Semantic validation additionally requires: distinct dimension IDs; unique, nonoverlapping band IDs and ranges within each dimension; unique stable cell IDs; every cell referencing a declared band in both dimensions; and exactly one cell for every row-band and column-band combination. The claim's relation applies uniformly to every cell value.",
       "properties": {
         "row_dimension": {
           "$ref": "#/$defs/tableDimension"
@@ -876,11 +876,16 @@
             "type": "object",
             "additionalProperties": false,
             "required": [
+              "cell_id",
               "row_band",
               "column_band",
               "value"
             ],
             "properties": {
+              "cell_id": {
+                "type": "string",
+                "pattern": "^cell\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+              },
               "row_band": {
                 "type": "string",
                 "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
@@ -901,11 +906,16 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
+        "dimension_id",
         "name",
         "unit",
         "bands"
       ],
       "properties": {
+        "dimension_id": {
+          "type": "string",
+          "pattern": "^dimension\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+        },
         "name": {
           "type": "string",
           "minLength": 1
@@ -925,6 +935,38 @@
               "band_id",
               "label"
             ],
+            "anyOf": [
+              {
+                "properties": {
+                  "minimum": {}
+                },
+                "required": [
+                  "minimum"
+                ]
+              },
+              {
+                "properties": {
+                  "maximum": {}
+                },
+                "required": [
+                  "maximum"
+                ]
+              }
+            ],
+            "dependentRequired": {
+              "minimum": [
+                "minimum_inclusive"
+              ],
+              "minimum_inclusive": [
+                "minimum"
+              ],
+              "maximum": [
+                "maximum_inclusive"
+              ],
+              "maximum_inclusive": [
+                "maximum"
+              ]
+            },
             "properties": {
               "band_id": {
                 "type": "string",
@@ -940,10 +982,10 @@
               "maximum": {
                 "type": "number"
               },
-              "minimum_exclusive": {
+              "minimum_inclusive": {
                 "type": "boolean"
               },
-              "maximum_exclusive": {
+              "maximum_inclusive": {
                 "type": "boolean"
               }
             }

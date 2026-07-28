@@ -12,12 +12,18 @@ Every paragraph anchor below is now verified against fetched section text
 are marked. This is the exact failure mode the corpus exists to prevent,
 demonstrated inside its own planning document.
 
+Follow-up review of the dependency rows corrected two further citation
+problems: residual-disinfectant goals belong to 141.54 rather than 141.65, and
+the rule-specific phrases paired samples and three-sample set do not originate
+in the general definitions at 141.2.
+
 ## Selection principle (revised per J2)
 
 Dependency-complete over count-complete, and within the rule family:
-completeness over curation. Only licensing can force a true exclusion. If a
-question can arise from the family, the corpus should be able to answer it
-rather than fail it by subjective omission.
+completeness over curation. Every authoritative provision within the declared
+rule-family scope must be represented or explicitly recorded as a coverage gap
+or exclusion with its reason. If a question can arise from the family, the
+corpus should be able to answer it rather than fail it by subjective omission.
 
 ## S4 resolution: the chlorite challenge, settled by the source
 
@@ -63,11 +69,11 @@ with the verbatim mechanics.
 
 | # | page_id | Topic | Anchors | Why it must exist |
 |---|---------|-------|---------|-------------------|
-| 15 | dbp.definitions | Controlled definitions: TTHM, HAA5, LRAA, RAA, paired samples, three-sample set, compliance monitoring terms | 141.2 | Pages 1-14 cannot be context-complete without it. Amended 2024-12-30: the live staleness-triage test case. S4 adds two terms to its list |
-| 16 | dbp.mclg | MCLGs for DBPs and residuals | 141.53, 141.65 | The zero-versus-limit trap. J1 decided: kept as one page |
+| 15 | dbp.definitions | Controlled definitions plus rule-specific sampling terminology: TTHM, HAA5, LRAA, RAA, paired samples, three-sample set, compliance monitoring terms | 141.2; 141.132(b)(2), 141.132(d) CORRECTED | Pages 1-14 cannot be context-complete without both the general definitions and the rule text that introduces the two sampling terms. Section 141.2 was amended 2024-12-30 and remains the live staleness-triage test case |
+| 16 | dbp.mclg | MCLGs for DBPs and residual disinfectants | 141.53, 141.54 CORRECTED | The zero-versus-limit trap. J1 decided: kept as one page |
 | 17 | dbp.violations.notification | Public notification tiers for DBP violations | Subpart Q cross-reference, 141.133(c)(2) CORRECTED | Chlorine dioxide acute violations are Tier 1; MCL violations Tier 2; monitoring violations Tier 3 |
 
-## Excluded (licensing or family boundary only, per revised principle)
+## Coverage gaps and exclusions
 
 - Consumer Confidence Report content rules (141.151 through 141.154):
   different rule family; candidate for a later family, not an omission from
@@ -86,9 +92,9 @@ with the verbatim mechanics.
   must never be renderable as an MCL compliance verdict. Scope limit per
   owner: TTHM and HAA5 only.
 - S3. DECIDED (J5): the TOC removal matrix becomes a table-valued claim kind.
-  Consequence: a schema amendment to the ratification candidate is required
-  (claim kind enum, table value shape, required checks for table claims).
-  Raised on PR #4 so it lands in the ratification round.
+  PR #4 now carries the schema amendment: stable dimensions, bands, and cells;
+  answer-side stable-cell selection; and mandatory cell-fidelity checks. It
+  remains subject to the ratification decision.
 - S4. REWRITTEN with verbatim mechanics: chlorite compliance is based on the
   arithmetic average of each monthly three-sample set taken in the
   distribution system (141.133(b)(3)); daily entrance-point samples do not
@@ -111,5 +117,6 @@ with the verbatim mechanics.
 
 Pages 15 and 16 (definitions, MCLGs) first: every other page references their
 terms. Page 12 (TOC) last: it carries the table-valued claim kind, which
-waits on the schema amendment. Pages 13 and 14 (IDSE, methods) after the
-core MCL/MRDL pages: they are completeness pages, not blocking dependencies.
+waits on ratification of the PR #4 amendment. Pages 13 and 14 (IDSE, methods)
+after the core MCL/MRDL pages: they are completeness pages, not blocking
+dependencies.

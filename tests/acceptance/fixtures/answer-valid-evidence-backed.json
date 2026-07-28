@@ -30,6 +30,14 @@
       "claim_id": "claim.dbp.synthetic-limit",
       "page_id": "dbp.synthetic-limit",
       "review_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "claim_id": "claim.dbp.synthetic-removal-matrix",
+      "page_id": "dbp.synthetic-limit",
+      "review_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "table_cell_ids": [
+        "cell.row-low_col-high"
+      ]
     }
   ],
   "quote_refs": [
@@ -114,6 +122,10 @@
         {
           "kind": "claim",
           "id": "claim.dbp.synthetic-limit"
+        },
+        {
+          "kind": "claim",
+          "id": "claim.dbp.synthetic-removal-matrix"
         }
       ]
     },
@@ -125,6 +137,10 @@
         {
           "kind": "claim",
           "id": "claim.dbp.synthetic-limit"
+        },
+        {
+          "kind": "claim",
+          "id": "claim.dbp.synthetic-removal-matrix"
         }
       ]
     },
@@ -136,6 +152,17 @@
         {
           "kind": "claim",
           "id": "claim.dbp.synthetic-limit"
+        }
+      ]
+    },
+    {
+      "check_id": "table-cell-fidelity",
+      "version": "v0.1",
+      "verdict": "pass",
+      "subjects": [
+        {
+          "kind": "claim-cell",
+          "id": "claim.dbp.synthetic-removal-matrix#cell.row-low_col-high"
         }
       ]
     },

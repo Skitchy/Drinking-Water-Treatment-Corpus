@@ -10,7 +10,7 @@ the pull request and its executable acceptance cases.
 
 | Finding | Disposition | Ratification artifact |
 | --- | --- | --- |
-| F1: vacuous evidence-backed pass | Accepted and strengthened. The runtime manifest declares required checks by outcome, subject kind, and claim kind. Semantic validation requires every check for every applicable subject; omission is failure. The runtime manifest itself must meet or exceed the pinned assurance-contract baseline, so the vacuity cannot move upstream into a weak policy manifest. | Runtime manifest, answer schema, AT-016, AT-017, AT-031 |
+| F1: vacuous evidence-backed pass | Accepted and strengthened. The runtime manifest declares required checks by outcome, subject kind, and where applicable claim kind. Semantic validation requires every check for every applicable envelope, page, claim, selected table cell, and quote; omission is failure. The minimum matrix is a separately digest-pinned machine-readable artifact loaded by the checker, so the vacuity cannot move upstream into a weak manifest or a stale hard-coded checker copy. | Required-check baseline, runtime manifest, answer schema, AT-016, AT-017, AT-031, AT-033 |
 | F2: reason codes float free | Accepted. Reasons are structured causes naming a permitted failed check or policy gate and affected subjects. | Answer schema, runtime reason rules, AT-018 |
 | F3: formats unenforced | Accepted. AJV 2020-12 and `ajv-formats` run in CI with strict compilation and format assertion. | `package.json`, workflow, AT-019 |
 | F4: query digest canonicalization absent | Accepted. Answer and audit query records name the canonicalization ID pinned by the runtime manifest. | Runtime, answer, and audit schemas |
@@ -40,6 +40,32 @@ immutable logical `urn:dwtc:schema:*` identifiers; artifact manifests bind
 those identifiers to exact bytes by digest. AT-029 enforces the identifier
 policy.
 
+## PR follow-up findings
+
+| Finding | Disposition | Ratification artifact |
+| --- | --- | --- |
+| N1: two-anchor lifecycle churn unstated | Accepted. Exact compatibility is deliberate: every corpus release requires a newly minted runtime manifest, even when runtime-only bytes are unchanged. | Runtime manifest comment, schema README |
+| N2: baseline duplicated in prose and checker | Accepted before ratification. `contracts/assurance-check-baseline-v0.1.json` is the single machine-readable minimum matrix. The runtime manifest pins its exact file digest and the checker loads it rather than maintaining a copy. | Baseline artifact and policy note, AT-031, AT-033 |
+| N3: unresolved claim kind skipped | Accepted. Every answer claim reference must resolve to a claim and kind before kind-specific subject calculation. Failure to resolve is rejection, not exemption. | Answer semantic rule, AT-034 |
+
+## First-proof table-claim amendment
+
+The maintainer selected a table-valued claim for matrix-shaped regulatory
+requirements rather than flattening each cell into an independent scalar
+claim. The v0.1 profile therefore defines:
+
+- stable dimension, band, and cell identifiers;
+- explicit open or closed numeric band bounds;
+- nonoverlapping bands and complete row-by-column cell coverage;
+- independent units for both dimensions and the cell values; and
+- a claim-level relation that applies uniformly to every cell.
+
+An answer referencing a table claim must select one or more stable cell IDs.
+Every selected cell becomes a `claim-cell` subject requiring a passing
+`table-cell-fidelity` check. This closes the gap between storing a table
+honestly and proving which cell supplied a deterministic display. AT-032 and
+AT-035 through AT-040 exercise the amendment.
+
 ## F9 lifecycle boundary
 
 The split is deliberate:
@@ -56,6 +82,11 @@ Changing a verifier or renderer does not republish unchanged regulatory
 evidence. Changing a source or page does not silently inherit an old runtime
 policy. An answer is reproducible only when both manifest digests resolve and
 the runtime manifest declares the exact corpus digest compatible.
+
+The exact compatibility declaration creates intentional manifest churn: each
+new corpus release also requires a new runtime manifest declaring that corpus,
+even if its other runtime artifacts are unchanged. This is the cost of making
+compatibility explicit instead of silently inherited.
 
 ## Ratification procedure
 

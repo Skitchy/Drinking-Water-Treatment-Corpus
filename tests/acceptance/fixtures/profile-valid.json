@@ -123,61 +123,75 @@
         "regulatory_metric": "treatment-technique"
       },
       "table_value": {
-        "row_dimension": {
-          "name": "synthetic-parameter-band",
-          "unit": "fixture-unit",
+      "row_dimension": {
+        "dimension_id": "dimension.synthetic-parameter",
+        "name": "synthetic-parameter-band",
+        "unit": "fixture-unit",
           "bands": [
             {
               "band_id": "row.low",
-              "label": "low parameter band",
-              "minimum": 0,
-              "maximum": 4
+            "label": "low parameter band",
+            "minimum": 0,
+            "minimum_inclusive": true,
+            "maximum": 4,
+            "maximum_inclusive": true
             },
             {
               "band_id": "row.high",
-              "label": "high parameter band",
-              "minimum": 4,
-              "maximum": 8
+            "label": "high parameter band",
+            "minimum": 4,
+            "minimum_inclusive": false,
+            "maximum": 8,
+            "maximum_inclusive": true
             }
           ]
         },
-        "column_dimension": {
-          "name": "synthetic-alkalinity-band",
+      "column_dimension": {
+        "dimension_id": "dimension.synthetic-alkalinity",
+        "name": "synthetic-alkalinity-band",
           "unit": "fixture-unit",
           "bands": [
             {
               "band_id": "col.low",
-              "label": "low alkalinity band",
-              "minimum": 0,
-              "maximum": 60
+            "label": "low alkalinity band",
+            "minimum": 0,
+            "minimum_inclusive": true,
+            "maximum": 60,
+            "maximum_inclusive": true
             },
             {
               "band_id": "col.high",
-              "label": "high alkalinity band",
-              "minimum": 60,
-              "maximum": 120
+            "label": "high alkalinity band",
+            "minimum": 60,
+            "minimum_inclusive": false,
+            "maximum": 120,
+            "maximum_inclusive": true
             }
           ]
         },
         "cell_unit": "percent",
-        "cells": [
-          {
-            "row_band": "row.low",
+      "cells": [
+        {
+          "cell_id": "cell.row-low_col-low",
+          "row_band": "row.low",
             "column_band": "col.low",
             "value": 35
-          },
-          {
-            "row_band": "row.low",
+        },
+        {
+          "cell_id": "cell.row-low_col-high",
+          "row_band": "row.low",
             "column_band": "col.high",
             "value": 25
-          },
-          {
-            "row_band": "row.high",
+        },
+        {
+          "cell_id": "cell.row-high_col-low",
+          "row_band": "row.high",
             "column_band": "col.low",
             "value": 45
-          },
-          {
-            "row_band": "row.high",
+        },
+        {
+          "cell_id": "cell.row-high_col-high",
+          "row_band": "row.high",
             "column_band": "col.high",
             "value": 35
           }

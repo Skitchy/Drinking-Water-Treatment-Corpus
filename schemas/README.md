@@ -5,7 +5,8 @@ machine-checkable shapes:
 
 - `drinking-water-profile-v0.1.schema.json` validates a normalized JSON
   representation of an OKF concept page and its Drinking Water Assurance
-  Profile extension fields.
+  Profile extension fields, including scalar, derived, and table-valued
+  claims with stable cells.
 - `reviewer-registry-v0.1.schema.json` defines the minimum credible registry,
   even while the project has only one reviewer.
 - `source-registry-v0.1.schema.json` binds source authority, authenticity,
@@ -16,9 +17,11 @@ machine-checkable shapes:
   quotes.
 - `runtime-assurance-manifest-v0.1.schema.json` separately pins reader-side
   policy, verifier, generator, index, algorithms, query canonicalization,
-  renderer templates, and the compatible corpus release.
+  renderer templates, the machine-readable mandatory-check baseline, and the
+  compatible corpus release.
 - `verified-answer-v0.1.schema.json` defines the gateway's native answer
-  envelope. It deliberately has no arbitrary narrative field.
+  envelope, including explicit stable-cell selections for table claims. It
+  deliberately has no arbitrary narrative field.
 - `audit-envelope-v0.1.schema.json` records enough retrieval and validation
   state to investigate a decision without asserting that a full audit system
   already exists.
@@ -45,6 +48,12 @@ generator, or renderer change produces a new runtime assurance manifest.
 Every answer and audit record names the exact digest of both. This allows
 reader behavior to evolve without republishing unchanged evidence while
 preserving full reproducibility.
+
+Compatibility remains intentionally one-way and exact: a new corpus release
+requires a newly minted runtime manifest that explicitly names the new corpus
+digest, even when the runtime artifacts are otherwise unchanged. Clients that
+pin runtime manifests therefore observe manifest churn at the union of the two
+lifecycles rather than silently inheriting compatibility.
 
 ## Compatibility policy
 

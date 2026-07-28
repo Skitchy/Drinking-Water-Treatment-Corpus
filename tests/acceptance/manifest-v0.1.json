@@ -344,6 +344,106 @@
         "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
       ],
       "expected": "incomplete-table-claim-rejected"
+    },
+    {
+      "id": "AT-033",
+      "title": "Runtime manifest pins the exact machine-readable required-check baseline",
+      "layer": "semantic",
+      "normative_source": "PR 4 follow-up finding N2",
+      "status": "executable-foundation",
+      "artifacts": [
+        "contracts/assurance-check-baseline-v0.1.json",
+        "tests/acceptance/fixtures/runtime-assurance-manifest-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "baseline-digest-mismatch-rejected"
+    },
+    {
+      "id": "AT-034",
+      "title": "An answer whose referenced claim kind cannot be resolved is rejected",
+      "layer": "semantic",
+      "normative_source": "PR 4 follow-up finding N3",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/profile-valid.json",
+        "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "unresolved-claim-kind-rejected"
+    },
+    {
+      "id": "AT-035",
+      "title": "A table claim answer must select at least one stable cell ID",
+      "layer": "semantic",
+      "normative_source": "First-proof page list J5 decision",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "missing-table-cell-selection-rejected"
+    },
+    {
+      "id": "AT-036",
+      "title": "A table claim answer cannot select an unknown cell ID",
+      "layer": "semantic",
+      "normative_source": "First-proof page list J5 decision",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/profile-valid.json",
+        "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "unknown-table-cell-rejected"
+    },
+    {
+      "id": "AT-037",
+      "title": "Every selected table cell requires a passing fidelity check",
+      "layer": "semantic",
+      "normative_source": "First-proof page list J5 decision and PR 4 finding F1",
+      "status": "executable-foundation",
+      "artifacts": [
+        "contracts/assurance-check-baseline-v0.1.json",
+        "tests/acceptance/fixtures/answer-valid-evidence-backed.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "missing-table-cell-fidelity-check-rejected"
+    },
+    {
+      "id": "AT-038",
+      "title": "Table dimension bands cannot overlap",
+      "layer": "semantic",
+      "normative_source": "First-proof page list J5 decision",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/profile-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "overlapping-table-bands-rejected"
+    },
+    {
+      "id": "AT-039",
+      "title": "Every table band bound declares whether it is inclusive",
+      "layer": "schema",
+      "normative_source": "First-proof page list J5 decision",
+      "status": "executable-foundation",
+      "artifacts": [
+        "schemas/drinking-water-profile-v0.1.schema.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "ambiguous-table-bound-rejected"
+    },
+    {
+      "id": "AT-040",
+      "title": "Stable table cell IDs are unique within a claim",
+      "layer": "semantic",
+      "normative_source": "First-proof page list J5 decision",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/profile-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "duplicate-table-cell-id-rejected"
     }
   ]
 }

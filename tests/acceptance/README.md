@@ -55,6 +55,14 @@ Passing a schema test does not imply passing a semantic or integration test.
 | AT-030 | Answer and runtime assurance manifest digests agree. | Semantic |
 | AT-031 | A runtime manifest cannot weaken the assurance-contract mandatory-check baseline. | Semantic |
 | AT-032 | A table claim missing a row-band and column-band cell is rejected. | Semantic |
+| AT-033 | The runtime manifest pins the exact machine-readable required-check baseline. | Semantic |
+| AT-034 | An answer whose referenced claim kind cannot be resolved is rejected. | Semantic |
+| AT-035 | A table claim answer selects at least one stable cell ID. | Semantic |
+| AT-036 | A table claim answer cannot select an unknown cell ID. | Semantic |
+| AT-037 | Every selected table cell receives a passing fidelity check. | Semantic |
+| AT-038 | Table dimension bands cannot overlap. | Semantic |
+| AT-039 | Every table band bound explicitly declares inclusivity. | Schema |
+| AT-040 | Stable table cell IDs are unique within a claim. | Semantic |
 
 ## Foundation fixtures
 
@@ -63,6 +71,7 @@ The fixtures are synthetic and are not regulatory evidence:
 - valid reviewer and source registries plus a stable profile;
 - one invalid profile with a stale human-review digest;
 - separate synthetic corpus-release and runtime-assurance manifests;
+- a machine-readable, exact-byte-digest-pinned required-check baseline;
 - an audit record with one rejected and one accepted generation attempt;
 - valid examples for all three answer outcomes;
 - mutations covering the schema-ratification findings.
@@ -78,5 +87,6 @@ The script runs AJV 2020-12 with format assertion, then checks review-payload
 binding, licensing resolution, actor scopes, effective watch state, the closed
 answer surface, policy-mandatory check coverage, structured outcome causes,
 manifest compatibility, claim/quote/source resolution, reviewer qualification
-timing, bounds, uniqueness, derivation cycles, and table-claim band and cell coverage. Canonicalization
+timing, bounds, uniqueness, derivation cycles, table-band and cell coverage,
+and answer-side table-cell selection and fidelity coverage. Canonicalization
 conformance vectors remain an explicit next action in `PROJECT-STATE.md`.

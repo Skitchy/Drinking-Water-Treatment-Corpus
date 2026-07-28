@@ -8,7 +8,8 @@ the published renderer-conformance suite demonstrates that it:
 
 1. accepts only schema-valid, semantically validated, integrity-bound answer
    envelopes from a compatible runtime assurance manifest;
-2. resolves claim and quote IDs only from the named immutable corpus release;
+2. resolves claim, selected table-cell, and quote IDs only from the named
+   immutable corpus release;
 3. renders human-readable answer content only through the template set pinned
    by the runtime assurance manifest;
 4. does not display arbitrary narrative fields or unchecked model output as

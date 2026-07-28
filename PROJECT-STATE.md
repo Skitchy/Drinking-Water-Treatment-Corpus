@@ -47,8 +47,10 @@ wins and this file must be updated.
 - Reproduction decisions are content-bound at the source/component level and
   resolve through the source registry; stable pages may not rely on pending or
   unattested licensing data.
-- Numeric and derived assertions use structured claims. Qualitative
-  externally verifiable assertions should carry claim-level provenance.
+- Numeric, derived, and table-valued assertions use structured claims.
+  Qualitative externally verifiable assertions should carry claim-level
+  provenance. Table answers select stable cell IDs rather than flattening or
+  reauthoring matrix values.
 - Context-completeness is an explicit human-review scope.
 - Coverage and maintenance state are release artifacts.
 - v0.1 has one declared use class: `regulatory-reference`.
@@ -69,6 +71,8 @@ wins and this file must be updated.
 - Corpus evidence and reader behavior have separate content-addressed
   manifests so either lifecycle can change without falsely republishing the
   other.
+- The minimum answer-check matrix is one machine-readable, digest-pinned
+  artifact loaded by the verifier rather than duplicated in prose and code.
 
 ### Enforcement boundary
 
@@ -89,13 +93,22 @@ envelope carrying a verifiable signature; an unsigned artifact is a
 ## First proof
 
 The proposed first rule family is the Stage 1 and Stage 2 Disinfectants and
-Disinfection Byproducts Rules. The proof should favor dependency-complete
-coverage over an arbitrary page count and is expected to include:
+Disinfection Byproducts Rules. The maintainer-reviewed
+[`v0.2 page list`](proposals/first-proof-dbp-page-list-v0.2.md) applies this
+coverage principle:
 
-- roughly 8–12 primary pages plus required definition, exception,
-  cross-reference, and effective-date dependencies;
+> Every authoritative provision within the declared rule-family scope must be
+> represented or explicitly recorded as a coverage gap or exclusion with its
+> reason.
+
+The proof favors dependency-complete coverage over an arbitrary page count
+and currently includes:
+
+- 14 primary pages plus three definition, goal, and notification dependency
+  pages;
 - MCL and MRDL tables, bromate and chlorite specifics, and running-annual-
   average compliance mechanics;
+- a table-valued claim for the TOC removal matrix;
 - 50–100 adversarial questions written before retrieval optimization;
 - simulated edits, source changes, corrections, stale content, and watch
   failures.
@@ -109,6 +122,8 @@ coverage over an arbitrary page count and is expected to include:
 - [`schemas/runtime-assurance-manifest-v0.1.schema.json`](schemas/runtime-assurance-manifest-v0.1.schema.json)
 - [`schemas/verified-answer-v0.1.schema.json`](schemas/verified-answer-v0.1.schema.json)
 - [`schemas/audit-envelope-v0.1.schema.json`](schemas/audit-envelope-v0.1.schema.json)
+- [`contracts/assurance-check-baseline-v0.1.json`](contracts/assurance-check-baseline-v0.1.json)
+- [`docs/ASSURANCE-CHECK-BASELINE-v0.1.md`](docs/ASSURANCE-CHECK-BASELINE-v0.1.md)
 - [`tests/acceptance/manifest-v0.1.json`](tests/acceptance/manifest-v0.1.json)
 - [`tests/acceptance/check-artifacts.mjs`](tests/acceptance/check-artifacts.mjs)
 - [`.github/workflows/validate-artifacts.yml`](.github/workflows/validate-artifacts.yml)
@@ -143,7 +158,8 @@ coverage over an arbitrary page count and is expected to include:
 1. Review the schema-ratification pull request and disposition every finding.
 2. Record explicit ratify-or-revise decisions for each schema in RFC 003.
 3. Add canonicalization specifications and conformance vectors.
-4. Select the dependency-complete DBP proof set.
+4. Complete the maintainer review of the v0.2 DBP proof set and seed J7
+   field-confusion cases.
 5. Author the 50–100 adversarial questions before tuning retrieval.
 6. Implement the first real corpus release and stable claim/quote resolution.
 7. Build the nonstreaming gateway and deliberately small conforming renderer.

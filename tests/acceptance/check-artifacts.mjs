@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
@@ -10,6 +11,12 @@ const evaluationTime = new Date("2026-07-29T00:00:00Z");
 
 function load(relativePath) {
   return JSON.parse(fs.readFileSync(path.join(root, relativePath), "utf8"));
+}
+
+function sha256File(relativePath) {
+  return createHash("sha256")
+    .update(fs.readFileSync(path.join(root, relativePath)))
+    .digest("hex");
 }
 
 function assert(condition, message) {
@@ -99,13 +106,13 @@ const schemaIds = {
 
 const manifest = load("tests/acceptance/manifest-v0.1.json");
 const expectedCaseIds = Array.from(
-  { length: 32 },
+  { length: 40 },
   (_, index) => `AT-${String(index + 1).padStart(3, "0")}`
 );
 assert(
   JSON.stringify(manifest.cases.map((testCase) => testCase.id)) ===
     JSON.stringify(expectedCaseIds),
-  "Acceptance manifest must contain AT-001 through AT-032 in order"
+  "Acceptance manifest must contain AT-001 through AT-040 in order"
 );
 for (const testCase of manifest.cases) {
   for (const artifact of testCase.artifacts) {
@@ -132,6 +139,9 @@ const corpus = load(
 const runtime = load(
   "tests/acceptance/fixtures/runtime-assurance-manifest-valid.json"
 );
+const baselinePath = "contracts/assurance-check-baseline-v0.1.json";
+const requiredCheckBaseline = load(baselinePath);
+const requiredCheckBaselineSha256 = sha256File(baselinePath);
 const evidenceBacked = load(
   "tests/acceptance/fixtures/answer-valid-evidence-backed.json"
 );
@@ -158,52 +168,43 @@ validateWith(schemaIds.answer, abstention, "Abstention fixture");
 validateWith(schemaIds.audit, audit, "Audit fixture");
 uniqueBy(registry.reviewers, "reviewer_id", "Reviewer registry");
 
-const baselineRequiredChecks = [
-  {
-    outcome: "evidence-backed",
-    subject_kind: "envelope",
-    check_ids: ["schema", "corpus-release", "runtime-manifest", "coverage"]
-  },
-  {
-    outcome: "evidence-backed",
-    subject_kind: "page",
-    check_ids: ["eligibility", "freshness"]
-  },
-  {
-    outcome: "evidence-backed",
-    subject_kind: "claim",
-    check_ids: ["claim-resolution", "applicability"]
-  },
-  {
-    outcome: "evidence-backed",
-    subject_kind: "claim",
-    claim_kind: "numeric",
-    check_ids: ["numeric-claim-tuple"]
-  },
-  {
-    outcome: "evidence-backed",
-    subject_kind: "claim",
-    claim_kind: "derived",
-    check_ids: ["derived-claim"]
-  },
-  {
-    outcome: "evidence-backed",
-    subject_kind: "claim",
-    claim_kind: "table",
-    check_ids: ["table-claim-cell"]
-  },
-  {
-    outcome: "evidence-backed",
-    subject_kind: "quote",
-    check_ids: ["quote-resolution", "span-fidelity"]
-  }
-];
+assert(
+  requiredCheckBaseline.schema_version ===
+    "assurance-check-baseline/v0.1",
+  "Required-check baseline has an unknown schema version"
+);
+assert(
+  requiredCheckBaseline.artifact_id ===
+    "assurance-check-baseline/v0.1",
+  "Required-check baseline has an unknown artifact ID"
+);
+assert(
+  requiredCheckBaseline.digest_scope === "exact-utf8-file-bytes",
+  "Required-check baseline must define its digest scope"
+);
+const baselineShapeProbe = structuredClone(runtime);
+baselineShapeProbe.required_checks = requiredCheckBaseline.required_checks;
+validateWith(
+  schemaIds.runtime,
+  baselineShapeProbe,
+  "Required-check baseline rule shape"
+);
 
 function requiredRuleKey(rule) {
   return `${rule.outcome}:${rule.subject_kind}:${rule.claim_kind ?? "*"}`;
 }
 
 function validateRuntimeManifestSemantics(candidateRuntime) {
+  assert(
+    candidateRuntime.required_check_baseline.artifact_id ===
+      requiredCheckBaseline.artifact_id,
+    "Runtime manifest names an unknown required-check baseline"
+  );
+  assert(
+    candidateRuntime.required_check_baseline.sha256 ===
+      requiredCheckBaselineSha256,
+    "Runtime manifest required-check baseline digest mismatch"
+  );
   uniqueBy(
     candidateRuntime.required_checks.map((rule) => ({
       key: requiredRuleKey(rule)
@@ -217,7 +218,7 @@ function validateRuntimeManifestSemantics(candidateRuntime) {
       rule
     ])
   );
-  for (const baseline of baselineRequiredChecks) {
+  for (const baseline of requiredCheckBaseline.required_checks) {
     const rule = ruleByKey.get(requiredRuleKey(baseline));
     assert(
       rule,
@@ -348,6 +349,19 @@ function rejectDerivationCycles(claims) {
 
 function validateTableClaim(claim) {
   const table = claim.table_value;
+  assert(
+    table.row_dimension.dimension_id !==
+      table.column_dimension.dimension_id,
+    `Table claim ${claim.claim_id} reuses a dimension ID`
+  );
+  function endsBefore(left, right) {
+    if (left.maximum === undefined || right.minimum === undefined) {
+      return false;
+    }
+    if (left.maximum < right.minimum) return true;
+    if (left.maximum > right.minimum) return false;
+    return !(left.maximum_inclusive && right.minimum_inclusive);
+  }
   for (const dimension of [table.row_dimension, table.column_dimension]) {
     uniqueBy(
       dimension.bands,
@@ -360,6 +374,26 @@ function validateTableClaim(claim) {
           band.minimum <= band.maximum,
           `Table claim ${claim.claim_id} band ${band.band_id} has minimum > maximum`
         );
+        if (band.minimum === band.maximum) {
+          assert(
+            band.minimum_inclusive && band.maximum_inclusive,
+            `Table claim ${claim.claim_id} band ${band.band_id} is an empty range`
+          );
+        }
+      }
+    }
+    for (let leftIndex = 0; leftIndex < dimension.bands.length; leftIndex += 1) {
+      for (
+        let rightIndex = leftIndex + 1;
+        rightIndex < dimension.bands.length;
+        rightIndex += 1
+      ) {
+        const left = dimension.bands[leftIndex];
+        const right = dimension.bands[rightIndex];
+        assert(
+          endsBefore(left, right) || endsBefore(right, left),
+          `Table claim ${claim.claim_id} has overlapping bands ${left.band_id} and ${right.band_id}`
+        );
       }
     }
   }
@@ -369,6 +403,7 @@ function validateTableClaim(claim) {
   const columnBandIds = new Set(
     table.column_dimension.bands.map((band) => band.band_id)
   );
+  uniqueBy(table.cells, "cell_id", `Table claim ${claim.claim_id} cells`);
   const seenCells = new Set();
   for (const cell of table.cells) {
     assert(
@@ -508,7 +543,16 @@ function checkCovers(answer, checkId, subject, requirePass) {
   );
 }
 
-function expectedSubjects(answer, subjectKind, claimKind) {
+function claimCellSubjectId(claimId, cellId) {
+  return `${claimId}#${cellId}`;
+}
+
+function expectedSubjects(
+  answer,
+  subjectKind,
+  claimKind,
+  candidateProfile
+) {
   if (subjectKind === "envelope") {
     return [
       {
@@ -531,17 +575,39 @@ function expectedSubjects(answer, subjectKind, claimKind) {
     }));
   }
   const claimById = new Map(
-    validProfile.claims.map((claim) => [claim.claim_id, claim])
+    candidateProfile.claims.map((claim) => [claim.claim_id, claim])
   );
+  if (subjectKind === "claim-cell") {
+    return answer.claim_refs.flatMap((reference) => {
+      const claim = claimById.get(reference.claim_id);
+      assert(
+        claim,
+        `Cannot resolve claim kind for ${reference.claim_id}`
+      );
+      if (claim.kind !== "table") return [];
+      assert(
+        reference.table_cell_ids?.length > 0,
+        `Table claim ${reference.claim_id} has no selected cells`
+      );
+      return reference.table_cell_ids.map((cellId) => ({
+        kind: "claim-cell",
+        id: claimCellSubjectId(reference.claim_id, cellId)
+      }));
+    });
+  }
   return answer.claim_refs
-    .filter(
-      (reference) =>
-        !claimKind || claimById.get(reference.claim_id)?.kind === claimKind
-    )
+    .filter((reference) => {
+      const claim = claimById.get(reference.claim_id);
+      assert(
+        claim,
+        `Cannot resolve claim kind for ${reference.claim_id}`
+      );
+      return !claimKind || claim.kind === claimKind;
+    })
     .map((reference) => ({ kind: "claim", id: reference.claim_id }));
 }
 
-function validateAnswerSemantics(answer) {
+function validateAnswerSemantics(answer, candidateProfile = validProfile) {
   assert(
     answer.corpus.release_id === corpus.release_id,
     "Unknown corpus release"
@@ -576,11 +642,20 @@ function validateAnswerSemantics(answer) {
   );
 
   const pageById = new Map(corpus.pages.map((page) => [page.page_id, page]));
+  const claimById = new Map(
+    candidateProfile.claims.map((claim) => [claim.claim_id, claim])
+  );
   const validSubjectKeys = new Set([
     `envelope:${answer.answer_id}`,
     ...answer.claim_refs.map((reference) => `page:${reference.page_id}`),
     ...answer.quote_refs.map((reference) => `page:${reference.page_id}`),
     ...answer.claim_refs.map((reference) => `claim:${reference.claim_id}`),
+    ...answer.claim_refs.flatMap((reference) =>
+      (reference.table_cell_ids ?? []).map(
+        (cellId) =>
+          `claim-cell:${claimCellSubjectId(reference.claim_id, cellId)}`
+      )
+    ),
     ...answer.quote_refs.map((reference) => `quote:${reference.quote_id}`)
   ]);
 
@@ -595,9 +670,34 @@ function validateAnswerSemantics(answer) {
       page.claim_ids.includes(reference.claim_id),
       `Unknown claim ${reference.claim_id}`
     );
+    const claim = claimById.get(reference.claim_id);
+    assert(
+      claim,
+      `Cannot resolve claim kind for ${reference.claim_id}`
+    );
+    if (claim.kind === "table") {
+      assert(
+        reference.table_cell_ids?.length > 0,
+        `Table claim ${reference.claim_id} has no selected cells`
+      );
+      const cellIds = new Set(
+        claim.table_value.cells.map((cell) => cell.cell_id)
+      );
+      for (const cellId of reference.table_cell_ids) {
+        assert(
+          cellIds.has(cellId),
+          `Table claim ${reference.claim_id} selects unknown cell ${cellId}`
+        );
+      }
+    } else {
+      assert(
+        reference.table_cell_ids === undefined,
+        `Non-table claim ${reference.claim_id} selects table cells`
+      );
+    }
   }
   const quoteById = new Map(
-    validProfile.quotes.map((quote) => [quote.quote_id, quote])
+    candidateProfile.quotes.map((quote) => [quote.quote_id, quote])
   );
   for (const reference of answer.quote_refs) {
     const page = pageById.get(reference.page_id);
@@ -627,7 +727,8 @@ function validateAnswerSemantics(answer) {
     const subjects = expectedSubjects(
       answer,
       rule.subject_kind,
-      rule.claim_kind
+      rule.claim_kind,
+      candidateProfile
     );
     for (const subject of subjects) {
       for (const checkId of rule.check_ids) {
@@ -779,6 +880,11 @@ const mutationValidators = {
   "profile-semantic": (value) => {
     validateWith(schemaIds.profile, value, "Mutated profile");
     validateProfileSemantics(value, sourceRegistry);
+  },
+  "answer-profile-resolution-semantic": (value) => {
+    validateWith(schemaIds.profile, value, "Mutated profile");
+    validateProfileSemantics(value, sourceRegistry);
+    validateAnswerSemantics(evidenceBacked, value);
   },
   "source-registry-semantic": (value) => {
     validateWith(schemaIds.source, value, "Mutated source registry");
