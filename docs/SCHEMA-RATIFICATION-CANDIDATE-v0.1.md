@@ -1,6 +1,6 @@
 # Schema ratification candidate v0.1
 
-Status: proposed; not ratified
+Status: RATIFIED 2026-07-28 by explicit maintainer decision, recorded in [RFC 003](https://github.com/Skitchy/Drinking-Water-Treatment-Corpus/discussions/3#discussioncomment-17819208); tagged `schema-foundation-v0.1`
 
 This change set dispositions the adversarial findings recorded in RFC 002 and
 RFC 003. Ratification requires explicit maintainer decisions after review of

@@ -19,11 +19,12 @@ foundation:
 - the minimal audit-envelope schema;
 - the adversarial acceptance-test contract and foundation fixtures.
 
-The schemas are proposed v0.1 artifacts. Ratification is a real gate: each
-schema requires an explicit ratify-or-revise disposition in RFC 003 after the
-schema-ratification pull request is reviewed. After ratification, incompatible
-schema changes require a version bump, recorded rationale, and pull-request
-review.
+RATIFIED 2026-07-28: all seven v0.1 schemas plus the digest-pinned
+assurance-check baseline were ratified by explicit maintainer decision,
+recorded in [RFC 003](https://github.com/Skitchy/Drinking-Water-Treatment-Corpus/discussions/3#discussioncomment-17819208)
+and tagged `schema-foundation-v0.1` at the PR #4 merge commit. From this
+point, schema changes require a version bump, recorded rationale, and
+pull-request review.
 
 ## Normative design record
 
