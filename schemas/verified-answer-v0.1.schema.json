@@ -471,6 +471,7 @@
         "span-fidelity",
         "numeric-claim-tuple",
         "derived-claim",
+        "table-claim-cell",
         "applicability",
         "freshness",
         "coverage"

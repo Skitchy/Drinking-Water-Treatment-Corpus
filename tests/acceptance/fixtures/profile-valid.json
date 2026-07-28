@@ -113,6 +113,97 @@
       "supporting_quote_ids": [
         "quote.dbp.synthetic-limit"
       ]
+    },
+    {
+      "claim_id": "claim.dbp.synthetic-removal-matrix",
+      "kind": "table",
+      "subject": "Synthetic required removal matrix",
+      "relation": {
+        "operator": "gte",
+        "regulatory_metric": "treatment-technique"
+      },
+      "table_value": {
+        "row_dimension": {
+          "name": "synthetic-parameter-band",
+          "unit": "fixture-unit",
+          "bands": [
+            {
+              "band_id": "row.low",
+              "label": "low parameter band",
+              "minimum": 0,
+              "maximum": 4
+            },
+            {
+              "band_id": "row.high",
+              "label": "high parameter band",
+              "minimum": 4,
+              "maximum": 8
+            }
+          ]
+        },
+        "column_dimension": {
+          "name": "synthetic-alkalinity-band",
+          "unit": "fixture-unit",
+          "bands": [
+            {
+              "band_id": "col.low",
+              "label": "low alkalinity band",
+              "minimum": 0,
+              "maximum": 60
+            },
+            {
+              "band_id": "col.high",
+              "label": "high alkalinity band",
+              "minimum": 60,
+              "maximum": 120
+            }
+          ]
+        },
+        "cell_unit": "percent",
+        "cells": [
+          {
+            "row_band": "row.low",
+            "column_band": "col.low",
+            "value": 35
+          },
+          {
+            "row_band": "row.low",
+            "column_band": "col.high",
+            "value": 25
+          },
+          {
+            "row_band": "row.high",
+            "column_band": "col.low",
+            "value": 45
+          },
+          {
+            "row_band": "row.high",
+            "column_band": "col.high",
+            "value": 35
+          }
+        ]
+      },
+      "conditions": [
+        "Synthetic acceptance fixture only"
+      ],
+      "exceptions": [],
+      "jurisdiction": "fixture-jurisdiction",
+      "applicability": {
+        "system_types": [
+          "fixture-system"
+        ],
+        "source_water_types": [
+          "fixture-source-water"
+        ],
+        "conditions": [
+          "Synthetic acceptance fixture only"
+        ],
+        "exclusions": []
+      },
+      "effective_from": "2026-07-01",
+      "supporting_quote_ids": [
+        "quote.dbp.synthetic-limit"
+      ]
     }
   ]
 }

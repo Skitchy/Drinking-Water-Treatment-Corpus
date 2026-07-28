@@ -35,7 +35,8 @@
         "source.fixture.official-record"
       ],
       "claim_ids": [
-        "claim.dbp.synthetic-limit"
+        "claim.dbp.synthetic-limit",
+        "claim.dbp.synthetic-removal-matrix"
       ],
       "quote_ids": [
         "quote.dbp.synthetic-limit"

@@ -332,6 +332,18 @@
         "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
       ],
       "expected": "weak-runtime-policy-rejected"
+    },
+    {
+      "id": "AT-032",
+      "title": "A table claim missing a row-band and column-band cell is rejected",
+      "layer": "semantic",
+      "normative_source": "First-proof page list J5 decision: table-valued claim kind",
+      "status": "executable-foundation",
+      "artifacts": [
+        "tests/acceptance/fixtures/profile-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-v0.1.json"
+      ],
+      "expected": "incomplete-table-claim-rejected"
     }
   ]
 }

@@ -54,6 +54,7 @@ Passing a schema test does not imply passing a semantic or integration test.
 | AT-029 | Schema identifiers are immutable logical URIs. | Schema |
 | AT-030 | Answer and runtime assurance manifest digests agree. | Semantic |
 | AT-031 | A runtime manifest cannot weaken the assurance-contract mandatory-check baseline. | Semantic |
+| AT-032 | A table claim missing a row-band and column-band cell is rejected. | Semantic |
 
 ## Foundation fixtures
 
@@ -77,5 +78,5 @@ The script runs AJV 2020-12 with format assertion, then checks review-payload
 binding, licensing resolution, actor scopes, effective watch state, the closed
 answer surface, policy-mandatory check coverage, structured outcome causes,
 manifest compatibility, claim/quote/source resolution, reviewer qualification
-timing, bounds, uniqueness, and derivation cycles. Canonicalization
+timing, bounds, uniqueness, derivation cycles, and table-claim band and cell coverage. Canonicalization
 conformance vectors remain an explicit next action in `PROJECT-STATE.md`.

@@ -99,13 +99,13 @@ const schemaIds = {
 
 const manifest = load("tests/acceptance/manifest-v0.1.json");
 const expectedCaseIds = Array.from(
-  { length: 31 },
+  { length: 32 },
   (_, index) => `AT-${String(index + 1).padStart(3, "0")}`
 );
 assert(
   JSON.stringify(manifest.cases.map((testCase) => testCase.id)) ===
     JSON.stringify(expectedCaseIds),
-  "Acceptance manifest must contain AT-001 through AT-031 in order"
+  "Acceptance manifest must contain AT-001 through AT-032 in order"
 );
 for (const testCase of manifest.cases) {
   for (const artifact of testCase.artifacts) {
@@ -185,6 +185,12 @@ const baselineRequiredChecks = [
     subject_kind: "claim",
     claim_kind: "derived",
     check_ids: ["derived-claim"]
+  },
+  {
+    outcome: "evidence-backed",
+    subject_kind: "claim",
+    claim_kind: "table",
+    check_ids: ["table-claim-cell"]
   },
   {
     outcome: "evidence-backed",
@@ -340,6 +346,52 @@ function rejectDerivationCycles(claims) {
   for (const claimId of graph.keys()) visit(claimId);
 }
 
+function validateTableClaim(claim) {
+  const table = claim.table_value;
+  for (const dimension of [table.row_dimension, table.column_dimension]) {
+    uniqueBy(
+      dimension.bands,
+      "band_id",
+      `Table claim ${claim.claim_id} dimension ${dimension.name}`
+    );
+    for (const band of dimension.bands) {
+      if (band.minimum !== undefined && band.maximum !== undefined) {
+        assert(
+          band.minimum <= band.maximum,
+          `Table claim ${claim.claim_id} band ${band.band_id} has minimum > maximum`
+        );
+      }
+    }
+  }
+  const rowBandIds = new Set(
+    table.row_dimension.bands.map((band) => band.band_id)
+  );
+  const columnBandIds = new Set(
+    table.column_dimension.bands.map((band) => band.band_id)
+  );
+  const seenCells = new Set();
+  for (const cell of table.cells) {
+    assert(
+      rowBandIds.has(cell.row_band),
+      `Table claim ${claim.claim_id} cell references unknown row band ${cell.row_band}`
+    );
+    assert(
+      columnBandIds.has(cell.column_band),
+      `Table claim ${claim.claim_id} cell references unknown column band ${cell.column_band}`
+    );
+    const cellKey = `${cell.row_band}:${cell.column_band}`;
+    assert(
+      !seenCells.has(cellKey),
+      `Table claim ${claim.claim_id} has duplicate cell ${cellKey}`
+    );
+    seenCells.add(cellKey);
+  }
+  assert(
+    seenCells.size === rowBandIds.size * columnBandIds.size,
+    `Table claim ${claim.claim_id} does not cover every row-band and column-band combination`
+  );
+}
+
 function validateProfileSemantics(profile, candidateSourceRegistry) {
   const payloadDigest = profile.review_payload.sha256;
   assert(profile.verified.length > 0, "Profile has no verification events");
@@ -420,6 +472,9 @@ function validateProfileSemantics(profile, candidateSourceRegistry) {
         quoteIds.has(quoteId),
         `Claim ${claim.claim_id} references unknown quote ${quoteId}`
       );
+    }
+    if (claim.kind === "table") {
+      validateTableClaim(claim);
     }
     if (claim.kind === "derived") {
       assert(

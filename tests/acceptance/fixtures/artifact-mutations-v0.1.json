@@ -315,6 +315,17 @@
           ]
         }
       ]
+    },
+    {
+      "id": "AT-032",
+      "base": "tests/acceptance/fixtures/profile-valid.json",
+      "validator": "profile-semantic",
+      "operations": [
+        {
+          "operation": "remove",
+          "path": "/claims/1/table_value/cells/3"
+        }
+      ]
     }
   ]
 }

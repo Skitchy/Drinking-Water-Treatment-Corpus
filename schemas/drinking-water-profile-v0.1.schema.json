@@ -541,7 +541,6 @@
         "kind",
         "subject",
         "relation",
-        "value",
         "jurisdiction",
         "applicability",
         "supporting_quote_ids"
@@ -555,7 +554,8 @@
           "enum": [
             "numeric",
             "qualitative",
-            "derived"
+            "derived",
+            "table"
           ]
         },
         "subject": {
@@ -650,6 +650,9 @@
             "pattern": "^quote\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
           }
         },
+        "table_value": {
+          "$ref": "#/$defs/tableValue"
+        },
         "derivation": {
           "type": "object",
           "additionalProperties": false,
@@ -724,6 +727,39 @@
             "type": "object",
             "properties": {
               "kind": {
+                "enum": [
+                  "numeric",
+                  "qualitative",
+                  "derived"
+                ]
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {}
+            },
+            "not": {
+              "properties": {
+                "table_value": {}
+              },
+              "required": [
+                "table_value"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "kind": {
                 "const": "numeric"
               }
             },
@@ -763,8 +799,157 @@
               "derivation": {}
             }
           }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "const": "table"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "table_value"
+            ],
+            "properties": {
+              "table_value": {}
+            },
+            "not": {
+              "properties": {
+                "value": {},
+                "unit": {},
+                "derivation": {}
+              },
+              "anyOf": [
+                {
+                  "required": [
+                    "value"
+                  ]
+                },
+                {
+                  "required": [
+                    "unit"
+                  ]
+                },
+                {
+                  "required": [
+                    "derivation"
+                  ]
+                }
+              ]
+            }
+          }
         }
       ]
+    },
+    "tableValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "row_dimension",
+        "column_dimension",
+        "cell_unit",
+        "cells"
+      ],
+      "$comment": "Semantic validation additionally requires: unique band_ids within each dimension, every cell referencing a declared band in both dimensions, exactly one cell for every row-band and column-band combination (full coverage, no duplicates), and band minimum <= maximum where both are present. The claim's relation applies uniformly to every cell value.",
+      "properties": {
+        "row_dimension": {
+          "$ref": "#/$defs/tableDimension"
+        },
+        "column_dimension": {
+          "$ref": "#/$defs/tableDimension"
+        },
+        "cell_unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cells": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "row_band",
+              "column_band",
+              "value"
+            ],
+            "properties": {
+              "row_band": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+              },
+              "column_band": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+              },
+              "value": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      }
+    },
+    "tableDimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "unit",
+        "bands"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "bands": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "band_id",
+              "label"
+            ],
+            "properties": {
+              "band_id": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minimum": {
+                "type": "number"
+              },
+              "maximum": {
+                "type": "number"
+              },
+              "minimum_exclusive": {
+                "type": "boolean"
+              },
+              "maximum_exclusive": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -94,6 +94,14 @@
     },
     {
       "outcome": "evidence-backed",
+      "subject_kind": "claim",
+      "claim_kind": "table",
+      "check_ids": [
+        "table-claim-cell"
+      ]
+    },
+    {
+      "outcome": "evidence-backed",
       "subject_kind": "quote",
       "check_ids": [
         "quote-resolution",
