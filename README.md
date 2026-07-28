@@ -4,10 +4,10 @@ An open, verified knowledge base for drinking water treatment, built in the [Ope
 
 ## Status: RFC / design phase
 
-Nothing is ingested yet, deliberately. Two design proposals are open for review and adversarial critique in [Discussions](../../discussions):
+Nothing is ingested yet, deliberately. Two design proposals are open for review and adversarial critique:
 
-1. **The Corpus**: a repository of small, single-topic markdown pages where every regulatory quote is machine-verified against an authoritative source on a schedule, every page carries its provenance in the open, and a named human domain expert signs the page list.
-2. **The Reader**: a serving layer that actually honors OKF v0.2 trust signals at retrieval time (status gating, staleness refusal, trust-tier ranking) and mechanically verifies model answers against retrieved pages before a human sees them.
+1. **[RFC 001: The Corpus](https://github.com/Skitchy/Drinking-Water-Treatment-Corpus/discussions/1)**: a repository of small, single-topic markdown pages where every regulatory quote is machine-verified against an authoritative source on a schedule, every page carries its provenance in the open, and a named human domain expert signs the page list.
+2. **[RFC 002: The Reader](https://github.com/Skitchy/Drinking-Water-Treatment-Corpus/discussions/2)**: a serving layer that actually honors OKF v0.2 trust signals at retrieval time (status gating, staleness refusal, trust-tier ranking) and mechanically verifies model answers against retrieved pages before a human sees them.
 
 Devil's advocacy is invited on both. The designs are only as good as the strongest objection they survive.
 
