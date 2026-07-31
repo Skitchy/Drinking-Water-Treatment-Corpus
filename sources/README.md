@@ -3,12 +3,17 @@
 Captured source material and the source registry for the DBP first proof.
 
 - `captures/ecfr-2026-07-01/` holds per-section XML captures of every section
-  in the declared rule-family scope (subparts L and V complete, plus 141.2,
-  141.53, 141.54, 141.64, 141.65) and subpart Q captured whole, all at eCFR
+  in the declared rule-family scope (subparts L, U, and V complete, plus
+  141.2, 141.53, 141.54, 141.64, 141.65) and subpart Q captured whole, all at eCFR
   point-in-time date 2026-07-01, the same date the page list v0.2 anchors were
   verified against.
-- `captures/epa/` holds EPA 816-F-10-080, the comprehensive Stage 1 and
-  Stage 2 quick reference guide.
+- `captures/epa/` holds the approved text/table extraction of EPA
+  816-F-10-080 (the comprehensive Stage 1 and Stage 2 quick reference
+  guide) and its derivation record. The complete PDF is not distributed:
+  rights in its incorporated imagery are not established, so only the
+  covered components (guide text, tables 1 through 7) ship, per the
+  maintainer ruling of 2026-07-31. The full-file capture digest is retained
+  in the source registry as provenance.
 - `capture-manifest-2026-07-31.json` records file, resource URI, capture
   time, sha256, and the verification method for the capture session.
 - `source-registry.dbp-first-proof.json` is the source-registry/v0.1

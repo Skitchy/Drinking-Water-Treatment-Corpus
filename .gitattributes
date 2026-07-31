@@ -1,1 +1,4 @@
 contracts/*.json text eol=lf
+sources/captures/**/*.xml -text
+sources/captures/**/*.pdf binary
+sources/captures/**/*.txt -text

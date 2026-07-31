@@ -1,0 +1,14 @@
+{
+  "derivation_id": "derivation.epa.qrg.816-f-10-080.text-extraction",
+  "derived_from": {
+    "source_id": "source.epa.qrg.816-f-10-080",
+    "captured_sha256": "b36c20f6bea16c45f6706266b8df3d9afba129a5e8e83eb8ff6691af20a0705e",
+    "resource": "https://nepis.epa.gov/Exe/ZyPDF.cgi?Dockey=P100C8XW.txt"
+  },
+  "produced_file": "comprehensive-dbp-qrg-816-F-10-080-text-extraction.txt",
+  "produced_sha256": "2fcfa3fef080cb7ab131bf7413c76e7218f040800e4c195aeb3f87bf465283d6",
+  "produced_at": "2026-07-31T11:40:20Z",
+  "method": "pdftotext -layout (poppler), no manual edits",
+  "verification": "All seven tables present; footer document number EPA 816-F-10-080 and August 2010 date present; spot-verified against rendered pages 1-4, including the guide's own Table 2 trichloroacetic acid values (0.3/0.2), preserved faithfully even though the codified text at 40 CFR 141.53 states 0.02; see pages/dbp.mclg.json claim conditions for the discrepancy record.",
+  "scope_note": "Extraction distributes the covered components only (guide text and tables). The complete PDF, including photographic and design imagery on pages 1 and 4, is not distributed; its full-file digest above is retained as provenance. Maintainer ruling 2026-07-31: extraction option adopted; no history purge, as a deliberate maintainer decision."
+}

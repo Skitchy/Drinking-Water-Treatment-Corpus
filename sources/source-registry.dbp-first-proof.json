@@ -1,7 +1,7 @@
 {
   "schema_version": "source-registry/v0.1",
   "registry_id": "source-registry.dbp-first-proof",
-  "updated_at": "2026-07-31T09:11:55Z",
+  "updated_at": "2026-07-31T11:40:20Z",
   "sources": [
     {
       "source_id": "source.ecfr.2026-07-01.141-130",
@@ -740,25 +740,27 @@
         "class": "agency-guidance",
         "evidence": "EPA Office of Water publication EPA 816-F-10-080, Comprehensive Disinfectants and Disinfection Byproducts Rules (Stage 1 and Stage 2): Quick Reference Guide, distributed via EPA NEPIS and linked from EPA's Drinking Water Rule Quick Reference Guides index page."
       },
-      "authenticity_evidence": "Fetched from nepis.epa.gov over TLS on 2026-07-31 via the Dockey link published on EPA's quick-reference-guides index page; title page and tables 1 through 4 content-verified against the published title. Note: the EPA index lists the guide as 2 pp; the retrieved rendering is 9 pages; content match verified on the opening pages.",
+      "authenticity_evidence": "Fetched from nepis.epa.gov over TLS on 2026-07-31 via the Dockey link published on EPA's quick-reference-guides index page; full content verified against all four rendered pages (the document is 4 pages; EPA's index says 2 pp and an earlier evidence note said 9, both wrong; 4 confirmed by two independent methods). Footer identifies EPA 816-F-10-080, Office of Water, August 2010. Independent reviewer (Ari) confirmed byte-for-byte identity with the file currently served by EPA NEPIS on 2026-07-31.",
       "reproduction_decision": {
-        "decision_id": "license-decision.epa.qrg.816-f-10-080",
+        "decision_id": "license-decision.epa.qrg.816-f-10-080.r2",
         "status": "approved",
         "classification": "public-domain-us-government-work",
         "scope": {
           "covered_components": [
-            "Guide text",
-            "Tables 1 through 5"
+            "Guide text (all four pages)",
+            "Tables 1 through 7"
           ],
           "excluded_components": [
-            "Cover photograph"
+            "Photographic and design imagery on pages 1 and 4",
+            "Redistribution of the complete PDF file"
           ]
         },
-        "evidence": "EPA publication authored by a federal agency; a work of the United States Government under 17 U.S.C. 105. Cover photograph precautionarily excluded: agency publications sometimes license cover stock photography, and the corpus never reproduces images. Maintainer ruling of 2026-07-31.",
-        "decision_payload_sha256": "dc085d72872e417a3cd49eb3d9ae3cc765176e22788d7cc768008e8a1178afef",
+        "evidence": "Guide text and tables are EPA-authored content, a work of the United States Government under 17 U.S.C. 105. Rights in the incorporated photographic imagery are not established; EPA's image guidance warns agency-hosted images may be licensed. Resolution per maintainer ruling of 2026-07-31 (second ruling, superseding license-decision.epa.qrg.816-f-10-080 after independent review flagged scope errors): only the text/table extraction is distributed, with its derivation record at captures/epa/extraction-derivation.json; the full-file digest is retained as provenance only.",
+        "decision_payload_sha256": "6e723d2aeb998070a47fd356a4c1463a1f214f43dca57b12aa8d1307f61fc4c8",
         "reviewed_by": "human.skitch",
-        "reviewed_at": "2026-07-31T09:11:55Z"
-      }
+        "reviewed_at": "2026-07-31T11:40:20Z"
+      },
+      "published_at": "2010-08-01"
     }
   ]
 }
