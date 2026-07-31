@@ -1,0 +1,34 @@
+{
+  "schema_version": "canonicalization-vectors/rfc004-v0.1",
+  "algorithm": {
+    "object_keys": "recursive-lexicographic-order",
+    "array_order": "preserved",
+    "encoding": "utf-8",
+    "whitespace": "none",
+    "trailing_newline": false,
+    "excluded_pointer": "/integrity/artifact_sha256",
+    "digest": "sha256"
+  },
+  "vectors": [
+    {
+      "canonicalization": "dw-procedure-contract/v0.1",
+      "artifact": "tests/acceptance/fixtures/procedure-contract-valid.json",
+      "expected_sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983"
+    },
+    {
+      "canonicalization": "dw-runtime-assurance-manifest/v0.2",
+      "artifact": "tests/acceptance/fixtures/runtime-assurance-manifest-v0.2-valid.json",
+      "expected_sha256": "a8991094eb10867bf6228d6f58be408164c04be9dcd52c8d6af42749a746ecc0"
+    },
+    {
+      "canonicalization": "dw-audit-envelope/v0.2",
+      "artifact": "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
+      "expected_sha256": "0fa4e9df0b4f4ec275484986cd8657e920643d5b09a31451b56b265306ca5ecf"
+    },
+    {
+      "canonicalization": "dw-evaluation-manifest/v0.1",
+      "artifact": "tests/acceptance/fixtures/evaluation-manifest-valid.json",
+      "expected_sha256": "aa159875dd2f1029f37eae8ab7920f7989d4d2780b1f367eb3a2cc6e5b08f7b6"
+    }
+  ]
+}

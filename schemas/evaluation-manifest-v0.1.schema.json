@@ -1,0 +1,638 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:dwtc:schema:evaluation-manifest:v0.1",
+  "title": "Reader Evaluation Manifest v0.1",
+  "description": "A separately versioned evaluation anchor with explicit corpus, procedure, runbook, runtime, case-schema, and grader compatibility pins.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "evaluation_id",
+    "created_at",
+    "compatibility",
+    "conformance_suite",
+    "capability_challenge_set",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "evaluation-manifest/v0.1"
+    },
+    "evaluation_id": {
+      "type": "string",
+      "pattern": "^evaluation\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "corpus_release",
+        "procedure_contract",
+        "runbook",
+        "runtime",
+        "evaluation_schema",
+        "grader"
+      ],
+      "properties": {
+        "corpus_release": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "release_id",
+            "manifest_sha256"
+          ],
+          "properties": {
+            "release_id": {
+              "type": "string",
+              "pattern": "^corpus-release\\.[a-zA-Z0-9_-]+$"
+            },
+            "manifest_sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        },
+        "procedure_contract": {
+          "$ref": "#/$defs/versionedArtifact"
+        },
+        "runbook": {
+          "$ref": "#/$defs/versionedArtifact"
+        },
+        "runtime": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "manifest_id",
+            "manifest_sha256"
+          ],
+          "properties": {
+            "manifest_id": {
+              "type": "string",
+              "pattern": "^runtime-assurance\\.[a-zA-Z0-9_-]+$"
+            },
+            "manifest_sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        },
+        "evaluation_schema": {
+          "$ref": "#/$defs/versionedArtifact"
+        },
+        "grader": {
+          "$ref": "#/$defs/versionedArtifact"
+        }
+      }
+    },
+    "conformance_suite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite_id",
+        "offline_target_percent",
+        "cases"
+      ],
+      "properties": {
+        "suite_id": {
+          "type": "string",
+          "pattern": "^conformance-suite\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+        },
+        "offline_target_percent": {
+          "const": 100
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/case"
+          }
+        }
+      }
+    },
+    "capability_challenge_set": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "set_id",
+        "classification",
+        "rotation_policy",
+        "isolation",
+        "cases"
+      ],
+      "properties": {
+        "set_id": {
+          "type": "string",
+          "pattern": "^capability-challenge-set\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+        },
+        "classification": {
+          "const": "public-rotating-challenge-set"
+        },
+        "rotation_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "minimum_active_cases",
+            "maximum_active_cases",
+            "lazy_rotation",
+            "retire_on_design_exposure",
+            "metamorphic_replacements_permitted"
+          ],
+          "properties": {
+            "minimum_active_cases": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "maximum_active_cases": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "lazy_rotation": {
+              "const": true
+            },
+            "retire_on_design_exposure": {
+              "const": true
+            },
+            "metamorphic_replacements_permitted": {
+              "const": true
+            }
+          }
+        },
+        "isolation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "reader_input_fields",
+            "grader_holds_oracle",
+            "remaining_pool_hidden_from_reader",
+            "blind_holdout_claim"
+          ],
+          "properties": {
+            "reader_input_fields": {
+              "const": [
+                "question",
+                "applicability_inputs"
+              ]
+            },
+            "grader_holds_oracle": {
+              "const": true
+            },
+            "remaining_pool_hidden_from_reader": {
+              "const": true
+            },
+            "blind_holdout_claim": {
+              "const": false
+            }
+          }
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/case"
+          }
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonicalization",
+        "artifact_sha256"
+      ],
+      "properties": {
+        "canonicalization": {
+          "const": "dw-evaluation-manifest/v0.1"
+        },
+        "artifact_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$comment": "The conformance suite is a public regression contract whose offline target is exactly 100 percent; that target is not a held-out capability claim. The capability pool is accurately named a public rotating challenge set. Its initial manifest may declare the maintainer-ratified 10-to-15 range without making that operational size permanent schema law. Harness isolation gives the reader only the current question and permitted applicability inputs while the grader holds the oracle and remaining pool. Semantic validation requires declared pool bounds to be ordered and the active count to fall within them; unique case and disposition IDs; each human disposition's case_review_payload_sha256 to match canonical case content excluding disposition history; every case and current accepted disposition to pin the manifest-level corpus, procedure, runbook, and runtime digests; reviewers to resolve as qualified humans at review time; evidence-backed required selections to contain evidence; and each case's latest disposition to be accepted. A case exposed in design discussion retires and is replaced before further capability measurement.",
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "versionedArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "version",
+        "sha256"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "claimId": {
+      "type": "string",
+      "pattern": "^claim\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "quoteId": {
+      "type": "string",
+      "pattern": "^quote\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "cellId": {
+      "type": "string",
+      "pattern": "^cell\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "applicabilityInputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "jurisdiction",
+        "use_class"
+      ],
+      "properties": {
+        "jurisdiction": {
+          "type": "string",
+          "minLength": 1
+        },
+        "use_class": {
+          "const": "regulatory-reference"
+        },
+        "system_types": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "source_water_types": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "conditions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "evidenceSelection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_ids",
+        "quote_ids",
+        "cell_ids"
+      ],
+      "properties": {
+        "claim_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/claimId"
+          }
+        },
+        "quote_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/quoteId"
+          }
+        },
+        "cell_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/cellId"
+          }
+        }
+      }
+    },
+    "reasonGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "source_kind",
+        "source_ids"
+      ],
+      "properties": {
+        "code": {
+          "enum": [
+            "OUT_OF_COVERAGE",
+            "INSUFFICIENT_EVIDENCE",
+            "STALE_EVIDENCE",
+            "INELIGIBLE_EVIDENCE",
+            "APPLICABILITY_UNRESOLVED",
+            "RETRIEVAL_MISS",
+            "CHECK_FAILED",
+            "SOURCE_WATCH_FAILED",
+            "SOURCE_CHANGE_PENDING",
+            "SYNTHESIS_WITHHELD"
+          ]
+        },
+        "source_kind": {
+          "enum": [
+            "check",
+            "policy-gate"
+          ]
+        },
+        "source_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+          }
+        }
+      }
+    },
+    "oracle": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "required_selection",
+            "allowed_alternatives",
+            "forbidden_selection"
+          ],
+          "properties": {
+            "kind": {
+              "const": "evidence-backed"
+            },
+            "required_selection": {
+              "$ref": "#/$defs/evidenceSelection"
+            },
+            "allowed_alternatives": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/evidenceSelection"
+              }
+            },
+            "forbidden_selection": {
+              "$ref": "#/$defs/evidenceSelection"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "acceptable_reasons"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "evidence-only",
+                "abstention"
+              ]
+            },
+            "acceptable_reasons": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/reasonGate"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "disposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "disposition_id",
+        "status",
+        "reviewed_by",
+        "reviewed_at",
+        "rationale",
+        "case_review_payload_sha256",
+        "corpus_manifest_sha256",
+        "procedure_contract_sha256",
+        "runbook_sha256",
+        "runtime_manifest_sha256"
+      ],
+      "properties": {
+        "disposition_id": {
+          "type": "string",
+          "pattern": "^disposition\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+        },
+        "status": {
+          "enum": [
+            "accepted",
+            "retired"
+          ]
+        },
+        "reviewed_by": {
+          "type": "string",
+          "pattern": "^human\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+        },
+        "reviewed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "case_review_payload_sha256": {
+          "$ref": "#/$defs/sha256",
+          "$comment": "SHA-256 over the case object excluding compatibility_dispositions, using recursive lexicographic object-key order, preserved array order, whitespace-free UTF-8 JSON, and no trailing newline."
+        },
+        "corpus_manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "procedure_contract_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "runbook_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "runtime_manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id",
+        "question",
+        "rationale",
+        "severity",
+        "category",
+        "corpus_manifest_sha256",
+        "applicability_inputs",
+        "expected_outcome",
+        "oracle",
+        "compatibility_dispositions"
+      ],
+      "properties": {
+        "case_id": {
+          "type": "string",
+          "pattern": "^eval-case\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "severity": {
+          "enum": [
+            "critical",
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "category": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+        },
+        "corpus_manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "applicability_inputs": {
+          "$ref": "#/$defs/applicabilityInputs"
+        },
+        "expected_outcome": {
+          "enum": [
+            "evidence-backed",
+            "evidence-only",
+            "abstention"
+          ]
+        },
+        "oracle": {
+          "$ref": "#/$defs/oracle"
+        },
+        "compatibility_dispositions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/disposition"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "expected_outcome": {
+                "const": "evidence-backed"
+              }
+            },
+            "required": [
+              "expected_outcome"
+            ]
+          },
+          "then": {
+            "properties": {
+              "oracle": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "evidence-backed"
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "oracle": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "evidence-only",
+                      "abstention"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "expected_outcome": {
+                "const": "evidence-only"
+              }
+            },
+            "required": [
+              "expected_outcome"
+            ]
+          },
+          "then": {
+            "properties": {
+              "oracle": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "evidence-only"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "expected_outcome": {
+                "const": "abstention"
+              }
+            },
+            "required": [
+              "expected_outcome"
+            ]
+          },
+          "then": {
+            "properties": {
+              "oracle": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "abstention"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

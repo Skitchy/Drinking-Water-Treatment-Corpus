@@ -1,0 +1,175 @@
+{
+  "schema_version": "procedure-contract/v0.1",
+  "contract_id": "procedure-contract.fixture-resolution",
+  "contract_version": "v0.1.0",
+  "created_at": "2026-07-31T10:00:00Z",
+  "initial_state_id": "state.structured-resolution",
+  "states": [
+    {
+      "state_id": "state.structured-resolution",
+      "role": "initial"
+    },
+    {
+      "state_id": "state.prose-retrieval",
+      "role": "intermediate"
+    },
+    {
+      "state_id": "state.validation",
+      "role": "intermediate"
+    },
+    {
+      "state_id": "state.complete-backed",
+      "role": "terminal"
+    },
+    {
+      "state_id": "state.complete-evidence-only",
+      "role": "terminal"
+    },
+    {
+      "state_id": "state.abstain-applicability",
+      "role": "terminal"
+    },
+    {
+      "state_id": "state.abstain-insufficient-evidence",
+      "role": "terminal"
+    }
+  ],
+  "triggers": [
+    {
+      "trigger_id": "trigger.structured-match",
+      "kind": "resolution-result",
+      "condition_id": "condition.structured-claim-matched"
+    },
+    {
+      "trigger_id": "trigger.structured-not-covered",
+      "kind": "resolution-result",
+      "condition_id": "condition.structured-claim-not-covered"
+    },
+    {
+      "trigger_id": "trigger.applicability-missing",
+      "kind": "policy-gate",
+      "condition_id": "condition.applicability-input-missing"
+    },
+    {
+      "trigger_id": "trigger.prose-match",
+      "kind": "resolution-result",
+      "condition_id": "condition.prose-evidence-matched"
+    },
+    {
+      "trigger_id": "trigger.prose-miss",
+      "kind": "resolution-result",
+      "condition_id": "condition.prose-evidence-missing"
+    },
+    {
+      "trigger_id": "trigger.checks-pass",
+      "kind": "check-verdict",
+      "condition_id": "condition.required-checks-pass"
+    },
+    {
+      "trigger_id": "trigger.synthesis-withheld",
+      "kind": "policy-gate",
+      "condition_id": "condition.synthesis-withheld"
+    }
+  ],
+  "transitions": [
+    {
+      "transition_id": "transition.structured-to-validation",
+      "from_state_id": "state.structured-resolution",
+      "trigger_id": "trigger.structured-match",
+      "to_state_id": "state.validation",
+      "requirement": "mandatory",
+      "order": 1
+    },
+    {
+      "transition_id": "transition.structured-to-prose",
+      "from_state_id": "state.structured-resolution",
+      "trigger_id": "trigger.structured-not-covered",
+      "to_state_id": "state.prose-retrieval",
+      "requirement": "permitted",
+      "order": 2
+    },
+    {
+      "transition_id": "transition.structured-to-applicability-abstention",
+      "from_state_id": "state.structured-resolution",
+      "trigger_id": "trigger.applicability-missing",
+      "to_state_id": "state.abstain-applicability",
+      "requirement": "mandatory",
+      "order": 3
+    },
+    {
+      "transition_id": "transition.prose-to-validation",
+      "from_state_id": "state.prose-retrieval",
+      "trigger_id": "trigger.prose-match",
+      "to_state_id": "state.validation",
+      "requirement": "mandatory",
+      "order": 4
+    },
+    {
+      "transition_id": "transition.prose-to-insufficient-evidence",
+      "from_state_id": "state.prose-retrieval",
+      "trigger_id": "trigger.prose-miss",
+      "to_state_id": "state.abstain-insufficient-evidence",
+      "requirement": "mandatory",
+      "order": 5
+    },
+    {
+      "transition_id": "transition.validation-to-backed",
+      "from_state_id": "state.validation",
+      "trigger_id": "trigger.checks-pass",
+      "to_state_id": "state.complete-backed",
+      "requirement": "mandatory",
+      "order": 6
+    },
+    {
+      "transition_id": "transition.validation-to-evidence-only",
+      "from_state_id": "state.validation",
+      "trigger_id": "trigger.synthesis-withheld",
+      "to_state_id": "state.complete-evidence-only",
+      "requirement": "permitted",
+      "order": 7
+    }
+  ],
+  "terminal_mappings": [
+    {
+      "state_id": "state.complete-backed",
+      "outcome": "evidence-backed"
+    },
+    {
+      "state_id": "state.complete-evidence-only",
+      "outcome": "evidence-only",
+      "reason_gate": {
+        "code": "SYNTHESIS_WITHHELD",
+        "source_kind": "policy-gate",
+        "source_ids": [
+          "fixture-policy.synthesis"
+        ]
+      }
+    },
+    {
+      "state_id": "state.abstain-applicability",
+      "outcome": "abstention",
+      "reason_gate": {
+        "code": "APPLICABILITY_UNRESOLVED",
+        "source_kind": "policy-gate",
+        "source_ids": [
+          "fixture-policy.applicability"
+        ]
+      }
+    },
+    {
+      "state_id": "state.abstain-insufficient-evidence",
+      "outcome": "abstention",
+      "reason_gate": {
+        "code": "INSUFFICIENT_EVIDENCE",
+        "source_kind": "check",
+        "source_ids": [
+          "claim-resolution"
+        ]
+      }
+    }
+  ],
+  "integrity": {
+    "canonicalization": "dw-procedure-contract/v0.1",
+    "artifact_sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983"
+  }
+}

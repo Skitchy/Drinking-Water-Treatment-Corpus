@@ -1,0 +1,551 @@
+{
+  "schema_version": "evaluation-manifest/v0.1",
+  "evaluation_id": "evaluation.fixture-dbp-001",
+  "created_at": "2026-07-31T10:10:00Z",
+  "compatibility": {
+    "corpus_release": {
+      "release_id": "corpus-release.fixture-001",
+      "manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    },
+    "procedure_contract": {
+      "artifact_id": "procedure-contract.fixture-resolution",
+      "version": "v0.1.0",
+      "sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983"
+    },
+    "runbook": {
+      "artifact_id": "runbook.fixture-dbp",
+      "version": "v0.1.0",
+      "sha256": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2"
+    },
+    "runtime": {
+      "manifest_id": "runtime-assurance.fixture-002",
+      "manifest_sha256": "a8991094eb10867bf6228d6f58be408164c04be9dcd52c8d6af42749a746ecc0"
+    },
+    "evaluation_schema": {
+      "artifact_id": "urn:dwtc:schema:evaluation-manifest:v0.1",
+      "version": "v0.1.0",
+      "sha256": "8ae7738950d793f487b1b3a04cd60e1a49e52f01e0b5dd7edaf0a151899a9dfd"
+    },
+    "grader": {
+      "artifact_id": "grader.rfc004-amendment",
+      "version": "v0.1.0",
+      "sha256": "dac45aae54f486292e80ec2acc83a71ce237dded68fc24a321cfee36b09c5acf"
+    }
+  },
+  "conformance_suite": {
+    "suite_id": "conformance-suite.fixture-dbp",
+    "offline_target_percent": 100,
+    "cases": [
+      {
+        "case_id": "eval-case.conformance-applicability-clarification",
+        "question": "What requirement applies when the system type is not supplied?",
+        "rationale": "Clarification remains an abstention with a deterministic applicability gate.",
+        "severity": "high",
+        "category": "applicability",
+        "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "applicability_inputs": {
+          "jurisdiction": "fixture-jurisdiction",
+          "use_class": "regulatory-reference"
+        },
+        "expected_outcome": "abstention",
+        "oracle": {
+          "kind": "abstention",
+          "acceptable_reasons": [
+            {
+              "code": "APPLICABILITY_UNRESOLVED",
+              "source_kind": "policy-gate",
+              "source_ids": [
+                "fixture-policy.applicability"
+              ]
+            }
+          ]
+        },
+        "compatibility_dispositions": [
+          {
+            "disposition_id": "disposition.conformance-applicability-001",
+            "status": "accepted",
+            "reviewed_by": "human.skitch",
+            "reviewed_at": "2026-07-31T10:00:00Z",
+            "rationale": "Synthetic accepted conformance oracle.",
+            "case_review_payload_sha256": "db96be5dd051682f57d9d1e15c5c5d1fd33e4dc76fbbf7b356e0e527bc9f13f8",
+            "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "procedure_contract_sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983",
+            "runbook_sha256": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+            "runtime_manifest_sha256": "a8991094eb10867bf6228d6f58be408164c04be9dcd52c8d6af42749a746ecc0"
+          }
+        ]
+      }
+    ]
+  },
+  "capability_challenge_set": {
+    "set_id": "capability-challenge-set.fixture-dbp",
+    "classification": "public-rotating-challenge-set",
+    "rotation_policy": {
+      "minimum_active_cases": 10,
+      "maximum_active_cases": 15,
+      "lazy_rotation": true,
+      "retire_on_design_exposure": true,
+      "metamorphic_replacements_permitted": true
+    },
+    "isolation": {
+      "reader_input_fields": [
+        "question",
+        "applicability_inputs"
+      ],
+      "grader_holds_oracle": true,
+      "remaining_pool_hidden_from_reader": true,
+      "blind_holdout_claim": false
+    },
+    "cases": [
+      {
+        "case_id": "eval-case.capability-001",
+        "question": "What is the synthetic fixture limit?",
+        "rationale": "Exercises exact structured-claim selection.",
+        "severity": "high",
+        "category": "numeric-claim",
+        "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "applicability_inputs": {
+          "jurisdiction": "fixture-jurisdiction",
+          "use_class": "regulatory-reference",
+          "system_types": [
+            "fixture-system"
+          ]
+        },
+        "expected_outcome": "evidence-backed",
+        "oracle": {
+          "kind": "evidence-backed",
+          "required_selection": {
+            "claim_ids": [
+              "claim.dbp.synthetic-limit"
+            ],
+            "quote_ids": [],
+            "cell_ids": []
+          },
+          "allowed_alternatives": [],
+          "forbidden_selection": {
+            "claim_ids": [
+              "claim.dbp.synthetic-wrong-limit"
+            ],
+            "quote_ids": [],
+            "cell_ids": []
+          }
+        },
+        "compatibility_dispositions": [
+          {
+            "disposition_id": "disposition.capability-001",
+            "status": "accepted",
+            "reviewed_by": "human.skitch",
+            "reviewed_at": "2026-07-31T10:00:00Z",
+            "rationale": "Synthetic accepted capability oracle 001.",
+            "case_review_payload_sha256": "72e35149bb161ad2ce17473c3412477900d0dc42e74a80b664867fab2d5addd1",
+            "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "procedure_contract_sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983",
+            "runbook_sha256": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+            "runtime_manifest_sha256": "a8991094eb10867bf6228d6f58be408164c04be9dcd52c8d6af42749a746ecc0"
+          }
+        ]
+      },
+      {
+        "case_id": "eval-case.capability-002",
+        "question": "Return evidence without synthesis for the synthetic fixture limit.",
+        "rationale": "Exercises a controlled evidence-only outcome.",
+        "severity": "medium",
+        "category": "evidence-only",
+        "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "applicability_inputs": {
+          "jurisdiction": "fixture-jurisdiction",
+          "use_class": "regulatory-reference",
+          "system_types": [
+            "fixture-system"
+          ]
+        },
+        "expected_outcome": "evidence-only",
+        "oracle": {
+          "kind": "evidence-only",
+          "acceptable_reasons": [
+            {
+              "code": "SYNTHESIS_WITHHELD",
+              "source_kind": "policy-gate",
+              "source_ids": [
+                "fixture-policy.synthesis"
+              ]
+            }
+          ]
+        },
+        "compatibility_dispositions": [
+          {
+            "disposition_id": "disposition.capability-002",
+            "status": "accepted",
+            "reviewed_by": "human.skitch",
+            "reviewed_at": "2026-07-31T10:00:00Z",
+            "rationale": "Synthetic accepted capability oracle 002.",
+            "case_review_payload_sha256": "d43a162f761d01ec74e9effb264daa227d6c3b1d975b5f3dcc342602a8bf81ca",
+            "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "procedure_contract_sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983",
+            "runbook_sha256": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+            "runtime_manifest_sha256": "a8991094eb10867bf6228d6f58be408164c04be9dcd52c8d6af42749a746ecc0"
+          }
+        ]
+      },
+      {
+        "case_id": "eval-case.capability-003",
+        "question": "Which limit applies when the system type is omitted?",
+        "rationale": "Exercises deterministic applicability clarification.",
+        "severity": "high",
+        "category": "applicability",
+        "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "applicability_inputs": {
+          "jurisdiction": "fixture-jurisdiction",
+          "use_class": "regulatory-reference"
+        },
+        "expected_outcome": "abstention",
+        "oracle": {
+          "kind": "abstention",
+          "acceptable_reasons": [
+            {
+              "code": "APPLICABILITY_UNRESOLVED",
+              "source_kind": "policy-gate",
+              "source_ids": [
+                "fixture-policy.applicability"
+              ]
+            }
+          ]
+        },
+        "compatibility_dispositions": [
+          {
+            "disposition_id": "disposition.capability-003",
+            "status": "accepted",
+            "reviewed_by": "human.skitch",
+            "reviewed_at": "2026-07-31T10:00:00Z",
+            "rationale": "Synthetic accepted capability oracle 003.",
+            "case_review_payload_sha256": "f00ee4153688bf905476ef9d012a19708bf933c4ba560cd64b166fddde6aec30",
+            "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "procedure_contract_sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983",
+            "runbook_sha256": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+            "runtime_manifest_sha256": "a8991094eb10867bf6228d6f58be408164c04be9dcd52c8d6af42749a746ecc0"
+          }
+        ]
+      },
+      {
+        "case_id": "eval-case.capability-004",
+        "question": "Which synthetic table cell applies to the supplied row and column?",
+        "rationale": "Exercises explicit stable-cell selection.",
+        "severity": "critical",
+        "category": "table-cell",
+        "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "applicability_inputs": {
+          "jurisdiction": "fixture-jurisdiction",
+          "use_class": "regulatory-reference",
+          "conditions": [
+            "row-low",
+            "column-high"
+          ]
+        },
+        "expected_outcome": "evidence-backed",
+        "oracle": {
+          "kind": "evidence-backed",
+          "required_selection": {
+            "claim_ids": [
+              "claim.dbp.synthetic-removal-matrix"
+            ],
+            "quote_ids": [],
+            "cell_ids": [
+              "cell.row-low_col-high"
+            ]
+          },
+          "allowed_alternatives": [],
+          "forbidden_selection": {
+            "claim_ids": [],
+            "quote_ids": [],
+            "cell_ids": [
+              "cell.row-high_col-low"
+            ]
+          }
+        },
+        "compatibility_dispositions": [
+          {
+            "disposition_id": "disposition.capability-004",
+            "status": "accepted",
+            "reviewed_by": "human.skitch",
+            "reviewed_at": "2026-07-31T10:00:00Z",
+            "rationale": "Synthetic accepted capability oracle 004.",
+            "case_review_payload_sha256": "aaea5d2f05bdedcf8fe8b89c5d5e729ae400922ae842be1f5fcffa043680fbc0",
+            "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "procedure_contract_sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983",
+            "runbook_sha256": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+            "runtime_manifest_sha256": "a8991094eb10867bf6228d6f58be408164c04be9dcd52c8d6af42749a746ecc0"
+          }
+        ]
+      },
+      {
+        "case_id": "eval-case.capability-005",
+        "question": "What does the fixture say about an undeclared rule family?",
+        "rationale": "Exercises explicit out-of-coverage abstention.",
+        "severity": "high",
+        "category": "coverage",
+        "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "applicability_inputs": {
+          "jurisdiction": "fixture-jurisdiction",
+          "use_class": "regulatory-reference"
+        },
+        "expected_outcome": "abstention",
+        "oracle": {
+          "kind": "abstention",
+          "acceptable_reasons": [
+            {
+              "code": "OUT_OF_COVERAGE",
+              "source_kind": "check",
+              "source_ids": [
+                "coverage"
+              ]
+            }
+          ]
+        },
+        "compatibility_dispositions": [
+          {
+            "disposition_id": "disposition.capability-005",
+            "status": "accepted",
+            "reviewed_by": "human.skitch",
+            "reviewed_at": "2026-07-31T10:00:00Z",
+            "rationale": "Synthetic accepted capability oracle 005.",
+            "case_review_payload_sha256": "2d48508d8e2c05846665bbf3ff3753b5dc6020d873c9729630317ab8df99409d",
+            "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "procedure_contract_sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983",
+            "runbook_sha256": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+            "runtime_manifest_sha256": "a8991094eb10867bf6228d6f58be408164c04be9dcd52c8d6af42749a746ecc0"
+          }
+        ]
+      },
+      {
+        "case_id": "eval-case.capability-006",
+        "question": "Return the source passage supporting the synthetic limit.",
+        "rationale": "Exercises stable quote selection.",
+        "severity": "medium",
+        "category": "quote-resolution",
+        "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "applicability_inputs": {
+          "jurisdiction": "fixture-jurisdiction",
+          "use_class": "regulatory-reference",
+          "system_types": [
+            "fixture-system"
+          ]
+        },
+        "expected_outcome": "evidence-backed",
+        "oracle": {
+          "kind": "evidence-backed",
+          "required_selection": {
+            "claim_ids": [],
+            "quote_ids": [
+              "quote.dbp.synthetic-limit"
+            ],
+            "cell_ids": []
+          },
+          "allowed_alternatives": [],
+          "forbidden_selection": {
+            "claim_ids": [],
+            "quote_ids": [
+              "quote.dbp.synthetic-unrelated"
+            ],
+            "cell_ids": []
+          }
+        },
+        "compatibility_dispositions": [
+          {
+            "disposition_id": "disposition.capability-006",
+            "status": "accepted",
+            "reviewed_by": "human.skitch",
+            "reviewed_at": "2026-07-31T10:00:00Z",
+            "rationale": "Synthetic accepted capability oracle 006.",
+            "case_review_payload_sha256": "94e80890c66e37febee1f0b794dd8dcdd1eb4a726b904ef99088f537674dbadf",
+            "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "procedure_contract_sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983",
+            "runbook_sha256": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+            "runtime_manifest_sha256": "a8991094eb10867bf6228d6f58be408164c04be9dcd52c8d6af42749a746ecc0"
+          }
+        ]
+      },
+      {
+        "case_id": "eval-case.capability-007",
+        "question": "Show evidence when the synthesis policy gate is closed.",
+        "rationale": "Exercises evidence-only degradation rather than unsupported synthesis.",
+        "severity": "high",
+        "category": "policy-gate",
+        "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "applicability_inputs": {
+          "jurisdiction": "fixture-jurisdiction",
+          "use_class": "regulatory-reference",
+          "system_types": [
+            "fixture-system"
+          ]
+        },
+        "expected_outcome": "evidence-only",
+        "oracle": {
+          "kind": "evidence-only",
+          "acceptable_reasons": [
+            {
+              "code": "SYNTHESIS_WITHHELD",
+              "source_kind": "policy-gate",
+              "source_ids": [
+                "fixture-policy.synthesis"
+              ]
+            }
+          ]
+        },
+        "compatibility_dispositions": [
+          {
+            "disposition_id": "disposition.capability-007",
+            "status": "accepted",
+            "reviewed_by": "human.skitch",
+            "reviewed_at": "2026-07-31T10:00:00Z",
+            "rationale": "Synthetic accepted capability oracle 007.",
+            "case_review_payload_sha256": "954aa888be84e3ff917fd40380da42c1e8089332c0486472df96a5f790401c23",
+            "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "procedure_contract_sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983",
+            "runbook_sha256": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+            "runtime_manifest_sha256": "a8991094eb10867bf6228d6f58be408164c04be9dcd52c8d6af42749a746ecc0"
+          }
+        ]
+      },
+      {
+        "case_id": "eval-case.capability-008",
+        "question": "Answer from evidence whose freshness check has expired.",
+        "rationale": "Exercises fail-closed stale-evidence behavior.",
+        "severity": "critical",
+        "category": "freshness",
+        "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "applicability_inputs": {
+          "jurisdiction": "fixture-jurisdiction",
+          "use_class": "regulatory-reference"
+        },
+        "expected_outcome": "abstention",
+        "oracle": {
+          "kind": "abstention",
+          "acceptable_reasons": [
+            {
+              "code": "STALE_EVIDENCE",
+              "source_kind": "check",
+              "source_ids": [
+                "freshness"
+              ]
+            }
+          ]
+        },
+        "compatibility_dispositions": [
+          {
+            "disposition_id": "disposition.capability-008",
+            "status": "accepted",
+            "reviewed_by": "human.skitch",
+            "reviewed_at": "2026-07-31T10:00:00Z",
+            "rationale": "Synthetic accepted capability oracle 008.",
+            "case_review_payload_sha256": "cac55053973caaf1b79379782fe0427c1d6251d72a4bd85e92f6daf746c95c4a",
+            "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "procedure_contract_sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983",
+            "runbook_sha256": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+            "runtime_manifest_sha256": "a8991094eb10867bf6228d6f58be408164c04be9dcd52c8d6af42749a746ecc0"
+          }
+        ]
+      },
+      {
+        "case_id": "eval-case.capability-009",
+        "question": "Select the exact fixture claim without substituting a plausible alternative.",
+        "rationale": "Exercises forbidden-selection grading.",
+        "severity": "high",
+        "category": "selection-fidelity",
+        "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "applicability_inputs": {
+          "jurisdiction": "fixture-jurisdiction",
+          "use_class": "regulatory-reference",
+          "system_types": [
+            "fixture-system"
+          ]
+        },
+        "expected_outcome": "evidence-backed",
+        "oracle": {
+          "kind": "evidence-backed",
+          "required_selection": {
+            "claim_ids": [
+              "claim.dbp.synthetic-limit"
+            ],
+            "quote_ids": [],
+            "cell_ids": []
+          },
+          "allowed_alternatives": [
+            {
+              "claim_ids": [
+                "claim.dbp.synthetic-limit"
+              ],
+              "quote_ids": [
+                "quote.dbp.synthetic-limit"
+              ],
+              "cell_ids": []
+            }
+          ],
+          "forbidden_selection": {
+            "claim_ids": [
+              "claim.dbp.synthetic-wrong-limit"
+            ],
+            "quote_ids": [],
+            "cell_ids": []
+          }
+        },
+        "compatibility_dispositions": [
+          {
+            "disposition_id": "disposition.capability-009",
+            "status": "accepted",
+            "reviewed_by": "human.skitch",
+            "reviewed_at": "2026-07-31T10:00:00Z",
+            "rationale": "Synthetic accepted capability oracle 009.",
+            "case_review_payload_sha256": "53c428563f16b880eea0074e5424e90f3b22fdb96bbeb8c124edfd4d68ef2cc6",
+            "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "procedure_contract_sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983",
+            "runbook_sha256": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+            "runtime_manifest_sha256": "a8991094eb10867bf6228d6f58be408164c04be9dcd52c8d6af42749a746ecc0"
+          }
+        ]
+      },
+      {
+        "case_id": "eval-case.capability-010",
+        "question": "Treat a retrieval miss as proof that no requirement exists.",
+        "rationale": "Rejects absence claims derived from retrieval failure.",
+        "severity": "critical",
+        "category": "retrieval-miss",
+        "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "applicability_inputs": {
+          "jurisdiction": "fixture-jurisdiction",
+          "use_class": "regulatory-reference"
+        },
+        "expected_outcome": "abstention",
+        "oracle": {
+          "kind": "abstention",
+          "acceptable_reasons": [
+            {
+              "code": "RETRIEVAL_MISS",
+              "source_kind": "check",
+              "source_ids": [
+                "claim-resolution"
+              ]
+            }
+          ]
+        },
+        "compatibility_dispositions": [
+          {
+            "disposition_id": "disposition.capability-010",
+            "status": "accepted",
+            "reviewed_by": "human.skitch",
+            "reviewed_at": "2026-07-31T10:00:00Z",
+            "rationale": "Synthetic accepted capability oracle 010.",
+            "case_review_payload_sha256": "9867fd61162d97cb6a0379c7c6aae377152af8b2559b02fd31b8150a75c78c76",
+            "corpus_manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "procedure_contract_sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983",
+            "runbook_sha256": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+            "runtime_manifest_sha256": "a8991094eb10867bf6228d6f58be408164c04be9dcd52c8d6af42749a746ecc0"
+          }
+        ]
+      }
+    ]
+  },
+  "integrity": {
+    "canonicalization": "dw-evaluation-manifest/v0.1",
+    "artifact_sha256": "aa159875dd2f1029f37eae8ab7920f7989d4d2780b1f367eb3a2cc6e5b08f7b6"
+  }
+}

@@ -89,4 +89,35 @@ answer surface, policy-mandatory check coverage, structured outcome causes,
 manifest compatibility, claim/quote/source resolution, reviewer qualification
 timing, bounds, uniqueness, derivation cycles, table-band and cell coverage,
 and answer-side table-cell selection and fidelity coverage. Canonicalization
-conformance vectors remain an explicit next action in `PROJECT-STATE.md`.
+vectors for the original ratified v0.1 artifacts remain an explicit next
+action in `PROJECT-STATE.md`; the RFC 004 candidate adds vectors only for its
+four new integrity-bearing fixtures.
+
+## RFC 004 amendment cases
+
+`manifest-rfc004-amendment-v0.1.json` adds AT-041 through AT-074 without
+altering the ratified v0.1 acceptance manifest:
+
+- AT-041–AT-045 exercise the finite, closed, acyclic procedure contract and
+  terminal reason gates.
+- AT-046–AT-048 and AT-063 exercise direct runtime pins and effective runbook
+  staleness, including the exact due-time boundary.
+- AT-049–AT-055, AT-064, and AT-068 exercise answer binding, conditional trace
+  presence, contract equality, transition continuity, fallback authorization,
+  terminal outcome agreement, complete gotcha accounting, and audit integrity.
+- AT-056–AT-062, AT-065, and AT-074 exercise the conformance/capability split, declared
+  challenge-pool bounds, accurate public-set labeling, structured oracles,
+  compatibility re-disposition, review-payload binding, human authorization,
+  and grader pinning.
+- AT-066–AT-067 reject terminal-state transitions and nondeterministic routes.
+- AT-069–AT-073 remain explicitly specified integration requirements for
+  process-level challenge isolation, semantic-display invariance, weaker-reader
+  degradation, dependency-aware co-change review, and deterministic
+  clarification rendering. The schema fixtures do not pretend those future
+  end-to-end controls already exist.
+
+The executable candidate uses four canonicalization vectors for the new
+procedure, runtime, audit, and evaluation fixtures. Run `npm test` to execute
+the original 40 ratified cases followed by the 29 executable amendment cases;
+the five integration cases remain visible and non-passing until their runtime
+components exist.

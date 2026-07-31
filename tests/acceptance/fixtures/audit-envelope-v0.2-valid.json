@@ -1,0 +1,142 @@
+{
+  "schema_version": "audit-envelope/v0.2",
+  "audit_id": "audit.fixture-backed-002",
+  "created_at": "2026-07-31T10:05:00Z",
+  "query": {
+    "canonicalization_id": "dw-query/v0.1",
+    "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "normalized_query_retained": false,
+    "expansions": []
+  },
+  "corpus": {
+    "release_id": "corpus-release.fixture-001",
+    "manifest_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "runtime": {
+    "manifest_id": "runtime-assurance.fixture-002",
+    "manifest_sha256": "a8991094eb10867bf6228d6f58be408164c04be9dcd52c8d6af42749a746ecc0"
+  },
+  "retrieval": {
+    "retriever_version": "fixture-retriever/v0.1",
+    "candidates": [
+      {
+        "page_id": "dbp.synthetic-limit",
+        "eligible": true,
+        "ineligibility_codes": [],
+        "score": 1
+      }
+    ],
+    "selected_page_ids": [
+      "dbp.synthetic-limit"
+    ]
+  },
+  "generation": {
+    "accepted_attempt": 1,
+    "attempts": [
+      {
+        "attempt": 1,
+        "response_sha256": "1616161616161616161616161616161616161616161616161616161616161616",
+        "candidate_claim_ids": [
+          "claim.dbp.synthetic-limit",
+          "claim.dbp.synthetic-removal-matrix"
+        ],
+        "candidate_quote_ids": [
+          "quote.dbp.synthetic-limit"
+        ],
+        "rejection_codes": []
+      }
+    ]
+  },
+  "procedure": {
+    "contract": {
+      "artifact_id": "procedure-contract.fixture-resolution",
+      "sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983"
+    },
+    "resolution_path_id": "path.structured-claim-success",
+    "structured_claim_resolution": {
+      "attempted": true,
+      "result": "matched",
+      "claim_ids": [
+        "claim.dbp.synthetic-limit",
+        "claim.dbp.synthetic-removal-matrix"
+      ]
+    },
+    "fallback": {
+      "authorized": false
+    },
+    "transitions": [
+      {
+        "ordinal": 1,
+        "transition_id": "transition.structured-to-validation",
+        "from_state_id": "state.structured-resolution",
+        "trigger_id": "trigger.structured-match",
+        "to_state_id": "state.validation"
+      },
+      {
+        "ordinal": 2,
+        "transition_id": "transition.validation-to-backed",
+        "from_state_id": "state.validation",
+        "trigger_id": "trigger.checks-pass",
+        "to_state_id": "state.complete-backed"
+      }
+    ],
+    "terminal_state_id": "state.complete-backed",
+    "gates": [
+      {
+        "gate_id": "fixture-policy.applicability",
+        "kind": "clarification",
+        "verdict": "not-reached"
+      },
+      {
+        "gate_id": "fixture-policy.synthesis",
+        "kind": "policy",
+        "verdict": "not-reached"
+      }
+    ],
+    "gotcha_checks": [
+      {
+        "check_id": "gotcha.units-and-parameter",
+        "verdict": "pass"
+      },
+      {
+        "check_id": "gotcha.applicability-context",
+        "verdict": "pass"
+      }
+    ]
+  },
+  "outcome": "evidence-backed",
+  "checks": [
+    {
+      "check_id": "numeric-claim-tuple",
+      "version": "v0.1",
+      "verdict": "pass",
+      "subjects": [
+        {
+          "kind": "claim",
+          "id": "claim.dbp.synthetic-limit"
+        }
+      ],
+      "reason_codes": []
+    },
+    {
+      "check_id": "table-cell-fidelity",
+      "version": "v0.1",
+      "verdict": "pass",
+      "subjects": [
+        {
+          "kind": "claim-cell",
+          "id": "claim.dbp.synthetic-removal-matrix#cell.row-low_col-high"
+        }
+      ],
+      "reason_codes": []
+    }
+  ],
+  "answer": {
+    "answer_id": "answer.fixture-backed-002",
+    "artifact_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "integrity": {
+    "canonicalization": "dw-audit-envelope/v0.2",
+    "artifact_sha256": "0fa4e9df0b4f4ec275484986cd8657e920643d5b09a31451b56b265306ca5ecf"
+  }
+}

@@ -1,0 +1,398 @@
+{
+  "schema_version": "acceptance-manifest/rfc004-amendment-v0.1",
+  "cases": [
+    {
+      "id": "AT-041",
+      "title": "Procedure contract rejects arbitrary expression language",
+      "layer": "schema",
+      "normative_source": "RFC 004 finite-contract ruling",
+      "status": "executable-candidate",
+      "artifacts": [
+        "schemas/procedure-contract-v0.1.schema.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "expression-field-rejected"
+    },
+    {
+      "id": "AT-042",
+      "title": "Every procedure transition resolves both states",
+      "layer": "semantic",
+      "normative_source": "RFC 004 procedure-contract disposition",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/procedure-contract-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "unknown-state-rejected"
+    },
+    {
+      "id": "AT-043",
+      "title": "Procedure transition graph is acyclic",
+      "layer": "semantic",
+      "normative_source": "RFC 004 finite-contract ruling",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/procedure-contract-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "procedure-loop-rejected"
+    },
+    {
+      "id": "AT-044",
+      "title": "Procedure transition order is unique and strict",
+      "layer": "semantic",
+      "normative_source": "RFC 004 resolution-order disposition",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/procedure-contract-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "duplicate-order-rejected"
+    },
+    {
+      "id": "AT-045",
+      "title": "Non-backed terminal outcomes require a controlled reason gate",
+      "layer": "schema",
+      "normative_source": "RFC 004 clarification disposition",
+      "status": "executable-candidate",
+      "artifacts": [
+        "schemas/procedure-contract-v0.1.schema.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "missing-reason-gate-rejected"
+    },
+    {
+      "id": "AT-046",
+      "title": "Runtime v0.2 requires direct runbook and procedure pins",
+      "layer": "schema",
+      "normative_source": "RFC 004 runbook pinning disposition",
+      "status": "executable-candidate",
+      "artifacts": [
+        "schemas/runtime-assurance-manifest-v0.2.schema.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "missing-runbook-rejected"
+    },
+    {
+      "id": "AT-047",
+      "title": "Runbook review time precedes its next due time",
+      "layer": "semantic",
+      "normative_source": "RFC 004 runbook staleness safeguard",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/runtime-assurance-manifest-v0.2-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "invalid-review-window-rejected"
+    },
+    {
+      "id": "AT-048",
+      "title": "Runbook and runtime pin the same procedure digest",
+      "layer": "semantic",
+      "normative_source": "RFC 004 runbook compatibility safeguard",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/runtime-assurance-manifest-v0.2-valid.json",
+        "tests/acceptance/fixtures/procedure-contract-valid.json"
+      ],
+      "expected": "procedure-digest-mismatch-rejected"
+    },
+    {
+      "id": "AT-049",
+      "title": "Audit binds the exact answer artifact digest",
+      "layer": "semantic",
+      "normative_source": "RFC 004 audit-integrity safeguard",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
+        "tests/acceptance/fixtures/answer-valid-evidence-backed.json"
+      ],
+      "expected": "answer-digest-mismatch-rejected"
+    },
+    {
+      "id": "AT-050",
+      "title": "Procedure-aware runtime requires an audit procedure trace",
+      "layer": "semantic",
+      "normative_source": "RFC 004 procedure-trace disposition",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
+        "tests/acceptance/fixtures/runtime-assurance-manifest-v0.2-valid.json"
+      ],
+      "expected": "missing-procedure-trace-rejected"
+    },
+    {
+      "id": "AT-051",
+      "title": "Audit procedure digest equals the runtime pin",
+      "layer": "semantic",
+      "normative_source": "RFC 004 procedure-trace disposition",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
+        "tests/acceptance/fixtures/procedure-contract-valid.json"
+      ],
+      "expected": "floating-procedure-digest-rejected"
+    },
+    {
+      "id": "AT-052",
+      "title": "Observed transition identifiers match the pinned contract",
+      "layer": "semantic",
+      "normative_source": "RFC 004 procedure-trace disposition",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
+        "tests/acceptance/fixtures/procedure-contract-valid.json"
+      ],
+      "expected": "transition-mismatch-rejected"
+    },
+    {
+      "id": "AT-053",
+      "title": "Observed procedure path is state-continuous",
+      "layer": "semantic",
+      "normative_source": "RFC 004 procedure-trace disposition",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "discontinuous-path-rejected"
+    },
+    {
+      "id": "AT-054",
+      "title": "Fallback requires structured-resolution noncoverage",
+      "layer": "semantic",
+      "normative_source": "RFC 004 mandatory resolution-order safeguard",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "premature-fallback-rejected"
+    },
+    {
+      "id": "AT-055",
+      "title": "Audit integrity digest covers its canonical bytes",
+      "layer": "semantic",
+      "normative_source": "RFC 004 audit-integrity safeguard",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
+        "tests/acceptance/fixtures/rfc004-canonicalization-vectors-v0.1.json"
+      ],
+      "expected": "audit-digest-mismatch-rejected"
+    },
+    {
+      "id": "AT-056",
+      "title": "Conformance suite offline target remains exactly 100 percent",
+      "layer": "schema",
+      "normative_source": "RFC 004 evaluation split ruling",
+      "status": "executable-candidate",
+      "artifacts": [
+        "schemas/evaluation-manifest-v0.1.schema.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "aggregate-target-rejected"
+    },
+    {
+      "id": "AT-057",
+      "title": "Public challenge set cannot claim blind holdout status",
+      "layer": "schema",
+      "normative_source": "RFC 004 capability-isolation safeguard",
+      "status": "executable-candidate",
+      "artifacts": [
+        "schemas/evaluation-manifest-v0.1.schema.json",
+        "tests/acceptance/fixtures/evaluation-manifest-valid.json"
+      ],
+      "expected": "blind-claim-rejected"
+    },
+    {
+      "id": "AT-058",
+      "title": "Capability challenge set satisfies its declared active-case bounds",
+      "layer": "semantic",
+      "normative_source": "RFC 004 maintainer capability-pool ruling",
+      "status": "executable-candidate",
+      "artifacts": [
+        "schemas/evaluation-manifest-v0.1.schema.json",
+        "tests/acceptance/fixtures/evaluation-manifest-valid.json"
+      ],
+      "expected": "declared-pool-bound-violation-rejected"
+    },
+    {
+      "id": "AT-059",
+      "title": "Evidence-backed oracle requires an evidence selection",
+      "layer": "semantic",
+      "normative_source": "RFC 004 oracle disposition",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/evaluation-manifest-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "empty-oracle-selection-rejected"
+    },
+    {
+      "id": "AT-060",
+      "title": "Every accepted case disposition pins current compatibility digests",
+      "layer": "semantic",
+      "normative_source": "RFC 004 case-redisposition ruling",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/evaluation-manifest-valid.json"
+      ],
+      "expected": "stale-case-disposition-rejected"
+    },
+    {
+      "id": "AT-061",
+      "title": "Accepted oracle resolves to a procedure-domain reviewer",
+      "layer": "semantic",
+      "normative_source": "RFC 004 reviewer-scope ruling",
+      "status": "executable-candidate",
+      "artifacts": [
+        "schemas/reviewer-registry-v0.2.schema.json",
+        "tests/acceptance/fixtures/reviewer-registry-v0.2-valid.json"
+      ],
+      "expected": "unauthorized-oracle-review-rejected"
+    },
+    {
+      "id": "AT-062",
+      "title": "Evaluation manifest pins the exact grader artifact",
+      "layer": "semantic",
+      "normative_source": "RFC 004 evaluation compatibility disposition",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/check-rfc004-amendment.mjs",
+        "tests/acceptance/fixtures/evaluation-manifest-valid.json"
+      ],
+      "expected": "grader-digest-mismatch-rejected"
+    },
+    {
+      "id": "AT-063",
+      "title": "Runbook is overdue when evaluation time equals next due time",
+      "layer": "semantic",
+      "normative_source": "RFC 004 executable-staleness safeguard",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/runtime-assurance-manifest-v0.2-valid.json"
+      ],
+      "expected": "due-time-boundary-rejected"
+    },
+    {
+      "id": "AT-064",
+      "title": "Audit terminal mapping agrees with its declared outcome",
+      "layer": "semantic",
+      "normative_source": "RFC 004 procedure-trace disposition",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
+        "tests/acceptance/fixtures/procedure-contract-valid.json"
+      ],
+      "expected": "terminal-outcome-mismatch-rejected"
+    },
+    {
+      "id": "AT-065",
+      "title": "Active evaluation case ends in an accepted disposition",
+      "layer": "semantic",
+      "normative_source": "RFC 004 case-redisposition ruling",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/evaluation-manifest-valid.json"
+      ],
+      "expected": "retired-active-case-rejected"
+    },
+    {
+      "id": "AT-066",
+      "title": "Terminal procedure states have no outgoing transitions",
+      "layer": "semantic",
+      "normative_source": "RFC 004 finite-contract ruling",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/procedure-contract-valid.json"
+      ],
+      "expected": "terminal-transition-rejected"
+    },
+    {
+      "id": "AT-067",
+      "title": "A state and trigger pair selects at most one transition",
+      "layer": "semantic",
+      "normative_source": "RFC 004 deterministic-procedure ruling",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/procedure-contract-valid.json"
+      ],
+      "expected": "nondeterministic-route-rejected"
+    },
+    {
+      "id": "AT-068",
+      "title": "Audit accounts for every gotcha check declared by the runbook",
+      "layer": "semantic",
+      "normative_source": "RFC 004 procedure-trace disposition",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
+        "tests/acceptance/fixtures/runtime-assurance-manifest-v0.2-valid.json"
+      ],
+      "expected": "incomplete-gotcha-trace-rejected"
+    },
+    {
+      "id": "AT-069",
+      "title": "Evaluation harness prevents reader access to the oracle and remaining challenge pool",
+      "layer": "integration",
+      "normative_source": "RFC 004 capability-isolation safeguard",
+      "status": "specified",
+      "artifacts": [
+        "schemas/evaluation-manifest-v0.1.schema.json"
+      ],
+      "expected": "reader-process-receives-only-question-and-applicability"
+    },
+    {
+      "id": "AT-070",
+      "title": "Fixed inputs produce an invariant semantic display projection",
+      "layer": "integration",
+      "normative_source": "RFC 004 narrowed invariance disposition",
+      "status": "specified",
+      "artifacts": [],
+      "expected": "semantic-display-projection-equivalent"
+    },
+    {
+      "id": "AT-071",
+      "title": "Weaker conforming reader degrades only to evidence-only or abstention",
+      "layer": "integration",
+      "normative_source": "RFC 004 weaker-reader disposition",
+      "status": "specified",
+      "artifacts": [],
+      "expected": "no-unsupported-or-contradictory-evidence-backed-output"
+    },
+    {
+      "id": "AT-072",
+      "title": "Cross-layer change review is dependency- and digest-aware",
+      "layer": "integration",
+      "normative_source": "RFC 004 cross-layer integrity disposition",
+      "status": "specified",
+      "artifacts": [],
+      "expected": "change-or-reviewed-no-change-disposition-required"
+    },
+    {
+      "id": "AT-073",
+      "title": "Applicability clarification renders deterministically from controlled templates",
+      "layer": "integration",
+      "normative_source": "RFC 004 clarification disposition",
+      "status": "specified",
+      "artifacts": [
+        "schemas/procedure-contract-v0.1.schema.json",
+        "schemas/runtime-assurance-manifest-v0.2.schema.json"
+      ],
+      "expected": "abstention-gate-renders-pinned-clarification-template"
+    },
+    {
+      "id": "AT-074",
+      "title": "Human case disposition is bound to the reviewed question and oracle payload",
+      "layer": "semantic",
+      "normative_source": "RFC 004 human oracle-ownership ruling",
+      "status": "executable-candidate",
+      "artifacts": [
+        "tests/acceptance/fixtures/evaluation-manifest-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "post-review-case-change-invalidates-disposition"
+    }
+  ]
+}

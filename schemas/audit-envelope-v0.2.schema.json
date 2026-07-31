@@ -1,0 +1,666 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:dwtc:schema:audit-envelope:v0.2",
+  "title": "Reader Audit Envelope v0.2",
+  "description": "A content-bound reproducibility record extended with the controlled procedure path that governed the answer lifecycle.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "audit_id",
+    "created_at",
+    "query",
+    "corpus",
+    "runtime",
+    "retrieval",
+    "generation",
+    "outcome",
+    "checks",
+    "answer",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "audit-envelope/v0.2"
+    },
+    "audit_id": {
+      "type": "string",
+      "pattern": "^audit\\.[a-zA-Z0-9_-]+$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "query": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonicalization_id",
+        "sha256",
+        "normalized_query_retained",
+        "expansions"
+      ],
+      "properties": {
+        "canonicalization_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "normalized_query_retained": {
+          "type": "boolean"
+        },
+        "normalized_query": {
+          "type": "string"
+        },
+        "expansions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "normalized_query_retained": {
+                "const": true
+              }
+            },
+            "required": [
+              "normalized_query_retained"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalized_query": {}
+            },
+            "required": [
+              "normalized_query"
+            ]
+          },
+          "else": {
+            "not": {
+              "type": "object",
+              "properties": {
+                "normalized_query": {}
+              },
+              "required": [
+                "normalized_query"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "corpus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "release_id",
+        "manifest_sha256"
+      ],
+      "properties": {
+        "release_id": {
+          "type": "string",
+          "pattern": "^corpus-release\\.[a-zA-Z0-9_-]+$"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest_id",
+        "manifest_sha256"
+      ],
+      "properties": {
+        "manifest_id": {
+          "type": "string",
+          "pattern": "^runtime-assurance\\.[a-zA-Z0-9_-]+$"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "retrieval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "retriever_version",
+        "candidates",
+        "selected_page_ids"
+      ],
+      "properties": {
+        "retriever_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "page_id",
+              "eligible",
+              "score"
+            ],
+            "properties": {
+              "page_id": {
+                "$ref": "#/$defs/pageId"
+              },
+              "eligible": {
+                "type": "boolean"
+              },
+              "ineligibility_codes": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "score": {
+                "type": "number"
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "type": "object",
+                  "properties": {
+                    "eligible": {
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "eligible"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "ineligibility_codes"
+                  ],
+                  "properties": {
+                    "ineligibility_codes": {
+                      "type": "array",
+                      "minItems": 1
+                    }
+                  }
+                },
+                "else": {
+                  "properties": {
+                    "ineligibility_codes": {
+                      "type": "array",
+                      "maxItems": 0
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "selected_page_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/pageId"
+          }
+        }
+      }
+    },
+    "generation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "accepted_attempt",
+        "attempts"
+      ],
+      "properties": {
+        "accepted_attempt": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "attempts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "attempt",
+              "response_sha256",
+              "candidate_claim_ids",
+              "candidate_quote_ids",
+              "rejection_codes"
+            ],
+            "properties": {
+              "attempt": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "response_sha256": {
+                "$ref": "#/$defs/sha256"
+              },
+              "candidate_claim_ids": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "$ref": "#/$defs/claimId"
+                }
+              },
+              "candidate_quote_ids": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "$ref": "#/$defs/quoteId"
+                }
+              },
+              "rejection_codes": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "procedure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract",
+        "resolution_path_id",
+        "structured_claim_resolution",
+        "fallback",
+        "transitions",
+        "terminal_state_id",
+        "gates",
+        "gotcha_checks"
+      ],
+      "properties": {
+        "contract": {
+          "$ref": "#/$defs/artifact"
+        },
+        "resolution_path_id": {
+          "type": "string",
+          "pattern": "^path\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+        },
+        "structured_claim_resolution": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "attempted",
+            "result",
+            "claim_ids"
+          ],
+          "properties": {
+            "attempted": {
+              "const": true
+            },
+            "result": {
+              "enum": [
+                "matched",
+                "not-covered",
+                "failed"
+              ]
+            },
+            "claim_ids": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/claimId"
+              }
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "const": "matched"
+                  }
+                },
+                "required": [
+                  "result"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "claim_ids": {
+                    "type": "array",
+                    "minItems": 1
+                  }
+                }
+              },
+              "else": {
+                "properties": {
+                  "claim_ids": {
+                    "type": "array",
+                    "maxItems": 0
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "fallback": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "authorized"
+          ],
+          "properties": {
+            "authorized": {
+              "type": "boolean"
+            },
+            "reason_id": {
+              "type": "string",
+              "pattern": "^fallback-reason\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "type": "object",
+                "properties": {
+                  "authorized": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "authorized"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "reason_id": {}
+                },
+                "required": [
+                  "reason_id"
+                ]
+              },
+              "else": {
+                "not": {
+                  "type": "object",
+                  "properties": {
+                    "reason_id": {}
+                  },
+                  "required": [
+                    "reason_id"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "transitions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "ordinal",
+              "transition_id",
+              "from_state_id",
+              "trigger_id",
+              "to_state_id"
+            ],
+            "properties": {
+              "ordinal": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "transition_id": {
+                "$ref": "#/$defs/transitionId"
+              },
+              "from_state_id": {
+                "$ref": "#/$defs/stateId"
+              },
+              "trigger_id": {
+                "$ref": "#/$defs/triggerId"
+              },
+              "to_state_id": {
+                "$ref": "#/$defs/stateId"
+              }
+            }
+          }
+        },
+        "terminal_state_id": {
+          "$ref": "#/$defs/stateId"
+        },
+        "gates": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "gate_id",
+              "kind",
+              "verdict"
+            ],
+            "properties": {
+              "gate_id": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+              },
+              "kind": {
+                "enum": [
+                  "clarification",
+                  "abstention",
+                  "policy"
+                ]
+              },
+              "verdict": {
+                "enum": [
+                  "reached",
+                  "not-reached"
+                ]
+              }
+            }
+          }
+        },
+        "gotcha_checks": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "check_id",
+              "verdict"
+            ],
+            "properties": {
+              "check_id": {
+                "type": "string",
+                "pattern": "^gotcha\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+              },
+              "verdict": {
+                "enum": [
+                  "pass",
+                  "fail",
+                  "not-applicable"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "outcome": {
+      "$ref": "#/$defs/outcome"
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "check_id",
+          "version",
+          "verdict",
+          "subjects"
+        ],
+        "properties": {
+          "check_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "verdict": {
+            "enum": [
+              "pass",
+              "fail",
+              "not-run"
+            ]
+          },
+          "subjects": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/subject"
+            }
+          },
+          "reason_codes": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "answer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer_id",
+        "artifact_sha256"
+      ],
+      "properties": {
+        "answer_id": {
+          "type": "string",
+          "pattern": "^answer\\.[a-zA-Z0-9_-]+$"
+        },
+        "artifact_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonicalization",
+        "artifact_sha256"
+      ],
+      "properties": {
+        "canonicalization": {
+          "const": "dw-audit-envelope/v0.2"
+        },
+        "artifact_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$comment": "The procedure block is semantically required whenever the resolved runtime manifest declares a procedure contract. Validation requires its contract digest to equal the runtime pin; the observed transition sequence to start at the contract's initial state, remain continuous, resolve every transition and trigger, obey contract ordering, and end at terminal_state_id; the terminal mapping to equal outcome; structured-claim resolution to precede any fallback; fallback authorization to use a controlled reason; and all declared gotcha checks to be accounted for. The answer digest binds the exact verified-answer artifact. The audit digest covers canonical bytes excluding only integrity.artifact_sha256, creating a one-way audit-to-answer binding without implying answer-side proof of audit existence.",
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "sha256"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "pageId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "claimId": {
+      "type": "string",
+      "pattern": "^claim\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "quoteId": {
+      "type": "string",
+      "pattern": "^quote\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "stateId": {
+      "type": "string",
+      "pattern": "^state\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "triggerId": {
+      "type": "string",
+      "pattern": "^trigger\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "transitionId": {
+      "type": "string",
+      "pattern": "^transition\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "outcome": {
+      "enum": [
+        "evidence-backed",
+        "evidence-only",
+        "abstention"
+      ]
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "id"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "envelope",
+            "page",
+            "claim",
+            "claim-cell",
+            "quote"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

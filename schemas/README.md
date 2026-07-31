@@ -26,6 +26,26 @@ machine-checkable shapes:
   state to investigate a decision without asserting that a full audit system
   already exists.
 
+RFC 004 adds five post-ratification candidates without modifying the seven
+ratified v0.1 files:
+
+- `procedure-contract-v0.1.schema.json` defines a finite transition table for
+  mandatory resolution order, controlled triggers, permitted or mandatory
+  transitions, and terminal mappings to the three answer outcomes. It has no
+  expression language, model-authored branches, or loops.
+- `evaluation-manifest-v0.1.schema.json` separates conformance regression from
+  a public rotating capability challenge set and pins the exact corpus,
+  procedure, runbook, runtime, case schema, and grader used for evaluation.
+- `runtime-assurance-manifest-v0.2.schema.json` directly pins both the governed
+  runbook and procedure contract. The runbook declaration carries ownership,
+  review and due times, supersession, compatibility, and controlled fallback
+  and gotcha identifiers.
+- `audit-envelope-v0.2.schema.json` binds the exact answer digest and records a
+  controlled procedure trace. Its procedure block is required semantically
+  whenever the resolved runtime declares a procedure contract.
+- `reviewer-registry-v0.2.schema.json` adds the explicit `procedure-domain`
+  and `procedure-assurance` human-review scopes.
+
 ## Three validation layers
 
 1. **Schema-valid:** required fields, types, enums, and closed envelope
@@ -55,6 +75,12 @@ digest, even when the runtime artifacts are otherwise unchanged. Clients that
 pin runtime manifests therefore observe manifest churn at the union of the two
 lifecycles rather than silently inheriting compatibility.
 
+The runbook and procedure contract remain on the runtime side of this
+boundary. Changing either qualifies a new runtime manifest; it does not
+republish unchanged corpus evidence or alter a page's stable status. An
+overdue runbook fails runtime qualification for evidence-backed operation at
+`evaluation_time >= next_due_at`.
+
 ## Compatibility policy
 
 The profile permits unknown extension fields so that the normalized record
@@ -66,3 +92,11 @@ Every schema uses an immutable logical `urn:dwtc:schema:*` identifier rather
 than a mutable `main`-branch URL. Every incompatible change requires a new
 schema version. Published manifests and answer envelopes name exact artifact
 digests, not floating branches.
+
+The RFC 004 candidate canonicalization profile recursively sorts object keys,
+preserves array order, emits whitespace-free UTF-8 JSON with no trailing
+newline, excludes only `/integrity/artifact_sha256`, and hashes the result with
+SHA-256. Executable vectors live in
+`tests/acceptance/fixtures/rfc004-canonicalization-vectors-v0.1.json`. This PR
+presents that profile for review; merge and ratification, not authorship,
+determine its normative status.

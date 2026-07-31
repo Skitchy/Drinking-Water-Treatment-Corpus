@@ -1,0 +1,387 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:dwtc:schema:runtime-assurance-manifest:v0.2",
+  "title": "Runtime Assurance Manifest v0.2",
+  "description": "The reader-side reproducibility anchor, extended with direct fail-closed pins for the governed runbook and finite procedure contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "manifest_id",
+    "created_at",
+    "compatible_corpus",
+    "assurance_contract",
+    "required_check_baseline",
+    "answer_schema",
+    "audit_schema",
+    "eligibility_policy",
+    "verifier",
+    "generator",
+    "index",
+    "query_canonicalization",
+    "algorithm_registry",
+    "renderer_templates",
+    "runbook",
+    "procedure_contract",
+    "required_checks",
+    "outcome_reason_rules",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "runtime-assurance-manifest/v0.2"
+    },
+    "manifest_id": {
+      "type": "string",
+      "pattern": "^runtime-assurance\\.[a-zA-Z0-9_-]+$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "compatible_corpus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "release_id",
+        "manifest_sha256"
+      ],
+      "properties": {
+        "release_id": {
+          "type": "string",
+          "pattern": "^corpus-release\\.[a-zA-Z0-9_-]+$"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "assurance_contract": {
+      "$ref": "#/$defs/artifact"
+    },
+    "required_check_baseline": {
+      "$ref": "#/$defs/artifact"
+    },
+    "answer_schema": {
+      "$ref": "#/$defs/artifact"
+    },
+    "audit_schema": {
+      "$ref": "#/$defs/artifact"
+    },
+    "eligibility_policy": {
+      "$ref": "#/$defs/artifact"
+    },
+    "verifier": {
+      "$ref": "#/$defs/artifact"
+    },
+    "generator": {
+      "$ref": "#/$defs/artifact"
+    },
+    "index": {
+      "$ref": "#/$defs/artifact"
+    },
+    "query_canonicalization": {
+      "$ref": "#/$defs/artifact"
+    },
+    "algorithm_registry": {
+      "$ref": "#/$defs/algorithmRegistry"
+    },
+    "renderer_templates": {
+      "$ref": "#/$defs/artifact"
+    },
+    "runbook": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "version",
+        "sha256",
+        "owner_id",
+        "reviewed_at",
+        "next_due_at",
+        "supersedes",
+        "compatible_procedure_contract_sha256",
+        "fallback_reason_ids",
+        "gotcha_check_ids"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "pattern": "^runbook\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "owner_id": {
+          "type": "string",
+          "pattern": "^(?:human|role)\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+        },
+        "reviewed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "next_due_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "supersedes": {
+          "type": "array",
+          "maxItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/versionedArtifact"
+          }
+        },
+        "compatible_procedure_contract_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "fallback_reason_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^fallback-reason\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+          }
+        },
+        "gotcha_check_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^gotcha\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+          }
+        }
+      },
+      "$comment": "There is deliberately no stored current or healthy flag. Effective staleness is derived at evaluation time; evaluation_time greater than or equal to next_due_at is overdue regardless of any prior review assertion."
+    },
+    "procedure_contract": {
+      "$ref": "#/$defs/artifact"
+    },
+    "required_checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "outcome",
+          "subject_kind",
+          "check_ids"
+        ],
+        "properties": {
+          "outcome": {
+            "enum": [
+              "evidence-backed",
+              "evidence-only",
+              "abstention"
+            ]
+          },
+          "subject_kind": {
+            "enum": [
+              "envelope",
+              "page",
+              "claim",
+              "claim-cell",
+              "quote"
+            ]
+          },
+          "claim_kind": {
+            "enum": [
+              "numeric",
+              "qualitative",
+              "derived",
+              "table"
+            ]
+          },
+          "check_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/checkId"
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "type": "object",
+              "properties": {
+                "claim_kind": {}
+              },
+              "required": [
+                "claim_kind"
+              ]
+            },
+            "then": {
+              "type": "object",
+              "properties": {
+                "subject_kind": {
+                  "const": "claim"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "outcome_reason_rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "source_kind",
+          "source_ids"
+        ],
+        "properties": {
+          "code": {
+            "$ref": "#/$defs/reasonCode"
+          },
+          "source_kind": {
+            "enum": [
+              "check",
+              "policy-gate"
+            ]
+          },
+          "source_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonicalization",
+        "artifact_sha256"
+      ],
+      "properties": {
+        "canonicalization": {
+          "const": "dw-runtime-assurance-manifest/v0.2"
+        },
+        "artifact_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$comment": "v0.2 directly pins both procedure layers. The runbook declaration also exposes controlled fallback and gotcha identifiers so audit completeness is machine-checkable without parsing prose. Semantic validation requires the runbook's compatible_procedure_contract_sha256 to equal procedure_contract.sha256, artifact digests to resolve, reviewed_at to precede next_due_at, and the runbook to be not overdue at qualification or promotion time for evidence-backed operation. A runbook or procedure change produces a new runtime manifest without changing corpus-page stable status. The v0.1 baseline-strength and exact compatible_corpus rules remain mandatory.",
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "sha256"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "versionedArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "version",
+        "sha256"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "algorithmRegistry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "sha256",
+        "algorithm_ids"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "algorithm_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^algorithm\\.[a-z0-9]+(?:[._-][a-z0-9]+)*/v[0-9]+\\.[0-9]+$"
+          }
+        }
+      }
+    },
+    "checkId": {
+      "enum": [
+        "schema",
+        "corpus-release",
+        "runtime-manifest",
+        "eligibility",
+        "claim-resolution",
+        "quote-resolution",
+        "span-fidelity",
+        "numeric-claim-tuple",
+        "derived-claim",
+        "table-cell-fidelity",
+        "applicability",
+        "freshness",
+        "coverage"
+      ]
+    },
+    "reasonCode": {
+      "enum": [
+        "OUT_OF_COVERAGE",
+        "INSUFFICIENT_EVIDENCE",
+        "STALE_EVIDENCE",
+        "INELIGIBLE_EVIDENCE",
+        "APPLICABILITY_UNRESOLVED",
+        "RETRIEVAL_MISS",
+        "CHECK_FAILED",
+        "SOURCE_WATCH_FAILED",
+        "SOURCE_CHANGE_PENDING",
+        "SYNTHESIS_WITHHELD"
+      ]
+    }
+  }
+}
