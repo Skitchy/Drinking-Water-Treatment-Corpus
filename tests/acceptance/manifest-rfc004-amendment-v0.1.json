@@ -393,6 +393,97 @@
         "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
       ],
       "expected": "post-review-case-change-invalidates-disposition"
+    },
+    {
+      "id": "AT-075",
+      "title": "Fallback-marked traversal requires audit authorization",
+      "layer": "semantic",
+      "normative_source": "RFC 004 fallback authorization safeguard",
+      "status": "executable-candidate",
+      "artifacts": [
+        "schemas/procedure-contract-v0.1.schema.json",
+        "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "unauthorized-fallback-traversal-rejected"
+    },
+    {
+      "id": "AT-076",
+      "title": "Fallback authorization requires a fallback-marked traversal",
+      "layer": "semantic",
+      "normative_source": "RFC 004 fallback authorization safeguard",
+      "status": "executable-candidate",
+      "artifacts": [
+        "schemas/procedure-contract-v0.1.schema.json",
+        "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "unexercised-fallback-authorization-rejected"
+    },
+    {
+      "id": "AT-077",
+      "title": "Required evidence is disjoint from forbidden evidence",
+      "layer": "semantic",
+      "normative_source": "RFC 004 satisfiable-oracle safeguard",
+      "status": "executable-candidate",
+      "artifacts": [
+        "schemas/evaluation-manifest-v0.1.schema.json",
+        "tests/acceptance/fixtures/evaluation-manifest-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "required-forbidden-overlap-rejected"
+    },
+    {
+      "id": "AT-078",
+      "title": "Allowed alternative evidence is disjoint from forbidden evidence",
+      "layer": "semantic",
+      "normative_source": "RFC 004 satisfiable-oracle safeguard",
+      "status": "executable-candidate",
+      "artifacts": [
+        "schemas/evaluation-manifest-v0.1.schema.json",
+        "tests/acceptance/fixtures/evaluation-manifest-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "alternative-forbidden-overlap-rejected"
+    },
+    {
+      "id": "AT-079",
+      "title": "Every procedure trigger condition resolves to a controlled declaration",
+      "layer": "semantic",
+      "normative_source": "RFC 004 closed-condition safeguard",
+      "status": "executable-candidate",
+      "artifacts": [
+        "schemas/procedure-contract-v0.1.schema.json",
+        "tests/acceptance/fixtures/procedure-contract-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "undeclared-trigger-condition-rejected"
+    },
+    {
+      "id": "AT-080",
+      "title": "Every audit gate resolves to a controlled procedure declaration",
+      "layer": "semantic",
+      "normative_source": "RFC 004 closed-gate safeguard",
+      "status": "executable-candidate",
+      "artifacts": [
+        "schemas/procedure-contract-v0.1.schema.json",
+        "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "undeclared-audit-gate-rejected"
+    },
+    {
+      "id": "AT-081",
+      "title": "Retired challenge cases preserve a terminal retirement disposition",
+      "layer": "semantic",
+      "normative_source": "RFC 004 challenge-case retirement safeguard",
+      "status": "executable-candidate",
+      "artifacts": [
+        "schemas/evaluation-manifest-v0.1.schema.json",
+        "tests/acceptance/fixtures/evaluation-manifest-valid.json",
+        "tests/acceptance/fixtures/artifact-mutations-rfc004-v0.1.json"
+      ],
+      "expected": "nonterminal-retirement-ledger-entry-rejected"
     }
   ]
 }

@@ -34,6 +34,60 @@
       "role": "terminal"
     }
   ],
+  "conditions": [
+    {
+      "condition_id": "condition.structured-claim-matched",
+      "kind": "resolution-result",
+      "description": "Structured claim resolution found eligible governed coverage."
+    },
+    {
+      "condition_id": "condition.structured-claim-not-covered",
+      "kind": "resolution-result",
+      "description": "Structured claim resolution completed without governed coverage."
+    },
+    {
+      "condition_id": "condition.applicability-input-missing",
+      "kind": "policy-gate",
+      "description": "A required applicability input is unresolved."
+    },
+    {
+      "condition_id": "condition.prose-evidence-matched",
+      "kind": "resolution-result",
+      "description": "Controlled prose retrieval found eligible governed evidence."
+    },
+    {
+      "condition_id": "condition.prose-evidence-missing",
+      "kind": "resolution-result",
+      "description": "Controlled prose retrieval completed without sufficient governed evidence."
+    },
+    {
+      "condition_id": "condition.required-checks-pass",
+      "kind": "check-verdict",
+      "description": "Every check required for evidence-backed synthesis passed."
+    },
+    {
+      "condition_id": "condition.synthesis-withheld",
+      "kind": "policy-gate",
+      "description": "A controlled policy gate permits evidence display but withholds synthesis."
+    }
+  ],
+  "controls": [
+    {
+      "control_id": "fixture-policy.applicability",
+      "kind": "clarification-gate",
+      "description": "Requests the missing applicability context before substantive guidance."
+    },
+    {
+      "control_id": "fixture-policy.synthesis",
+      "kind": "policy-gate",
+      "description": "Withholds synthesis while permitting governed evidence display."
+    },
+    {
+      "control_id": "claim-resolution",
+      "kind": "check",
+      "description": "Records whether governed claim resolution produced sufficient evidence."
+    }
+  ],
   "triggers": [
     {
       "trigger_id": "trigger.structured-match",
@@ -74,6 +128,7 @@
   "transitions": [
     {
       "transition_id": "transition.structured-to-validation",
+      "kind": "standard",
       "from_state_id": "state.structured-resolution",
       "trigger_id": "trigger.structured-match",
       "to_state_id": "state.validation",
@@ -82,6 +137,7 @@
     },
     {
       "transition_id": "transition.structured-to-prose",
+      "kind": "fallback-entry",
       "from_state_id": "state.structured-resolution",
       "trigger_id": "trigger.structured-not-covered",
       "to_state_id": "state.prose-retrieval",
@@ -90,6 +146,7 @@
     },
     {
       "transition_id": "transition.structured-to-applicability-abstention",
+      "kind": "standard",
       "from_state_id": "state.structured-resolution",
       "trigger_id": "trigger.applicability-missing",
       "to_state_id": "state.abstain-applicability",
@@ -98,6 +155,7 @@
     },
     {
       "transition_id": "transition.prose-to-validation",
+      "kind": "standard",
       "from_state_id": "state.prose-retrieval",
       "trigger_id": "trigger.prose-match",
       "to_state_id": "state.validation",
@@ -106,6 +164,7 @@
     },
     {
       "transition_id": "transition.prose-to-insufficient-evidence",
+      "kind": "standard",
       "from_state_id": "state.prose-retrieval",
       "trigger_id": "trigger.prose-miss",
       "to_state_id": "state.abstain-insufficient-evidence",
@@ -114,6 +173,7 @@
     },
     {
       "transition_id": "transition.validation-to-backed",
+      "kind": "standard",
       "from_state_id": "state.validation",
       "trigger_id": "trigger.checks-pass",
       "to_state_id": "state.complete-backed",
@@ -122,6 +182,7 @@
     },
     {
       "transition_id": "transition.validation-to-evidence-only",
+      "kind": "standard",
       "from_state_id": "state.validation",
       "trigger_id": "trigger.synthesis-withheld",
       "to_state_id": "state.complete-evidence-only",
@@ -170,6 +231,6 @@
   ],
   "integrity": {
     "canonicalization": "dw-procedure-contract/v0.1",
-    "artifact_sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983"
+    "artifact_sha256": "a58c6b89c7b8b1ea29271324987f7b29bc337e236d646b435a3e04e4c7dba0de"
   }
 }

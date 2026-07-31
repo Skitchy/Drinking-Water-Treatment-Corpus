@@ -95,21 +95,24 @@ four new integrity-bearing fixtures.
 
 ## RFC 004 amendment cases
 
-`manifest-rfc004-amendment-v0.1.json` adds AT-041 through AT-074 without
+`manifest-rfc004-amendment-v0.1.json` adds AT-041 through AT-081 without
 altering the ratified v0.1 acceptance manifest:
 
 - AT-041–AT-045 exercise the finite, closed, acyclic procedure contract and
   terminal reason gates.
 - AT-046–AT-048 and AT-063 exercise direct runtime pins and effective runbook
   staleness, including the exact due-time boundary.
-- AT-049–AT-055, AT-064, and AT-068 exercise answer binding, conditional trace
-  presence, contract equality, transition continuity, fallback authorization,
-  terminal outcome agreement, complete gotcha accounting, and audit integrity.
-- AT-056–AT-062, AT-065, and AT-074 exercise the conformance/capability split, declared
-  challenge-pool bounds, accurate public-set labeling, structured oracles,
+- AT-049–AT-055, AT-064, AT-068, AT-075–AT-076, and AT-080 exercise answer
+  binding, conditional trace presence, contract equality, transition
+  continuity, fallback authorization, terminal outcome agreement, controlled
+  gate resolution, complete gotcha accounting, and audit integrity.
+- AT-056–AT-062, AT-065, AT-074, AT-077–AT-078, and AT-081 exercise the
+  conformance/capability split, declared challenge-pool bounds, accurate
+  public-set labeling, structured oracles, satisfiable evidence selections,
   compatibility re-disposition, review-payload binding, human authorization,
-  and grader pinning.
-- AT-066–AT-067 reject terminal-state transitions and nondeterministic routes.
+  grader pinning, and the retired case ledger.
+- AT-066–AT-067 and AT-079 reject terminal-state transitions,
+  nondeterministic routes, and undeclared trigger conditions.
 - AT-069–AT-073 remain explicitly specified integration requirements for
   process-level challenge isolation, semantic-display invariance, weaker-reader
   degradation, dependency-aware co-change review, and deterministic
@@ -118,6 +121,6 @@ altering the ratified v0.1 acceptance manifest:
 
 The executable candidate uses four canonicalization vectors for the new
 procedure, runtime, audit, and evaluation fixtures. Run `npm test` to execute
-the original 40 ratified cases followed by the 29 executable amendment cases;
+the original 40 ratified cases followed by the 36 executable amendment cases;
 the five integration cases remain visible and non-passing until their runtime
 components exist.

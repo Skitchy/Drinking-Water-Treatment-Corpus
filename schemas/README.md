@@ -30,12 +30,14 @@ RFC 004 adds five post-ratification candidates without modifying the seven
 ratified v0.1 files:
 
 - `procedure-contract-v0.1.schema.json` defines a finite transition table for
-  mandatory resolution order, controlled triggers, permitted or mandatory
-  transitions, and terminal mappings to the three answer outcomes. It has no
-  expression language, model-authored branches, or loops.
+  mandatory resolution order, finite condition and terminal-control
+  declarations, controlled triggers, standard or fallback-entry transitions,
+  and terminal mappings to the three answer outcomes. It has no expression
+  language, model-authored branches, or loops.
 - `evaluation-manifest-v0.1.schema.json` separates conformance regression from
   a public rotating capability challenge set and pins the exact corpus,
-  procedure, runbook, runtime, case schema, and grader used for evaluation.
+  procedure, runbook, runtime, case schema, and grader used for evaluation. It
+  also separates active cases from a content-bound retirement ledger.
 - `runtime-assurance-manifest-v0.2.schema.json` directly pins both the governed
   runbook and procedure contract. The runbook declaration carries ownership,
   review and due times, supersession, compatibility, and controlled fallback

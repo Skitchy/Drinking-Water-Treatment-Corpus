@@ -119,7 +119,8 @@
         "classification",
         "rotation_policy",
         "isolation",
-        "cases"
+        "cases",
+        "retired_cases"
       ],
       "properties": {
         "set_id": {
@@ -192,6 +193,13 @@
           "items": {
             "$ref": "#/$defs/case"
           }
+        },
+        "retired_cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/case"
+          },
+          "$comment": "A content-bound audit ledger for challenge cases removed from active bounds and grading. Semantic validation requires each entry to retain an earlier accepted disposition and end in a retired disposition."
         }
       }
     },
@@ -212,7 +220,7 @@
       }
     }
   },
-  "$comment": "The conformance suite is a public regression contract whose offline target is exactly 100 percent; that target is not a held-out capability claim. The capability pool is accurately named a public rotating challenge set. Its initial manifest may declare the maintainer-ratified 10-to-15 range without making that operational size permanent schema law. Harness isolation gives the reader only the current question and permitted applicability inputs while the grader holds the oracle and remaining pool. Semantic validation requires declared pool bounds to be ordered and the active count to fall within them; unique case and disposition IDs; each human disposition's case_review_payload_sha256 to match canonical case content excluding disposition history; every case and current accepted disposition to pin the manifest-level corpus, procedure, runbook, and runtime digests; reviewers to resolve as qualified humans at review time; evidence-backed required selections to contain evidence; and each case's latest disposition to be accepted. A case exposed in design discussion retires and is replaced before further capability measurement.",
+  "$comment": "The conformance suite is a public regression contract whose offline target is exactly 100 percent; that target is not a held-out capability claim. The capability pool is accurately named a public rotating challenge set. Its initial manifest may declare the maintainer-ratified 10-to-15 range without making that operational size permanent schema law. The isolation declaration specifies that a conforming harness gives the reader only the current question and permitted applicability inputs while the grader holds the oracle and remaining pool; only AT-069 process-level testing can establish that execution property. Semantic validation requires declared pool bounds to be ordered and the active count to fall within them; unique case and disposition IDs across active and retired cases; each human disposition's case_review_payload_sha256 to match canonical case content excluding disposition history; every case and disposition to pin the manifest-level corpus, procedure, runbook, and runtime digests; reviewers to resolve as qualified humans at review time; evidence-backed required and alternative selections to be nonempty and disjoint from forbidden evidence on every ID kind; each active case's latest disposition to be accepted; and each retired challenge case to retain an accepted disposition and end in a retired disposition. A case exposed in design discussion moves to the retired ledger and is replaced before further capability measurement.",
   "$defs": {
     "sha256": {
       "type": "string",

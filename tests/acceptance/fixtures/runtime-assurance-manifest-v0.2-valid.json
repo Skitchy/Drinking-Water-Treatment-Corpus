@@ -61,7 +61,7 @@
     "reviewed_at": "2026-07-31T09:30:00Z",
     "next_due_at": "2026-10-31T00:00:00Z",
     "supersedes": [],
-    "compatible_procedure_contract_sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983",
+    "compatible_procedure_contract_sha256": "a58c6b89c7b8b1ea29271324987f7b29bc337e236d646b435a3e04e4c7dba0de",
     "fallback_reason_ids": [
       "fallback-reason.structured-claim-not-covered"
     ],
@@ -72,7 +72,7 @@
   },
   "procedure_contract": {
     "artifact_id": "procedure-contract.fixture-resolution",
-    "sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983"
+    "sha256": "a58c6b89c7b8b1ea29271324987f7b29bc337e236d646b435a3e04e4c7dba0de"
   },
   "required_checks": [
     {
@@ -217,6 +217,6 @@
   ],
   "integrity": {
     "canonicalization": "dw-runtime-assurance-manifest/v0.2",
-    "artifact_sha256": "a8991094eb10867bf6228d6f58be408164c04be9dcd52c8d6af42749a746ecc0"
+    "artifact_sha256": "4c347039612e0c78ff7a459f3a77cc2e6a2c72a628065166a211ed78726e853a"
   }
 }

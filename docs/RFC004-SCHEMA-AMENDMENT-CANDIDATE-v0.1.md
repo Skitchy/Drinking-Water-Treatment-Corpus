@@ -28,15 +28,18 @@ procedure-conformance claims retroactively.
 `procedure-contract/v0.1` intentionally contains only:
 
 - controlled states and one initial state;
-- controlled trigger conditions;
-- permitted or mandatory transitions in declared order; and
+- finite declarations for trigger conditions and terminal controls;
+- permitted or mandatory transitions in declared order, each classified as
+  standard or fallback entry; and
 - terminal mappings to `evidence-backed`, `evidence-only`, or `abstention`
   with controlled reason gates for non-backed outcomes.
 
-Semantic validation supplies what JSON Schema cannot: unique and resolved
-identifiers, exactly one initial state, reachability, acyclicity, deterministic
-state-and-trigger routing, no outgoing terminal transitions, and complete
-terminal mappings. Arbitrary predicates, general branching expressions,
+Semantic validation supplies what JSON Schema cannot: unique declarations;
+resolved state, trigger, condition, and terminal-control references; compatible
+condition and control kinds; exactly one initial state; reachability;
+acyclicity; deterministic state-and-trigger routing; no outgoing terminal
+transitions; and complete terminal mappings. The declarations are finite,
+human-readable identifiers, not predicates. General branching expressions,
 model-authored control flow, and loops are outside v0.1.
 
 Clarification remains inside the ratified three-outcome boundary. A missing
@@ -82,11 +85,14 @@ declares a procedure contract. A conforming trace proves:
 
 - the procedure digest equals the runtime pin;
 - structured-claim resolution was attempted first;
-- fallback, if used, cites a reason declared by the pinned runbook;
+- fallback authorization is true if and only if the trace traverses a
+  contract-declared fallback-entry transition, and any such fallback cites a
+  reason declared by the pinned runbook;
 - observed transitions resolve, remain continuous, obey declared order, and
   terminate at the recorded state;
 - the terminal mapping agrees with the audit and answer outcome;
-- relevant clarification or abstention gates are recorded; and
+- every recorded gate resolves to a compatible controlled declaration, and
+  relevant clarification or abstention gates are recorded; and
 - every gotcha ID declared by the runbook is accounted for.
 
 The trace contains controlled identifiers and verdicts, not free-form chain of
@@ -110,16 +116,18 @@ The two case classes make different claims:
   constants, allowing future size changes without redefining the artifact
   type.
 
-The isolation declaration permits the reader to receive only the current
-question and permitted applicability inputs. The grader holds the oracle and
-remaining pool. Schema validation can describe that contract, and the
-foundation checker can validate the projection; only a future process-level
-integration test can prove that the reader cannot access grader state. AT-069
-therefore remains explicitly specified rather than falsely marked passing.
+The isolation declaration permits a conforming harness to give the reader only
+the current question and permitted applicability inputs while the grader holds
+the oracle and remaining pool. Schema validation can describe that contract;
+only a future process-level integration test can prove that the reader cannot
+access grader state. AT-069 therefore remains explicitly specified rather than
+falsely marked passing.
 
 Evidence-backed oracles separate required selections, allowed alternatives,
-and forbidden claim, quote, and cell IDs. Evidence-only and abstention oracles
-name acceptable reason codes and their check or policy-gate sources. Every
+and forbidden claim, quote, and cell IDs. Semantic validation requires both
+required and alternative selections to be disjoint from forbidden IDs on all
+three identifier kinds. Evidence-only and abstention oracles name acceptable
+reason codes and their check or policy-gate sources. Every
 compatibility re-disposition records a qualified human reviewer, time,
 rationale, the exact four compatibility digests, and a
 `case_review_payload_sha256` over the case excluding disposition history. A
@@ -129,6 +137,12 @@ outcome, or oracle therefore invalidates the human disposition.
 The case review payload uses the same recursive key ordering, preserved array
 ordering, whitespace-free UTF-8 JSON, and SHA-256 rules described below, but
 removes `compatibility_dispositions` rather than an integrity field.
+
+The capability challenge set keeps active `cases` separate from a content-bound
+`retired_cases` ledger. Only active cases count toward declared bounds or
+grading. A retired entry retains its accepted history and must end in a
+content-bound `retired` disposition, making exercise of
+`retire_on_design_exposure` auditable rather than erasing the record.
 
 ## Reviewer scopes
 
@@ -161,11 +175,12 @@ normative only through review, merge, and explicit ratification.
 
 ## Acceptance disposition
 
-AT-041 through AT-068 and AT-074 are executable candidate cases. They cover schema
-closure, reference resolution, acyclicity, deterministic routing, reason
-gates, direct pins, staleness, answer and audit integrity, procedure-trace
-continuity, fallback authorization, complete gotcha accounting, evaluation
-classification and bounds, oracle structure, reviewer authorization, and
+AT-041 through AT-068 and AT-074 through AT-081 are executable candidate cases.
+They cover schema closure, condition and control resolution, acyclicity,
+deterministic routing, reason gates, direct pins, staleness, answer and audit
+integrity, procedure-trace continuity, bidirectional fallback authorization,
+complete gotcha accounting, evaluation classification and bounds, satisfiable
+oracle selections, reviewer authorization, auditable case retirement, and
 compatibility re-disposition and content-bound human oracle ownership.
 
 AT-069 through AT-073 remain explicit integration requirements:

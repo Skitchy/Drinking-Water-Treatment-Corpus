@@ -13,22 +13,22 @@
     {
       "canonicalization": "dw-procedure-contract/v0.1",
       "artifact": "tests/acceptance/fixtures/procedure-contract-valid.json",
-      "expected_sha256": "980a1be8d802facef7d5c0e6151eb74f6df5d1c5068545176227968d09479983"
+      "expected_sha256": "a58c6b89c7b8b1ea29271324987f7b29bc337e236d646b435a3e04e4c7dba0de"
     },
     {
       "canonicalization": "dw-runtime-assurance-manifest/v0.2",
       "artifact": "tests/acceptance/fixtures/runtime-assurance-manifest-v0.2-valid.json",
-      "expected_sha256": "a8991094eb10867bf6228d6f58be408164c04be9dcd52c8d6af42749a746ecc0"
+      "expected_sha256": "4c347039612e0c78ff7a459f3a77cc2e6a2c72a628065166a211ed78726e853a"
     },
     {
       "canonicalization": "dw-audit-envelope/v0.2",
       "artifact": "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
-      "expected_sha256": "0fa4e9df0b4f4ec275484986cd8657e920643d5b09a31451b56b265306ca5ecf"
+      "expected_sha256": "0d951d833e4ccfaf8d8d9b65b72bdf1bfe7f1bec02719a7403b8c1d8bb1fdb42"
     },
     {
       "canonicalization": "dw-evaluation-manifest/v0.1",
       "artifact": "tests/acceptance/fixtures/evaluation-manifest-valid.json",
-      "expected_sha256": "aa159875dd2f1029f37eae8ab7920f7989d4d2780b1f367eb3a2cc6e5b08f7b6"
+      "expected_sha256": "f7472c2c56ea023cfe715655132b668325a1d08477050e9acb255c89897e868d"
     }
   ]
 }

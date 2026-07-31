@@ -55,14 +55,20 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
-function expectFailure(fn, message) {
-  let failed = false;
+function expectFailure(fn, message, expectedError) {
+  let failure = null;
   try {
     fn();
-  } catch {
-    failed = true;
+  } catch (error) {
+    failure = error;
   }
-  assert(failed, message);
+  assert(failure, message);
+  if (expectedError) {
+    assert(
+      failure instanceof Error && failure.message.includes(expectedError),
+      `${message}; failed for an unrelated reason: ${failure?.message}`
+    );
+  }
 }
 
 function uniqueBy(items, key, label) {
@@ -170,12 +176,20 @@ validateWith(schemaIds.evaluation, evaluation, "Evaluation fixture");
 
 function validateProcedureSemantics(candidate) {
   uniqueBy(candidate.states, "state_id", "Procedure states");
+  uniqueBy(candidate.conditions, "condition_id", "Procedure conditions");
+  uniqueBy(candidate.controls, "control_id", "Procedure controls");
   uniqueBy(candidate.triggers, "trigger_id", "Procedure triggers");
   uniqueBy(candidate.transitions, "transition_id", "Procedure transitions");
   uniqueBy(candidate.transitions, "order", "Procedure transition order");
   uniqueBy(candidate.terminal_mappings, "state_id", "Terminal mappings");
 
   const stateById = new Map(candidate.states.map((state) => [state.state_id, state]));
+  const conditionById = new Map(
+    candidate.conditions.map((condition) => [condition.condition_id, condition])
+  );
+  const controlById = new Map(
+    candidate.controls.map((control) => [control.control_id, control])
+  );
   const triggerIds = new Set(candidate.triggers.map((trigger) => trigger.trigger_id));
   const initialStates = candidate.states.filter((state) => state.role === "initial");
   assert(initialStates.length === 1, "Procedure must have exactly one initial state");
@@ -183,6 +197,14 @@ function validateProcedureSemantics(candidate) {
     initialStates[0].state_id === candidate.initial_state_id,
     "initial_state_id does not identify the initial state"
   );
+  for (const trigger of candidate.triggers) {
+    const condition = conditionById.get(trigger.condition_id);
+    assert(condition, `Trigger ${trigger.trigger_id} has an unknown condition`);
+    assert(
+      condition.kind === trigger.kind,
+      `Trigger ${trigger.trigger_id} and condition ${trigger.condition_id} have different kinds`
+    );
+  }
 
   let previousOrder = 0;
   const routeKeys = new Set();
@@ -237,6 +259,20 @@ function validateProcedureSemantics(candidate) {
       terminalIds.includes(mapping.state_id),
       "Terminal mapping identifies a nonterminal state"
     );
+    if (mapping.reason_gate) {
+      for (const sourceId of mapping.reason_gate.source_ids) {
+        const control = controlById.get(sourceId);
+        assert(control, `Terminal reason gate has unknown control ${sourceId}`);
+        const compatible =
+          mapping.reason_gate.source_kind === "check"
+            ? control.kind === "check"
+            : control.kind.endsWith("-gate");
+        assert(
+          compatible,
+          `Terminal reason source ${sourceId} has incompatible control kind`
+        );
+      }
+    }
   }
   assert(
     candidate.integrity.artifact_sha256 === canonicalDigest(candidate),
@@ -355,11 +391,13 @@ function selectionCount(selection) {
   return selection.claim_ids.length + selection.quote_ids.length + selection.cell_ids.length;
 }
 
-function readerView(testCase) {
-  return {
-    question: testCase.question,
-    applicability_inputs: testCase.applicability_inputs
-  };
+function assertDisjointEvidenceSelection(selection, forbidden, label) {
+  for (const idKind of ["claim_ids", "quote_ids", "cell_ids"]) {
+    const forbiddenIds = new Set(forbidden[idKind]);
+    for (const id of selection[idKind]) {
+      assert(!forbiddenIds.has(id), `${label} also forbids ${id}`);
+    }
+  }
 }
 
 function validateEvaluationSemantics(candidate, candidateRegistry = reviewerRegistry) {
@@ -398,10 +436,12 @@ function validateEvaluationSemantics(candidate, candidateRegistry = reviewerRegi
     "Evaluation grader digest mismatch"
   );
 
-  const allCases = [
+  const activeCases = [
     ...candidate.conformance_suite.cases,
     ...candidate.capability_challenge_set.cases
   ];
+  const retiredCases = candidate.capability_challenge_set.retired_cases;
+  const allCases = [...activeCases, ...retiredCases];
   uniqueBy(allCases, "case_id", "Evaluation cases");
   const poolPolicy = candidate.capability_challenge_set.rotation_policy;
   const activeCapabilityCount = candidate.capability_challenge_set.cases.length;
@@ -430,10 +470,20 @@ function validateEvaluationSemantics(candidate, candidateRegistry = reviewerRegi
         selectionCount(testCase.oracle.required_selection) > 0,
         `Case ${testCase.case_id} has an empty required evidence selection`
       );
+      assertDisjointEvidenceSelection(
+        testCase.oracle.required_selection,
+        testCase.oracle.forbidden_selection,
+        `Case ${testCase.case_id} required selection`
+      );
       for (const alternative of testCase.oracle.allowed_alternatives) {
         assert(
           selectionCount(alternative) > 0,
           `Case ${testCase.case_id} has an empty allowed alternative`
+        );
+        assertDisjointEvidenceSelection(
+          alternative,
+          testCase.oracle.forbidden_selection,
+          `Case ${testCase.case_id} allowed alternative`
         );
       }
     }
@@ -467,17 +517,24 @@ function validateEvaluationSemantics(candidate, candidateRegistry = reviewerRegi
         `Case ${testCase.case_id} has a stale compatibility disposition`
       );
     }
-    assert(
-      testCase.compatibility_dispositions.at(-1).status === "accepted",
-      `Case ${testCase.case_id} is not currently accepted`
-    );
   }
 
-  for (const testCase of candidate.capability_challenge_set.cases) {
+  for (const testCase of activeCases) {
     assert(
-      JSON.stringify(Object.keys(readerView(testCase))) ===
-        JSON.stringify(candidate.capability_challenge_set.isolation.reader_input_fields),
-      `Capability case ${testCase.case_id} leaks grader-only fields`
+      testCase.compatibility_dispositions.at(-1).status === "accepted",
+      `Active case ${testCase.case_id} is not currently accepted`
+    );
+  }
+  for (const testCase of retiredCases) {
+    assert(
+      testCase.compatibility_dispositions
+        .slice(0, -1)
+        .some((disposition) => disposition.status === "accepted"),
+      `Retired case ${testCase.case_id} has no prior accepted disposition`
+    );
+    assert(
+      testCase.compatibility_dispositions.at(-1).status === "retired",
+      `Retired case ${testCase.case_id} does not end in retirement`
     );
   }
   assert(
@@ -531,6 +588,7 @@ function validateAuditSemantics(candidate) {
   const transitionById = new Map(
     procedure.transitions.map((transition) => [transition.transition_id, transition])
   );
+  const traversedFallbackTransitions = [];
   let currentState = procedure.initial_state_id;
   let previousContractOrder = 0;
   candidate.procedure.transitions.forEach((observed, index) => {
@@ -550,6 +608,9 @@ function validateAuditSemantics(candidate) {
     );
     previousContractOrder = declared.order;
     currentState = observed.to_state_id;
+    if (declared.kind === "fallback-entry") {
+      traversedFallbackTransitions.push(declared.transition_id);
+    }
   });
   assert(
     currentState === candidate.procedure.terminal_state_id,
@@ -561,17 +622,17 @@ function validateAuditSemantics(candidate) {
   assert(terminal, "Audit terminates at an unmapped state");
   assert(terminal.outcome === candidate.outcome, "Terminal mapping and audit outcome disagree");
 
+  const fallbackUsed = traversedFallbackTransitions.length > 0;
+  assert(
+    candidate.procedure.fallback.authorized === fallbackUsed,
+    fallbackUsed
+      ? "Fallback-marked traversal is not authorized by the audit"
+      : "Fallback is authorized without a fallback-marked traversal"
+  );
   if (candidate.procedure.fallback.authorized) {
     assert(
       candidate.procedure.structured_claim_resolution.result === "not-covered",
       "Fallback was authorized before structured resolution showed no coverage"
-    );
-    assert(
-      candidate.procedure.transitions.some(
-        (transition) =>
-          transition.transition_id === "transition.structured-to-prose"
-      ),
-      "Fallback authorization has no structured-to-prose transition"
     );
     assert(
       runtime.runbook.fallback_reason_ids.includes(
@@ -580,14 +641,35 @@ function validateAuditSemantics(candidate) {
       "Fallback reason is not declared by the pinned runbook"
     );
   }
+  uniqueBy(candidate.procedure.gates, "gate_id", "Audit procedure gates");
+  const controlById = new Map(
+    procedure.controls.map((control) => [control.control_id, control])
+  );
+  for (const gate of candidate.procedure.gates) {
+    const control = controlById.get(gate.gate_id);
+    assert(control, `Audit procedure gate ${gate.gate_id} is undeclared`);
+    assert(
+      control.kind === `${gate.kind}-gate`,
+      `Audit procedure gate ${gate.gate_id} has incompatible kind`
+    );
+  }
   if (terminal.reason_gate) {
     for (const sourceId of terminal.reason_gate.source_ids) {
-      assert(
-        candidate.procedure.gates.some(
-          (gate) => gate.gate_id === sourceId && gate.verdict === "reached"
-        ),
-        `Terminal reason gate ${sourceId} was not reached`
-      );
+      if (terminal.reason_gate.source_kind === "policy-gate") {
+        assert(
+          candidate.procedure.gates.some(
+            (gate) => gate.gate_id === sourceId && gate.verdict === "reached"
+          ),
+          `Terminal reason gate ${sourceId} was not reached`
+        );
+      } else {
+        assert(
+          candidate.checks.some(
+            (check) => check.check_id === sourceId && check.verdict !== "pass"
+          ),
+          `Terminal reason check ${sourceId} did not record a non-passing verdict`
+        );
+      }
     }
   }
   uniqueBy(candidate.procedure.gotcha_checks, "check_id", "Audit gotcha checks");
@@ -626,7 +708,7 @@ for (const vector of canonicalizationVectors.vectors) {
 }
 
 const expectedIds = Array.from(
-  { length: 34 },
+  { length: 41 },
   (_, index) => `AT-${String(index + 41).padStart(3, "0")}`
 );
 assert(
@@ -707,6 +789,19 @@ const mutationValidators = {
 
 for (const mutation of mutationSet.mutations) {
   const value = applyOperations(load(mutation.base), mutation.operations);
+  if (mutation.rebind_case_reviews) {
+    const cases = [
+      ...value.conformance_suite.cases,
+      ...value.capability_challenge_set.cases,
+      ...value.capability_challenge_set.retired_cases
+    ];
+    for (const testCase of cases) {
+      const payloadDigest = caseReviewPayloadDigest(testCase);
+      for (const disposition of testCase.compatibility_dispositions) {
+        disposition.case_review_payload_sha256 = payloadDigest;
+      }
+    }
+  }
   if (mutation.rebind_integrity && value.integrity) {
     value.integrity.artifact_sha256 = canonicalDigest(value);
   }
@@ -714,7 +809,8 @@ for (const mutation of mutationSet.mutations) {
   assert(validator, `Unknown mutation validator ${mutation.validator}`);
   expectFailure(
     () => validator(value),
-    `${mutation.id} mutation did not fail ${mutation.validator}`
+    `${mutation.id} mutation did not fail ${mutation.validator}`,
+    mutation.expected_error
   );
 }
 

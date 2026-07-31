@@ -330,6 +330,7 @@
           "path": "/transitions/-",
           "value": {
             "transition_id": "transition.terminal-outgoing",
+            "kind": "standard",
             "from_state_id": "state.complete-backed",
             "trigger_id": "trigger.checks-pass",
             "to_state_id": "state.complete-backed",
@@ -350,6 +351,7 @@
           "path": "/transitions/-",
           "value": {
             "transition_id": "transition.nondeterministic-duplicate",
+            "kind": "standard",
             "from_state_id": "state.structured-resolution",
             "trigger_id": "trigger.structured-match",
             "to_state_id": "state.complete-backed",
@@ -381,6 +383,157 @@
           "operation": "replace",
           "path": "/capability_challenge_set/cases/0/question",
           "value": "A post-review question change that must invalidate the human disposition."
+        }
+      ]
+    },
+    {
+      "id": "AT-075",
+      "base": "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
+      "validator": "audit-semantic",
+      "expected_error": "Fallback-marked traversal is not authorized by the audit",
+      "rebind_integrity": true,
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/procedure/structured_claim_resolution/result",
+          "value": "not-covered"
+        },
+        {
+          "operation": "replace",
+          "path": "/procedure/structured_claim_resolution/claim_ids",
+          "value": []
+        },
+        {
+          "operation": "replace",
+          "path": "/procedure/transitions",
+          "value": [
+            {
+              "ordinal": 1,
+              "transition_id": "transition.structured-to-prose",
+              "from_state_id": "state.structured-resolution",
+              "trigger_id": "trigger.structured-not-covered",
+              "to_state_id": "state.prose-retrieval"
+            },
+            {
+              "ordinal": 2,
+              "transition_id": "transition.prose-to-validation",
+              "from_state_id": "state.prose-retrieval",
+              "trigger_id": "trigger.prose-match",
+              "to_state_id": "state.validation"
+            },
+            {
+              "ordinal": 3,
+              "transition_id": "transition.validation-to-backed",
+              "from_state_id": "state.validation",
+              "trigger_id": "trigger.checks-pass",
+              "to_state_id": "state.complete-backed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "AT-076",
+      "base": "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
+      "validator": "audit-semantic",
+      "expected_error": "Fallback is authorized without a fallback-marked traversal",
+      "rebind_integrity": true,
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/procedure/structured_claim_resolution/result",
+          "value": "not-covered"
+        },
+        {
+          "operation": "replace",
+          "path": "/procedure/structured_claim_resolution/claim_ids",
+          "value": []
+        },
+        {
+          "operation": "replace",
+          "path": "/procedure/fallback/authorized",
+          "value": true
+        },
+        {
+          "operation": "add",
+          "path": "/procedure/fallback/reason_id",
+          "value": "fallback-reason.structured-claim-not-covered"
+        }
+      ]
+    },
+    {
+      "id": "AT-077",
+      "base": "tests/acceptance/fixtures/evaluation-manifest-valid.json",
+      "validator": "evaluation-semantic",
+      "expected_error": "required selection also forbids claim.dbp.synthetic-limit",
+      "rebind_case_reviews": true,
+      "rebind_integrity": true,
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/capability_challenge_set/cases/0/oracle/forbidden_selection/claim_ids",
+          "value": [
+            "claim.dbp.synthetic-limit"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "AT-078",
+      "base": "tests/acceptance/fixtures/evaluation-manifest-valid.json",
+      "validator": "evaluation-semantic",
+      "expected_error": "allowed alternative also forbids quote.dbp.synthetic-limit",
+      "rebind_case_reviews": true,
+      "rebind_integrity": true,
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/capability_challenge_set/cases/8/oracle/forbidden_selection/quote_ids",
+          "value": [
+            "quote.dbp.synthetic-limit"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "AT-079",
+      "base": "tests/acceptance/fixtures/procedure-contract-valid.json",
+      "validator": "procedure-semantic",
+      "expected_error": "has an unknown condition",
+      "rebind_integrity": true,
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/triggers/0/condition_id",
+          "value": "condition.never-declared-by-any-artifact"
+        }
+      ]
+    },
+    {
+      "id": "AT-080",
+      "base": "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
+      "validator": "audit-semantic",
+      "expected_error": "is undeclared",
+      "rebind_integrity": true,
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/procedure/gates/0/gate_id",
+          "value": "fixture-policy.never-declared"
+        }
+      ]
+    },
+    {
+      "id": "AT-081",
+      "base": "tests/acceptance/fixtures/evaluation-manifest-valid.json",
+      "validator": "evaluation-semantic",
+      "expected_error": "does not end in retirement",
+      "rebind_integrity": true,
+      "operations": [
+        {
+          "operation": "replace",
+          "path": "/capability_challenge_set/retired_cases/0/compatibility_dispositions/1/status",
+          "value": "accepted"
         }
       ]
     }
