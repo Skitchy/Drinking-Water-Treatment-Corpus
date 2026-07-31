@@ -1,0 +1,764 @@
+{
+  "schema_version": "source-registry/v0.1",
+  "registry_id": "source-registry.dbp-first-proof",
+  "updated_at": "2026-07-31T09:11:55Z",
+  "sources": [
+    {
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.130",
+      "captured_at": "2026-07-31T08:59:04Z",
+      "captured_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.130\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-130",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.130 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "e40a6d648819e123a5fee502351324de387c8c363e13a373a99d6a21e7d2a7e0",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-131",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.131",
+      "captured_at": "2026-07-31T08:59:08Z",
+      "captured_sha256": "b01ad4a7ad578a9fabd3cc886964a0351f1a741286de22e314b400d3e30f4fd9",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.131\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-131",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.131 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "d2ed11017ec81f9e2d43f6e9e41011bda999c8dd0ffb38e84fa934806a740da5",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.132",
+      "captured_at": "2026-07-31T08:59:13Z",
+      "captured_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.132\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-132",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.132 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "a99aef52bd75ce57929c25ea48d0839c5d65d1dd2ef5068159c90da0dbcdd045",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-133",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.133",
+      "captured_at": "2026-07-31T08:59:14Z",
+      "captured_sha256": "4b773cefc584399af240124de5887ba45088b428f3a242dffe1ad43ed6edba82",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.133\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-133",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.133 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "d6ec1d0234a47c5182c72e45fb04196e4e433d2da71315fdca65a5a605d7c1c4",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-134",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.134",
+      "captured_at": "2026-07-31T08:59:19Z",
+      "captured_sha256": "40693c44be7ed5dbd238e9f169df104a9291185ad3c0604086cb06fe2da57d4b",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.134\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-134",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.134 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "a9f78b2b980b49a475fb50ba69614c1657d1e7f244eade2a2653f3103c4c7686",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-135",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.135",
+      "captured_at": "2026-07-31T08:59:24Z",
+      "captured_sha256": "b6344112bef59ef28267c25414f33f5356ff512e1ce2a7339e9fc9ce91240c48",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.135\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-135",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.135 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "4ab7635bfc69140e0d409a76d1cd8afa9f65b294776eb06ef50d9bf01c2833ad",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-2",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.2",
+      "captured_at": "2026-07-31T08:58:48Z",
+      "captured_sha256": "d2d9daa22334d43c6acd38c094e281a5ed23142cab14578d7be0fe968e9d37f1",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.2\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-2",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.2 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "7036d6d0f9722e5cd5ee121813e78492b18bb148bdbec63a77386bb7a4e54476",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-53",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.53",
+      "captured_at": "2026-07-31T08:58:53Z",
+      "captured_sha256": "c0b51975a3bb64b989dde8c0f77b8124eea622a96f963a7e33df94b5c2f74c15",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.53\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-53",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.53 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "d6fc35079d37350747444083851ca71e843f29bb9c8fc25c553a1d4ef9848357",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-54",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.54",
+      "captured_at": "2026-07-31T08:58:54Z",
+      "captured_sha256": "43b0f7a95c737daaac27d1b23e626f8d38140f60e6db66da2edc8c010678d2d1",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.54\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-54",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.54 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "38f0f46cb68cd781d4ab3f141b73a00c728569f07d1b7e2ffa02a208e0c67fd7",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-600",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.600",
+      "captured_at": "2026-07-31T08:59:29Z",
+      "captured_sha256": "ddd9a1a2e0a8fc0436952cb15ac7b571f19afcf09ed1bf7f0bc775c8a43e1037",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.600\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-600",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.600 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "832794c9c5801341f34629b4bbdfca8e82d72e8e41110dd81b884120281924ed",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-601",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.601",
+      "captured_at": "2026-07-31T08:59:30Z",
+      "captured_sha256": "e7245a70216896c265e9de9f9d5680c4f1224aacea5cc4ae695975a2ac6f325e",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.601\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-601",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.601 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "6ad3adb71e927c009c873c7f594947c29ec323a7c8c4da594d436792775f3fc0",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-602",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.602",
+      "captured_at": "2026-07-31T08:59:34Z",
+      "captured_sha256": "cf20907431607eb4010f58f14ebff0efcc65a4ff3d10be8f6dd6316a6a88ba3a",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.602\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-602",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.602 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "c7ef892fdec514e8b3155b67611055f2bea759dc334a6c80435e5ee1f3e965ae",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-603",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.603",
+      "captured_at": "2026-07-31T08:59:39Z",
+      "captured_sha256": "e218cb4d127b654a4a663755e3a102aa7b7be743e5c8d97a0ad04eeee9547816",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.603\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-603",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.603 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "3dabc5b56d5058e2ae3664c069540368920c6a7313a8f26e1eae2d29985c719d",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-604",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.604",
+      "captured_at": "2026-07-31T08:59:44Z",
+      "captured_sha256": "fe918e9df3367fca138ebdc895a955a18cd198dc8e236832b6ba22f3ece6c482",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.604\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-604",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.604 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "f82bbadd8ddf94d12c6e03287c5feae68311843f4ba7175e80e6833b12c42331",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-605",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.605",
+      "captured_at": "2026-07-31T08:59:45Z",
+      "captured_sha256": "64518842399a5a2f70d40ed322d3a35b881f0bf486a2d9b8e3b71f5d45f000d4",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.605\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-605",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.605 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "49d148145eb0056b58c9f679b49dddb0f3b46e42de7d68dc60c24ebdbd4fcfd0",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.620",
+      "captured_at": "2026-07-31T08:59:50Z",
+      "captured_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.620\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-620",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.620 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "f3b39502bbfbaa850eb4cfeab711de70381c64f8a07e8cf649e719d96f119eb2",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-621",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.621",
+      "captured_at": "2026-07-31T08:59:55Z",
+      "captured_sha256": "dc4006382d5ef57e3c300410dd3aa3b0947bd75342b7609d872d3e5a2e579fba",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.621\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-621",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.621 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "74d2a21e998c0ed5d2254948caf2a1f457da074845821a34e9d2e312258201a0",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-622",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.622",
+      "captured_at": "2026-07-31T08:59:55Z",
+      "captured_sha256": "757abcae4d11290d5d791c79d20923fe0c3167882aa20c19cd2084ab444f36c3",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.622\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-622",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.622 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "c39ac43a0d3598c8ab8d397466f563b964c5eaa5ddf4a3cd83fd890d623ab1a1",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-623",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.623",
+      "captured_at": "2026-07-31T09:00:00Z",
+      "captured_sha256": "e92fe16208d0a5c5646b69458c57a704000fe98445ca84c95995b7e261db1387",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.623\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-623",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.623 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "eb415878af370b480ee1f951562dcc213cc6c9c7e04e214d903085c8622b92cb",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-624",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.624",
+      "captured_at": "2026-07-31T09:00:01Z",
+      "captured_sha256": "1d1dc31f75464c5bbed4e8d8b691ddc657dd5ec2d7a18a540786cdb998c6cd9c",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.624\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-624",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.624 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "c39312ea79a57e6a54adde50b2da0b954e1688cfa79d29b493dda993f6c2d388",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-625",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.625",
+      "captured_at": "2026-07-31T09:00:05Z",
+      "captured_sha256": "b733ecb787db890bedaff88bf36716600ec0dd1e2f7d76998a2a4f07debbd146",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.625\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-625",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.625 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "728eb69afd4d9cc2ed8b46d7e9f304d47fab94d57bb5e4e61427f96fe05fa189",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-626",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.626",
+      "captured_at": "2026-07-31T09:00:10Z",
+      "captured_sha256": "1e0236a178040706011ba181be05d7a6405a1c272341702d7ad903ec391c0767",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.626\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-626",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.626 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "dac2471d08dbe25b1e9a41b2f52ee76f21e4adbb2fd82095044205e32334582a",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-627",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.627",
+      "captured_at": "2026-07-31T09:00:15Z",
+      "captured_sha256": "26604b70b948031febdc1f4f4e62fcfc49cedee5892d99203fabc07f75e04eb8",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.627\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-627",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.627 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "3364d2b355a40f2d58a91666f9f4949822bf858918a552ea78026455713a8d9f",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-628",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.628",
+      "captured_at": "2026-07-31T09:00:16Z",
+      "captured_sha256": "13785466eb176b2b13232ae6d25d438dbd49d0dee96f1f7e8f713594742d585e",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.628\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-628",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.628 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "5480cde27ffcee2559fafaaf7c938f82daa31d574891252de7bae002f8f10c29",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-629",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.629",
+      "captured_at": "2026-07-31T09:00:20Z",
+      "captured_sha256": "9cef5d05e5d60a318859b5c340d034b3136f52e0741f9a68d6702c271fbad63e",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.629\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-629",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.629 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "90919571e1a2585da50496941cdefe5b257969eb1f9777da9514c10f8df2d77f",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-64",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.64",
+      "captured_at": "2026-07-31T08:58:58Z",
+      "captured_sha256": "4f1e79cb54139f1901e4a7d7efbd31408b349b661eeb65929426e1f5302933e4",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.64\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-64",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.64 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "3db5071723e446623cb37d019ac9b0271da6386574c1106aa44784016457f725",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-65",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&section=141.65",
+      "captured_at": "2026-07-31T08:59:03Z",
+      "captured_sha256": "694ca7a525b44bf26d901f0724e878a552881b9d938d7c546bef64177bd9bcc5",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified to contain the DIV8 SECTION element N=\"141.65\" and the section heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.141-65",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR 141.65 as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "4b7bf73fc47c476a17bc283678074c5cc9dcd4dd6c7123e2d2ec105b3af1aed2",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.subpart-q",
+      "resource": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-01/title-40.xml?part=141&subpart=Q",
+      "captured_at": "2026-07-31T09:00:27Z",
+      "captured_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "authority": {
+        "class": "authoritative-unofficial-government-compilation",
+        "evidence": "The eCFR is the continuously updated compilation of the Code of Federal Regulations maintained by the Office of the Federal Register and GPO; the eCFR site states it is not an official legal edition of the CFR. Captured from the public versioner API at point-in-time date 2026-07-01."
+      },
+      "authenticity_evidence": "Fetched directly from www.ecfr.gov versioner API over TLS on 2026-07-31; response verified as a SUBPART element with the Public Notification heading; sha256 computed at capture.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.ecfr.2026-07-01.subpart-q",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Full text of 40 CFR part 141 subpart Q, including appendices, as captured (XML)"
+          ],
+          "excluded_components": []
+        },
+        "evidence": "Text of federal regulations is a work of the United States Government under 17 U.S.C. 105 and an edict of government; no copyright subsists. Maintainer ruling of 2026-07-31 approved all eCFR captures in this registry under this classification.",
+        "decision_payload_sha256": "d2579196d10373f2a13229a2d41ed0149534e0c19067778c6d621a94986c75f4",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    },
+    {
+      "source_id": "source.epa.qrg.816-f-10-080",
+      "resource": "https://nepis.epa.gov/Exe/ZyPDF.cgi?Dockey=P100C8XW.txt",
+      "captured_at": "2026-07-31T09:01:50Z",
+      "captured_sha256": "b36c20f6bea16c45f6706266b8df3d9afba129a5e8e83eb8ff6691af20a0705e",
+      "authority": {
+        "class": "agency-guidance",
+        "evidence": "EPA Office of Water publication EPA 816-F-10-080, Comprehensive Disinfectants and Disinfection Byproducts Rules (Stage 1 and Stage 2): Quick Reference Guide, distributed via EPA NEPIS and linked from EPA's Drinking Water Rule Quick Reference Guides index page."
+      },
+      "authenticity_evidence": "Fetched from nepis.epa.gov over TLS on 2026-07-31 via the Dockey link published on EPA's quick-reference-guides index page; title page and tables 1 through 4 content-verified against the published title. Note: the EPA index lists the guide as 2 pp; the retrieved rendering is 9 pages; content match verified on the opening pages.",
+      "reproduction_decision": {
+        "decision_id": "license-decision.epa.qrg.816-f-10-080",
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "scope": {
+          "covered_components": [
+            "Guide text",
+            "Tables 1 through 5"
+          ],
+          "excluded_components": [
+            "Cover photograph"
+          ]
+        },
+        "evidence": "EPA publication authored by a federal agency; a work of the United States Government under 17 U.S.C. 105. Cover photograph precautionarily excluded: agency publications sometimes license cover stock photography, and the corpus never reproduces images. Maintainer ruling of 2026-07-31.",
+        "decision_payload_sha256": "dc085d72872e417a3cd49eb3d9ae3cc765176e22788d7cc768008e8a1178afef",
+        "reviewed_by": "human.skitch",
+        "reviewed_at": "2026-07-31T09:11:55Z"
+      }
+    }
+  ]
+}
