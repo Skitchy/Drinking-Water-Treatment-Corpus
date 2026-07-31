@@ -1,0 +1,319 @@
+Comprehensive Disinfectants and
+Disinfection Byproducts Rules (Stage 1
+and Stage 2): Quick Reference Guide
+Overview of the Rules
+ Titles*       ►    Stage 1 Disinfectants and Disinfection Byproducts Rule (Stage 1 DBPR) 63 FR 69390,
+                    December 16, 1998, Vol. 63, No. 241
+               ►    Stage 2 Disinfectants and Disinfection Byproducts Rule (Stage 2 DBPR) 71 FR 388, January 4,
+                    2006, Vol. 71, No. 2
+ Purpose       Improve public health protection by reducing exposure to disinfection byproducts. Some disinfectants
+               and disinfection byproducts (DBPs) have been shown to cause cancer and reproductive effects in
+               lab animals and suggested bladder cancer and reproductive effects in humans.
+ General       The DBPRs require public water systems (PWSs) to:
+ Description        ► Comply with established maximum contaminant levels (MCLs) and operational evaluation
+                         levels (OELs) for DBPs, and maximum residual disinfection levels (MRDLs) for disinfectant
+                         residuals.
+                    ► Conduct an initial evaluation of their distribution system.
+               In addition, PWSs using conventional filtration are required to remove specific percentages of
+               organic material that may react to form DBPs through the implementation of a treatment technique.
+ Utilities     The DBPRs apply to all sizes of community water systems (CWSs) and nontransient noncommunity
+ Covered       water systems (NTNCWSs) that add a disinfectant other than ultraviolet (UV) light or deliver
+               disinfected water, and transient noncommunity water systems (TNCWSs) that add chlorine dioxide.
+ *This document provides a summary of federal drinking water requirements; to ensure full compliance, please
+ consult the federal regulations at 40 CFR 141 and any approved state requirements.
+
+Overview of Requirements
+This table shows how the requirements for the Stage 2 DBPR build on the existing requirements established in
+the Stage 1 DBPR. For more information on changes in monitoring requirements, see Table 1.
+                                                                  Stage 1            Stage 2         For More
+                                                                   DBPR               DBPR             Info:
+                   All CWSs and NTNCWSs that add
+                   disinfectant other than UV light and
+                   TNCWSs that treat with chlorine dioxide.
+Coverage
+                   Consecutive systems that deliver water
+                   treated with a disinfectant other than UV
+                   light.
+                   MCL compliance is calculated using the
+                   running annual average (RAA) of all
+TTHM &             samples from all monitoring locations
+                   across the system.                                                              See Table 3
+HAA5 MCL
+                                                                                                   and Table 4.
+Compliance         MCL compliance is calculated using the
+                   locational RAA (LRAA) for each monitoring
+                   location in the distribution system.
+                   Contaminants
+
+                     Total Trihalomethanes (TTHM)
+
+
+                     5 Haloacetic Acids (HAA5)
+
+                                                                                 Regulated under
+                     Bromate
+Regulated                                                                        Stage 1 DBPR1
+Contaminants                                                                                       See Table 2.
+& Disinfectants                                                                  Regulated under
+                     Chlorite
+                                                                                  Stage 1 DBPR
+
+                   Disinfectants
+
+                                                                                 Regulated under
+                     Chlorine/chloramines
+                                                                                  Stage 1 DBPR
+
+                                                                                 Regulated under
+                     Chlorine dioxide
+                                                                                  Stage 1 DBPR
+                   If an operational evaluation level (OEL)
+Operational        is exceeded, systems must evaluate
+                                                                                                   See Table 5.
+Evaluation         practices and identify DBP mitigation
+                   actions.
+1. A new analytical method for bromate was approved with the Stage 2 DBPR.
+Table 1. Changes in Monitoring Requirements
+                                                                        Stage 1 DBPR                                         Stage 2 DBPR
+                                                       Based on source water type, population, and number
+Monitoring
+                             Number of Samples                                                              Based on source water type and population.
+                                                       of treatment plants or wells.
+ Routine
+ TTHM/
+  HAA5
+
+
+
+
+                                                                                                            Based on Initial Distribution System Evaluation
+                             Sample Locations          At location of maximum residence time.1
+                                                                                                            (IDSE) requirements.2
+                             Compliance Calculation    RAA must not exceed the MCL for TTHM or HAA5.        LRAA must not exceed the MCL for TTHM or HAA5.
+
+                                                     All systems need TTHM RAA < 0.040 mg/L and HAA5
+                                                     < 0.030 mg/L. Subpart H systems also need source
+        Reduced Monitoring
+
+
+
+
+                                                     water TOC RAA at location prior to treatment < 4.0
+                                                     mg/L .3, 4
+                                                     The Stage 2 DBPR left eligibility unchanged but
+                                           TTHM/HAA5
+                                                     specifies that Subpart H systems must take source
+                                                     water TOC samples every 30 days. Subpart H
+                             Eligibility             systems on reduced monitoring must take source
+                                                     water TOC samples every 90 days to qualify for
+                                                     reduced monitoring.
+
+                                                       Source water bromide RAA < 0.05 mg/L.
+                                           Bromate5    With the Stage 2 DBPR specified entry point to
+                                                       distribution system bromate RAA < 0.0025 mg/L.
+Subpart H systems serving > 10,000 must have at least 25 percent of samples at the location of maximum residence time; the remaining samples
+1
+
+must be representative of average residence time.
+2
+    All systems are required to satisfy their IDSE requirement by July 10, 2010.
+3
+    Subpart H systems are water systems that use surface water or ground water under the direct influence of surface water (GWUDI).
+4
+  Ground water systems serving < 10,000 must meet these RAA for 2 years; can also qualify for reduced monitoring if the TTHM RAA is < 0.020 mg/L
+and a HAA5 RAA < 0.015 mg/L for 1 year.
+5
+  A new analytical method for bromate was established with the Stage 2 DBPR.
+
+
+
+Table 2. Regulated Contaminants and Disinfectants
+                                                                   Stage 1 DBPR                             Stage 2 DBPR
+    Regulated Contaminants                            MCL (mg/L)           MCLG (mg/L)           MCL (mg/L)            MCLG (mg/L)
+TTHM                                                       0.080                                   Unchanged   2
+
+
+     Chloroform                                                                     -                                         0.07
+     Bromodichloromethane                                                         Zero                                    Unchanged2
+     Dibromochloromethane                                                         0.06                                    Unchanged2
+     Bromoform                                                                    Zero                                    Unchanged2
+HAA5                                                       0.060                                   Unchanged   2
+
+
+     Monochloroacetic acid                                                          -                                         0.07
+     Dichloroacetic acid                                                          Zero                                    Unchanged2
+     Trichloroacetic acid                                                          0.3                                         0.2
+     Bromoacetic acid                                                               -                                           -
+     Dibromoacetic acid                                                             -                                           -
+Bromate (plants that use ozone)1                           0.010                  Zero             Unchanged2             Unchanged2
+Chlorite (plants that use chlorine
+                                                            1.0                    0.8             Unchanged2             Unchanged2
+dioxide)
+
+     Regulated Disinfectants                          MRDL3 (mg/L) MRDLG3 (mg/L) MRDL (mg/L) MRDLG (mg/L)
+Chlorine                                                 4.0 as Cl2                 4              Unchanged2             Unchanged2
+Chloramines                                              4.0 as Cl2                 4              Unchanged   2
+                                                                                                                          Unchanged2
+Chlorine dioxide                                            0.8                    0.8             Unchanged2             Unchanged2
+1
+    A new analytical method for bromate was established with the Stage 2 DBPR.
+2
+    Stage 2 DBPR did not revise the MCL or MRDL for this contaminant/disinfectant.
+3
+    Stage 1 DBPR included MRDLs and MRDLGs for disinfectants, which are similar to MCLs and MCLGs.
+Table 3. Compliance Determination
+                                        Stage 1 DBPR                            Stage 2 DBPR
+TTHM/HAA5                     RAA                                      LRAA
+Bromate     1
+                              RAA                                      Unchanged2
+Chlorite                  Daily/follow-up monitoring             Unchanged2
+Chorine dioxide           Daily/follow-up monitoring             Unchanged2
+Chlorine/chloramines      RAA                                    Unchanged2
+DBP precursors
+                          Monthly for TOC and alkalinity         Every 30 days for TOC and alkalinity
+(TOC sample set)*
+1
+ A new analytical method for bromate was established with the Stage 2 DBPR.
+2
+ Stage 2 DBPR did not change the compliance requirements for this contaminant/disinfectant.
+*TOC sample set is comprised of source water alkalinity, source water TOC, and treated TOC.
+
+
+ Table 4. Compliance with MCLs and MRDLs (Routine Monitoring)
+                                      Coverage                                Stage 1 DBPR                                 Stage 2 DBPR
+ Contaminant/                                                                     Total Distribution                            Total Distribution
+  Disinfectant            Source                               Monitoring                                     Monitoring
+                                           Population                            System Monitoring                             System Monitoring
+                          Water                                Frequency                                      Frequency1
+                                                                                      Locations                                     Locations
+                                       < 500                   Per year2         1 per treatment plant       Per year2                    2
+                                       500 - 3,300
+                                                                                 1 per treatment plant                                    2
+                                       3,301 - 9,999
+                                       10,000 - 49,000                                                                                    4
+                        Subpart H
+                                       50,000 - 249,999        Per quarter                                   Per quarter                  8
+                                       250,000 - 999,999                         4 per treatment plant                                    12
+ TTHM/HAA5                             1,000,000 - 4,999,999                                                                              16
+                                       > 5,000,000                                                                                        20
+                                       < 500
+                                                               Per year2                                     Per year2                    2
+                                       500 - 9,999
+                        Ground
+                                       10,000 - 99,999                           1 per treatment plant                                    4
+                        water
+                                       100,000 - 499,999       Per quarter                                   Per quarter                  6
+                                       > 500,000                                                                                          8
+                        Systems that use ozone as a                              1 at entry point to
+ Bromate3                                                      Monthly                                                      Unchanged4
+                        disinfectant                                             distribution system
+                                                               Daily (at
+                                                               entrance to
+                                                               distribution      1 at entry point to
+                        Systems that use chlorine dioxide
+ Chlorite                                                      system);          distribution system; 3 in                  Unchanged4
+                        as a disinfectant
+                                                               monthly (in       distribution system
+                                                               distribution
+                                                               system)
+                        Systems that use chlorine dioxide                        1 at entry point to
+ Chlorine dixoide                                              Daily                                                        Unchanged4
+                        as a disinfectant                                        distribution system
+ Chorine/                                                      Same location and frequency as Total
+                        All systems                                                                                         Unchanged4
+ Chloramines                                                   Coliform Rule (TCR) sampling
+ DBP precursors
+                        Systems that use conventional                            1 per source water
+ (TOC sample                                                   Monthly                                                      Unchanged4
+                        filtration                                               source
+ set)*
+ 1
+  All systems must monitor during the month of highest DBP concentrations. Systems on quarterly monitoring, except Subpart H systems serving
+ 500 - 3,300, must take dual sample sets every 90 days at each monitoring location. Systems on annual monitoring and Subpart H systems serving
+ 500 - 3,300 are required to take individual TTHM and HAA5 samples (instead of a dual sample set) at the locations with the highest TTHM and HAA5
+ concentrations, respectively. If monitoring annually, only one location with a dual sample set per monitoring period is needed if the highest TTHM and
+ HAA5 concentrations occur at the same location and in the same month.
+ 2
+     Ground water systems serving < 10,000 and Subpart H systems serving < 500 must increase monitoring to quarterly if an MCL is exceeded.
+ 3
+     A new analytical method for bromate was established with the Stage 2 DBPR.
+ 4
+     Stage 2 DBPR did not revise the monitoring frequency or location requirements for this contaminant/disinfectant.
+*TOC sample set is comprised of source water alkalinity, source water TOC, and treated TOC.
+                              Table 5. Operational Evaluation Levels (OELs)
+                              Applies to:            All systems subject to Stage 2 DBPR monitoring requirements that conduct compliance
+                                                     monitoring and collect samples quarterly.
+                              Purpose of
+                                                     To reduce peaks in DBP levels and exposure to high DBP levels.
+                              establishing OELs:
+                              OEL calculations:      ►Calculated for both TTHMs and HAA5s at each monitoring location using Stage 2
+                                                      DBPR compliance monitoring results.
+                                                 ► OEL is determined by the sum of the two previous quarter’s TTHM or HAA5 result
+                                                      plus twice the current quarter’s TTHM or HAA5 result at that location, divided by four.
+                                                 ► OEL = (Q1 + Q2 + 2Q3) / 4
+                              OELs are exceeded: During any quarter in which the OEL is greater than the TTHM or HAA5 MCL.
+                              If an OEL is       ► Conduct an operational evaluation.
+                              exceeded, a system ► Submit a written report of the evaluation to the state no later than 90 days after being
+                              must:                   notified of the analytical results that caused the exceedance(s).
+                                                 ► Keep a copy of the operational evaluation report and make it publically available
+                                                      upon request.
+                              The operational    ► An examination of the treatment and distribution systems’ operational practices that
+                              evaluation must         may contribute to TTHM and HAA5 formation.
+                              include:           ► Steps to minimize future exceedances.
+                              OEL requirements
+                                                 When the system begins compliance monitoring for the Stage 2 DBPR.
+                              take effect:
+
+
+
+
+                              Table 6. Standard Monitoring Compliance Dates
+                                                                                                   Begin LRAA TTHM & HAA5
+                                 If You are a System Serving:                Schedule1
+                                                                                                         Monitoring By:
+                              At least 100,000 people or part of a
+                              combined distribution system (CDS) serving            1                      April 1, 2012
+                              at least 100,000 people.
+                              50,000 to 99,999 people or part of a CDS
+                                                                                    2                    October 1, 2012
+                              serving 50,000 to 99,999 people.
+                              10,000 to 49,999 people or part of a CDS
+                                                                                    3                    October 1, 2013
+                              serving 10,000 to 49,999 people.
+                              Less than 10,000 people or part of a CDS                                                   2
+                                                                                    4                    October 1, 2013
+                              serving less than 10,000 people.
+                              1
+                                Your schedule is determined by the largest system in your CDS.
+                              2
+                                Systems not conducting Cryptosporidium monitoring under Long Term 2 Enhanced Surface Water Treatment
+                              Rule (LT2ESWTR) must begin LRAA TTHM/HAA5 monitoring by this date. Systems conducting Cryptosporidium
+                              monitoring under LT2ESWTR must begin LRAA TTHM/HAA5 monitoring by October 1, 2014.
+
+
+
+
+                              Table 7. TOC Removal
+                              Subpart H systems that use conventional filtration treatment are required to remove specific percentages of
+                              organic materials, measured as total organic carbon (TOC), that may react with disinfectants to form DBPs.
+                              Removal must be achieved through a treatment technique (enhanced coagulation or enhanced softening) unless
+                              a system meets alternative criteria. Systems practicing softening must meet TOC removal requirements for
+                              source water alkalinity greater than 120 mg/L CaC03.
+
+                               Source Water TOC                          Source Water Alkalinity, mg/L as CaCO3
+ For additional information          (mg/L)                         0 - 60                   > 60 to 120                    > 120
+ on the DBPRs:
+                                      > 2.0 to 4.0                   35.0%                         25.0%                     15.0%
+ Call the Safe Drinking               > 4.0 to 8.0                   45.0%                         35.0%                     25.0%
+ Water Hotline at 1-800-                    > 8.0                    50.0%                         40.0%                     30.0%
+ 426-4791; visit the EPA
+ web site at http://water.
+ epa.gov/drink; or contact
+ your state drinking water
+ representative.
+
+
+
+
+Office of Water (4606M)           EPA 816-F-10-080                              http://water.epa.gov/drink                        August 2010
+

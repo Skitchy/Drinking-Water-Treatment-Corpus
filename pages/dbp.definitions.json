@@ -1,0 +1,291 @@
+{
+  "schema_version": "drinking-water-profile/v0.1",
+  "type": "concept",
+  "page_id": "dbp.definitions",
+  "title": "DBP rule definitions and sampling terminology (TTHM, HAA5, LRAA, three-sample set, paired samples)",
+  "status": "stable",
+  "assurance_profile": "drinking-water/v0.1",
+  "use_class": "regulatory-reference",
+  "jurisdiction": "US-federal",
+  "applicability": {
+    "system_types": [
+      "community-water-system",
+      "nontransient-noncommunity-water-system",
+      "transient-noncommunity-water-system"
+    ],
+    "conditions": [
+      "Terms apply to public water systems subject to subparts L and V of 40 CFR part 141",
+      "Transient noncommunity systems are in scope only where they use chlorine dioxide"
+    ],
+    "exclusions": []
+  },
+  "generated": {
+    "by": "cc",
+    "at": "2026-07-31T10:02:46Z"
+  },
+  "review_payload": {
+    "canonicalization": "dw-review-payload/v0.1",
+    "sha256": "c6f7ddfbd166c695956d2b5201d6cf8b3e2eb193f8c4c0de3812cee40ee506ef"
+  },
+  "normalization": "dw-quote-normalization/v0.1",
+  "verified": [
+    {
+      "by": "process:quote-tool/v0.1-interim",
+      "actor_type": "process",
+      "at": "2026-07-31T10:03:11Z",
+      "review_payload_sha256": "c6f7ddfbd166c695956d2b5201d6cf8b3e2eb193f8c4c0de3812cee40ee506ef",
+      "scopes": [
+        "source-capture",
+        "quote-fidelity"
+      ]
+    },
+    {
+      "by": "human.skitch",
+      "actor_type": "human",
+      "at": "2026-07-31T10:10:27Z",
+      "review_payload_sha256": "c6f7ddfbd166c695956d2b5201d6cf8b3e2eb193f8c4c0de3812cee40ee506ef",
+      "scopes": [
+        "editorial-accuracy",
+        "applicability",
+        "context-completeness"
+      ]
+    }
+  ],
+  "stale_after": "2026-10-29",
+  "source_watch": {
+    "watch_id": "watch.dbp.definitions",
+    "last_result": "unchanged",
+    "last_checked_at": "2026-07-31T10:10:53Z",
+    "next_due_at": "2026-08-30T10:10:53Z"
+  },
+  "source_refs": [
+    {
+      "source_id": "source.ecfr.2026-07-01.141-2",
+      "captured_sha256": "d2d9daa22334d43c6acd38c094e281a5ed23142cab14578d7be0fe968e9d37f1",
+      "licensing_decision_payload_sha256": "7036d6d0f9722e5cd5ee121813e78492b18bb148bdbec63a77386bb7a4e54476"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "licensing_decision_payload_sha256": "a99aef52bd75ce57929c25ea48d0839c5d65d1dd2ef5068159c90da0dbcdd045"
+    }
+  ],
+  "quotes": [
+    {
+      "quote_id": "quote.dbp.definitions.tthm",
+      "source_id": "source.ecfr.2026-07-01.141-2",
+      "captured_source_sha256": "d2d9daa22334d43c6acd38c094e281a5ed23142cab14578d7be0fe968e9d37f1",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:37521-37785"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "d71929077fe3abcdf0caa3190efc573f6dabfee1b6de1401fa3743db67a4b51a",
+      "verified_at": "2026-07-31T10:02:46Z"
+    },
+    {
+      "quote_id": "quote.dbp.definitions.haa5",
+      "source_id": "source.ecfr.2026-07-01.141-2",
+      "captured_source_sha256": "d2d9daa22334d43c6acd38c094e281a5ed23142cab14578d7be0fe968e9d37f1",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:15022-15309"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "3a578e3e6efdf0ce38d09a5d08f8bb1148e5452c12c2b02394dba86f199040c6",
+      "verified_at": "2026-07-31T10:02:46Z"
+    },
+    {
+      "quote_id": "quote.dbp.definitions.lraa",
+      "source_id": "source.ecfr.2026-07-01.141-2",
+      "captured_source_sha256": "d2d9daa22334d43c6acd38c094e281a5ed23142cab14578d7be0fe968e9d37f1",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:20748-20930"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "4b3a8c5be9f3c0e79ea06ee73fe961c867dbcfda9553142e01d8d788c6e2821d",
+      "verified_at": "2026-07-31T10:02:46Z"
+    },
+    {
+      "quote_id": "quote.dbp.definitions.three-sample-set",
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_source_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:8891-9215"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "c8da9be9bcb444dd2f2a0d823d0a8fcaee941063d268da0c2e7b1e4c64fca492",
+      "verified_at": "2026-07-31T10:02:46Z"
+    },
+    {
+      "quote_id": "quote.dbp.definitions.paired-samples",
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_source_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:16279-16593"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "9ce44809593198ff4b33b4cba06f69626c7b694711033ee2135356d6b29948c3",
+      "verified_at": "2026-07-31T10:02:46Z"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "claim.dbp.definitions.tthm-composition",
+      "kind": "qualitative",
+      "subject": "Total trihalomethanes (TTHM)",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Sum of the concentrations in mg/L of trichloromethane (chloroform), dibromochloromethane, bromodichloromethane, and tribromomethane (bromoform), rounded to two significant figures",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Terms apply to public water systems subject to subparts L and V of 40 CFR part 141",
+          "Transient noncommunity systems are in scope only where they use chlorine dioxide"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.definitions.tthm"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.definitions.haa5-composition",
+      "kind": "qualitative",
+      "subject": "Haloacetic acids (five) (HAA5)",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Sum of the concentrations in mg/L of monochloroacetic acid, dichloroacetic acid, trichloroacetic acid, monobromoacetic acid, and dibromoacetic acid, rounded to two significant figures after addition",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Terms apply to public water systems subject to subparts L and V of 40 CFR part 141",
+          "Transient noncommunity systems are in scope only where they use chlorine dioxide"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.definitions.haa5"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.definitions.lraa-computation",
+      "kind": "qualitative",
+      "subject": "Locational running annual average (LRAA)",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Average of sample analytical results for samples taken at a particular monitoring location during the previous four calendar quarters",
+      "conditions": [
+        "Defined in 40 CFR 141.2; the general definitions section defines LRAA but contains no general definition of running annual average (RAA), which operates through the compliance computations in 141.133"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Terms apply to public water systems subject to subparts L and V of 40 CFR part 141",
+          "Transient noncommunity systems are in scope only where they use chlorine dioxide"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.definitions.lraa"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.definitions.chlorite-three-sample-set",
+      "kind": "qualitative",
+      "subject": "Chlorite routine monthly distribution-system monitoring",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "A three-sample set each month in the distribution system: one sample near the first customer, one at average residence time, one at maximum residence time",
+      "conditions": [
+        "The term three-sample set originates in the chlorite monitoring rule text at 141.132(b)(2), not in the general definitions at 141.2"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Systems that use chlorine dioxide"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.definitions.three-sample-set"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.definitions.toc-paired-samples",
+      "kind": "qualitative",
+      "subject": "DBP precursor (TOC) routine monitoring samples",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "One paired sample (source water TOC prior to treatment and treated water TOC) plus one source water alkalinity sample per month per plant",
+      "conditions": [
+        "The term paired samples originates in the TOC monitoring rule text at 141.132(d), not in the general definitions at 141.2",
+        "Field and guidance confusion trap: chlorite uses the monthly three-sample set; TOC uses monthly paired samples plus source alkalinity. EPA guidance 816-F-10-080 Table 3 uses the looser term TOC sample set for the latter"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Systems using conventional filtration treatment (subpart H systems subject to 40 CFR 141.135)"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.definitions.paired-samples"
+      ]
+    }
+  ]
+}

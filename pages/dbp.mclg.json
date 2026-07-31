@@ -1,0 +1,478 @@
+{
+  "schema_version": "drinking-water-profile/v0.1",
+  "type": "concept",
+  "page_id": "dbp.mclg",
+  "title": "MCLGs for disinfection byproducts and MRDLGs for disinfectant residuals",
+  "status": "stable",
+  "assurance_profile": "drinking-water/v0.1",
+  "use_class": "regulatory-reference",
+  "jurisdiction": "US-federal",
+  "applicability": {
+    "system_types": [
+      "community-water-system",
+      "nontransient-noncommunity-water-system",
+      "transient-noncommunity-water-system"
+    ],
+    "conditions": [
+      "Terms apply to public water systems subject to subparts L and V of 40 CFR part 141",
+      "Transient noncommunity systems are in scope only where they use chlorine dioxide"
+    ],
+    "exclusions": []
+  },
+  "generated": {
+    "by": "cc",
+    "at": "2026-07-31T10:02:46Z"
+  },
+  "review_payload": {
+    "canonicalization": "dw-review-payload/v0.1",
+    "sha256": "2c614b5a03d2256aff0c0f9033b00407454ee53110a9f7e18708ce95b64a4ef6"
+  },
+  "normalization": "dw-quote-normalization/v0.1",
+  "verified": [
+    {
+      "by": "process:quote-tool/v0.1-interim",
+      "actor_type": "process",
+      "at": "2026-07-31T10:03:11Z",
+      "review_payload_sha256": "2c614b5a03d2256aff0c0f9033b00407454ee53110a9f7e18708ce95b64a4ef6",
+      "scopes": [
+        "source-capture",
+        "quote-fidelity"
+      ]
+    },
+    {
+      "by": "human.skitch",
+      "actor_type": "human",
+      "at": "2026-07-31T10:10:27Z",
+      "review_payload_sha256": "2c614b5a03d2256aff0c0f9033b00407454ee53110a9f7e18708ce95b64a4ef6",
+      "scopes": [
+        "editorial-accuracy",
+        "applicability",
+        "context-completeness"
+      ]
+    }
+  ],
+  "stale_after": "2026-10-29",
+  "source_watch": {
+    "watch_id": "watch.dbp.mclg",
+    "last_result": "unchanged",
+    "last_checked_at": "2026-07-31T10:11:03Z",
+    "next_due_at": "2026-08-30T10:11:03Z"
+  },
+  "source_refs": [
+    {
+      "source_id": "source.ecfr.2026-07-01.141-53",
+      "captured_sha256": "c0b51975a3bb64b989dde8c0f77b8124eea622a96f963a7e33df94b5c2f74c15",
+      "licensing_decision_payload_sha256": "d6fc35079d37350747444083851ca71e843f29bb9c8fc25c553a1d4ef9848357"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-54",
+      "captured_sha256": "43b0f7a95c737daaac27d1b23e626f8d38140f60e6db66da2edc8c010678d2d1",
+      "licensing_decision_payload_sha256": "38f0f46cb68cd781d4ab3f141b73a00c728569f07d1b7e2ffa02a208e0c67fd7"
+    }
+  ],
+  "quotes": [
+    {
+      "quote_id": "quote.dbp.mclg.table",
+      "source_id": "source.ecfr.2026-07-01.141-53",
+      "captured_source_sha256": "c0b51975a3bb64b989dde8c0f77b8124eea622a96f963a7e33df94b5c2f74c15",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:70-356"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "d26d8b405ca1ecec1182fbef11ccc8cf32599a0b954c58538cef3fa56ce80804",
+      "verified_at": "2026-07-31T10:02:46Z"
+    },
+    {
+      "quote_id": "quote.dbp.mclg.mrdlg-table",
+      "source_id": "source.ecfr.2026-07-01.141-54",
+      "captured_source_sha256": "43b0f7a95c737daaac27d1b23e626f8d38140f60e6db66da2edc8c010678d2d1",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:70-222"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "fa8376e90e9e6aa928a6b31273c9b38fb51002f12a90a365f50cc0ec8f9397e2",
+      "verified_at": "2026-07-31T10:02:46Z"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "claim.dbp.mclg.bromodichloromethane",
+      "kind": "numeric",
+      "subject": "Maximum contaminant level goal for bromodichloromethane",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "mclg"
+      },
+      "value": 0,
+      "conditions": [
+        "MCLGs and MRDLGs are non-enforceable public health goals; the enforceable limits are the MCLs in 141.64 and the MRDLs in 141.65"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Terms apply to public water systems subject to subparts L and V of 40 CFR part 141",
+          "Transient noncommunity systems are in scope only where they use chlorine dioxide"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mclg.table"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.mclg.bromoform",
+      "kind": "numeric",
+      "subject": "Maximum contaminant level goal for bromoform",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "mclg"
+      },
+      "value": 0,
+      "conditions": [
+        "MCLGs and MRDLGs are non-enforceable public health goals; the enforceable limits are the MCLs in 141.64 and the MRDLs in 141.65"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Terms apply to public water systems subject to subparts L and V of 40 CFR part 141",
+          "Transient noncommunity systems are in scope only where they use chlorine dioxide"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mclg.table"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.mclg.bromate",
+      "kind": "numeric",
+      "subject": "Maximum contaminant level goal for bromate",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "mclg"
+      },
+      "value": 0,
+      "conditions": [
+        "MCLGs and MRDLGs are non-enforceable public health goals; the enforceable limits are the MCLs in 141.64 and the MRDLs in 141.65"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Terms apply to public water systems subject to subparts L and V of 40 CFR part 141",
+          "Transient noncommunity systems are in scope only where they use chlorine dioxide"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mclg.table"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.mclg.chlorite",
+      "kind": "numeric",
+      "subject": "Maximum contaminant level goal for chlorite",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "mclg"
+      },
+      "value": 0.8,
+      "conditions": [
+        "MCLGs and MRDLGs are non-enforceable public health goals; the enforceable limits are the MCLs in 141.64 and the MRDLs in 141.65"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Terms apply to public water systems subject to subparts L and V of 40 CFR part 141",
+          "Transient noncommunity systems are in scope only where they use chlorine dioxide"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mclg.table"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.mclg.chloroform",
+      "kind": "numeric",
+      "subject": "Maximum contaminant level goal for chloroform",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "mclg"
+      },
+      "value": 0.07,
+      "conditions": [
+        "MCLGs and MRDLGs are non-enforceable public health goals; the enforceable limits are the MCLs in 141.64 and the MRDLs in 141.65"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Terms apply to public water systems subject to subparts L and V of 40 CFR part 141",
+          "Transient noncommunity systems are in scope only where they use chlorine dioxide"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mclg.table"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.mclg.dibromochloromethane",
+      "kind": "numeric",
+      "subject": "Maximum contaminant level goal for dibromochloromethane",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "mclg"
+      },
+      "value": 0.06,
+      "conditions": [
+        "MCLGs and MRDLGs are non-enforceable public health goals; the enforceable limits are the MCLs in 141.64 and the MRDLs in 141.65"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Terms apply to public water systems subject to subparts L and V of 40 CFR part 141",
+          "Transient noncommunity systems are in scope only where they use chlorine dioxide"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mclg.table"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.mclg.dichloroacetic-acid",
+      "kind": "numeric",
+      "subject": "Maximum contaminant level goal for dichloroacetic acid",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "mclg"
+      },
+      "value": 0,
+      "conditions": [
+        "MCLGs and MRDLGs are non-enforceable public health goals; the enforceable limits are the MCLs in 141.64 and the MRDLs in 141.65"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Terms apply to public water systems subject to subparts L and V of 40 CFR part 141",
+          "Transient noncommunity systems are in scope only where they use chlorine dioxide"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mclg.table"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.mclg.monochloroacetic-acid",
+      "kind": "numeric",
+      "subject": "Maximum contaminant level goal for monochloroacetic acid",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "mclg"
+      },
+      "value": 0.07,
+      "conditions": [
+        "MCLGs and MRDLGs are non-enforceable public health goals; the enforceable limits are the MCLs in 141.64 and the MRDLs in 141.65"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Terms apply to public water systems subject to subparts L and V of 40 CFR part 141",
+          "Transient noncommunity systems are in scope only where they use chlorine dioxide"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mclg.table"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.mclg.trichloroacetic-acid",
+      "kind": "numeric",
+      "subject": "Maximum contaminant level goal for trichloroacetic acid",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "mclg"
+      },
+      "value": 0.02,
+      "conditions": [
+        "MCLGs and MRDLGs are non-enforceable public health goals; the enforceable limits are the MCLs in 141.64 and the MRDLs in 141.65",
+        "Inter-source discrepancy, resolved by authority hierarchy: codified text at 40 CFR 141.53 (eCFR point-in-time 2026-07-01) states 0.02 mg/L; EPA guidance 816-F-10-080 Table 2 states 0.2 mg/L. The codified text governs this claim"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Terms apply to public water systems subject to subparts L and V of 40 CFR part 141",
+          "Transient noncommunity systems are in scope only where they use chlorine dioxide"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mclg.table"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.mclg.mrdlg-chlorine",
+      "kind": "numeric",
+      "subject": "Maximum residual disinfectant level goal for chlorine",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "mrdlg"
+      },
+      "value": 4,
+      "conditions": [
+        "MCLGs and MRDLGs are non-enforceable public health goals; the enforceable limits are the MCLs in 141.64 and the MRDLs in 141.65"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Terms apply to public water systems subject to subparts L and V of 40 CFR part 141",
+          "Transient noncommunity systems are in scope only where they use chlorine dioxide"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mclg.mrdlg-table"
+      ],
+      "unit": "mg/L as Cl2"
+    },
+    {
+      "claim_id": "claim.dbp.mclg.mrdlg-chloramines",
+      "kind": "numeric",
+      "subject": "Maximum residual disinfectant level goal for chloramines",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "mrdlg"
+      },
+      "value": 4,
+      "conditions": [
+        "MCLGs and MRDLGs are non-enforceable public health goals; the enforceable limits are the MCLs in 141.64 and the MRDLs in 141.65"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Terms apply to public water systems subject to subparts L and V of 40 CFR part 141",
+          "Transient noncommunity systems are in scope only where they use chlorine dioxide"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mclg.mrdlg-table"
+      ],
+      "unit": "mg/L as Cl2"
+    },
+    {
+      "claim_id": "claim.dbp.mclg.mrdlg-chlorine-dioxide",
+      "kind": "numeric",
+      "subject": "Maximum residual disinfectant level goal for chlorine dioxide",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "mrdlg"
+      },
+      "value": 0.8,
+      "conditions": [
+        "MCLGs and MRDLGs are non-enforceable public health goals; the enforceable limits are the MCLs in 141.64 and the MRDLs in 141.65"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Terms apply to public water systems subject to subparts L and V of 40 CFR part 141",
+          "Transient noncommunity systems are in scope only where they use chlorine dioxide"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mclg.mrdlg-table"
+      ],
+      "unit": "mg/L as ClO2"
+    }
+  ]
+}
