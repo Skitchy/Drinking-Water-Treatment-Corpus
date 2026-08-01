@@ -920,3 +920,5 @@ for (const mutation of mutations.mutations) {
 console.log(
   `Artifact checks passed: ${schemaPaths.length} schemas, ${manifest.cases.length} acceptance cases, full format assertion, and all executable semantic mutations.`
 );
+
+await import("./check-rfc004-amendment.mjs");

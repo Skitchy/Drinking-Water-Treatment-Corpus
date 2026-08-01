@@ -1,0 +1,35 @@
+{
+  "schema_version": "reviewer-registry/v0.2",
+  "registry_version": "v0.2.0",
+  "updated_at": "2026-07-31T10:00:00Z",
+  "reviewers": [
+    {
+      "reviewer_id": "human.skitch",
+      "display_name": "Jason \"Skitch\" Wiltsey",
+      "status": "active",
+      "status_changed_at": "2026-07-28T00:00:00Z",
+      "authorized_from": "2026-01-01T00:00:00Z",
+      "qualifications": [
+        {
+          "kind": "documented-experience",
+          "description": "Synthetic fixture qualification for domain and procedure review; production evidence must replace this text.",
+          "jurisdiction": "fixture-jurisdiction",
+          "valid_from": "2026-01-01",
+          "evidence": "fixture-only"
+        }
+      ],
+      "review_scopes": [
+        "editorial-accuracy",
+        "applicability",
+        "context-completeness",
+        "licensing",
+        "procedure-domain",
+        "procedure-assurance"
+      ],
+      "scope_constraints": [
+        "Acceptance fixtures only; this is not a production registry assertion."
+      ],
+      "record_updated_at": "2026-07-31T10:00:00Z"
+    }
+  ]
+}

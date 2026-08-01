@@ -1,0 +1,352 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:dwtc:schema:procedure-contract:v0.1",
+  "title": "Reader Procedure Contract v0.1",
+  "description": "A finite, non-programmable transition contract for the mandatory reader resolution procedure.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract_id",
+    "contract_version",
+    "created_at",
+    "initial_state_id",
+    "states",
+    "conditions",
+    "controls",
+    "triggers",
+    "transitions",
+    "terminal_mappings",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "procedure-contract/v0.1"
+    },
+    "contract_id": {
+      "type": "string",
+      "pattern": "^procedure-contract\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "contract_version": {
+      "type": "string",
+      "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "initial_state_id": {
+      "$ref": "#/$defs/stateId"
+    },
+    "states": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "state_id",
+          "role"
+        ],
+        "properties": {
+          "state_id": {
+            "$ref": "#/$defs/stateId"
+          },
+          "role": {
+            "enum": [
+              "initial",
+              "intermediate",
+              "terminal"
+            ]
+          }
+        }
+      }
+    },
+    "conditions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "condition_id",
+          "kind",
+          "description"
+        ],
+        "properties": {
+          "condition_id": {
+            "$ref": "#/$defs/conditionId"
+          },
+          "kind": {
+            "$ref": "#/$defs/triggerKind"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "controls": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "control_id",
+          "kind",
+          "description"
+        ],
+        "properties": {
+          "control_id": {
+            "$ref": "#/$defs/controlId"
+          },
+          "kind": {
+            "enum": [
+              "clarification-gate",
+              "abstention-gate",
+              "policy-gate",
+              "check"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "triggers": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "trigger_id",
+          "kind",
+          "condition_id"
+        ],
+        "properties": {
+          "trigger_id": {
+            "$ref": "#/$defs/triggerId"
+          },
+          "kind": {
+            "$ref": "#/$defs/triggerKind"
+          },
+          "condition_id": {
+            "$ref": "#/$defs/conditionId"
+          }
+        }
+      }
+    },
+    "transitions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "transition_id",
+          "kind",
+          "from_state_id",
+          "trigger_id",
+          "to_state_id",
+          "requirement",
+          "order"
+        ],
+        "properties": {
+          "transition_id": {
+            "type": "string",
+            "pattern": "^transition\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+          },
+          "kind": {
+            "enum": [
+              "standard",
+              "fallback-entry"
+            ]
+          },
+          "from_state_id": {
+            "$ref": "#/$defs/stateId"
+          },
+          "trigger_id": {
+            "$ref": "#/$defs/triggerId"
+          },
+          "to_state_id": {
+            "$ref": "#/$defs/stateId"
+          },
+          "requirement": {
+            "enum": [
+              "mandatory",
+              "permitted"
+            ]
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "terminal_mappings": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "state_id",
+          "outcome"
+        ],
+        "properties": {
+          "state_id": {
+            "$ref": "#/$defs/stateId"
+          },
+          "outcome": {
+            "$ref": "#/$defs/outcome"
+          },
+          "reason_gate": {
+            "$ref": "#/$defs/reasonGate"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "type": "object",
+              "properties": {
+                "outcome": {
+                  "const": "evidence-backed"
+                }
+              },
+              "required": [
+                "outcome"
+              ]
+            },
+            "then": {
+              "not": {
+                "type": "object",
+                "properties": {
+                  "reason_gate": {}
+                },
+                "required": [
+                  "reason_gate"
+                ]
+              }
+            },
+            "else": {
+              "properties": {
+                "reason_gate": {}
+              },
+              "required": [
+                "reason_gate"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonicalization",
+        "artifact_sha256"
+      ],
+      "properties": {
+        "canonicalization": {
+          "const": "dw-procedure-contract/v0.1"
+        },
+        "artifact_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "$comment": "This contract is a fixed transition table, not a workflow language. Conditions and terminal controls are declared as finite, human-readable identifiers rather than expressions. Semantic validation requires unique controlled IDs; exactly one initial state matching initial_state_id; resolved state, trigger, condition, and terminal-control references; trigger kinds compatible with their declared conditions; monotonically ordered transitions; at least one mandatory transition; an acyclic, reachable graph; no outgoing transitions from terminal states; one terminal mapping per terminal state; reason controls compatible with the mapped answer outcome; and fallback authorization equivalent to traversal of a fallback-entry transition. Arbitrary expressions, model-authored branches, and loops are outside v0.1.",
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "stateId": {
+      "type": "string",
+      "pattern": "^state\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "triggerId": {
+      "type": "string",
+      "pattern": "^trigger\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "conditionId": {
+      "type": "string",
+      "pattern": "^condition\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "controlId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "triggerKind": {
+      "enum": [
+        "resolution-result",
+        "policy-gate",
+        "check-verdict",
+        "procedure-event"
+      ]
+    },
+    "outcome": {
+      "enum": [
+        "evidence-backed",
+        "evidence-only",
+        "abstention"
+      ]
+    },
+    "reasonCode": {
+      "enum": [
+        "OUT_OF_COVERAGE",
+        "INSUFFICIENT_EVIDENCE",
+        "STALE_EVIDENCE",
+        "INELIGIBLE_EVIDENCE",
+        "APPLICABILITY_UNRESOLVED",
+        "RETRIEVAL_MISS",
+        "CHECK_FAILED",
+        "SOURCE_WATCH_FAILED",
+        "SOURCE_CHANGE_PENDING",
+        "SYNTHESIS_WITHHELD"
+      ]
+    },
+    "reasonGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "source_kind",
+        "source_ids"
+      ],
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/reasonCode"
+        },
+        "source_kind": {
+          "enum": [
+            "check",
+            "policy-gate"
+          ]
+        },
+        "source_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/controlId"
+          }
+        }
+      }
+    }
+  }
+}
