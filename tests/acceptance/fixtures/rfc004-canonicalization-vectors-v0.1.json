@@ -28,7 +28,7 @@
     {
       "canonicalization": "dw-evaluation-manifest/v0.1",
       "artifact": "tests/acceptance/fixtures/evaluation-manifest-valid.json",
-      "expected_sha256": "f7472c2c56ea023cfe715655132b668325a1d08477050e9acb255c89897e868d"
+      "expected_sha256": "9c237076b0e63444c443d0e8467161ba283294445484916ba492b3b1db47e665"
     }
   ]
 }

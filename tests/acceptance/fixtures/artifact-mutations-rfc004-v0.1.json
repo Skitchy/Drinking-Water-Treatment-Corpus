@@ -5,6 +5,7 @@
       "id": "AT-041",
       "base": "tests/acceptance/fixtures/procedure-contract-valid.json",
       "validator": "procedure-schema",
+      "expected_error": "data/transitions/0 must NOT have additional properties",
       "operations": [
         {
           "operation": "add",
@@ -17,6 +18,7 @@
       "id": "AT-042",
       "base": "tests/acceptance/fixtures/procedure-contract-valid.json",
       "validator": "procedure-semantic",
+      "expected_error": "Transition has unknown to-state",
       "rebind_integrity": true,
       "operations": [
         {
@@ -30,6 +32,7 @@
       "id": "AT-043",
       "base": "tests/acceptance/fixtures/procedure-contract-valid.json",
       "validator": "procedure-semantic",
+      "expected_error": "Procedure cycle includes state.structured-resolution",
       "rebind_integrity": true,
       "operations": [
         {
@@ -43,6 +46,7 @@
       "id": "AT-044",
       "base": "tests/acceptance/fixtures/procedure-contract-valid.json",
       "validator": "procedure-semantic",
+      "expected_error": "Procedure transition order contains a duplicate order",
       "rebind_integrity": true,
       "operations": [
         {
@@ -56,6 +60,7 @@
       "id": "AT-045",
       "base": "tests/acceptance/fixtures/procedure-contract-valid.json",
       "validator": "procedure-schema",
+      "expected_error": "data/terminal_mappings/1 must have required property 'reason_gate'",
       "operations": [
         {
           "operation": "remove",
@@ -67,6 +72,7 @@
       "id": "AT-046",
       "base": "tests/acceptance/fixtures/runtime-assurance-manifest-v0.2-valid.json",
       "validator": "runtime-schema",
+      "expected_error": "data must have required property 'runbook'",
       "operations": [
         {
           "operation": "remove",
@@ -78,6 +84,7 @@
       "id": "AT-047",
       "base": "tests/acceptance/fixtures/runtime-assurance-manifest-v0.2-valid.json",
       "validator": "runtime-semantic",
+      "expected_error": "Runbook review does not precede next_due_at",
       "rebind_integrity": true,
       "operations": [
         {
@@ -91,6 +98,7 @@
       "id": "AT-048",
       "base": "tests/acceptance/fixtures/runtime-assurance-manifest-v0.2-valid.json",
       "validator": "runtime-semantic",
+      "expected_error": "Runbook is compatible with a different procedure contract",
       "rebind_integrity": true,
       "operations": [
         {
@@ -104,6 +112,7 @@
       "id": "AT-049",
       "base": "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
       "validator": "audit-semantic",
+      "expected_error": "Audit does not bind the exact verified answer",
       "rebind_integrity": true,
       "operations": [
         {
@@ -117,6 +126,7 @@
       "id": "AT-050",
       "base": "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
       "validator": "audit-semantic",
+      "expected_error": "Procedure-aware runtime requires an audit procedure block",
       "rebind_integrity": true,
       "operations": [
         {
@@ -129,6 +139,7 @@
       "id": "AT-051",
       "base": "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
       "validator": "audit-semantic",
+      "expected_error": "Audit procedure contract does not equal the runtime pin",
       "rebind_integrity": true,
       "operations": [
         {
@@ -142,6 +153,7 @@
       "id": "AT-052",
       "base": "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
       "validator": "audit-semantic",
+      "expected_error": "Observed transition transition.structured-to-validation does not match the contract",
       "rebind_integrity": true,
       "operations": [
         {
@@ -155,6 +167,7 @@
       "id": "AT-053",
       "base": "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
       "validator": "audit-semantic",
+      "expected_error": "Observed transition path is discontinuous",
       "rebind_integrity": true,
       "operations": [
         {
@@ -168,6 +181,7 @@
       "id": "AT-054",
       "base": "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
       "validator": "audit-semantic",
+      "expected_error": "Fallback is authorized without a fallback-marked traversal",
       "rebind_integrity": true,
       "operations": [
         {
@@ -186,6 +200,7 @@
       "id": "AT-055",
       "base": "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
       "validator": "audit-semantic",
+      "expected_error": "Audit integrity digest mismatch",
       "operations": [
         {
           "operation": "replace",
@@ -198,6 +213,7 @@
       "id": "AT-056",
       "base": "tests/acceptance/fixtures/evaluation-manifest-valid.json",
       "validator": "evaluation-schema",
+      "expected_error": "data/conformance_suite/offline_target_percent must be equal to constant",
       "operations": [
         {
           "operation": "replace",
@@ -210,6 +226,7 @@
       "id": "AT-057",
       "base": "tests/acceptance/fixtures/evaluation-manifest-valid.json",
       "validator": "evaluation-schema",
+      "expected_error": "data/capability_challenge_set/isolation/blind_holdout_claim must be equal to constant",
       "operations": [
         {
           "operation": "replace",
@@ -222,6 +239,7 @@
       "id": "AT-058",
       "base": "tests/acceptance/fixtures/evaluation-manifest-valid.json",
       "validator": "evaluation-semantic",
+      "expected_error": "Capability challenge set is outside its declared active-case bounds",
       "rebind_integrity": true,
       "operations": [
         {
@@ -234,6 +252,7 @@
       "id": "AT-059",
       "base": "tests/acceptance/fixtures/evaluation-manifest-valid.json",
       "validator": "evaluation-semantic",
+      "expected_error": "Case eval-case.capability-001 has an empty required evidence selection",
       "rebind_integrity": true,
       "operations": [
         {
@@ -247,6 +266,7 @@
       "id": "AT-060",
       "base": "tests/acceptance/fixtures/evaluation-manifest-valid.json",
       "validator": "evaluation-semantic",
+      "expected_error": "Case eval-case.capability-001 has a stale compatibility disposition",
       "rebind_integrity": true,
       "operations": [
         {
@@ -260,6 +280,7 @@
       "id": "AT-061",
       "base": "tests/acceptance/fixtures/reviewer-registry-v0.2-valid.json",
       "validator": "evaluation-reviewer-semantic",
+      "expected_error": "Reviewer human.skitch lacks scope procedure-domain",
       "operations": [
         {
           "operation": "remove",
@@ -271,6 +292,7 @@
       "id": "AT-062",
       "base": "tests/acceptance/fixtures/evaluation-manifest-valid.json",
       "validator": "evaluation-semantic",
+      "expected_error": "Evaluation grader digest mismatch",
       "rebind_integrity": true,
       "operations": [
         {
@@ -284,6 +306,7 @@
       "id": "AT-063",
       "base": "tests/acceptance/fixtures/runtime-assurance-manifest-v0.2-valid.json",
       "validator": "runtime-semantic",
+      "expected_error": "Runbook is overdue at runtime qualification time",
       "rebind_integrity": true,
       "operations": [
         {
@@ -297,6 +320,7 @@
       "id": "AT-064",
       "base": "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
       "validator": "audit-semantic",
+      "expected_error": "Audit and answer outcomes disagree",
       "rebind_integrity": true,
       "operations": [
         {
@@ -310,6 +334,7 @@
       "id": "AT-065",
       "base": "tests/acceptance/fixtures/evaluation-manifest-valid.json",
       "validator": "evaluation-semantic",
+      "expected_error": "Active case eval-case.capability-001 is not currently accepted",
       "rebind_integrity": true,
       "operations": [
         {
@@ -323,6 +348,7 @@
       "id": "AT-066",
       "base": "tests/acceptance/fixtures/procedure-contract-valid.json",
       "validator": "procedure-semantic",
+      "expected_error": "Terminal state has an outgoing transition",
       "rebind_integrity": true,
       "operations": [
         {
@@ -344,6 +370,7 @@
       "id": "AT-067",
       "base": "tests/acceptance/fixtures/procedure-contract-valid.json",
       "validator": "procedure-semantic",
+      "expected_error": "Procedure has nondeterministic duplicate route",
       "rebind_integrity": true,
       "operations": [
         {
@@ -365,6 +392,7 @@
       "id": "AT-068",
       "base": "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
       "validator": "audit-semantic",
+      "expected_error": "Audit does not account for every gotcha check declared by the runbook",
       "rebind_integrity": true,
       "operations": [
         {
@@ -377,6 +405,7 @@
       "id": "AT-074",
       "base": "tests/acceptance/fixtures/evaluation-manifest-valid.json",
       "validator": "evaluation-semantic",
+      "expected_error": "Case eval-case.capability-001 disposition is bound to different case content",
       "rebind_integrity": true,
       "operations": [
         {

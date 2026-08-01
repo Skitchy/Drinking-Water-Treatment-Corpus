@@ -714,7 +714,7 @@ const expectedIds = Array.from(
 assert(
   JSON.stringify(amendmentManifest.cases.map((testCase) => testCase.id)) ===
     JSON.stringify(expectedIds),
-  "RFC 004 acceptance manifest must contain AT-041 through AT-074 in order"
+  "RFC 004 acceptance manifest must contain AT-041 through AT-081 in order"
 );
 for (const testCase of amendmentManifest.cases) {
   for (const artifact of testCase.artifacts) {
