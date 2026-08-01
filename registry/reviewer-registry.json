@@ -1,0 +1,38 @@
+{
+  "schema_version": "reviewer-registry/v0.1",
+  "registry_version": "v0.1.0",
+  "updated_at": "2026-08-01T06:38:02Z",
+  "reviewers": [
+    {
+      "reviewer_id": "human.skitch",
+      "display_name": "Jason \"Skitch\" Wiltsey",
+      "status": "active",
+      "status_changed_at": "2026-07-28T00:00:00Z",
+      "authorized_from": "2026-07-28T00:00:00Z",
+      "qualifications": [
+        {
+          "kind": "operator-certification",
+          "description": "State of California Water Treatment Operator, Grade T4. Certificate issued to Jason T. Wiltsey, operator number 42530, under Division 104, Part 1, Chapter 4, Article 3 of the California Health and Safety Code. Certificate face states issued January 2024 with no day printed; valid_from is recorded at month precision as the first of that month. Board verification card states expiration January 1, 2027.",
+          "jurisdiction": "California, United States (State Water Resources Control Board)",
+          "valid_from": "2024-01-01",
+          "expires_at": "2027-01-01",
+          "evidence": "SWRCB Water Treatment Operator Grade T4 certificate and board verification card, operator number 42530; photographs of both provided by the reviewer and sighted by the project maintainer's agent on 2026-08-01. Originals retained by the reviewer. Independently verifiable against the State Water Resources Control Board operator certification lookup by operator number."
+        },
+        {
+          "kind": "operator-certification",
+          "description": "Advance Water Treatment Operator (AWTO), Grade 3. Certificate of competency issued to Jason Wiltsey by the American Water Works Association California-Nevada Section with CWEA, certificate number 202, dated March 14, 2022. No expiration date is printed on the certificate.",
+          "jurisdiction": "California-Nevada Section, American Water Works Association (professional certification program)",
+          "valid_from": "2022-03-14",
+          "evidence": "AWWA California-Nevada Section / CWEA AWTO Grade 3 certificate, certificate number 202; photograph provided by the reviewer and sighted by the project maintainer's agent on 2026-08-01. Original retained by the reviewer."
+        }
+      ],
+      "review_scopes": [
+        "editorial-accuracy",
+        "applicability",
+        "context-completeness",
+        "licensing"
+      ],
+      "record_updated_at": "2026-08-01T06:38:02Z"
+    }
+  ]
+}
