@@ -181,18 +181,43 @@
       "id": "AT-054",
       "base": "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
       "validator": "audit-semantic",
-      "expected_error": "Fallback is authorized without a fallback-marked traversal",
+      "expected_error": "Fallback was authorized before structured resolution showed no coverage",
       "rebind_integrity": true,
       "operations": [
         {
           "operation": "replace",
-          "path": "/procedure/fallback/authorized",
-          "value": true
+          "path": "/procedure/transitions",
+          "value": [
+            {
+              "ordinal": 1,
+              "transition_id": "transition.structured-to-prose",
+              "from_state_id": "state.structured-resolution",
+              "trigger_id": "trigger.structured-not-covered",
+              "to_state_id": "state.prose-retrieval"
+            },
+            {
+              "ordinal": 2,
+              "transition_id": "transition.prose-to-validation",
+              "from_state_id": "state.prose-retrieval",
+              "trigger_id": "trigger.prose-match",
+              "to_state_id": "state.validation"
+            },
+            {
+              "ordinal": 3,
+              "transition_id": "transition.validation-to-backed",
+              "from_state_id": "state.validation",
+              "trigger_id": "trigger.checks-pass",
+              "to_state_id": "state.complete-backed"
+            }
+          ]
         },
         {
-          "operation": "add",
-          "path": "/procedure/fallback/reason_id",
-          "value": "fallback-reason.structured-claim-not-covered"
+          "operation": "replace",
+          "path": "/procedure/fallback",
+          "value": {
+            "authorized": true,
+            "reason_id": "fallback-reason.structured-claim-not-covered"
+          }
         }
       ]
     },
@@ -320,13 +345,33 @@
       "id": "AT-064",
       "base": "tests/acceptance/fixtures/audit-envelope-v0.2-valid.json",
       "validator": "audit-semantic",
-      "expected_error": "Audit and answer outcomes disagree",
+      "expected_error": "Terminal mapping and audit outcome disagree",
       "rebind_integrity": true,
       "operations": [
         {
           "operation": "replace",
-          "path": "/outcome",
-          "value": "abstention"
+          "path": "/procedure/transitions",
+          "value": [
+            {
+              "ordinal": 1,
+              "transition_id": "transition.structured-to-validation",
+              "from_state_id": "state.structured-resolution",
+              "trigger_id": "trigger.structured-match",
+              "to_state_id": "state.validation"
+            },
+            {
+              "ordinal": 2,
+              "transition_id": "transition.validation-to-evidence-only",
+              "from_state_id": "state.validation",
+              "trigger_id": "trigger.synthesis-withheld",
+              "to_state_id": "state.complete-evidence-only"
+            }
+          ]
+        },
+        {
+          "operation": "replace",
+          "path": "/procedure/terminal_state_id",
+          "value": "state.complete-evidence-only"
         }
       ]
     },
