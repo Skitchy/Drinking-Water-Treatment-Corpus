@@ -119,6 +119,10 @@ altering the ratified v0.1 acceptance manifest:
   clarification rendering. The schema fixtures do not pretend those future
   end-to-end controls already exist.
 
+Every executable RFC 004 mutation pins an `expected_error` substring. A case
+therefore passes only when its intended invariant rejects the mutation; an
+unrelated validation failure cannot satisfy the case.
+
 The executable candidate uses four canonicalization vectors for the new
 procedure, runtime, audit, and evaluation fixtures. Run `npm test` to execute
 the original 40 ratified cases followed by the 36 executable amendment cases;

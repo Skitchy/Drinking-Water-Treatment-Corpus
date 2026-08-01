@@ -29,7 +29,7 @@
     "grader": {
       "artifact_id": "grader.rfc004-amendment",
       "version": "v0.1.0",
-      "sha256": "a3fe50ab6adad79d1ef91cab2c016faf231fbab8041667886121a957c76852cb"
+      "sha256": "5eaaa1949c316903871b0c59bb6ac98f137c623fa340ab157600b7dca526e5fe"
     }
   },
   "conformance_suite": {
@@ -599,6 +599,6 @@
   },
   "integrity": {
     "canonicalization": "dw-evaluation-manifest/v0.1",
-    "artifact_sha256": "f7472c2c56ea023cfe715655132b668325a1d08477050e9acb255c89897e868d"
+    "artifact_sha256": "9c237076b0e63444c443d0e8467161ba283294445484916ba492b3b1db47e665"
   }
 }
