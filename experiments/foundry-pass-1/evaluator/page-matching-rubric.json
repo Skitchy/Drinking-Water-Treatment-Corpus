@@ -1,0 +1,175 @@
+{
+  "artifact_version": "foundry-page-matching-rubric/experimental-v0.1",
+  "rubric_id": "foundry-pass-1.page-decomposition",
+  "status": "pending-independent-disposition",
+  "ground_truth": {
+    "path": "proposals/first-proof-dbp-page-list-v0.2.md",
+    "byte_length": 9166,
+    "sha256": "23ebbbf6088d7e91048751f3720045aa343803093937f89530ea5a89cb378c85",
+    "planned_concept_count": 17
+  },
+  "matching_rules": {
+    "id_equality_alone_is_sufficient": false,
+    "required_for_match": [
+      "same regulatory concept and failure boundary",
+      "candidate evidence collectively covers every material required citation",
+      "candidate applicability is not broader than the planned concept"
+    ],
+    "split_candidates": "May collectively recover one planned concept; report the split and count duplicate or unsupported coverage separately.",
+    "merged_candidates": "May recover multiple planned concepts only when each concept and its citations remain independently reviewable; report the merge explicitly.",
+    "duplicate_rule": "A second candidate testing the same concept, applicability, and failure boundary is a duplicate unless it supplies a documented structural split.",
+    "ambiguous_match": "Record for review; do not choose the most favorable mapping.",
+    "metrics": {
+      "recall": "planned concepts recovered divided by 17",
+      "precision": "candidate page proposals matched to at least one planned concept divided by all candidate page proposals",
+      "report_also": [
+        "missing planned concepts",
+        "duplicate candidates",
+        "split concepts",
+        "merged concepts",
+        "citation gaps",
+        "applicability mismatches"
+      ],
+      "decision_role": "descriptive"
+    }
+  },
+  "planned_concepts": [
+    {
+      "page_id": "dbp.mcl.tthm",
+      "topic": "TTHM MCL and LRAA compliance basis",
+      "required_citations": [
+        "40 CFR 141.64(b)",
+        "40 CFR 141.620"
+      ]
+    },
+    {
+      "page_id": "dbp.mcl.haa5",
+      "topic": "HAA5 MCL and LRAA compliance basis",
+      "required_citations": [
+        "40 CFR 141.64(b)",
+        "40 CFR 141.620"
+      ]
+    },
+    {
+      "page_id": "dbp.mcl.bromate",
+      "topic": "Bromate MCL, ozone applicability, monitoring, and RAA compliance",
+      "required_citations": [
+        "40 CFR 141.64(a)",
+        "40 CFR 141.132(b)(3)",
+        "40 CFR 141.133(b)(2)"
+      ]
+    },
+    {
+      "page_id": "dbp.mcl.chlorite",
+      "topic": "Chlorite MCL, chlorine-dioxide applicability, monitoring, and three-sample-set compliance",
+      "required_citations": [
+        "40 CFR 141.64(a)",
+        "40 CFR 141.132(b)(2)",
+        "40 CFR 141.133(b)(3)"
+      ]
+    },
+    {
+      "page_id": "dbp.mrdl.chlorine-chloramine",
+      "topic": "Chlorine and chloramine MRDLs as Cl2 and RAA compliance",
+      "required_citations": [
+        "40 CFR 141.65",
+        "40 CFR 141.133(c)(1)"
+      ]
+    },
+    {
+      "page_id": "dbp.mrdl.chlorine-dioxide",
+      "topic": "Chlorine-dioxide MRDL, daily monitoring, and acute violation mechanics",
+      "required_citations": [
+        "40 CFR 141.65",
+        "40 CFR 141.132(c)(2)",
+        "40 CFR 141.133(c)(2)"
+      ]
+    },
+    {
+      "page_id": "dbp.compliance.lraa",
+      "topic": "Locational running annual average definition and computation",
+      "required_citations": [
+        "40 CFR 141.2",
+        "40 CFR 141.620(c)",
+        "40 CFR 141.625"
+      ]
+    },
+    {
+      "page_id": "dbp.compliance.oel",
+      "topic": "TTHM and HAA5 operational evaluation levels",
+      "required_citations": [
+        "40 CFR 141.626"
+      ]
+    },
+    {
+      "page_id": "dbp.monitoring.routine",
+      "topic": "Routine monitoring by system size and source type",
+      "required_citations": [
+        "40 CFR 141.621"
+      ]
+    },
+    {
+      "page_id": "dbp.monitoring.reduced-increased",
+      "topic": "Reduced-monitoring eligibility and conditions requiring increased monitoring",
+      "required_citations": [
+        "40 CFR 141.623",
+        "40 CFR 141.625"
+      ]
+    },
+    {
+      "page_id": "dbp.applicability.stage2",
+      "topic": "Stage 2 applicability including consecutive systems",
+      "required_citations": [
+        "40 CFR 141.620(a)-(b)",
+        "40 CFR 141.624"
+      ]
+    },
+    {
+      "page_id": "dbp.precursors.toc",
+      "topic": "DBP precursor treatment technique, enhanced coagulation, TOC removal, and paired-sample monitoring",
+      "required_citations": [
+        "40 CFR 141.135",
+        "40 CFR 141.132(d)"
+      ]
+    },
+    {
+      "page_id": "dbp.monitoring.idse",
+      "topic": "IDSE program and its continuing monitoring-location function",
+      "required_citations": [
+        "40 CFR 141.600-141.605"
+      ]
+    },
+    {
+      "page_id": "dbp.analytical-methods",
+      "topic": "Approved analytical methods for DBP and residual monitoring",
+      "required_citations": [
+        "40 CFR 141.131"
+      ]
+    },
+    {
+      "page_id": "dbp.definitions",
+      "topic": "Controlled DBP definitions and rule-specific sampling terminology",
+      "required_citations": [
+        "40 CFR 141.2",
+        "40 CFR 141.132(b)(2)",
+        "40 CFR 141.132(d)"
+      ]
+    },
+    {
+      "page_id": "dbp.mclg",
+      "topic": "MCLGs for DBPs and residual disinfectants",
+      "required_citations": [
+        "40 CFR 141.53",
+        "40 CFR 141.54"
+      ]
+    },
+    {
+      "page_id": "dbp.violations.notification",
+      "topic": "Public-notification tiers for DBP and disinfectant violations",
+      "required_citations": [
+        "40 CFR Part 141 Subpart Q",
+        "40 CFR 141.133(c)(2)"
+      ]
+    }
+  ]
+}

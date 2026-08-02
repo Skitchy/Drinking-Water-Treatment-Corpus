@@ -1,0 +1,119 @@
+{
+  "artifact_version": "foundry-evaluator-bundle-manifest/experimental-v0.2",
+  "manifest_id": "foundry-pass-1.evaluator.pre-run",
+  "status": "pending-independent-disposition",
+  "visibility": "public-reviewable-members plus maintainer-only sealed members until graded output is fixed",
+  "bundle_identity": {
+    "definition": "ordered-manifest-plus-byte-identical-members",
+    "canonicalization": "UTF-8 JSON array; member paths in lexicographic order; each object has path then sha256; no whitespace or trailing newline",
+    "member_count": 14,
+    "public_member_count": 13,
+    "sealed_member_count": 1,
+    "bundle_sha256": "d00e04d48f8ebd681007d998b67cea10e1e9651b48c35f9fa22107ab3c923184"
+  },
+  "discussion_thread_ground_truth_used": [],
+  "discussion_context_rule": "No discussion-thread prose is used as evaluator ground truth. The content-bound page plan and predeclared rubrics are the complete page-decomposition truth set for this pass.",
+  "members": [
+    {
+      "path": "docs/EPA_DBP_Challenge_Questions.md",
+      "role": "challenge-bank-coverage-reference",
+      "media_type": "text/markdown",
+      "byte_length": 11345,
+      "sha256": "891208ed7f463f4924b1ed16e8ab9dbad35ab1d4f35c298330711ff52f489319"
+    },
+    {
+      "path": "experiments/foundry-pass-1/evaluator/calibration-oracle.json",
+      "role": "two-page-calibration-oracle",
+      "media_type": "application/json",
+      "byte_length": 4694,
+      "sha256": "de4a39ebed065505389f33dcfe0ad53aa6f59d092e8c60b070185216f95decc6"
+    },
+    {
+      "path": "experiments/foundry-pass-1/evaluator/census-oracle.json",
+      "role": "independent-census-oracle",
+      "media_type": "application/json",
+      "byte_length": 17456,
+      "sha256": "702c3d37634e9c35296066e05625a05c3a519b6d44a67f0a6e892c5d3ffbbc91"
+    },
+    {
+      "path": "experiments/foundry-pass-1/evaluator/challenge-question-rubric.json",
+      "role": "challenge-question-rubric",
+      "media_type": "application/json",
+      "byte_length": 2483,
+      "sha256": "87732341d58029a5f5cf01c5fe3e6ee927914d9e15caa2a5026771dc57642afc"
+    },
+    {
+      "path": "experiments/foundry-pass-1/evaluator/ingestion-job.json",
+      "role": "graded-run-scope-declaration",
+      "media_type": "application/json",
+      "byte_length": 1096,
+      "sha256": "00097b779afde7ecac3814745f7b7faa59392d37024b727f92c1f7df7a6f3b70"
+    },
+    {
+      "path": "experiments/foundry-pass-1/evaluator/input-manifest.json",
+      "role": "closed-input-bundle-manifest",
+      "media_type": "application/json",
+      "byte_length": 19317,
+      "sha256": "de8ccd05b16cb637f15b6fa58ff3be856736b9592466cbe7280aa92fa8e9be3c"
+    },
+    {
+      "path": "experiments/foundry-pass-1/evaluator/metric-decision-matrix.json",
+      "role": "pre-run-metric-decision-matrix",
+      "media_type": "application/json",
+      "byte_length": 5173,
+      "sha256": "1599016c68ec3b396ef1a417ba634daa4fdcc25923aa224e3c5b4cb51cb46516"
+    },
+    {
+      "path": "experiments/foundry-pass-1/evaluator/page-matching-rubric.json",
+      "role": "seventeen-page-matching-rubric",
+      "media_type": "application/json",
+      "byte_length": 5643,
+      "sha256": "2ef62b11dbac38e1fc001035e1cc32b27c249b4d4cb95395ec8ba6420a0549ae"
+    },
+    {
+      "path": "experiments/foundry-pass-1/evaluator/probe-contract.json",
+      "role": "public-probe-contract-and-sealed-commitment",
+      "media_type": "application/json",
+      "byte_length": 5113,
+      "sha256": "e0b92d4adf8ba2216dfcd7c7d341d0ee68a5fc744046c98404b80f375a7695e1"
+    },
+    {
+      "path": "experiments/foundry-pass-1/evaluator/verify-evaluator-bundle.mjs",
+      "role": "deterministic-bundle-verifier",
+      "media_type": "text/javascript",
+      "byte_length": 12281,
+      "sha256": "7f1dbe2485061c9acf30c895b4fa28c2183fcb2466f77cfd276aeb0db7ecbc33"
+    },
+    {
+      "path": "pages/dbp.definitions.json",
+      "role": "withheld-stable-calibration-page",
+      "media_type": "application/json",
+      "byte_length": 11324,
+      "sha256": "0bab336bfc910d52e80ce5fabe8ee52c8817087e44ec4454f5e1074352ac4b16"
+    },
+    {
+      "path": "pages/dbp.mclg.json",
+      "role": "withheld-stable-calibration-page",
+      "media_type": "application/json",
+      "byte_length": 16549,
+      "sha256": "d22e0350b71eed71968e90f86c3612ca99ea6ec0c1f1246b9da89f933c7c451d"
+    },
+    {
+      "path": "proposals/first-proof-dbp-page-list-v0.2.md",
+      "role": "withheld-page-decomposition-ground-truth",
+      "media_type": "text/markdown",
+      "byte_length": 9166,
+      "sha256": "23ebbbf6088d7e91048751f3720045aa343803093937f89530ea5a89cb378c85"
+    }
+  ],
+  "sealed_members": [
+    {
+      "path": "experiments/foundry-pass-1/evaluator/probe-oracles.json",
+      "role": "maintainer-only-mutation-and-failure-probe-oracles",
+      "media_type": "application/json",
+      "byte_length": 5511,
+      "sha256": "285d5e5a7abfc3c757edb8aaeae35d6941c41cc1312b0bca2078c49d27254ae6",
+      "reveal_rule": "Add exact bytes only after graded outputs are fixed; verify this commitment before scoring."
+    }
+  ]
+}

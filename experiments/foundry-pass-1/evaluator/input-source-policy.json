@@ -1,0 +1,35 @@
+{
+  "artifact_version": "foundry-input-source-policy/experimental-v0.1",
+  "policy_id": "foundry-pass-1.input-source-policy.ecfr",
+  "status": "bound-input-record",
+  "scope": "Only authoritative-capture members of the Foundry Pass 1 input manifest.",
+  "authority_tier": {
+    "id": "authoritative-unofficial-government-compilation",
+    "meaning": "The eCFR is maintained by the Office of the Federal Register and GPO as a continuously updated regulatory compilation, but it is not the official legal edition of the CFR.",
+    "permitted_claim": "The captured bytes are authoritative source material for this experimental regulatory-reference pass at the declared point-in-time date.",
+    "prohibited_claims": [
+      "that the eCFR is the official legal edition of the CFR",
+      "that source authority proves the compiler extracted or interpreted the text correctly",
+      "that the input list is complete without reconciliation against the withheld census oracle"
+    ]
+  },
+  "reproduction_policy": {
+    "eligibility_rule": "A capture is eligible only when its input-manifest member records an approved reproduction decision, its classification is public-domain-us-government-work, and its decision payload digest matches the upstream source registry.",
+    "rights_boundary": "Reproduction eligibility applies per listed capture and does not extend to unlisted documents, embedded third-party material, or an entire document class by implication.",
+    "factual_boundary": "A reproduction decision establishes permission to distribute the covered capture; it does not establish factual accuracy, completeness, current applicability, or fitness for use."
+  },
+  "integrity_policy": {
+    "required_before_parse": [
+      "the path is a member of the closed input manifest",
+      "the byte length equals the member record",
+      "the sha256 equals the member record"
+    ],
+    "on_failure": "Fail closed for the affected capture and emit no downstream candidate material from it."
+  },
+  "upstream_registry": {
+    "path": "sources/source-registry.dbp-first-proof.json",
+    "byte_length": 52400,
+    "sha256": "924ff70ca50b856e759c2e15b39750a002d18f7bb509dd4e2aac191882b5752b",
+    "bundle_membership": "provenance-only-not-provided-to-extraction-role"
+  }
+}

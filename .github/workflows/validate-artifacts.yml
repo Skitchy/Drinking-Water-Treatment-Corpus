@@ -25,5 +25,8 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
+      - name: Verify Foundry Pass 1 public evaluator bundle
+        run: node experiments/foundry-pass-1/evaluator/verify-evaluator-bundle.mjs --mode=public
+
       - name: Validate schemas and acceptance artifacts
         run: npm test
