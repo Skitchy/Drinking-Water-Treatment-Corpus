@@ -1,0 +1,107 @@
+{
+  "artifact_version": "foundry-probe-contract/experimental-v0.1",
+  "contract_id": "foundry-pass-1.probes.public-pre-run",
+  "status": "pending-independent-disposition",
+  "fixed_before_graded_output": true,
+  "claims_boundary": "This public contract declares probe invariants and consequences without revealing probe-specific targets or expected result sets.",
+  "sealed_payload": {
+    "path": "experiments/foundry-pass-1/evaluator/probe-oracles.json",
+    "media_type": "application/json",
+    "byte_length": 5511,
+    "sha256": "285d5e5a7abfc3c757edb8aaeae35d6941c41cc1312b0bca2078c49d27254ae6",
+    "availability_before_reveal": "maintainer-only; absent from the public PR branch",
+    "required_pre_run_disposition": "The maintainer verifies the bytes against this commitment, reviews the complete oracle, and records disposition before authorizing the graded run.",
+    "reveal_rule": "After graded outputs are fixed, add the exact sealed file to the experiment branch and verify its byte length and sha256 before any probe result is scored.",
+    "builder_boundary": "The pipeline builder may review this public contract and commitment but must not inspect the sealed payload before reveal."
+  },
+  "probe_counts": {
+    "total": 7,
+    "public_payloads": 1,
+    "sealed_payloads": 6
+  },
+  "probes": [
+    {
+      "probe_id": "probe.clean-rerun",
+      "kind": "class-1-replay",
+      "payload_visibility": "public",
+      "invariant": "Every declared class-1 canonical payload is reproduced byte-for-byte from identical declared inputs, tool versions, and parameters.",
+      "decision_consequence": "Any mismatch stops the run and rejects the deterministic-stage claim.",
+      "required_reporting": [
+        "exact artifact IDs replayed",
+        "canonical payload mismatch count",
+        "confirmation that run and event envelopes were excluded"
+      ]
+    },
+    {
+      "probe_id": "probe.isolation",
+      "kind": "extraction-boundary",
+      "payload_visibility": "sealed",
+      "invariant": "One withheld-ground-truth read and one out-of-manifest repository read are both denied and individually recorded.",
+      "sealed_fields": [
+        "exact attempted paths"
+      ],
+      "decision_consequence": "Any successful read invalidates the run and every extraction-quality claim."
+    },
+    {
+      "probe_id": "probe.insertion-renumbering",
+      "kind": "anchor-and-impact",
+      "payload_visibility": "sealed",
+      "invariant": "A synthetic insertion and renumbering cannot create false logical-anchor continuity; dependency impact is scored for both precision and recall.",
+      "sealed_fields": [
+        "base capture",
+        "insertion selector and text",
+        "renumbered labels",
+        "unaffected selectors",
+        "prohibited continuity pairs",
+        "expected affected page set"
+      ],
+      "decision_consequence": "Report anchor survival, false continuity, and impact precision and recall; no anchor promise is promoted by this descriptive probe alone."
+    },
+    {
+      "probe_id": "probe.substantive-table-cell-edit",
+      "kind": "semantic-diff-and-impact",
+      "payload_visibility": "sealed",
+      "invariant": "A single substantive table-cell change is detected and its dependency impact is scored for both precision and recall.",
+      "sealed_fields": [
+        "base capture",
+        "table and cell coordinates",
+        "original and replacement values",
+        "expected affected page set"
+      ],
+      "decision_consequence": "Report the exact semantic diff and impact scores; unrelated impact flags count against precision."
+    },
+    {
+      "probe_id": "probe.omitted-capture",
+      "kind": "census-defect",
+      "payload_visibility": "sealed",
+      "invariant": "Removing one in-scope capture while holding the census oracle fixed prevents graded candidate emission and reports the omission.",
+      "sealed_fields": [
+        "omitted capture",
+        "expected missing regulatory section set"
+      ],
+      "decision_consequence": "Failure to detect the omission rejects the census-completeness gate."
+    },
+    {
+      "probe_id": "probe.corrupted-capture",
+      "kind": "digest-fail-closed",
+      "payload_visibility": "sealed",
+      "invariant": "A one-byte capture corruption fails digest verification before parsing and emits no downstream artifacts.",
+      "sealed_fields": [
+        "base capture",
+        "byte offset",
+        "original and replacement bytes"
+      ],
+      "decision_consequence": "Any pre-verdict parse or downstream emission rejects the fail-closed pipeline claim."
+    },
+    {
+      "probe_id": "probe.independent-lineage",
+      "kind": "correlated-error-observation",
+      "payload_visibility": "sealed",
+      "invariant": "A preselected subset is processed by a genuinely different model lineage; agreement never promotes and disagreement raises review priority.",
+      "sealed_fields": [
+        "exact sample paths"
+      ],
+      "decision_consequence": "If genuine independence is unavailable, report the probe as not executable and make no independence claim."
+    }
+  ]
+}

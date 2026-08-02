@@ -1,0 +1,379 @@
+{
+  "artifact_version": "foundry-census-oracle/experimental-v0.1",
+  "oracle_id": "foundry-pass-1.census.dbp-2026-07-01",
+  "status": "pending-independent-disposition",
+  "compiled_by": "role.ari",
+  "point_in_time_date": "2026-07-01",
+  "authoritative_structure": {
+    "resource": "https://www.ecfr.gov/api/versioner/v1/structure/2026-07-01/title-40.json?part=141",
+    "retrieved_at": "2026-08-01T11:59:28.730Z",
+    "byte_length": 73962,
+    "sha256": "e3ed5de51018a7238ae099453842793cf5b52bf11bd8b0fb7ecffd593a15fa2b",
+    "authority_tier": "authoritative-unofficial-government-compilation"
+  },
+  "scope_rule": {
+    "description": "Subparts L, U, and V complete; Subpart Q complete as the public-notification dependency; sections 141.2, 141.53, 141.54, 141.64, and 141.65 as explicit dependencies; state-layer content excluded.",
+    "evidence": [
+      {
+        "path": "sources/README.md",
+        "sha256": "95067fe031c42464d54f547f0fb70a9e608c530f5e4a8bdb4b6f15611cd47534"
+      },
+      {
+        "path": "proposals/first-proof-dbp-page-list-v0.2.md",
+        "sha256": "23ebbbf6088d7e91048751f3720045aa343803093937f89530ea5a89cb378c85"
+      }
+    ],
+    "exclusions": [
+      "Other Part 141 provisions outside the declared DBP rule family and its recorded dependency closure",
+      "State-layer requirements"
+    ]
+  },
+  "expected": {
+    "regulatory_section_count": 38,
+    "capture_unit_count": 28
+  },
+  "sections": [
+    {
+      "citation": "40 CFR 141.2",
+      "label": "§ 141.2 Definitions.",
+      "subpart": "A",
+      "scope_basis": "definition-dependency",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.2.xml",
+      "capture_sha256": "d2d9daa22334d43c6acd38c094e281a5ed23142cab14578d7be0fe968e9d37f1",
+      "source_id": "source.ecfr.2026-07-01.141-2"
+    },
+    {
+      "citation": "40 CFR 141.53",
+      "label": "§ 141.53 Maximum contaminant level goals for disinfection byproducts.",
+      "subpart": "F",
+      "scope_basis": "dbp-goal-dependency",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.53.xml",
+      "capture_sha256": "c0b51975a3bb64b989dde8c0f77b8124eea622a96f963a7e33df94b5c2f74c15",
+      "source_id": "source.ecfr.2026-07-01.141-53"
+    },
+    {
+      "citation": "40 CFR 141.54",
+      "label": "§ 141.54 Maximum residual disinfectant level goals for disinfectants.",
+      "subpart": "F",
+      "scope_basis": "dbp-goal-dependency",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.54.xml",
+      "capture_sha256": "43b0f7a95c737daaac27d1b23e626f8d38140f60e6db66da2edc8c010678d2d1",
+      "source_id": "source.ecfr.2026-07-01.141-54"
+    },
+    {
+      "citation": "40 CFR 141.64",
+      "label": "§ 141.64 Maximum contaminant levels for disinfection byproducts.",
+      "subpart": "G",
+      "scope_basis": "dbp-limit-dependency",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.64.xml",
+      "capture_sha256": "4f1e79cb54139f1901e4a7d7efbd31408b349b661eeb65929426e1f5302933e4",
+      "source_id": "source.ecfr.2026-07-01.141-64"
+    },
+    {
+      "citation": "40 CFR 141.65",
+      "label": "§ 141.65 Maximum residual disinfectant levels.",
+      "subpart": "G",
+      "scope_basis": "dbp-limit-dependency",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.65.xml",
+      "capture_sha256": "694ca7a525b44bf26d901f0724e878a552881b9d938d7c546bef64177bd9bcc5",
+      "source_id": "source.ecfr.2026-07-01.141-65"
+    },
+    {
+      "citation": "40 CFR 141.130",
+      "label": "§ 141.130 General requirements.",
+      "subpart": "L",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.130.xml",
+      "capture_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "source_id": "source.ecfr.2026-07-01.141-130"
+    },
+    {
+      "citation": "40 CFR 141.131",
+      "label": "§ 141.131 Analytical requirements.",
+      "subpart": "L",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.131.xml",
+      "capture_sha256": "b01ad4a7ad578a9fabd3cc886964a0351f1a741286de22e314b400d3e30f4fd9",
+      "source_id": "source.ecfr.2026-07-01.141-131"
+    },
+    {
+      "citation": "40 CFR 141.132",
+      "label": "§ 141.132 Monitoring requirements.",
+      "subpart": "L",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.132.xml",
+      "capture_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "source_id": "source.ecfr.2026-07-01.141-132"
+    },
+    {
+      "citation": "40 CFR 141.133",
+      "label": "§ 141.133 Compliance requirements.",
+      "subpart": "L",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.133.xml",
+      "capture_sha256": "4b773cefc584399af240124de5887ba45088b428f3a242dffe1ad43ed6edba82",
+      "source_id": "source.ecfr.2026-07-01.141-133"
+    },
+    {
+      "citation": "40 CFR 141.134",
+      "label": "§ 141.134 Reporting and recordkeeping requirements.",
+      "subpart": "L",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.134.xml",
+      "capture_sha256": "40693c44be7ed5dbd238e9f169df104a9291185ad3c0604086cb06fe2da57d4b",
+      "source_id": "source.ecfr.2026-07-01.141-134"
+    },
+    {
+      "citation": "40 CFR 141.135",
+      "label": "§ 141.135 Treatment technique for control of disinfection byproduct (DBP) precursors.",
+      "subpart": "L",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.135.xml",
+      "capture_sha256": "b6344112bef59ef28267c25414f33f5356ff512e1ce2a7339e9fc9ce91240c48",
+      "source_id": "source.ecfr.2026-07-01.141-135"
+    },
+    {
+      "citation": "40 CFR 141.201",
+      "label": "§ 141.201 General public notification requirements.",
+      "subpart": "Q",
+      "scope_basis": "complete-notification-dependency-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/subpart-Q.xml",
+      "capture_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "source_id": "source.ecfr.2026-07-01.subpart-q"
+    },
+    {
+      "citation": "40 CFR 141.202",
+      "label": "§ 141.202 Tier 1 Public Notice—Form, manner, and frequency of notice.",
+      "subpart": "Q",
+      "scope_basis": "complete-notification-dependency-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/subpart-Q.xml",
+      "capture_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "source_id": "source.ecfr.2026-07-01.subpart-q"
+    },
+    {
+      "citation": "40 CFR 141.203",
+      "label": "§ 141.203 Tier 2 Public Notice—Form, manner, and frequency of notice.",
+      "subpart": "Q",
+      "scope_basis": "complete-notification-dependency-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/subpart-Q.xml",
+      "capture_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "source_id": "source.ecfr.2026-07-01.subpart-q"
+    },
+    {
+      "citation": "40 CFR 141.204",
+      "label": "§ 141.204 Tier 3 Public Notice—Form, manner, and frequency of notice.",
+      "subpart": "Q",
+      "scope_basis": "complete-notification-dependency-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/subpart-Q.xml",
+      "capture_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "source_id": "source.ecfr.2026-07-01.subpart-q"
+    },
+    {
+      "citation": "40 CFR 141.205",
+      "label": "§ 141.205 Content of the public notice.",
+      "subpart": "Q",
+      "scope_basis": "complete-notification-dependency-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/subpart-Q.xml",
+      "capture_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "source_id": "source.ecfr.2026-07-01.subpart-q"
+    },
+    {
+      "citation": "40 CFR 141.206",
+      "label": "§ 141.206 Notice to new billing units or new customers.",
+      "subpart": "Q",
+      "scope_basis": "complete-notification-dependency-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/subpart-Q.xml",
+      "capture_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "source_id": "source.ecfr.2026-07-01.subpart-q"
+    },
+    {
+      "citation": "40 CFR 141.207",
+      "label": "§ 141.207 Special notice of the availability of unregulated contaminant monitoring results.",
+      "subpart": "Q",
+      "scope_basis": "complete-notification-dependency-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/subpart-Q.xml",
+      "capture_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "source_id": "source.ecfr.2026-07-01.subpart-q"
+    },
+    {
+      "citation": "40 CFR 141.208",
+      "label": "§ 141.208 Special notice for exceedance of the SMCL for fluoride.",
+      "subpart": "Q",
+      "scope_basis": "complete-notification-dependency-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/subpart-Q.xml",
+      "capture_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "source_id": "source.ecfr.2026-07-01.subpart-q"
+    },
+    {
+      "citation": "40 CFR 141.209",
+      "label": "§ 141.209 Special notice for nitrate exceedances above MCL by non-community water systems (NCWS), where granted permission by the primacy agency under § 141.11(d).",
+      "subpart": "Q",
+      "scope_basis": "complete-notification-dependency-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/subpart-Q.xml",
+      "capture_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "source_id": "source.ecfr.2026-07-01.subpart-q"
+    },
+    {
+      "citation": "40 CFR 141.210",
+      "label": "§ 141.210 Notice by primacy agency on behalf of the public water system.",
+      "subpart": "Q",
+      "scope_basis": "complete-notification-dependency-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/subpart-Q.xml",
+      "capture_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "source_id": "source.ecfr.2026-07-01.subpart-q"
+    },
+    {
+      "citation": "40 CFR 141.211",
+      "label": "§ 141.211 Special notice for repeated failure to conduct monitoring of the source water for Cryptosporidium and for failure to determine bin classification or mean Cryptosporidium level.",
+      "subpart": "Q",
+      "scope_basis": "complete-notification-dependency-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/subpart-Q.xml",
+      "capture_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "source_id": "source.ecfr.2026-07-01.subpart-q"
+    },
+    {
+      "citation": "40 CFR 141.600",
+      "label": "§ 141.600 General requirements.",
+      "subpart": "U",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.600.xml",
+      "capture_sha256": "ddd9a1a2e0a8fc0436952cb15ac7b571f19afcf09ed1bf7f0bc775c8a43e1037",
+      "source_id": "source.ecfr.2026-07-01.141-600"
+    },
+    {
+      "citation": "40 CFR 141.601",
+      "label": "§ 141.601 Standard monitoring.",
+      "subpart": "U",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.601.xml",
+      "capture_sha256": "e7245a70216896c265e9de9f9d5680c4f1224aacea5cc4ae695975a2ac6f325e",
+      "source_id": "source.ecfr.2026-07-01.141-601"
+    },
+    {
+      "citation": "40 CFR 141.602",
+      "label": "§ 141.602 System specific studies.",
+      "subpart": "U",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.602.xml",
+      "capture_sha256": "cf20907431607eb4010f58f14ebff0efcc65a4ff3d10be8f6dd6316a6a88ba3a",
+      "source_id": "source.ecfr.2026-07-01.141-602"
+    },
+    {
+      "citation": "40 CFR 141.603",
+      "label": "§ 141.603 40/30 certification.",
+      "subpart": "U",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.603.xml",
+      "capture_sha256": "e218cb4d127b654a4a663755e3a102aa7b7be743e5c8d97a0ad04eeee9547816",
+      "source_id": "source.ecfr.2026-07-01.141-603"
+    },
+    {
+      "citation": "40 CFR 141.604",
+      "label": "§ 141.604 Very small system waivers.",
+      "subpart": "U",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.604.xml",
+      "capture_sha256": "fe918e9df3367fca138ebdc895a955a18cd198dc8e236832b6ba22f3ece6c482",
+      "source_id": "source.ecfr.2026-07-01.141-604"
+    },
+    {
+      "citation": "40 CFR 141.605",
+      "label": "§ 141.605 Subpart V compliance monitoring location recommendations.",
+      "subpart": "U",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.605.xml",
+      "capture_sha256": "64518842399a5a2f70d40ed322d3a35b881f0bf486a2d9b8e3b71f5d45f000d4",
+      "source_id": "source.ecfr.2026-07-01.141-605"
+    },
+    {
+      "citation": "40 CFR 141.620",
+      "label": "§ 141.620 General requirements.",
+      "subpart": "V",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.620.xml",
+      "capture_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "source_id": "source.ecfr.2026-07-01.141-620"
+    },
+    {
+      "citation": "40 CFR 141.621",
+      "label": "§ 141.621 Routine monitoring.",
+      "subpart": "V",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.621.xml",
+      "capture_sha256": "dc4006382d5ef57e3c300410dd3aa3b0947bd75342b7609d872d3e5a2e579fba",
+      "source_id": "source.ecfr.2026-07-01.141-621"
+    },
+    {
+      "citation": "40 CFR 141.622",
+      "label": "§ 141.622 Subpart V monitoring plan.",
+      "subpart": "V",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.622.xml",
+      "capture_sha256": "757abcae4d11290d5d791c79d20923fe0c3167882aa20c19cd2084ab444f36c3",
+      "source_id": "source.ecfr.2026-07-01.141-622"
+    },
+    {
+      "citation": "40 CFR 141.623",
+      "label": "§ 141.623 Reduced monitoring.",
+      "subpart": "V",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.623.xml",
+      "capture_sha256": "e92fe16208d0a5c5646b69458c57a704000fe98445ca84c95995b7e261db1387",
+      "source_id": "source.ecfr.2026-07-01.141-623"
+    },
+    {
+      "citation": "40 CFR 141.624",
+      "label": "§ 141.624 Additional requirements for consecutive systems.",
+      "subpart": "V",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.624.xml",
+      "capture_sha256": "1d1dc31f75464c5bbed4e8d8b691ddc657dd5ec2d7a18a540786cdb998c6cd9c",
+      "source_id": "source.ecfr.2026-07-01.141-624"
+    },
+    {
+      "citation": "40 CFR 141.625",
+      "label": "§ 141.625 Conditions requiring increased monitoring.",
+      "subpart": "V",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.625.xml",
+      "capture_sha256": "b733ecb787db890bedaff88bf36716600ec0dd1e2f7d76998a2a4f07debbd146",
+      "source_id": "source.ecfr.2026-07-01.141-625"
+    },
+    {
+      "citation": "40 CFR 141.626",
+      "label": "§ 141.626 Operational evaluation levels.",
+      "subpart": "V",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.626.xml",
+      "capture_sha256": "1e0236a178040706011ba181be05d7a6405a1c272341702d7ad903ec391c0767",
+      "source_id": "source.ecfr.2026-07-01.141-626"
+    },
+    {
+      "citation": "40 CFR 141.627",
+      "label": "§ 141.627 Requirements for remaining on reduced TTHM and HAA5 monitoring based on subpart L results.",
+      "subpart": "V",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.627.xml",
+      "capture_sha256": "26604b70b948031febdc1f4f4e62fcfc49cedee5892d99203fabc07f75e04eb8",
+      "source_id": "source.ecfr.2026-07-01.141-627"
+    },
+    {
+      "citation": "40 CFR 141.628",
+      "label": "§ 141.628 Requirements for remaining on increased TTHM and HAA5 monitoring based on subpart L results.",
+      "subpart": "V",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.628.xml",
+      "capture_sha256": "13785466eb176b2b13232ae6d25d438dbd49d0dee96f1f7e8f713594742d585e",
+      "source_id": "source.ecfr.2026-07-01.141-628"
+    },
+    {
+      "citation": "40 CFR 141.629",
+      "label": "§ 141.629 Reporting and recordkeeping requirements.",
+      "subpart": "V",
+      "scope_basis": "complete-rule-subpart",
+      "capture_path": "sources/captures/ecfr-2026-07-01/section-141.629.xml",
+      "capture_sha256": "9cef5d05e5d60a318859b5c340d034b3136f52e0741f9a68d6702c271fbad63e",
+      "source_id": "source.ecfr.2026-07-01.141-629"
+    }
+  ]
+}

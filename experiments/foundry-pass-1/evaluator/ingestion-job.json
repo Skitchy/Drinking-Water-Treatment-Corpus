@@ -1,0 +1,41 @@
+{
+  "artifact_version": "foundry-ingestion-job/experimental-v0.1",
+  "job_id": "foundry-pass-1.ecfr-dbp.2026-07-01",
+  "status": "pre-run",
+  "claims_boundary": "experimental-measurements-only",
+  "point_in_time_date": "2026-07-01",
+  "jurisdiction": "40 CFR Part 141",
+  "use_class": "regulatory-reference",
+  "source_class": "authoritative-unofficial-government-compilation",
+  "scope": {
+    "complete_subparts": [
+      "L",
+      "Q",
+      "U",
+      "V"
+    ],
+    "dependency_sections": [
+      "141.2",
+      "141.53",
+      "141.54",
+      "141.64",
+      "141.65"
+    ],
+    "capture_units_expected": 28,
+    "regulatory_sections_expected": 38,
+    "state_layer_included": false
+  },
+  "output_boundary": {
+    "root": "experiments/foundry-pass-1/",
+    "quarantined": true,
+    "promotion_authority": false,
+    "ratified_schema_changes_allowed": false,
+    "rfc005_conformance_claims_allowed": false
+  },
+  "wip_policy": {
+    "unit": "candidate-page-produced-but-not-dispositioned",
+    "maximum": 5,
+    "batch_must_not_exceed_cap": true,
+    "batch_approval_allowed": false
+  }
+}

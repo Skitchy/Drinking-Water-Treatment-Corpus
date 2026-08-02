@@ -1,0 +1,99 @@
+{
+  "artifact_version": "foundry-calibration-oracle/experimental-v0.1",
+  "oracle_id": "foundry-pass-1.two-page-calibration",
+  "status": "pending-independent-disposition",
+  "claim_scope": "Two-page calibration subset only; this oracle supports no accuracy claim for remaining candidate material.",
+  "ground_truth_pages": [
+    {
+      "page_id": "dbp.definitions",
+      "path": "pages/dbp.definitions.json",
+      "byte_length": 11324,
+      "sha256": "0bab336bfc910d52e80ce5fabe8ee52c8817087e44ec4454f5e1074352ac4b16",
+      "expected_quote_ids": [
+        "quote.dbp.definitions.tthm",
+        "quote.dbp.definitions.haa5",
+        "quote.dbp.definitions.lraa",
+        "quote.dbp.definitions.three-sample-set",
+        "quote.dbp.definitions.paired-samples"
+      ],
+      "expected_claim_ids": [
+        "claim.dbp.definitions.tthm-composition",
+        "claim.dbp.definitions.haa5-composition",
+        "claim.dbp.definitions.lraa-computation",
+        "claim.dbp.definitions.chlorite-three-sample-set",
+        "claim.dbp.definitions.toc-paired-samples"
+      ]
+    },
+    {
+      "page_id": "dbp.mclg",
+      "path": "pages/dbp.mclg.json",
+      "byte_length": 16549,
+      "sha256": "d22e0350b71eed71968e90f86c3612ca99ea6ec0c1f1246b9da89f933c7c451d",
+      "expected_quote_ids": [
+        "quote.dbp.mclg.table",
+        "quote.dbp.mclg.mrdlg-table"
+      ],
+      "expected_claim_ids": [
+        "claim.dbp.mclg.bromodichloromethane",
+        "claim.dbp.mclg.bromoform",
+        "claim.dbp.mclg.bromate",
+        "claim.dbp.mclg.chlorite",
+        "claim.dbp.mclg.chloroform",
+        "claim.dbp.mclg.dibromochloromethane",
+        "claim.dbp.mclg.dichloroacetic-acid",
+        "claim.dbp.mclg.monochloroacetic-acid",
+        "claim.dbp.mclg.trichloroacetic-acid",
+        "claim.dbp.mclg.mrdlg-chlorine",
+        "claim.dbp.mclg.mrdlg-chloramines",
+        "claim.dbp.mclg.mrdlg-chlorine-dioxide"
+      ]
+    }
+  ],
+  "expected_totals": {
+    "pages": 2,
+    "quotes": 7,
+    "claims": 17
+  },
+  "matching_rules": {
+    "candidate_ids_are_scored": false,
+    "assignment": "Use maximum one-to-one matching. One candidate atom can recover at most one oracle atom, and one oracle atom can be recovered at most once.",
+    "quote_match": {
+      "required_equal_fields": [
+        "captured_source_sha256",
+        "normalization",
+        "span_sha256"
+      ],
+      "required_source_identity": "The candidate source must resolve to the same source_id or to a source-registry record with the same captured-source digest.",
+      "anchor_role": "Anchor values are reported for diagnosis but do not replace content equality or establish continuity.",
+      "partial_or_superset_span": "No match. Report the candidate as a false positive and the unrecovered oracle atom as a false negative unless a separately recorded evaluator disposition establishes equivalence before scores are computed."
+    },
+    "claim_match": {
+      "required_equal_projection": [
+        "kind",
+        "subject",
+        "relation",
+        "value",
+        "unit",
+        "conditions",
+        "exceptions",
+        "jurisdiction",
+        "applicability"
+      ],
+      "support_requirement": "Every supporting quote reference must map to the corresponding matched oracle quote atom; unsupported semantic equality is not a match.",
+      "ordering": "Array order is significant where it changes meaning. Otherwise compare arrays as duplicate-free sets after the evaluator records the normalization used.",
+      "numeric_values": "Compare the JSON numeric value and unit together. Unit conversion is not automatic and requires a recorded evaluator disposition before scoring.",
+      "qualitative_values": "Exact stored value equality is the deterministic default. A semantic-equivalence override must be recorded by the independent reviewer before aggregate scores are computed."
+    },
+    "false_positive": "A candidate quote or claim in either matched calibration page that is not assigned to an oracle atom.",
+    "false_negative": "An expected oracle quote or claim not assigned to a candidate atom.",
+    "precision": "true positives divided by true positives plus false positives; report quote and claim precision separately.",
+    "recall": "true positives divided by true positives plus false negatives; report quote and claim recall separately.",
+    "zero_denominator": "Report not-applicable rather than substituting a perfect score.",
+    "required_diagnostics": [
+      "matched oracle and candidate atom identifiers",
+      "unmatched oracle atom identifiers",
+      "unmatched candidate atom identifiers",
+      "all evaluator equivalence dispositions and their reasons"
+    ]
+  }
+}

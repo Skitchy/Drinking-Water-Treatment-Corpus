@@ -1,0 +1,55 @@
+{
+  "artifact_version": "foundry-question-rubric/experimental-v0.1",
+  "rubric_id": "foundry-pass-1.challenge-questions",
+  "status": "pending-independent-disposition",
+  "reference_bank": {
+    "path": "docs/EPA_DBP_Challenge_Questions.md",
+    "byte_length": 11345,
+    "sha256": "891208ed7f463f4924b1ed16e8ab9dbad35ab1d4f35c298330711ff52f489319"
+  },
+  "claims_boundary": "coverage reference only; not an exhaustive answer key",
+  "dimensions": [
+    {
+      "dimension_id": "source-answerability",
+      "measurement": "Classify each proposed question as directly answerable, derivably answerable, or not answerable from the input bundle.",
+      "credit": "Direct or derived answerability is credited only when all required premises occur in captured input.",
+      "failure": "A question represented as answerable while a material premise is absent."
+    },
+    {
+      "dimension_id": "traceability",
+      "measurement": "Count questions whose expected answer maps to exact capture IDs and representation-bound evidence selectors.",
+      "credit": "Every material expected-answer proposition is traceable.",
+      "failure": "A citation names only a document or section when the answer depends on narrower text or a table cell."
+    },
+    {
+      "dimension_id": "duplicate-rate",
+      "measurement": "Group questions that test the same proposition, applicability condition, and failure trap after terminology normalization.",
+      "credit": "Distinct questions exercise a different proposition or adversarial condition.",
+      "failure": "Stylistic paraphrase is counted as new coverage."
+    },
+    {
+      "dimension_id": "concept-coverage",
+      "measurement": "Map each question to one or more declared concept families and report covered and uncovered families.",
+      "concept_families": [
+        "definitions-and-sampling-terms",
+        "mcl-and-mrdl-limits",
+        "mclg-and-mrdlg-goals",
+        "applicability",
+        "routine-reduced-and-increased-monitoring",
+        "compliance-calculations",
+        "operational-evaluation-levels",
+        "precursor-treatment-technique",
+        "idse",
+        "analytical-methods",
+        "violations-and-public-notification"
+      ],
+      "failure": "Question count is presented as coverage without concept mapping."
+    }
+  ],
+  "reporting": {
+    "decision_role": "descriptive",
+    "report_counts_and_denominators": true,
+    "report_reviewer_corrections": true,
+    "promotion_authority": false
+  }
+}

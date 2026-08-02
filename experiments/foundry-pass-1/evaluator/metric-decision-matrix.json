@@ -1,0 +1,110 @@
+{
+  "artifact_version": "foundry-metric-decision-matrix/experimental-v0.1",
+  "matrix_id": "foundry-pass-1.metrics.pre-run",
+  "status": "pending-maintainer-thresholds-and-independent-disposition",
+  "fixed_before_graded_output": true,
+  "metrics": [
+    {
+      "metric_id": "class1-replay-identity",
+      "kind": "hard-gate",
+      "candidate_promise": "Deterministic transformations reproduce byte-identical canonical payloads.",
+      "required": "100 percent of declared class-1 payloads replayed in the run match byte-for-byte.",
+      "on_miss": "Stop and reject the deterministic-stage claim."
+    },
+    {
+      "metric_id": "isolation-probe-denial",
+      "kind": "hard-gate",
+      "candidate_promise": "Extraction cannot access evaluator-only or out-of-manifest material.",
+      "required": "Every declared forbidden read is denied and recorded.",
+      "on_miss": "Invalidate the run and make no extraction-quality claim."
+    },
+    {
+      "metric_id": "census-reconciliation",
+      "kind": "hard-gate",
+      "candidate_promise": "Declared source scope is reconciled against an independent authoritative census.",
+      "required": "Every oracle section is mapped to a verified input capture or an explicit pre-run exclusion; undeclared omissions are zero.",
+      "on_miss": "Stop candidate emission and report incomplete source scope."
+    },
+    {
+      "metric_id": "fail-closed-probes",
+      "kind": "hard-gate",
+      "candidate_promise": "Known capture, census, and integrity failures prevent downstream emission.",
+      "required": "Omission and corruption probes produce their exact expected fail-closed verdicts.",
+      "on_miss": "Reject the fail-closed pipeline claim."
+    },
+    {
+      "metric_id": "review-duration-median-minutes",
+      "kind": "thresholded",
+      "candidate_promise": "Reviewer packets are dispositionable in workable time.",
+      "threshold": "PENDING_MAINTAINER_DECISION",
+      "recommended_threshold": "at-or-below 10 minutes",
+      "on_miss": "Do not claim workable median review throughput; revise packet or batching and rerun."
+    },
+    {
+      "metric_id": "review-duration-maximum-minutes",
+      "kind": "thresholded",
+      "candidate_promise": "Reviewer packets avoid impractical worst-case review time in the measured sample.",
+      "threshold": "PENDING_MAINTAINER_DECISION",
+      "recommended_threshold": "at-or-below 25 minutes",
+      "on_miss": "Pause scaling and inspect the slow packet before another batch."
+    },
+    {
+      "metric_id": "unresolved-material-ambiguities-per-packet",
+      "kind": "thresholded",
+      "candidate_promise": "A reviewer packet exposes a bounded, dispositionable ambiguity load.",
+      "threshold": "PENDING_MAINTAINER_DECISION",
+      "recommended_threshold": "at-or-below 3",
+      "on_miss": "Pause that packet for diagnosis; do not count it as dispositionable."
+    },
+    {
+      "metric_id": "unresolved-material-ambiguities-per-section",
+      "kind": "thresholded",
+      "candidate_promise": "Normalization does not produce an unbounded ambiguity burden for a section.",
+      "threshold": "PENDING_MAINTAINER_DECISION",
+      "recommended_threshold": "pause when above 10",
+      "on_miss": "Pause that section for diagnosis without declaring the normalization design invalid."
+    },
+    {
+      "metric_id": "two-page-quote-and-claim-precision-recall",
+      "kind": "descriptive",
+      "candidate_promise": "None; calibration evidence only.",
+      "on_miss": "Report exact false positives and false negatives; no pass/fail inference beyond the two-page calibration scope."
+    },
+    {
+      "metric_id": "seventeen-page-decomposition",
+      "kind": "descriptive",
+      "candidate_promise": "None; page-boundary comparison only.",
+      "on_miss": "Report missing, duplicate, merged, and split concepts under the predeclared rubric."
+    },
+    {
+      "metric_id": "anchor-survival-false-continuity-and-impact",
+      "kind": "descriptive",
+      "candidate_promise": "None until the experiment supplies evidence for an anchor contract.",
+      "on_miss": "Report survival, false-continuity count, and impact precision/recall; do not promote an anchor promise."
+    },
+    {
+      "metric_id": "challenge-question-quality",
+      "kind": "descriptive",
+      "candidate_promise": "None; coverage and traceability observation only.",
+      "on_miss": "Report dimension-level results and reviewer corrections."
+    },
+    {
+      "metric_id": "proposal-dispositions",
+      "kind": "descriptive",
+      "candidate_promise": "None; machine acceptance, correction, and rejection rates are observations.",
+      "on_miss": "No pass/fail effect."
+    },
+    {
+      "metric_id": "git-operational-cost",
+      "kind": "descriptive",
+      "candidate_promise": "None; evidence for a future storage trigger only.",
+      "on_miss": "No storage migration is authorized by this pass."
+    },
+    {
+      "metric_id": "independent-lineage-disagreement",
+      "kind": "descriptive",
+      "candidate_promise": "None; correlated-error observation only.",
+      "on_miss": "Agreement never promotes; disagreement raises review priority."
+    }
+  ]
+}

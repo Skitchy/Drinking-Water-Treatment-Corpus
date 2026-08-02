@@ -1,0 +1,438 @@
+{
+  "artifact_version": "foundry-input-manifest/experimental-v0.1",
+  "manifest_id": "foundry-pass-1.input.ecfr-dbp-2026-07-01",
+  "status": "pending-independent-disposition",
+  "bundle_identity": {
+    "definition": "ordered-manifest-plus-byte-identical-members",
+    "canonicalization": "UTF-8 JSON array; member paths in lexicographic order; each object has path then sha256; no whitespace or trailing newline",
+    "member_count": 31,
+    "bundle_sha256": "2388bd3ef8ff4a7cf3dfdb72a2567a0ef374fd33cb5af08ef50b5df227ab2c61"
+  },
+  "upstream_provenance": [
+    {
+      "path": "sources/capture-manifest-2026-07-31.json",
+      "byte_length": 9682,
+      "sha256": "e7f69fdaf5036a554bad66b6d5eb64ebcd5e1c11767a2b61e79ddb844c3255ea"
+    },
+    {
+      "path": "sources/source-registry.dbp-first-proof.json",
+      "byte_length": 52400,
+      "sha256": "924ff70ca50b856e759c2e15b39750a002d18f7bb509dd4e2aac191882b5752b"
+    }
+  ],
+  "members": [
+    {
+      "path": "experiments/foundry-pass-1/evaluator/ingestion-job.json",
+      "role": "ingestion-job-declaration",
+      "media_type": "application/json",
+      "byte_length": 1096,
+      "sha256": "00097b779afde7ecac3814745f7b7faa59392d37024b727f92c1f7df7a6f3b70"
+    },
+    {
+      "path": "experiments/foundry-pass-1/evaluator/input-source-policy.json",
+      "role": "source-policy-and-authority-tier-record",
+      "media_type": "application/json",
+      "byte_length": 2272,
+      "sha256": "736996f01dbd99bd1edb250fe3d926e652123e079d46991514438c3221e9fa37"
+    },
+    {
+      "path": "schemas/drinking-water-profile-v0.1.schema.json",
+      "role": "target-vocabulary",
+      "media_type": "application/schema+json",
+      "byte_length": 24717,
+      "sha256": "67110f4b3f8cb45397e962f65b67470433b98963fe371c719b4ed411dcd34c4c"
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.130.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 3318,
+      "sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "e40a6d648819e123a5fee502351324de387c8c363e13a373a99d6a21e7d2a7e0"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.131.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 32128,
+      "sha256": "b01ad4a7ad578a9fabd3cc886964a0351f1a741286de22e314b400d3e30f4fd9",
+      "source_id": "source.ecfr.2026-07-01.141-131",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "d2ed11017ec81f9e2d43f6e9e41011bda999c8dd0ffb38e84fa934806a740da5"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.132.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 21760,
+      "sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "a99aef52bd75ce57929c25ea48d0839c5d65d1dd2ef5068159c90da0dbcdd045"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.133.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 8633,
+      "sha256": "4b773cefc584399af240124de5887ba45088b428f3a242dffe1ad43ed6edba82",
+      "source_id": "source.ecfr.2026-07-01.141-133",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "d6ec1d0234a47c5182c72e45fb04196e4e433d2da71315fdca65a5a605d7c1c4"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.134.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 9888,
+      "sha256": "40693c44be7ed5dbd238e9f169df104a9291185ad3c0604086cb06fe2da57d4b",
+      "source_id": "source.ecfr.2026-07-01.141-134",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "a9f78b2b980b49a475fb50ba69614c1657d1e7f244eade2a2653f3103c4c7686"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.135.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 15062,
+      "sha256": "b6344112bef59ef28267c25414f33f5356ff512e1ce2a7339e9fc9ce91240c48",
+      "source_id": "source.ecfr.2026-07-01.141-135",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "4ab7635bfc69140e0d409a76d1cd8afa9f65b294776eb06ef50d9bf01c2833ad"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.2.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 42668,
+      "sha256": "d2d9daa22334d43c6acd38c094e281a5ed23142cab14578d7be0fe968e9d37f1",
+      "source_id": "source.ecfr.2026-07-01.141-2",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "7036d6d0f9722e5cd5ee121813e78492b18bb148bdbec63a77386bb7a4e54476"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.53.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 1808,
+      "sha256": "c0b51975a3bb64b989dde8c0f77b8124eea622a96f963a7e33df94b5c2f74c15",
+      "source_id": "source.ecfr.2026-07-01.141-53",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "d6fc35079d37350747444083851ca71e843f29bb9c8fc25c553a1d4ef9848357"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.54.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 1173,
+      "sha256": "43b0f7a95c737daaac27d1b23e626f8d38140f60e6db66da2edc8c010678d2d1",
+      "source_id": "source.ecfr.2026-07-01.141-54",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "38f0f46cb68cd781d4ab3f141b73a00c728569f07d1b7e2ffa02a208e0c67fd7"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.600.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 7724,
+      "sha256": "ddd9a1a2e0a8fc0436952cb15ac7b571f19afcf09ed1bf7f0bc775c8a43e1037",
+      "source_id": "source.ecfr.2026-07-01.141-600",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "832794c9c5801341f34629b4bbdfca8e82d72e8e41110dd81b884120281924ed"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.601.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 12896,
+      "sha256": "e7245a70216896c265e9de9f9d5680c4f1224aacea5cc4ae695975a2ac6f325e",
+      "source_id": "source.ecfr.2026-07-01.141-601",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "6ad3adb71e927c009c873c7f594947c29ec323a7c8c4da594d436792775f3fc0"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.602.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 14066,
+      "sha256": "cf20907431607eb4010f58f14ebff0efcc65a4ff3d10be8f6dd6316a6a88ba3a",
+      "source_id": "source.ecfr.2026-07-01.141-602",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "c7ef892fdec514e8b3155b67611055f2bea759dc334a6c80435e5ee1f3e965ae"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.603.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 3262,
+      "sha256": "e218cb4d127b654a4a663755e3a102aa7b7be743e5c8d97a0ad04eeee9547816",
+      "source_id": "source.ecfr.2026-07-01.141-603",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "3dabc5b56d5058e2ae3664c069540368920c6a7313a8f26e1eae2d29985c719d"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.604.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 832,
+      "sha256": "fe918e9df3367fca138ebdc895a955a18cd198dc8e236832b6ba22f3ece6c482",
+      "source_id": "source.ecfr.2026-07-01.141-604",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "f82bbadd8ddf94d12c6e03287c5feae68311843f4ba7175e80e6833b12c42331"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.605.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 10486,
+      "sha256": "64518842399a5a2f70d40ed322d3a35b881f0bf486a2d9b8e3b71f5d45f000d4",
+      "source_id": "source.ecfr.2026-07-01.141-605",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "49d148145eb0056b58c9f679b49dddb0f3b46e42de7d68dc60c24ebdbd4fcfd0"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.620.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 6599,
+      "sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "f3b39502bbfbaa850eb4cfeab711de70381c64f8a07e8cf649e719d96f119eb2"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.621.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 6215,
+      "sha256": "dc4006382d5ef57e3c300410dd3aa3b0947bd75342b7609d872d3e5a2e579fba",
+      "source_id": "source.ecfr.2026-07-01.141-621",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "74d2a21e998c0ed5d2254948caf2a1f457da074845821a34e9d2e312258201a0"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.622.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 3009,
+      "sha256": "757abcae4d11290d5d791c79d20923fe0c3167882aa20c19cd2084ab444f36c3",
+      "source_id": "source.ecfr.2026-07-01.141-622",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "c39ac43a0d3598c8ab8d397466f563b964c5eaa5ddf4a3cd83fd890d623ab1a1"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.623.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 7749,
+      "sha256": "e92fe16208d0a5c5646b69458c57a704000fe98445ca84c95995b7e261db1387",
+      "source_id": "source.ecfr.2026-07-01.141-623",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "eb415878af370b480ee1f951562dcc213cc6c9c7e04e214d903085c8622b92cb"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.624.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 778,
+      "sha256": "1d1dc31f75464c5bbed4e8d8b691ddc657dd5ec2d7a18a540786cdb998c6cd9c",
+      "source_id": "source.ecfr.2026-07-01.141-624",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "c39312ea79a57e6a54adde50b2da0b954e1688cfa79d29b493dda993f6c2d388"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.625.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 1334,
+      "sha256": "b733ecb787db890bedaff88bf36716600ec0dd1e2f7d76998a2a4f07debbd146",
+      "source_id": "source.ecfr.2026-07-01.141-625",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "728eb69afd4d9cc2ed8b46d7e9f304d47fab94d57bb5e4e61427f96fe05fa189"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.626.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 1936,
+      "sha256": "1e0236a178040706011ba181be05d7a6405a1c272341702d7ad903ec391c0767",
+      "source_id": "source.ecfr.2026-07-01.141-626",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "dac2471d08dbe25b1e9a41b2f52ee76f21e4adbb2fd82095044205e32334582a"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.627.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 1011,
+      "sha256": "26604b70b948031febdc1f4f4e62fcfc49cedee5892d99203fabc07f75e04eb8",
+      "source_id": "source.ecfr.2026-07-01.141-627",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "3364d2b355a40f2d58a91666f9f4949822bf858918a552ea78026455713a8d9f"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.628.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 852,
+      "sha256": "13785466eb176b2b13232ae6d25d438dbd49d0dee96f1f7e8f713594742d585e",
+      "source_id": "source.ecfr.2026-07-01.141-628",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "5480cde27ffcee2559fafaaf7c938f82daa31d574891252de7bae002f8f10c29"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.629.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 2868,
+      "sha256": "9cef5d05e5d60a318859b5c340d034b3136f52e0741f9a68d6702c271fbad63e",
+      "source_id": "source.ecfr.2026-07-01.141-629",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "90919571e1a2585da50496941cdefe5b257969eb1f9777da9514c10f8df2d77f"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.64.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 7992,
+      "sha256": "4f1e79cb54139f1901e4a7d7efbd31408b349b661eeb65929426e1f5302933e4",
+      "source_id": "source.ecfr.2026-07-01.141-64",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "3db5071723e446623cb37d019ac9b0271da6386574c1106aa44784016457f725"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/section-141.65.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 2530,
+      "sha256": "694ca7a525b44bf26d901f0724e878a552881b9d938d7c546bef64177bd9bcc5",
+      "source_id": "source.ecfr.2026-07-01.141-65",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "4b7bf73fc47c476a17bc283678074c5cc9dcd4dd6c7123e2d2ec105b3af1aed2"
+      }
+    },
+    {
+      "path": "sources/captures/ecfr-2026-07-01/subpart-Q.xml",
+      "role": "authoritative-capture",
+      "media_type": "application/xml",
+      "byte_length": 148541,
+      "sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "source_id": "source.ecfr.2026-07-01.subpart-q",
+      "authority_tier": "authoritative-unofficial-government-compilation",
+      "reproduction_decision": {
+        "status": "approved",
+        "classification": "public-domain-us-government-work",
+        "payload_sha256": "d2579196d10373f2a13229a2d41ed0149534e0c19067778c6d621a94986c75f4"
+      }
+    }
+  ]
+}
