@@ -66,3 +66,21 @@ Natural release universe: 387 verified claims across 37 of 38 sections
 ```
 cd experiments/foundry-pass-2 && python3 -m unittest tests.test_boundary -v
 ```
+
+## Pipeline (built 2026-08-27, in this order)
+
+| Step | Where | State |
+| --- | --- | --- |
+| Boundary | `engine/contract.py`, `adapters/ecfr_pass1/` | committed `c711f06`, 8 tests |
+| Review-input bundle | `engine/universe.py`, `tools/emit_bundle.py` | emitted: 408 records (387 natural + 21 controls), 37 shards, class-1 replay identical |
+| Reviewer A harness | `engine/reviewer.py`, `tools/run_reviewer_a.py` | built; identity + 5 leak probes bind before any review; offline-tested against Ari's validator |
+| Release gate | `engine/gate.py`, `tools/run_gate.py` | built; merge, partition, report, candidate, manifest; 5 tests incl. class-1 replay |
+| Control grading | Ari's `grade-mixed-controls-v0.1.py` after oracle reveal | not run |
+
+Reviewer B (Ari's lineage) consumes the same `out/shards/` bytes and returns
+schema-valid outputs to `out/reviewer-b/outputs/` plus an identity record.
+
+Coverage per planned concept (brief 4a) is not computed by the engine: the
+Pass 1 concept reference is the evaluator-held 40-question bank, not a list
+in the canonical index. Reported as such in the release report; the
+evaluator grades it after reveal.
