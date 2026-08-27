@@ -40,10 +40,6 @@ jobs:
       - name: Verify Foundry Pass 2 public evaluator bundle (Ari)
         run: python3 experiments/foundry-pass-2/evaluator/ari/verify-ari-evaluator-bundle-v0.1.py --repo-root .
 
-      - name: Foundry Pass 2 tests (boundary, reviewer harness, release gate)
-        working-directory: experiments/foundry-pass-2
-        run: python3 -m unittest discover -s tests -t . -v
-
       - name: Foundry Pass 2 deterministic bundle regeneration
         working-directory: experiments/foundry-pass-2
         run: |
@@ -52,3 +48,7 @@ jobs:
           after=$(sha256sum out/review-input-bundle.json | cut -d' ' -f1)
           echo "committed=$before regenerated=$after"
           test "$before" = "$after"
+
+      - name: Foundry Pass 2 tests (boundary, reviewer harness, release gate)
+        working-directory: experiments/foundry-pass-2
+        run: python3 -m unittest discover -s tests -t . -v
