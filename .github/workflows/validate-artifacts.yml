@@ -38,7 +38,7 @@ jobs:
           python-version: "3.12"
 
       - name: Verify Foundry Pass 2 public evaluator bundle (Ari)
-        run: python3 experiments/foundry-pass-2/evaluator/ari/verify-ari-evaluator-bundle-v0.1.py
+        run: python3 experiments/foundry-pass-2/evaluator/ari/verify-ari-evaluator-bundle-v0.1.py --repo-root .
 
       - name: Foundry Pass 2 tests (boundary, reviewer harness, release gate)
         working-directory: experiments/foundry-pass-2
