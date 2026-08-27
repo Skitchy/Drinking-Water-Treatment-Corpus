@@ -131,6 +131,7 @@ def bind_identity():
     }
     identity_sha = canon.write_canonical(
         os.path.join(A_OUT, "reviewer-identity.json"), identity)
+    write_run_record_manifest()
     print(json.dumps(records, indent=1))
     print("REVIEWER_IDENTITY_SHA256:", identity_sha)
 
@@ -177,6 +178,49 @@ def review(count):
             counts[d["verdict"]] = counts.get(d["verdict"], 0) + 1
         print(member["shard_id"], record["verdict"], json.dumps(counts),
               record.get("problems", []), flush=True)
+    write_run_record_manifest()
+
+
+def write_run_record_manifest():
+    """Content-addressed manifest of every run artifact for Reviewer A:
+    probe transcript, identity, each shard run record, each fixed output.
+    Rewritten after every run so it always covers the current state."""
+    members = []
+    def add(kind, rel):
+        path = os.path.join(A_OUT, rel)
+        if os.path.isfile(path):
+            members.append({"kind": kind, "path": rel, "sha256": _sha(path),
+                            "byte_length": os.path.getsize(path)})
+    add("leak-probe-transcript", "leak-probe-transcript.json")
+    add("identity", "reviewer-identity.json")
+    for sub, kind in (("run-records", "run-record"), ("outputs", "fixed-output")):
+        d = os.path.join(A_OUT, sub)
+        if os.path.isdir(d):
+            for name in sorted(os.listdir(d)):
+                add(kind, os.path.join(sub, name))
+    manifest = {"artifact_version": "foundry-pass-2-run-record-manifest/experimental-v0.1",
+                "reviewer_role": "reviewer_a", "members": members}
+    return canon.write_canonical(os.path.join(A_OUT, "run-record-manifest.json"),
+                                 manifest)
+
+
+def expected_identity_fields():
+    """Identity fields the gate checks mechanically for Reviewer A, from
+    the bound artifacts themselves."""
+    harness = _sha(os.path.join(PASS2, "engine", "reviewer.py"))
+    fields = {
+        "system_prompt_sha256": _sha(os.path.join(ARI, "reviewer-system-prompt-v0.1.md")),
+        "task_prompt_template_sha256": _sha(os.path.join(ARI, "reviewer-task-template-v0.1.md")),
+        "output_schema_sha256": _sha(os.path.join(ARI, "reviewer-output-v0.1.schema.json")),
+        "harness_sha256": harness,
+        "parser_sha256": harness,
+        "tool_allowlist_sha256": canon.content_digest([]),
+        "settings_sources_sha256": canon.content_digest(""),
+    }
+    transcript = os.path.join(A_OUT, "leak-probe-transcript.json")
+    if os.path.isfile(transcript):
+        fields["leak_probe_transcript_sha256"] = _sha(transcript)
+    return fields
 
 
 def status():

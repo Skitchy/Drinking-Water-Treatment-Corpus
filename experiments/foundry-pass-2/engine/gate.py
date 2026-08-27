@@ -45,6 +45,7 @@ IDENTITY_REQUIRED_FIELDS = (
 )
 REQUIRED_GATES = (
     "partition_reconciliation", "reviewer_a_identity", "reviewer_b_identity",
+    "reviewer_a_run_record", "reviewer_b_run_record",
     "reviewer_output_validity", "control_grading", "coverage_units_min",
     "acceptance_rate_min", "class_1_replay",
 )
@@ -58,7 +59,17 @@ def status(state, **detail):
     return {"status": state, **detail}
 
 
-def check_identity(identity, role):
+SHA_RE = __import__("re").compile(r"^[a-f0-9]{64}$")
+REQUIRED_PROBES = ("allowed-bundle-canary", "forbidden-context-canary",
+                   "forbidden-access", "history-root", "control-label-scan")
+
+
+def check_identity(identity, role, expected):
+    """Mechanically validate an identity record (Ari review #4): every
+    digest field must be a sha256; every field named in `expected` must
+    equal the bound artifact's actual digest (system prompt, task template,
+    schema, harness/parser, probe transcript, tool allowlist, ...). Fields
+    not in `expected` are attestations and are recorded, not trusted."""
     if identity is None:
         return status(MISSING, role=role)
     missing = [f for f in IDENTITY_REQUIRED_FIELDS if not identity.get(f)]
@@ -67,6 +78,17 @@ def check_identity(identity, role):
     problems = []
     if missing:
         problems.append(f"missing fields: {missing}")
+    for field in IDENTITY_REQUIRED_FIELDS:
+        if field.endswith("_sha256") and identity.get(field) and \
+                not SHA_RE.match(str(identity[field])):
+            problems.append(f"{field} is not a sha256")
+    for field, digest in expected.items():
+        if identity.get(field) != digest:
+            problems.append(f"{field} does not match bound artifact")
+    probe_ids = {p.get("id") for p in probes}
+    absent = [p for p in REQUIRED_PROBES if p not in probe_ids]
+    if absent:
+        problems.append(f"required probes absent: {absent}")
     if identity.get("reviewer_role") != role:
         problems.append("role mismatch")
     if not identity.get("bound_before_first_real_review"):
@@ -76,7 +98,9 @@ def check_identity(identity, role):
     if failed_probes:
         problems.append(f"failed probes: {failed_probes}")
     return status(PASS if not problems else FAIL, role=role,
-                  problems=problems)
+                  problems=problems, mechanically_checked=sorted(expected),
+                  attested_only=sorted(f for f in IDENTITY_REQUIRED_FIELDS
+                                       if f not in expected))
 
 
 def load_outputs(outputs_dir, expected_bindings, shard_manifest, universe,
@@ -142,6 +166,28 @@ def load_outputs(outputs_dir, expected_bindings, shard_manifest, universe,
     return dispositions, files, sorted(failed_units), problems
 
 
+def check_run_record_manifest(manifest, base_dir):
+    """A reviewer's run-record manifest lists, with digests, the probe
+    transcript, the identity record, every shard run record, every fixed
+    output, and any failed-session evidence. Every member must exist at
+    base_dir with the stated digest."""
+    if manifest is None:
+        return status(MISSING)
+    problems = []
+    kinds = {m.get("kind") for m in manifest.get("members", [])}
+    for required in ("leak-probe-transcript", "identity", "run-record"):
+        if required not in kinds:
+            problems.append(f"no member of kind {required}")
+    for m in manifest.get("members", []):
+        path = os.path.join(base_dir, m.get("path", ""))
+        if not os.path.isfile(path):
+            problems.append(f"missing member {m.get('path')}")
+        elif canon.file_sha256(path) != m.get("sha256"):
+            problems.append(f"digest mismatch {m.get('path')}")
+    return status(PASS if not problems else FAIL, problems=problems,
+                  member_count=len(manifest.get("members", [])))
+
+
 def _bound_accept(d, entry):
     return (d is not None and d["verdict"] == "accept" and
             d["record_sha256"] == entry["record_sha256"] and
@@ -177,6 +223,8 @@ def classify(entry, a, b, failed_units):
 
 def run_gate(out_dir, review_listing, natural_listing, shard_manifest,
              bindings, outputs_a, outputs_b, identity_a, identity_b,
+             expected_identity_a, expected_identity_b,
+             run_manifest_a, run_manifest_b, run_base_a, run_base_b,
              control_grading, extra_failed_a, extra_failed_b, unit_ids_all,
              thresholds, validator):
     """Merge + partition + report. Writes out/gate/*. Returns the report.
@@ -184,6 +232,10 @@ def run_gate(out_dir, review_listing, natural_listing, shard_manifest,
     bindings: {"contract_sha256", "review_input_bundle_sha256",
                "shard_manifest_sha256", "reviewer_a_identity_sha256",
                "reviewer_b_identity_sha256"}
+    expected_identity_*: {identity field: bound digest} checked mechanically.
+    run_manifest_*: each reviewer's run-record manifest (probe transcript,
+                    identity, shard run records, outputs), verified member
+                    by member against run_base_*.
     control_grading: the evaluator's grading result dict, or None.
     """
     gate_dir = os.path.join(out_dir, "gate")
@@ -273,8 +325,12 @@ def run_gate(out_dir, review_listing, natural_listing, shard_manifest,
                          metrics=control_grading.get("metrics"))
     gates = {
         "partition_reconciliation": status(PASS, reconciliation=partition["reconciliation"]),
-        "reviewer_a_identity": check_identity(identity_a, "reviewer_a"),
-        "reviewer_b_identity": check_identity(identity_b, "reviewer_b"),
+        "reviewer_a_identity": check_identity(identity_a, "reviewer_a",
+                                              expected_identity_a),
+        "reviewer_b_identity": check_identity(identity_b, "reviewer_b",
+                                              expected_identity_b),
+        "reviewer_a_run_record": check_run_record_manifest(run_manifest_a, run_base_a),
+        "reviewer_b_run_record": check_run_record_manifest(run_manifest_b, run_base_b),
         "reviewer_output_validity": status(
             PASS if not (problems_a or problems_b) else FAIL,
             reviewer_a=problems_a, reviewer_b=problems_b),

@@ -21,8 +21,30 @@ THRESHOLDS = {"coverage_units_min": 30, "acceptance_rate_min": 0.5}
 GRADING_PASS = {"hard_gate_result": "PASS", "metrics": {}}
 
 
+EXPECTED = {"system_prompt_sha256": "1" * 64, "output_schema_sha256": "2" * 64}
+
+
+def run_manifest(tmp, role):
+    """A minimal valid run-record manifest with real files behind it."""
+    base = os.path.join(tmp, "run-" + role)
+    os.makedirs(base, exist_ok=True)
+    members = []
+    for kind, name in (("leak-probe-transcript", "probe.json"),
+                       ("identity", "identity.json"),
+                       ("run-record", "rr-1.json")):
+        path = os.path.join(base, name)
+        canon.write_canonical(path, {"kind": kind})
+        members.append({"kind": kind, "path": name,
+                        "sha256": canon.file_sha256(path)})
+    return {"members": members}, base
+
+
 def identity(role):
-    ident = {f: "x" for f in gate.IDENTITY_REQUIRED_FIELDS}
+    ident = {f: "e" * 64 for f in gate.IDENTITY_REQUIRED_FIELDS}
+    ident.update({f: "x" for f in ("reviewer_role", "operator_lineage",
+                                   "model_provider", "model_id",
+                                   "model_version_or_build")})
+    ident.update(EXPECTED)
     ident.update({"reviewer_role": role, "bound_before_first_real_review": True,
                   "leak_probes": [{"id": p, "pass": True} for p in (
                       "allowed-bundle-canary", "forbidden-context-canary",
@@ -94,9 +116,12 @@ class GateOverRealUniverse(unittest.TestCase):
                  grading=GRADING_PASS, **kw):
         a = self.write_outputs("a", choose_a, "a" * 64)
         b = self.write_outputs("b", choose_b, "b" * 64, **kw)
+        ma, base_a = run_manifest(self.tmp, "a")
+        mb, base_b = run_manifest(self.tmp, "b")
         return gate.run_gate(self.tmp, self.review, self.natural, self.manifest,
                              self.bindings, a, b, identity("reviewer_a"),
-                             identity_b, grading, [], [], self.units,
+                             identity_b, EXPECTED, EXPECTED, ma, mb, base_a,
+                             base_b, grading, [], [], self.units,
                              THRESHOLDS, schema_validator)
 
     def statuses(self, report):
@@ -137,6 +162,33 @@ class GateOverRealUniverse(unittest.TestCase):
         report = self.run_gate(lambda r: "accept", lambda r: "accept", identity_b=bad)
         self.assertEqual(self.statuses(report)["reviewer_b_identity"], "FAIL")
 
+    def test_bogus_digests_fail_identity_gate(self):
+        """Ari's exercise: every digest field set to the literal 'bogus'."""
+        bad = identity("reviewer_b")
+        for f in gate.IDENTITY_REQUIRED_FIELDS:
+            if f.endswith("_sha256"):
+                bad[f] = "bogus"
+        report = self.run_gate(lambda r: "accept", lambda r: "accept", identity_b=bad)
+        g = report["gates"]["reviewer_b_identity"]
+        self.assertEqual(g["status"], "FAIL")
+        self.assertTrue(any("not a sha256" in p for p in g["problems"]))
+
+    def test_self_asserted_digest_that_mismatches_bound_artifact_fails(self):
+        bad = identity("reviewer_b")
+        bad["system_prompt_sha256"] = "f" * 64  # well-formed, wrong
+        report = self.run_gate(lambda r: "accept", lambda r: "accept", identity_b=bad)
+        g = report["gates"]["reviewer_b_identity"]
+        self.assertEqual(g["status"], "FAIL")
+        self.assertIn("system_prompt_sha256 does not match bound artifact", g["problems"])
+
+    def test_run_record_manifest_missing_or_tampered_fails(self):
+        report = self.run_gate(lambda r: "accept", lambda r: "accept")
+        self.assertEqual(report["gates"]["reviewer_a_run_record"]["status"], "PASS")
+        ma, base_a = run_manifest(self.tmp, "t")
+        ma["members"][0]["sha256"] = "0" * 64
+        self.assertEqual(gate.check_run_record_manifest(ma, base_a)["status"], "FAIL")
+        self.assertEqual(gate.check_run_record_manifest(None, base_a)["status"], "MISSING")
+
     def test_replay_fail_blocks_issuance_in_manifest(self):
         report = self.run_gate(lambda r: "accept", lambda r: "accept")
         _, issued = gate.release_manifest(
@@ -163,9 +215,12 @@ class GateOverRealUniverse(unittest.TestCase):
     def test_wrong_identity_binding_rejects_file(self):
         a = self.write_outputs("a", lambda r: "accept", "a" * 64)
         b = self.write_outputs("b", lambda r: "accept", "0" * 64)  # wrong identity
+        ma, base_a = run_manifest(self.tmp, "a")
+        mb, base_b = run_manifest(self.tmp, "b")
         report = gate.run_gate(self.tmp, self.review, self.natural, self.manifest,
                                self.bindings, a, b, identity("reviewer_a"),
-                               identity("reviewer_b"), GRADING_PASS, [], [],
+                               identity("reviewer_b"), EXPECTED, EXPECTED, ma, mb,
+                               base_a, base_b, GRADING_PASS, [], [],
                                self.units, THRESHOLDS, schema_validator)
         self.assertEqual(self.statuses(report)["reviewer_output_validity"], "FAIL")
         self.assertEqual(report["partition_counts"]["accepted"], 0)

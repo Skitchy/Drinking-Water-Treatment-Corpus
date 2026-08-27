@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - "experiment/**"
 
 permissions:
   contents: read
@@ -46,6 +47,8 @@ jobs:
       - name: Foundry Pass 2 deterministic bundle regeneration
         working-directory: experiments/foundry-pass-2
         run: |
+          before=$(sha256sum out/review-input-bundle.json | cut -d' ' -f1)
           python3 tools/emit_bundle.py
-          git -C ../.. status --porcelain -- experiments/foundry-pass-2/out | tee /tmp/drift.txt
-          test ! -s /tmp/drift.txt
+          after=$(sha256sum out/review-input-bundle.json | cut -d' ' -f1)
+          echo "committed=$before regenerated=$after"
+          test "$before" = "$after"

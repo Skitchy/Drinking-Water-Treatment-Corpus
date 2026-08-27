@@ -4,3 +4,6 @@ __pycache__/
 ~$*
 docs/~$*
 experiments/foundry-pass-2/out/sealed/
+experiments/foundry-pass-2/out/shards/
+experiments/foundry-pass-2/out/review-universe.json
+experiments/foundry-pass-2/out/shard-manifest.json

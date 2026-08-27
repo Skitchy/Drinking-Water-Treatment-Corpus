@@ -77,6 +77,22 @@ cd experiments/foundry-pass-2 && python3 -m unittest tests.test_boundary -v
 | Release gate | `engine/gate.py`, `tools/run_gate.py` | built; merge, partition, report, candidate, manifest; 5 tests incl. class-1 replay |
 | Control grading | Ari's `grade-mixed-controls-v0.1.py` after oracle reveal | not run |
 
+**Pre-run privacy (Ari review 2026-08-27, brief v0.4 draft):** `out/shards/`,
+`out/review-universe.json`, `out/shard-manifest.json`, and `out/sealed/` are
+git-ignored until both reviewer outputs are fixed; the natural Pass 1
+outputs are public, so a public mixed universe would reveal the controls by
+subtraction. Only `out/review-input-bundle.json` (digests and commitments)
+is committed pre-run. Replacement controls come from Ari outside git:
+`python3 tools/emit_bundle.py --controls <private path>`.
+
+**Gate hardening after the review:** typed PASS/FAIL/PENDING/MISSING gates,
+issuance only on all-PASS including control grading and class-1 replay;
+reviewer outputs validated in-gate; identity records checked mechanically
+against the bound artifacts they name (a well-formed but wrong digest fails);
+each reviewer's run-record manifest (probe transcript, identity, shard run
+records, outputs) verified member by member and bound into the release
+manifest. 28 tests.
+
 Reviewer B (Ari's lineage) consumes the same `out/shards/` bytes and returns
 schema-valid outputs to `out/reviewer-b/outputs/` plus an identity record.
 

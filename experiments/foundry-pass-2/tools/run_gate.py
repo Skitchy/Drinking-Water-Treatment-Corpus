@@ -21,7 +21,7 @@ sys.path.insert(0, HERE)
 
 from engine import canon, gate  # noqa: E402
 from adapters.ecfr_pass1.adapter import EcfrPass1Adapter  # noqa: E402
-from run_reviewer_a import schema_validator  # noqa: E402
+from run_reviewer_a import schema_validator, expected_identity_fields  # noqa: E402
 
 OUT = os.path.join(PASS2, "out")
 THRESHOLDS = {"coverage_units_min": 30, "acceptance_rate_min": 0.5}  # brief 9
@@ -73,10 +73,20 @@ def run_once():
             canon.file_sha256(id_b_path) if os.path.isfile(id_b_path) else "MISSING",
     }
     grading_path = os.path.join(OUT, "gate", "control-grading.json")
+    # Reviewer B's mechanically checkable fields: the bound prompt, template,
+    # and schema are shared; harness/parser/probe digests are B's own
+    # artifacts, checked through B's run-record manifest.
+    expected_b = {k: v for k, v in expected_identity_fields().items()
+                  if k in ("system_prompt_sha256", "task_prompt_template_sha256",
+                           "output_schema_sha256")}
     report = gate.run_gate(
         OUT, review, natural, manifest, bindings,
         os.path.join(a_dir, "outputs"), os.path.join(b_dir, "outputs"),
         _optional_json(id_a_path), _optional_json(id_b_path),
+        expected_identity_fields(), expected_b,
+        _optional_json(os.path.join(a_dir, "run-record-manifest.json")),
+        _optional_json(os.path.join(b_dir, "run-record-manifest.json")),
+        a_dir, b_dir,
         _optional_json(grading_path),
         extra_failed_units(a_dir), extra_failed_units(b_dir),
         EcfrPass1Adapter().unit_ids(), THRESHOLDS, schema_validator)
@@ -97,6 +107,8 @@ def main():
         "natural_universe_sealed": _bound(os.path.join(OUT, "sealed", "natural-universe.json")),
         "reviewer_a_identity": _bound(id_a_path),
         "reviewer_b_identity": _bound(id_b_path),
+        "reviewer_a_run_record_manifest": _bound(os.path.join(OUT, "reviewer-a", "run-record-manifest.json")),
+        "reviewer_b_run_record_manifest": _bound(os.path.join(OUT, "reviewer-b", "run-record-manifest.json")),
         "reviewer_a_outputs": report["appendices"]["reviewer_a_outputs"],
         "reviewer_b_outputs": report["appendices"]["reviewer_b_outputs"],
         "partition": report["appendices"]["partition"],

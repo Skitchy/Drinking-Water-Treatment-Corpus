@@ -1,7 +1,14 @@
 """Emit the Pass 2 review-input bundle from the fixed Pass 1 outputs and the
 ratified evaluator bundle. Run from experiments/foundry-pass-2:
 
-    python3 tools/emit_bundle.py
+    python3 tools/emit_bundle.py [--controls PATH]
+
+--controls points at the control-record bundle to mix in. Default: Ari's
+public v0.1 bundle (identities public; superseded per Ari's 2026-08-27
+ruling). The replacement controls live OUTSIDE public git; the mixed review
+universe and shards they produce (out/review-universe.json, out/shards/,
+out/sealed/) are git-ignored until both reviewer outputs are fixed. Only
+out/review-input-bundle.json (digests and commitments) is committed pre-run.
 
 This is the only place that knows where the adapter and the evaluator
 artifacts live; the engine receives objects and digests.
@@ -43,6 +50,9 @@ def _bound(path):
 
 
 def main():
+    controls_path = os.path.join(ARI, "control-records-v0.1.json")
+    if "--controls" in sys.argv:
+        controls_path = os.path.abspath(sys.argv[sys.argv.index("--controls") + 1])
     # Bind the ratified artifacts by recomputing, not trusting, their digests.
     brief = _bound(os.path.join(REPO_ROOT, RATIFIED["brief_path"]))
     if brief["sha256"] != RATIFIED["brief_sha256"]:
@@ -58,11 +68,14 @@ def main():
         "reviewer_system_prompt": _bound(os.path.join(ARI, "reviewer-system-prompt-v0.1.md")),
         "reviewer_task_template": _bound(os.path.join(ARI, "reviewer-task-template-v0.1.md")),
         "reviewer_output_schema": _bound(os.path.join(ARI, "reviewer-output-v0.1.schema.json")),
-        "control_records_bundle": _bound(os.path.join(ARI, "control-records-v0.1.json")),
+        "control_records_bundle": {"sha256": canon.file_sha256(controls_path),
+                                   "byte_length": os.path.getsize(controls_path),
+                                   "location": "private until outputs are fixed"
+                                   if not controls_path.startswith(REPO_ROOT)
+                                   else os.path.relpath(controls_path, REPO_ROOT)},
         "mixed_control_commitment": _bound(os.path.join(ARI, "mixed-control-commitment-v0.1.json")),
     }
-    controls = canon.load_json(
-        os.path.join(ARI, "control-records-v0.1.json"))["records"]
+    controls = canon.load_json(controls_path)["records"]
     bundle = universe.emit_bundle(OUT, EcfrPass1Adapter(), controls, bindings)
     bundle_sha = canon.file_sha256(os.path.join(OUT, "review-input-bundle.json"))
     print("review universe:", bundle["review_universe"]["record_count"])
