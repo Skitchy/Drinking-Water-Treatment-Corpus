@@ -1,0 +1,15 @@
+{
+  "clean_clone_seconds": 0.85,
+  "count_objects": {
+    "count": "0",
+    "garbage": "0",
+    "in-pack": "299",
+    "packs": "1",
+    "prune-packable": "0",
+    "size": "0",
+    "size-garbage": "0",
+    "size-pack": "886"
+  },
+  "git_dir_kbytes": 1012,
+  "largest_object": "692949 sources/captures/epa/comprehensive-dbp-qrg-816-F-10-080.pdf"
+}

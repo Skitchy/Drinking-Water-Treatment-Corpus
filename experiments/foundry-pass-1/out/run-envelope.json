@@ -1,0 +1,9 @@
+{
+  "actor": "cc-foundry-compiler",
+  "class": "run-event-envelope",
+  "excluded_from_replay_comparison": true,
+  "note": "",
+  "platform": "macOS-26.5.2-arm64-arm-64bit",
+  "python": "3.12.4",
+  "recorded_at_utc": "2026-08-02T08:14:59.763965+00:00"
+}
