@@ -1,6 +1,6 @@
-# Foundry Pass 2: Experiment Brief v0.2 (the release gate)
+# Foundry Pass 2: Experiment Brief v0.3 (the release gate)
 
-Status: DRAFT for convergence on discussion #8, then content-bound maintainer ratification. Supersedes the Pass 2 proposal draft (proposals/foundry-pass-2-release-gate-draft.md, posted as discussioncomment-18171737). Incorporates Ari's six precision controls (discussioncomment-18171955) and the maintainer's two rulings of 2026-08-26: (a) the maintainer is not the per-packet bottleneck; (b) the release universe for Pass 2 is claims and evidence only.
+Status: DRAFT for convergence on discussion #8, then content-bound maintainer ratification. Supersedes the Pass 2 proposal draft (proposals/foundry-pass-2-release-gate-draft.md, posted as discussioncomment-18171737). Incorporates Ari's six precision controls (discussioncomment-18171955), Ari's three v0.2 amendments and scope guard (discussioncomment-18172200), and the maintainer's two rulings, both confirmed maintainer-direct on the board: (a) the maintainer is not the per-packet bottleneck (18171771); (b) the release universe for Pass 2 is claims and evidence only (18172107).
 
 Pass 1 brief v0.1.2 remains in force for every section not amended here. Section numbers below refer to the Pass 1 brief where a section is amended; new sections are marked NEW.
 
@@ -53,13 +53,13 @@ The closed byte manifest of Pass 1 section 4 is unchanged. Pass 2 adds the clean
 
 ## 4a. Frozen review universe and the deterministic partition (NEW, Ari control 4)
 
-Before either reviewer runs, the builder emits `out/review-universe.json`: every release-eligible claim-and-evidence record by artifact ID, plus the sealed controls (section 5a) interleaved indistinguishably, with a digest over the whole. The universe is frozen at that digest; nothing enters or leaves afterward.
+Two universes, defined separately (Ari amendment 2). The **natural release universe** is every release-eligible claim-and-evidence record from the fixed Pass 1 outputs, by artifact ID. The **review universe** is the disjoint union of the natural release universe and the sealed controls of section 5a, interleaved indistinguishably. Before either reviewer runs, the builder emits `out/review-universe.json` listing the review universe with a digest over the whole; the natural release universe is listed separately, under seal until grading, with its own digest. Both are frozen at those digests; nothing enters or leaves afterward.
 
 After merge, the release report must reconcile exactly:
 
 `all eligible inputs = unanimously accepted + excluded by reason + review-execution failures`
 
-The three sets are disjoint, list artifact IDs completely, and their counts sum to the universe count. Excluded-by-reason carries one reason code per record: correction proposed, payload non-equivalent, anchor mismatch, rejected by A, rejected by B, rejected by both, abstention, missing disposition. Any record that appears in the universe and in none of the three sets, or in more than one, is a partition mismatch and a hard stop. Coverage is reported per source section and per planned concept (the 38 sections and the concept list from the Pass 1 canonical index), not only as an agreement percentage.
+Every review input is partitioned exactly once: the three sets are disjoint, list artifact IDs completely, and their counts sum to the review-universe count. After grading, every control is removed before the release projection is constructed; controls count toward NONE of the section gate, the acceptance gate, concept coverage, or released-claim totals. The denominators of every gate in section 9 are the natural release universe only. Excluded-by-reason carries one reason code per record: correction proposed, payload non-equivalent, anchor mismatch, rejected by A, rejected by B, rejected by both, abstention, missing disposition. Any record that appears in the universe and in none of the three sets, or in more than one, is a partition mismatch and a hard stop. Coverage is reported per source section and per planned concept (the 38 sections and the concept list from the Pass 1 canonical index), not only as an agreement percentage.
 
 ## 5. Withheld ground truth (amended)
 
@@ -81,6 +81,8 @@ Everything else goes to the excluded set with its reason code: any correction fr
 
 The maintainer signs once per release. The signature attests exactly this: the bound process ran under the ratified brief; the hard gates of sections 4a and 5a passed; the coverage and exclusions were read and understood; the experimental release candidate is accepted as a whole. It does NOT attest per-claim human review. Every accepted claim's provenance is labeled `machine-unanimous` with both reviewer digests; nothing in the corpus may relabel it human-reviewed by implication.
 
+The signature names exactly one **release-manifest digest** (Ari amendment 3). The release manifest transitively binds, by content digest: the ratified brief; the review-input bundle and both universe listings; both reviewers' identity/configuration records and their complete outputs; the partition, the report, and its appendices; the control-grading record; and the exact experimental release candidate. A signature over a manifest digest cannot float across regenerated artifacts; any regeneration produces a new manifest that needs a new signature.
+
 Report shape: main body = decision summary, gate results, coverage per section and concept, the partition counts, and risk-ranked exceptions (excluded records grouped by reason, worst first). Appendices, content-bound by digest and available for drill-down: the complete disagreement and exclusion records, both reviewers' full outputs, the control grading, the run record.
 
 Bound BEFORE graded reviewer outcomes are visible, AFTER the report template exists: a release-review duration threshold set by the maintainer, and the consequence of missing it (the Pass 1 section 10 discipline, moved from packet to release). Otherwise Pass 2 moves the bottleneck into one large report and declares victory.
@@ -91,7 +93,7 @@ Class-1 replay identity applies to the review-input bundle, the merge, and the r
 
 ## 7a. Adapter/engine boundary (NEW, maintainer goal ruling 2026-08-26)
 
-Implementation draws one boundary in the tree before engine work: **source adapters in front, one subject-agnostic engine behind.** An adapter hands the engine a fixed contract: source bytes with digests, a unit tree (sections or their equivalent), and the anchor rules for that source type. The engine promises back the same objects for any source: canonical claim-and-evidence records, verification records, the review universe, the partition, the release report. eCFR is adapter #1. The engine must not import anything eCFR-specific. A second adapter (PDF manual, then Word) is a later pass with its own brief; its known design constraint is recorded now so the engine contract leaves room for it: scanned PDFs have no text bytes, so quote binding there will run through an OCR-layer digest derived from a page-image digest, one extra custody link, stated as such.
+Implementation draws one boundary in the tree before engine work: **source adapters in front, one subject-agnostic engine behind.** An adapter hands the engine a fixed contract: source bytes with digests, a unit tree (sections or their equivalent), and the anchor rules for that source type. The engine promises back the same objects for any source: canonical claim-and-evidence records, verification records, the review universe, the partition, the release report. eCFR is adapter #1. The engine must not import anything eCFR-specific. Scope guard (Ari): Pass 2 draws and exercises only the minimum adapter/engine interface needed to consume the fixed Pass 1 outputs; it does not build the PDF or Word adapters, does not regenerate the fixed Pass 1 extraction, and is not a general refactor. A second adapter (PDF manual, then Word) is a later pass with its own brief; its known design constraint is recorded now so the engine contract leaves room for it: scanned PDFs have no text bytes, so quote binding there will run through an OCR-layer digest derived from a page-image digest, one extra custody link, stated as such.
 
 ## 8. Evidence binding (unchanged)
 
@@ -99,9 +101,9 @@ Dual anchors and byte-exact quote verification stand. Pass 2 adds: the normalize
 
 ## 9. Outputs, metrics, and gates (amended)
 
-Hard gates (any failure = no release candidate, measured failed attempt only): partition reconciliation (4a); no planted wrong claim unanimously accepted (5a); positive-control floor met (5a); leak probes clean for both reviewers (3a); class-1 replay of merge and report (7).
+Hard gates (any failure = no release candidate, measured failed attempt only): partition reconciliation (4a); no planted wrong claim unanimously accepted (5a); positive-control floor met (5a); leak probes clean for both reviewers (3a); BOTH reviewers satisfy the independence contract of section 3a (Ari amendment 1: if either reviewer fails it, including Reviewer A downgrading to author-side re-review, the run is a measured failed attempt only; the downgraded output may be reported as descriptive evidence but no experimental release candidate may issue); class-1 replay of merge and report (7).
 
-Coverage gate for an experimental release candidate (precommitted here, maintainer may tighten at ratification): unanimous acceptance covers at least 30 of 38 sections with at least one accepted claim each, AND total unanimous acceptance is at least 50 percent of the non-control universe. Below either number, the run is a measured failed attempt and posts as such; the report still ships for the record.
+Coverage gate for an experimental release candidate (precommitted here, accepted by Ari as first-pass EXPERIMENTAL gates; maintainer may tighten at ratification; they do not establish corpus completeness): unanimous acceptance covers at least 30 of 38 sections with at least one accepted natural claim each, AND total unanimous acceptance is at least 50 percent of the natural release universe (controls excluded from both numerator and denominator per 4a). Below either number, the run is a measured failed attempt and posts as such; the report still ships for the record.
 
 Honest statistics (section 10 moved to release scope): inter-reviewer agreement rate per section; excluded-by-reason counts; control grading by stratum, reported as "zero planted errors accepted in N controls" with N stated, never as an error rate; per-reviewer abstention and execution-failure counts; release-review duration reported individually per release; the coverage figures of 4a.
 
@@ -116,5 +118,7 @@ Pass 1 section 12 stands: no promotion of generated content; no ratified-schema 
 Converge here; Ari delivers reviewer contract and control oracle by digest; maintainer ratifies the exact brief and bound identities (maintainer-direct channel, artifact-ID-bound); CC implements per section 2; measured run; report posted; maintainer dispositions the release report once and reports the duration; results feed the RFC 005 draft.
 
 ## 12. Revision history
+
+- v0.3 (2026-08-27, CC): Ari's three v0.2 amendments applied (18172200): independence loss is a hard gate with no release candidate (section 9); review universe and natural release universe defined separately, controls excluded from every gate denominator (sections 4a and 9); maintainer signature bound to one release-manifest digest (section 6a); section 7a scope guard. Maintainer's claims-and-evidence-only ruling confirmed on the board (18172107).
 
 - v0.2 (2026-08-26, CC): first Pass 2 brief. From the release-gate proposal (18171737) plus Ari's six controls (18171955) and the maintainer's two rulings (18171771 direction; claims-and-evidence-only, in session, to be confirmed on the board).
