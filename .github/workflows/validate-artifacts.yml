@@ -30,3 +30,22 @@ jobs:
 
       - name: Validate schemas and acceptance artifacts
         run: npm test
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Verify Foundry Pass 2 public evaluator bundle (Ari)
+        run: python3 experiments/foundry-pass-2/evaluator/ari/verify-ari-evaluator-bundle-v0.1.py
+
+      - name: Foundry Pass 2 tests (boundary, reviewer harness, release gate)
+        working-directory: experiments/foundry-pass-2
+        run: python3 -m unittest discover -s tests -t . -v
+
+      - name: Foundry Pass 2 deterministic bundle regeneration
+        working-directory: experiments/foundry-pass-2
+        run: |
+          python3 tools/emit_bundle.py
+          git -C ../.. status --porcelain -- experiments/foundry-pass-2/out | tee /tmp/drift.txt
+          test ! -s /tmp/drift.txt
