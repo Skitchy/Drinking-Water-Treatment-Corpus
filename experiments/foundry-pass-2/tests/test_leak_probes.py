@@ -109,5 +109,17 @@ class LeakProbes(unittest.TestCase):
             self.run_probes(leaky)
 
 
+class SessionCommand(unittest.TestCase):
+    def test_isolation_trio_and_no_persistence(self):
+        cmd = reviewer.IsolatedSession("m", "sp", "/tmp").command()
+        for flag in ("--disallowedTools", "--strict-mcp-config",
+                     "--setting-sources", "--no-session-persistence"):
+            self.assertIn(flag, cmd)
+        self.assertEqual(cmd[cmd.index("--setting-sources") + 1], "")
+        limits = reviewer.IsolatedSession("m", "sp", "/tmp") \
+            .environment_boundary()["honest_limits"]
+        self.assertTrue(any("haiku" in l for l in limits))
+
+
 if __name__ == "__main__":
     unittest.main()

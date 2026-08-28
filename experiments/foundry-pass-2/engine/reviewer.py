@@ -61,6 +61,7 @@ class IsolatedSession:
             "--disallowedTools", "*",
             "--strict-mcp-config", "--mcp-config", '{"mcpServers":{}}',
             "--setting-sources", "",
+            "--no-session-persistence",
             "--append-system-prompt", self.system_prompt,
         ]
 
@@ -72,6 +73,14 @@ class IsolatedSession:
             "mcp": "empty, strict",
             "setting_sources": "",
             "honest_limits": [
+                "the CLI makes one utility call per session to "
+                "claude-haiku-4-5 to generate a display title from the "
+                "prompt (observed: input scales with prompt length, output "
+                "12-21 tokens; session store records it as type ai-title). "
+                "It runs beside the reviewer call, produces metadata only, "
+                "and cannot alter the reviewer response; with "
+                "--no-session-persistence nothing is written to disk "
+                "(verified 2026-08-28). It is not a reviewer turn.",
                 "the CLI process runs unsandboxed under the invoking user "
                 "and reads its own configuration; the reviewer MODEL cannot "
                 "direct it to read anything (no tools execute)",
