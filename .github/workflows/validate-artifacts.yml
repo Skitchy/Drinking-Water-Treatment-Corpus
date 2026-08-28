@@ -44,6 +44,12 @@ jobs:
         working-directory: experiments/foundry-pass-2
         run: python3 tools/check_bundle_bindings.py
 
+      - name: Foundry Pass 2 public test fixture (burned v0.1 controls; never the run bundle)
+        working-directory: experiments/foundry-pass-2
+        run: python3 tools/emit_test_fixture.py
+
       - name: Foundry Pass 2 tests (boundary, reviewer harness, release gate)
         working-directory: experiments/foundry-pass-2
+        env:
+          FOUNDRY_PASS2_OUT: out-fixture
         run: python3 -m unittest discover -s tests -t . -v

@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.join(PASS2, "tools"))
 from engine import canon, reviewer  # noqa: E402
 import run_reviewer_a  # noqa: E402
 
-OUT = os.path.join(PASS2, "out")
+OUT = os.path.join(PASS2, os.environ.get("FOUNDRY_PASS2_OUT", "out"))  # CI: out-fixture
 
 
 class FakeSession:

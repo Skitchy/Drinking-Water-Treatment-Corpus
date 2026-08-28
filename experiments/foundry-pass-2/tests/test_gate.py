@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.join(PASS2, "tools"))
 from engine import canon, gate  # noqa: E402
 from run_reviewer_a import schema_validator, bundle_digests  # noqa: E402
 
-OUT = os.path.join(PASS2, "out")
+OUT = os.path.join(PASS2, os.environ.get("FOUNDRY_PASS2_OUT", "out"))  # CI: out-fixture
 THRESHOLDS = {"coverage_units_min": 30, "acceptance_rate_min": 0.5}
 GRADING_PASS = {"hard_gate_result": "PASS", "metrics": {}}
 
