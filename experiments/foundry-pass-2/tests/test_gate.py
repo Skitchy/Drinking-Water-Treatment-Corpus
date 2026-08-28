@@ -204,7 +204,11 @@ class GateOverRealUniverse(unittest.TestCase):
         self.assertEqual(self.statuses(report)["reviewer_output_validity"], "FAIL")
         self.assertIn("141.131", report["honest_statistics"]
                       ["review_execution_failures_by_reviewer"]["reviewer_b_units"])
-        self.assertEqual(report["partition_counts"]["review_execution_failures"], 20)
+        # every record in the corrupted shard fails execution; the count is
+        # whatever the mixed universe put there, never a hardcoded number
+        expected = next(m["record_count"] for m in self.manifest["shards"]
+                        if m["shard_id"] == "shard-141.131")
+        self.assertEqual(report["partition_counts"]["review_execution_failures"], expected)
 
     def test_missing_shard_output_is_execution_failure(self):
         report = self.run_gate(lambda r: "accept", lambda r: "accept",

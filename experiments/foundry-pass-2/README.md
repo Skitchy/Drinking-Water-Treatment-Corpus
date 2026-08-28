@@ -1,12 +1,16 @@
 # Foundry Pass 2: the release gate
 
-Implements the ratified Pass 2 brief v0.3
-(`proposals/foundry-pass-2-experiment-brief-v0.3.md`, sha256
-`6e83818e106f494bb2101472ef7fa1e65c249a3ad78b35cb02075205bfb0132b`, commit
-`809c663`) under the maintainer's content-bound ratification (discussion #8,
-comment 18176893): one quarantined, non-production experiment; evaluator
-manifest `2c6739f3...` at `e7e3945`; sealed oracle `f3364e08...`, 16,548
-bytes, withheld until both reviewer outputs are fixed.
+Implements Pass 2 brief v0.4 DRAFT
+(`proposals/foundry-pass-2-experiment-brief-v0.4-DRAFT.md`, sha256
+`31468a1773d8928634e508c5508257c982131e95cbf64553478158a204b5d1c7`, commit
+`8a45e78`) with Ari's replacement evaluator packet v0.2 (discussion #8,
+comment 18187089): public manifest `3251efde...`; reviewer contract v0.2
+`e0909ce4...`; private control bundle `da91e6a8...`, 43,688 bytes; sealed
+oracle `58c1b5ec...`, 27,615 bytes, withheld until both reviewer outputs are
+fixed. Status: proposed, awaiting a fresh content-bound maintainer
+ratification. The v0.3 ratification (18176893, evaluator manifest
+`2c6739f3...` at `e7e3945`) was superseded before any reviewer ran; its
+control identities were public by design and are treated as burned.
 
 Nothing here is promoted, alters a ratified schema, or claims RFC 005
 conformance. Results partition per brief section 9.

@@ -37,17 +37,12 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Verify Foundry Pass 2 public evaluator bundle (Ari)
-        run: python3 experiments/foundry-pass-2/evaluator/ari/verify-ari-evaluator-bundle-v0.1.py --repo-root .
+      - name: Verify Foundry Pass 2 replacement commitments (Ari v0.2)
+        run: python3 experiments/foundry-pass-2/evaluator/ari/verify-ari-evaluator-bundle-v0.1.1.py --repo-root .
 
-      - name: Foundry Pass 2 deterministic bundle regeneration
+      - name: Foundry Pass 2 committed bundle binds the v0.2 packet (public check; controls are private)
         working-directory: experiments/foundry-pass-2
-        run: |
-          before=$(sha256sum out/review-input-bundle.json | cut -d' ' -f1)
-          python3 tools/emit_bundle.py
-          after=$(sha256sum out/review-input-bundle.json | cut -d' ' -f1)
-          echo "committed=$before regenerated=$after"
-          test "$before" = "$after"
+        run: python3 tools/check_bundle_bindings.py
 
       - name: Foundry Pass 2 tests (boundary, reviewer harness, release gate)
         working-directory: experiments/foundry-pass-2
