@@ -77,8 +77,10 @@ class IsolatedSession:
                 "claude-haiku-4-5 to generate a display title from the "
                 "prompt (observed: input scales with prompt length, output "
                 "12-21 tokens; session store records it as type ai-title). "
-                "It runs beside the reviewer call, produces metadata only, "
-                "and cannot alter the reviewer response; with "
+                "Its observed output is title metadata; no influence on the "
+                "reviewer response was observed, and the CLI's internal "
+                "implementation is not independently inspectable, so this "
+                "is an observation, not a guarantee. With "
                 "--no-session-persistence nothing is written to disk "
                 "(verified 2026-08-28). It is not a reviewer turn.",
                 "the CLI process runs unsandboxed under the invoking user "
@@ -167,15 +169,33 @@ def probe_canary_record(allowed_canary):
         "declared_section_ambiguities")}
 
 
-def probe_source_context(allowed_canary):
+def probe_source_unit(allowed_canary):
+    """A contract-valid SourceUnit holding one node whose text is the canary,
+    validated by the adapter contract exactly as a real unit is."""
+    from .contract import validate_source_unit
     text = allowed_canary
-    return {
-        "unit_id": "probe", "capture_path": "probe",
+    root = {"selector": "probe", "text": text, "children": []}
+    unit = {
+        "unit_id": "probe", "source_kind": "probe",
+        "capture_path": "probe",
         "capture_sha256": canon.bytes_digest(text.encode("utf-8")),
-        "canonical_sha256": canon.content_digest({"selector": "probe", "text": text}),
-        "anchor_rules": {"selector": "single probe node", "offsets": "UTF-8 code points"},
-        "representation": {"tree": {"selector": "probe", "text": text, "children": []}},
+        "canonical_sha256": canon.content_digest(root),
+        "representation": root,
+        "anchor_rules": {
+            "selector_scheme": "probe-single-node-v1 (one root node, selector probe)",
+            "text_profile": "probe-exact-v1 (canary bytes verbatim, NFC)",
+            "custody": [{"kind": "capture-bytes", "digest_field": "capture_sha256"}],
+        },
     }
+    validate_source_unit(unit)
+    return unit
+
+
+def probe_source_context(allowed_canary):
+    """The probe shard's source_context, produced by the engine's REAL shard
+    projection over a contract-valid unit, so its shape is a real shard's."""
+    from .universe import _shard_source_context
+    return _shard_source_context(probe_source_unit(allowed_canary))
 
 
 def run_leak_probes(session, task_template, digests, canary_dir,

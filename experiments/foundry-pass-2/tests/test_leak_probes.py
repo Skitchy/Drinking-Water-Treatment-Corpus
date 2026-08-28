@@ -98,6 +98,24 @@ class LeakProbes(unittest.TestCase):
         self.assertEqual(rec["artifact_id"], "f2r-" + rec["record_sha256"][:24])
         self.assertEqual(reviewer.scan_forbidden(json.dumps(rec)), [])
 
+    def test_probe_source_context_is_the_real_projection(self):
+        from engine import contract, records, universe
+        unit = reviewer.probe_source_unit("CANARY-ALLOWED-x")
+        self.assertTrue(contract.validate_source_unit(unit))
+        ctx = reviewer.probe_source_context("CANARY-ALLOWED-x")
+        # identical key set and rule fields to a real emitted shard's context
+        real_keys = set(universe._shard_source_context(unit))
+        self.assertEqual(set(ctx), real_keys)
+        self.assertEqual(set(ctx["anchor_rules"]),
+                         {"selector_scheme", "text_profile", "custody"})
+        self.assertEqual(ctx["representation"]["selector"], "probe")
+        self.assertNotIn("tree", ctx["representation"])
+        # and the probe record's anchor verifies against that unit with the
+        # engine's own record verifier, as a real record would
+        rec = reviewer.probe_canary_record("CANARY-ALLOWED-x")
+        v = records.verify_record(rec, unit)
+        self.assertEqual(v["verdict"], "verified", v["problems"])
+
     def test_forbidden_canary_echo_fails(self):
         def leaky(prompt):
             # a reviewer that saw the ambient CLAUDE.md and echoed it
