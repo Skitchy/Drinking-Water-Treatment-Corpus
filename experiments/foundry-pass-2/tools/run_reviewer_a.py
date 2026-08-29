@@ -3,6 +3,12 @@
     python3 tools/run_reviewer_a.py identity      bind identity record + probes
     python3 tools/run_reviewer_a.py review [N]    review next N unreviewed shards
     python3 tools/run_reviewer_a.py status
+    python3 tools/run_reviewer_a.py qualify       bounded public-only instrument
+                                                  qualification (18197913 /
+                                                  18197956): public fixture,
+                                                  synthetic probes, no private
+                                                  mount, out-qualification/,
+                                                  identity ineligible for binding
 
 Identity is bound (and leak probes pass) BEFORE the first real review; the
 identity digest is part of every task prompt, so a review can never run
@@ -27,6 +33,9 @@ OUT = os.path.join(PASS2, "out")
 A_OUT = os.path.join(OUT, "reviewer-a")
 MODEL = os.environ.get("FOUNDRY_REVIEWER_A_MODEL", "claude-sonnet-5")
 FORBIDDEN_TARGET = os.path.join(REPO_ROOT, "README.md")
+OUTPUT_SCHEMA = os.path.join(ARI, "reviewer-output-v0.1.schema.json")
+FIXTURE_OUT = os.path.join(PASS2, "out-fixture")
+Q_OUT = os.path.join(PASS2, "out-qualification", "reviewer-a")
 
 
 def _sha(path):
@@ -38,14 +47,36 @@ def _read(path):
         return f.read()
 
 
-def bundle_digests():
-    bundle_path = os.path.join(OUT, "review-input-bundle.json")
+def bundle_digests(out_root=None):
+    bundle_path = os.path.join(out_root or OUT, "review-input-bundle.json")
     bundle = canon.load_json(bundle_path)
     return {
         "CONTRACT_SHA256": bundle["bindings"]["reviewer_contract"]["sha256"],
         "REVIEW_INPUT_BUNDLE_SHA256": _sha(bundle_path),
         "SHARD_MANIFEST_SHA256": bundle["shard_manifest"]["sha256"],
     }
+
+
+def load_schema(out_root=None):
+    """The output schema the reviewer will SEE, verified before any prompt
+    is rendered (18197913, item 2) against the digest the isolated-reviewer
+    CONTRACT binds (`output_schema.sha256`), the contract itself being the
+    one the bundle binds; and, when the bundle also binds the schema
+    directly, against that digest too."""
+    bundle = canon.load_json(os.path.join(out_root or OUT,
+                                          "review-input-bundle.json"))
+    contract_binding = bundle["bindings"]["reviewer_contract"]
+    contract_path = os.path.join(ARI, os.path.basename(contract_binding["path"]))
+    if _sha(contract_path) != contract_binding["sha256"]:
+        raise SystemExit("reviewer contract bytes do not match the bundle "
+                         "binding; refusing to load the output schema")
+    contract = canon.load_json(contract_path)
+    bound = contract["output_schema"]["sha256"]
+    direct = bundle["bindings"].get("reviewer_output_schema", {}).get("sha256")
+    if direct is not None and direct != bound:
+        raise SystemExit("bundle and contract bind different output schema "
+                         "digests")
+    return reviewer.load_output_schema(OUTPUT_SCHEMA, bound)
 
 
 def schema_validator(output):
@@ -85,6 +116,7 @@ def bind_identity():
     system_prompt = _read(os.path.join(ARI, "reviewer-system-prompt-v0.1.md"))
     template = _read(os.path.join(ARI, "reviewer-task-template-v0.1.md"))
     digests = bundle_digests()
+    schema = load_schema()
     cwd = tempfile.mkdtemp(prefix="foundry-reviewer-a-")
     session = make_session(system_prompt, cwd)
     # Probes run with a provisional identity digest (all zeros): the probe
@@ -99,7 +131,8 @@ def bind_identity():
     transcript_path = os.path.join(A_OUT, "leak-probe-transcript.json")
     records, transcripts = reviewer.run_leak_probes(
         session, template, probe_digests, cwd, FORBIDDEN_TARGET,
-        evidence_path=transcript_path)
+        evidence_path=transcript_path, schema=schema,
+        schema_validator=schema_validator)
     persisted = canon.load_json(transcript_path)
     if persisted.get("preflight_result") != "PASS":
         raise SystemExit("refusing to bind identity: persisted preflight "
@@ -121,8 +154,8 @@ def bind_identity():
             ARI, "reviewer-system-prompt-v0.1.md")),
         "task_prompt_template_sha256": _sha(os.path.join(
             ARI, "reviewer-task-template-v0.1.md")),
-        "output_schema_sha256": _sha(os.path.join(
-            ARI, "reviewer-output-v0.1.schema.json")),
+        "output_schema_sha256": schema["sha256"],
+        "output_schema_model_visible": True,
         "harness_sha256": harness_sha,
         "parser_sha256": harness_sha,
         "tool_allowlist_sha256": canon.content_digest([]),
@@ -151,8 +184,15 @@ def review(count):
         raise SystemExit("identity not bound; run `identity` first")
     digests = dict(bundle_digests(), REVIEWER_IDENTITY_SHA256=_sha(identity_path))
     identity = canon.load_json(identity_path)
+    if identity.get("eligible_for_binding") is False or identity.get(
+            "qualification_only"):
+        raise SystemExit("identity is a qualification identity, ineligible "
+                         "for review")
     if identity["bindings"] != {k: digests[k] for k in identity["bindings"]}:
         raise SystemExit("bundle changed since identity was bound; rebind")
+    schema = load_schema()
+    if schema["sha256"] != identity["output_schema_sha256"]:
+        raise SystemExit("output schema changed since identity was bound")
     system_prompt = _read(os.path.join(ARI, "reviewer-system-prompt-v0.1.md"))
     template = _read(os.path.join(ARI, "reviewer-task-template-v0.1.md"))
     manifest = canon.load_json(os.path.join(OUT, "shard-manifest.json"))
@@ -171,7 +211,7 @@ def review(count):
         try:
             record = reviewer.review_shard(
                 session, template, digests, shard_path,
-                member["artifact_ids"], schema_validator)
+                member["artifact_ids"], schema_validator, schema)
         except reviewer.ReviewerError as err:
             record = {"shard_id": member["shard_id"],
                       "verdict": "review-execution-failure",
@@ -188,6 +228,101 @@ def review(count):
         print(member["shard_id"], record["verdict"], json.dumps(counts),
               record.get("problems", []), flush=True)
     write_run_record_manifest()
+
+
+def git_head():
+    head = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True,
+                          text=True, cwd=PASS2).stdout.strip()
+    dirty = subprocess.run(["git", "status", "--porcelain",
+                            "--untracked-files=no"], capture_output=True,
+                           text=True, cwd=PASS2).stdout.strip()
+    return head, dirty == ""
+
+
+def qualify():
+    """Bounded public-only instrument qualification (18197913, adopted by
+    maintainer ruling 18197956). Reads ONLY the public fixture root; the
+    private bundle is never opened. Writes ONLY under out-qualification/.
+    Produces a qualification identity marked ineligible for binding and a
+    ledger line for the board. One attempt per exact commit is the rule;
+    this tool records the head and refuses a dirty tree so the ledger line
+    names bytes that exist."""
+    if not os.path.isfile(os.path.join(FIXTURE_OUT, "review-input-bundle.json")):
+        raise SystemExit("public fixture missing; run tools/emit_test_fixture.py")
+    head, clean = git_head()
+    if not clean:
+        raise SystemExit("qualification refused: working tree is not clean "
+                         f"at {head}")
+    os.makedirs(Q_OUT, exist_ok=True)
+    system_prompt = _read(os.path.join(ARI, "reviewer-system-prompt-v0.1.md"))
+    template = _read(os.path.join(ARI, "reviewer-task-template-v0.1.md"))
+    digests = bundle_digests(FIXTURE_OUT)
+    schema = load_schema(FIXTURE_OUT)
+    cwd = tempfile.mkdtemp(prefix="foundry-qualify-a-")
+    session = make_session(system_prompt, cwd)
+    probe_digests = dict(digests, REVIEWER_IDENTITY_SHA256="0" * 64)
+    transcript_path = os.path.join(Q_OUT, "leak-probe-transcript.json")
+    result = "PASS"
+    error = None
+    try:
+        reviewer.run_leak_probes(
+            session, template, probe_digests, cwd, FORBIDDEN_TARGET,
+            evidence_path=transcript_path, schema=schema,
+            schema_validator=schema_validator)
+    except reviewer.ReviewerError as err:
+        result = "FAIL"
+        error = str(err)[:500]
+    persisted = canon.load_json(transcript_path)
+    if persisted.get("preflight_result") != result:
+        raise SystemExit("qualification evidence disagrees with outcome: "
+                         f"{persisted.get('preflight_result')!r} vs {result}")
+    calls = sum(1 for t in persisted["transcripts"] if t["result"] is not None)
+    evidence_sha = _sha(transcript_path)
+    record = {
+        "artifact_version": "foundry-pass-2-qualification-attempt/experimental-v0.1",
+        "qualification_only": True,
+        "eligible_for_binding": False,
+        "reviewer_role": "reviewer_a",
+        "model_id": MODEL,
+        "model_version_or_build": cli_version(),
+        "head": head,
+        "attempt_id": persisted["attempt_id"],
+        "started_utc": persisted["started_utc"],
+        "result": result,
+        "error": error,
+        "model_calls": calls,
+        "failed_probes": persisted.get("failed_probes", []),
+        "evidence_path": os.path.basename(transcript_path),
+        "evidence_sha256": evidence_sha,
+        "output_schema_sha256": schema["sha256"],
+        "fixture_bindings": digests,
+        "harness_sha256": _sha(os.path.join(PASS2, "engine", "reviewer.py")),
+        "task_prompt_template_sha256": _sha(os.path.join(
+            ARI, "reviewer-task-template-v0.1.md")),
+        "system_prompt_sha256": _sha(os.path.join(
+            ARI, "reviewer-system-prompt-v0.1.md")),
+    }
+    data = canon.canonical_bytes(record)
+    rec_sha = canon.bytes_digest(data)
+    rec_path = os.path.join(Q_OUT, f"qualification-attempt-{rec_sha}.json")
+    with open(rec_path, "xb") as f:
+        f.write(data)
+    ledger = os.path.join(Q_OUT, "qualification-ledger.json")
+    entries = canon.load_json(ledger)["attempts"] if os.path.isfile(ledger) else []
+    entries.append({"attempt_id": record["attempt_id"], "head": head,
+                    "model": MODEL, "result": result, "model_calls": calls,
+                    "evidence_sha256": evidence_sha, "record_sha256": rec_sha,
+                    "started_utc": record["started_utc"]})
+    canon.write_canonical(ledger, {
+        "artifact_version": "foundry-pass-2-qualification-ledger/experimental-v0.1",
+        "attempts": entries})
+    print("QUALIFICATION LEDGER LINE:")
+    print(f"head {head} | model {MODEL} | attempt {record['attempt_id']} | "
+          f"calls {calls} | result {result} | evidence {evidence_sha} | "
+          f"record {rec_sha}")
+    if error:
+        print("failure:", error)
+    raise SystemExit(0 if result == "PASS" else 1)
 
 
 def write_run_record_manifest():
@@ -252,6 +387,8 @@ if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "status"
     if mode == "identity":
         bind_identity()
+    elif mode == "qualify":
+        qualify()
     elif mode == "review":
         review(int(sys.argv[2]) if len(sys.argv) > 2 else 1)
     else:

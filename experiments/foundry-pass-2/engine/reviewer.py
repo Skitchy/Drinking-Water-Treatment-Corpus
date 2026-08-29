@@ -130,6 +130,56 @@ def render_task(template, **fields):
     return text
 
 
+SCHEMA_BEGIN = "--- BEGIN OUTPUT SCHEMA ---"
+SCHEMA_END = "--- END OUTPUT SCHEMA ---"
+
+
+def load_output_schema(path, expected_sha256):
+    """Load the exact bytes of the bound output schema and refuse to
+    proceed unless they hash to the digest the contract binds
+    (discussioncomment-18197913, item 2). Returns {"json", "sha256",
+    "path"}; the json is the file's bytes decoded verbatim, not re-serialized."""
+    with open(path, "rb") as f:
+        data = f.read()
+    digest = canon.bytes_digest(data)
+    if digest != expected_sha256:
+        raise ReviewerError(
+            f"output schema digest mismatch: {os.path.basename(path)} hashes "
+            f"to {digest}, contract binds {expected_sha256}")
+    return {"json": data.decode("utf-8"), "sha256": digest,
+            "path": os.path.basename(path)}
+
+
+def render_review_prompt(template, shard_id, shard_json, digests, schema):
+    """The one rendering path for probe shards and real shards alike
+    (18197913, item 2): both carry the same verified schema bytes and the
+    same binding digests. The template must declare the schema block."""
+    if SCHEMA_BEGIN not in template or SCHEMA_END not in template:
+        raise ReviewerError("task template does not declare the output "
+                            "schema block")
+    return render_task(template, SHARD_ID=shard_id,
+                       REVIEW_SHARD_JSON=shard_json,
+                       OUTPUT_SCHEMA_JSON=schema["json"],
+                       OUTPUT_SCHEMA_SHA256=schema["sha256"], **digests)
+
+
+def embedded_schema(prompt):
+    """Extract the schema bytes a rendered prompt carries, for tests and
+    evidence: exactly one block between the declared markers."""
+    if prompt.count(SCHEMA_BEGIN) != 1 or prompt.count(SCHEMA_END) != 1:
+        raise ReviewerError("rendered prompt does not carry exactly one "
+                            "output schema block")
+    start = prompt.index(SCHEMA_BEGIN) + len(SCHEMA_BEGIN)
+    end = prompt.index(SCHEMA_END)
+    body = prompt[start:end]
+    # the template places exactly one blank line on each side of the block;
+    # everything between is the schema file's bytes, trailing newline included
+    if not (body.startswith("\n\n") and body.endswith("\n\n")):
+        raise ReviewerError("output schema block is not delimited as the "
+                            "template declares")
+    return body[2:-2]
+
+
 def scan_forbidden(text):
     """control-label-scan: deterministic scan of model-visible bytes."""
     return sorted(t for t in CANARY_FORBIDDEN_TERMS if t in text)
@@ -206,17 +256,25 @@ PRESERVED_DIGEST_FIELDS = ("record_sha256", "claim_payload_sha256",
                            "normalized_support_anchor_set_sha256")
 
 
-def check_canary_disposition(raw_response, probe_record):
+def check_canary_disposition(raw_response, probe_record, digests=None,
+                             schema_validator=None):
     """Structural pass rule for the allowed-bundle-canary probe. Parses the
     declared output shape and compares fields; never a substring test. A
     conformant reviewer may repeat the artifact ID anywhere in free text
     (rationale) without changing the result. Returns a typed detail dict
     whose "result" is exactly PASS or FAIL and whose "reason" names the
     first structural failure (2026-08-28 preflight, discussioncomment-
-    18188318: the substring rule was the defect, not the reviewer)."""
+    18188318: the substring rule was the defect, not the reviewer).
+
+    Order (discussioncomment-18197913, item 3): the COMPLETE output is run
+    through the production schema validator first; only a schema-valid
+    response reaches the binding-header and canary identity checks. A
+    partial object is never called conformant because its one disposition
+    looks plausible."""
     detail = {"result": "FAIL", "reason": None, "machine_corrections": [],
               "disposition_count": None, "artifact_ids_seen": [],
-              "digest_mismatches": [], "verdict": None}
+              "digest_mismatches": [], "verdict": None,
+              "schema_report": None}
     text, corrected = strip_fences(raw_response or "")
     if corrected:
         detail["machine_corrections"].append("stripped-code-fence")
@@ -228,6 +286,20 @@ def check_canary_disposition(raw_response, probe_record):
     if not isinstance(output, dict):
         detail["reason"] = "output-not-object"
         return detail
+    if schema_validator is not None:
+        schema_ok, schema_report = schema_validator(output)
+        detail["schema_report"] = schema_report
+        if not schema_ok:
+            detail["reason"] = "schema-invalid"
+            return detail
+    if digests:
+        if output.get("shard_id") != "probe":
+            detail["reason"] = "shard-id-mismatch"
+            return detail
+        for key, value in digests.items():
+            if output.get(key.lower()) != value:
+                detail["reason"] = f"binding-digest-mismatch:{key.lower()}"
+                return detail
     dispositions = output.get("dispositions")
     if not isinstance(dispositions, list):
         detail["reason"] = "dispositions-not-list"
@@ -325,7 +397,8 @@ def persist_failure(evidence_path, evidence):
 
 
 def run_leak_probes(session, task_template, digests, canary_dir,
-                    forbidden_target_path, evidence_path=None):
+                    forbidden_target_path, evidence_path=None, schema=None,
+                    schema_validator=None):
     """The five probes of the contract, run before any real review. Returns
     (records, transcripts). Raises ReviewerError on any failure.
 
@@ -341,6 +414,9 @@ def run_leak_probes(session, task_template, digests, canary_dir,
     (discussioncomment-18197426). Decisions are staged: after each probe
     stage is persisted, any non-PASS result stops the run before the next
     model call is made."""
+    if schema is None:
+        raise ReviewerError("run_leak_probes requires the verified output "
+                            "schema; the reviewer must see it (18197913)")
     records = []
     transcripts = []
     allowed_canary = "CANARY-ALLOWED-" + canon.content_digest(
@@ -355,6 +431,7 @@ def run_leak_probes(session, task_template, digests, canary_dir,
         "preflight_result": "IN-PROGRESS",
         "model": getattr(session, "model", None),
         "bindings": dict(digests),
+        "output_schema_sha256": schema["sha256"],
         "allowed_canary": allowed_canary,
         "forbidden_canary": forbidden_canary,
         "probe_record": probe_record,
@@ -424,11 +501,12 @@ def run_leak_probes(session, task_template, digests, canary_dir,
         "records": [probe_record],
         "source_context": probe_source_context(allowed_canary),
     }, sort_keys=True)
-    prompt = render_task(task_template, SHARD_ID="probe",
-                         REVIEW_SHARD_JSON=probe_shard, **digests)
+    prompt = render_review_prompt(task_template, "probe", probe_shard,
+                                  digests, schema)
     result = call(prompt, "allowed-bundle-canary")
     response = result.get("result", "")
-    canary_check = check_canary_disposition(response, probe_record)
+    canary_check = check_canary_disposition(response, probe_record, digests,
+                                            schema_validator)
     records.append({
         "id": "allowed-bundle-canary",
         "pass": canary_check["result"] == "PASS",
@@ -502,15 +580,15 @@ def run_leak_probes(session, task_template, digests, canary_dir,
 
 
 def review_shard(session, task_template, digests, shard_path,
-                 expected_ids, schema_validator):
+                 expected_ids, schema_validator, schema):
     """Run one shard through one fresh session. Returns the output record
     (raw response preserved) and a completeness record. Any hard-stop
     condition raises."""
     with open(shard_path, encoding="utf-8") as f:
         shard_json = f.read()
     shard = json.loads(shard_json)
-    prompt = render_task(task_template, SHARD_ID=shard["shard_id"],
-                         REVIEW_SHARD_JSON=shard_json, **digests)
+    prompt = render_review_prompt(task_template, shard["shard_id"],
+                                  shard_json, digests, schema)
     hits = scan_forbidden(prompt)
     if hits:
         raise ReviewerError(f"control-label-scan hit in prompt for "

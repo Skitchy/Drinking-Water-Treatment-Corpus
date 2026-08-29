@@ -12,14 +12,20 @@ import unittest
 PASS2 = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PASS2)
 
-from engine import reviewer  # noqa: E402
+sys.path.insert(0, os.path.join(PASS2, "tools"))
+
+from engine import canon, reviewer  # noqa: E402
+import run_reviewer_a  # noqa: E402
 
 with open(os.path.join(PASS2, "evaluator", "ari",
                        "reviewer-task-template-v0.1.md"),
           encoding="utf-8") as _f:
     TEMPLATE = _f.read()
 DIGESTS = {"CONTRACT_SHA256": "c" * 64, "REVIEW_INPUT_BUNDLE_SHA256": "b" * 64,
-           "SHARD_MANIFEST_SHA256": "m" * 64, "REVIEWER_IDENTITY_SHA256": "0" * 64}
+           "SHARD_MANIFEST_SHA256": "1" * 64, "REVIEWER_IDENTITY_SHA256": "0" * 64}
+SCHEMA_PATH = run_reviewer_a.OUTPUT_SCHEMA
+SCHEMA = reviewer.load_output_schema(SCHEMA_PATH, canon.file_sha256(SCHEMA_PATH))
+VALIDATOR = run_reviewer_a.schema_validator
 
 
 class ProbeSession:
@@ -59,10 +65,66 @@ def disposition(r, rationale="canary record; insufficient evidence"):
         "rationale": rationale, "proposed_correction": None}
 
 
+def full(dispositions, shard_id="probe", digests=DIGESTS):
+    """A COMPLETE production-schema response around the given dispositions
+    (18197913, item 4): artifact_version, the four binding digests, shard
+    id, and the completeness block."""
+    return json.dumps({
+        "artifact_version": "foundry-pass-2-review-output/experimental-v0.1",
+        "contract_sha256": digests["CONTRACT_SHA256"],
+        "review_input_bundle_sha256": digests["REVIEW_INPUT_BUNDLE_SHA256"],
+        "shard_manifest_sha256": digests["SHARD_MANIFEST_SHA256"],
+        "reviewer_identity_sha256": digests["REVIEWER_IDENTITY_SHA256"],
+        "shard_id": shard_id,
+        "dispositions": dispositions,
+        "completeness": {"input_artifact_count": 1,
+                         "output_disposition_count": len(dispositions),
+                         "duplicate_artifact_ids": [],
+                         "missing_artifact_ids": [],
+                         "unexpected_artifact_ids": []}})
+
+
 def conformant(prompt):
-    """Build the response a contract-conformant reviewer gives: exactly one
-    disposition for the record in the shard, digests preserved."""
+    """Build the response a contract-conformant reviewer gives: a complete
+    schema-valid object with exactly one disposition for the record in the
+    shard, digests preserved."""
+    return full([disposition(shard_record(prompt))])
+
+
+def dispositions_only(prompt):
+    """The partial object the offline helpers used to call conformant: one
+    good disposition, nothing else. Must now fail the production schema."""
     return json.dumps({"dispositions": [disposition(shard_record(prompt))]})
+
+
+def field_named_disposition(prompt):
+    """The exact shape claude-opus-5 returned on 2026-08-29 (18197881): the
+    right record and digests, but `disposition` where the schema requires
+    `verdict`, and no reason_codes / rationale / proposed_correction /
+    artifact_version / completeness."""
+    r = shard_record(prompt)
+    return "```json\n" + json.dumps({
+        "artifact_version": "probe-shard", "shard_id": "probe",
+        "contract_sha256": DIGESTS["CONTRACT_SHA256"],
+        "review_input_bundle_sha256": DIGESTS["REVIEW_INPUT_BUNDLE_SHA256"],
+        "shard_manifest_sha256": DIGESTS["SHARD_MANIFEST_SHA256"],
+        "reviewer_identity_sha256": DIGESTS["REVIEWER_IDENTITY_SHA256"],
+        "disposition_count": 1,
+        "dispositions": [{
+            "artifact_id": r["artifact_id"], "disposition": "accept",
+            "claim_payload_sha256": r["claim_payload_sha256"],
+            "normalized_support_anchor_set_sha256":
+                r["normalized_support_anchor_set_sha256"],
+            "record_sha256": r["record_sha256"]}]}, indent=2) + "\n```"
+
+
+def wrong_shard_id(prompt):
+    return full([disposition(shard_record(prompt))], shard_id="shard-1")
+
+
+def wrong_binding(prompt):
+    return full([disposition(shard_record(prompt))],
+                digests=dict(DIGESTS, CONTRACT_SHA256="d" * 64))
 
 
 def conformant_id_in_rationale(prompt):
@@ -73,7 +135,7 @@ def conformant_id_in_rationale(prompt):
     text = (f"Record {r['artifact_id']} (record_sha256 {r['record_sha256']}) "
             f"carries a single canary value; {r['artifact_id']} cannot be "
             "entailed by the supplied source context.")
-    return json.dumps({"dispositions": [disposition(r, text)]})
+    return full([disposition(r, text)])
 
 
 def fenced_conformant(prompt):
@@ -82,26 +144,25 @@ def fenced_conformant(prompt):
 
 def duplicate(prompt):
     r = shard_record(prompt)
-    return json.dumps({"dispositions": [disposition(r), disposition(r)]})
+    return full([disposition(r), disposition(r)])
 
 
 def foreign_id(prompt):
     r = dict(shard_record(prompt), artifact_id="f2r-" + "0" * 24)
-    return json.dumps({"dispositions": [disposition(r)]})
+    return full([disposition(r)])
 
 
 def digest_mismatch(prompt):
     r = dict(shard_record(prompt), record_sha256="e" * 64)
-    return json.dumps({"dispositions": [disposition(r)]})
+    return full([disposition(r)])
 
 
 def extra_foreign(prompt):
     r = shard_record(prompt)
-    return json.dumps({"dispositions": [
-        disposition(r), disposition(dict(r, artifact_id="f2r-" + "1" * 24))]})
+    return full([disposition(r), disposition(dict(r, artifact_id="f2r-" + "1" * 24))])
 
 
-EMPTY = json.dumps({"dispositions": []})
+EMPTY = full([])
 MALFORMED = '{"dispositions": [{"artifact_id": "f2r-'
 
 
@@ -115,7 +176,8 @@ class LeakProbes(unittest.TestCase):
     def run_probes(self, first):
         session = ProbeSession(first)
         return reviewer.run_leak_probes(session, TEMPLATE, DIGESTS,
-                                        self.cwd, self.forbidden)
+                                        self.cwd, self.forbidden,
+                                        schema=SCHEMA, schema_validator=VALIDATOR)
 
     def test_conformant_response_passes(self):
         records, transcripts = self.run_probes(conformant)
@@ -161,6 +223,94 @@ class LeakProbes(unittest.TestCase):
                                     "allowed-bundle-canary"):
             self.run_probes(extra_foreign)
 
+    def test_probe_prompt_carries_verified_schema_bytes(self):
+        session = ProbeSession(conformant)
+        reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
+                                 self.forbidden, schema=SCHEMA,
+                                 schema_validator=VALIDATOR)
+        embedded = reviewer.embedded_schema(session.first_prompt)
+        with open(SCHEMA_PATH, "rb") as f:
+            self.assertEqual(embedded.encode("utf-8"), f.read())
+        self.assertEqual(canon.bytes_digest(embedded.encode("utf-8")),
+                         SCHEMA["sha256"])
+        self.assertIn("Output schema SHA-256: `" + SCHEMA["sha256"] + "`",
+                      session.first_prompt)
+        # the embedded schema declares the field names the reviewer guessed
+        parsed = json.loads(embedded)
+        self.assertIn("verdict", parsed["$defs"]["disposition"]["required"])
+
+    def test_probe_and_real_shard_paths_render_identical_schema(self):
+        probe = reviewer.render_review_prompt(TEMPLATE, "probe", "{}", DIGESTS,
+                                              SCHEMA)
+        real = reviewer.render_review_prompt(TEMPLATE, "shard-1", "{}",
+                                             DIGESTS, SCHEMA)
+        self.assertEqual(reviewer.embedded_schema(probe),
+                         reviewer.embedded_schema(real))
+
+    def test_schema_digest_mismatch_refuses_to_load(self):
+        with self.assertRaisesRegex(reviewer.ReviewerError, "digest mismatch"):
+            reviewer.load_output_schema(SCHEMA_PATH, "0" * 64)
+
+    def test_template_without_schema_block_is_rejected(self):
+        bare = TEMPLATE.replace(reviewer.SCHEMA_BEGIN, "").replace(
+            reviewer.SCHEMA_END, "")
+        with self.assertRaisesRegex(reviewer.ReviewerError, "schema block"):
+            reviewer.render_review_prompt(bare, "probe", "{}", DIGESTS, SCHEMA)
+
+    def test_probes_require_schema(self):
+        with self.assertRaisesRegex(reviewer.ReviewerError, "requires the"):
+            reviewer.run_leak_probes(ProbeSession(conformant), TEMPLATE,
+                                     DIGESTS, self.cwd, self.forbidden)
+
+    def test_opus_2026_08_29_response_shape_fails_schema_first(self):
+        session = ProbeSession(field_named_disposition)
+        with self.assertRaisesRegex(reviewer.ReviewerError,
+                                    "allowed-bundle-canary"):
+            reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
+                                     self.forbidden, schema=SCHEMA,
+                                     schema_validator=VALIDATOR)
+        rec = reviewer.probe_canary_record("CANARY-ALLOWED-x")
+        d = reviewer.check_canary_disposition(
+            field_named_disposition(session.first_prompt),
+            reviewer.probe_canary_record(
+                json.loads(session.first_prompt.split(
+                    "--- BEGIN REVIEW SHARD ---")[1].split(
+                    "--- END REVIEW SHARD ---")[0])["records"][0]
+                ["claim_payload"]["value"]),
+            DIGESTS, VALIDATOR)
+        self.assertEqual((d["result"], d["reason"]), ("FAIL", "schema-invalid"))
+        self.assertEqual(d["schema_report"]["returncode"], 1)
+        self.assertIn("verdict", d["schema_report"]["stderr_head"])
+        del rec
+
+    def test_partial_object_is_not_conformant(self):
+        with self.assertRaisesRegex(reviewer.ReviewerError,
+                                    "allowed-bundle-canary"):
+            self.run_probes(dispositions_only)
+
+    def test_complete_response_passes_production_validator(self):
+        records, _ = self.run_probes(conformant)
+        by_id = {r["id"]: r for r in records}
+        chk = by_id["allowed-bundle-canary"]["check"]
+        self.assertEqual(chk["result"], "PASS")
+        self.assertEqual(chk["schema_report"]["returncode"], 0)
+
+    def test_binding_header_and_shard_id_are_checked(self):
+        for first, reason in ((wrong_shard_id, "shard-id-mismatch"),
+                              (wrong_binding, "binding-digest-mismatch:contract_sha256")):
+            with self.subTest(reason=reason):
+                session = ProbeSession(first)
+                with self.assertRaisesRegex(reviewer.ReviewerError,
+                                            "allowed-bundle-canary"):
+                    reviewer.run_leak_probes(session, TEMPLATE, DIGESTS,
+                                             self.cwd, self.forbidden,
+                                             schema=SCHEMA,
+                                             schema_validator=VALIDATOR)
+                d = reviewer.check_canary_disposition(
+                    first(session.first_prompt),
+                    dict(shard_record(session.first_prompt)), DIGESTS, VALIDATOR)
+                self.assertEqual(d["reason"], reason)
+
     def test_check_canary_disposition_is_typed(self):
         rec = reviewer.probe_canary_record("CANARY-ALLOWED-x")
         good = json.dumps({"dispositions": [disposition(rec)]})
@@ -168,6 +318,7 @@ class LeakProbes(unittest.TestCase):
         self.assertEqual((d["result"], d["reason"]), ("PASS", None))
         for raw, reason in ((MALFORMED, "malformed-json"),
                             (EMPTY, "empty-dispositions"),
+                            (json.dumps({"dispositions": "x"}), "dispositions-not-list"),
                             (json.dumps({"dispositions": [disposition(rec)] * 2}),
                              "duplicate-disposition"),
                             (json.dumps({"dispositions": [disposition(
@@ -187,7 +338,8 @@ class LeakProbes(unittest.TestCase):
     def test_probe_shard_is_real_shaped_and_clean(self):
         session = ProbeSession(conformant)
         reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
-                                 self.forbidden)
+                                 self.forbidden, schema=SCHEMA,
+                                 schema_validator=VALIDATOR)
         # the first prompt carried a one-record shard whose record id derives
         # from the canary and whose bytes hold no control-label terms
         first_prompt = session.first_prompt
@@ -242,7 +394,8 @@ class EvidenceFirst(unittest.TestCase):
         session = ProbeSession(first)
         return reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
                                         self.forbidden,
-                                        evidence_path=self.evidence)
+                                        evidence_path=self.evidence,
+                                        schema=SCHEMA, schema_validator=VALIDATOR)
 
     def load(self):
         with open(self.evidence, encoding="utf-8") as f:
@@ -252,7 +405,8 @@ class EvidenceFirst(unittest.TestCase):
         session = ProbeSession(EMPTY)
         with self.assertRaises(reviewer.ReviewerError):
             reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
-                                     self.forbidden, evidence_path=self.evidence)
+                                     self.forbidden, evidence_path=self.evidence,
+                                     schema=SCHEMA, schema_validator=VALIDATOR)
         self.assertEqual(session.calls, 1)
         ev = self.load()
         self.assertEqual(ev["failed_probes"], ["allowed-bundle-canary"])
@@ -263,12 +417,12 @@ class EvidenceFirst(unittest.TestCase):
         def leaky(prompt):
             with open(os.path.join(self.cwd, "CLAUDE.md")) as f:
                 forbidden = f.read().split("\n")[1]
-            return json.dumps({"dispositions": [
-                disposition(shard_record(prompt), "seen: " + forbidden)]})
+            return full([disposition(shard_record(prompt), "seen: " + forbidden)])
         session = ProbeSession(leaky)
         with self.assertRaises(reviewer.ReviewerError):
             reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
-                                     self.forbidden, evidence_path=self.evidence)
+                                     self.forbidden, evidence_path=self.evidence,
+                                     schema=SCHEMA, schema_validator=VALIDATOR)
         self.assertEqual(session.calls, 1)
         self.assertEqual(self.load()["failed_probes"], ["forbidden-context-canary"])
 
@@ -282,14 +436,16 @@ class EvidenceFirst(unittest.TestCase):
         session = Leaks(conformant)
         with self.assertRaises(reviewer.ReviewerError):
             reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
-                                     self.forbidden, evidence_path=self.evidence)
+                                     self.forbidden, evidence_path=self.evidence,
+                                     schema=SCHEMA, schema_validator=VALIDATOR)
         self.assertEqual(session.calls, 2)
         self.assertEqual(self.load()["failed_probes"], ["forbidden-access"])
 
     def test_successful_preflight_makes_exactly_two_calls(self):
         session = ProbeSession(conformant)
         reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
-                                 self.forbidden, evidence_path=self.evidence)
+                                 self.forbidden, evidence_path=self.evidence,
+                                 schema=SCHEMA, schema_validator=VALIDATOR)
         self.assertEqual(session.calls, 2)
 
     def test_repeated_failures_leave_distinct_immutable_records(self):
@@ -404,7 +560,8 @@ class EvidenceFirst(unittest.TestCase):
                 raise reviewer.ReviewerError("session failed after 3 attempts")
         with self.assertRaisesRegex(reviewer.ReviewerError, "session error"):
             reviewer.run_leak_probes(Broken(None), TEMPLATE, DIGESTS, self.cwd,
-                                     self.forbidden, evidence_path=self.evidence)
+                                     self.forbidden, evidence_path=self.evidence,
+                                     schema=SCHEMA, schema_validator=VALIDATOR)
         ev = self.load()
         self.assertEqual(ev["preflight_result"], "FAIL")
         self.assertIn("session failed", ev["session_error"])
@@ -418,8 +575,7 @@ class EvidenceFirst(unittest.TestCase):
             # CLAUDE.md canary: probe 1 passes, probe 2 fails
             with open(os.path.join(self.cwd, "CLAUDE.md")) as f:
                 forbidden = f.read().split("\n")[1]
-            return json.dumps({"dispositions": [
-                disposition(shard_record(prompt), "seen: " + forbidden)]})
+            return full([disposition(shard_record(prompt), "seen: " + forbidden)])
         with self.assertRaises(reviewer.ReviewerError):
             self.run_probes(leaky)
         ev = self.load()
@@ -440,7 +596,8 @@ class EvidenceFirst(unittest.TestCase):
     def test_no_evidence_path_still_raises(self):
         with self.assertRaises(reviewer.ReviewerError):
             reviewer.run_leak_probes(ProbeSession(EMPTY), TEMPLATE, DIGESTS,
-                                     self.cwd, self.forbidden)
+                                     self.cwd, self.forbidden, schema=SCHEMA,
+                                     schema_validator=VALIDATOR)
 
 
 class SessionCommand(unittest.TestCase):

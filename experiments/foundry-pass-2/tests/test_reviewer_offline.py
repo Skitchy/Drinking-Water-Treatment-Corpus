@@ -68,12 +68,14 @@ class ReviewShardChecks(unittest.TestCase):
         with open(os.path.join(PASS2, "evaluator", "ari",
                                "reviewer-task-template-v0.1.md")) as f:
             self.template = f.read()
+        self.schema = run_reviewer_a.load_schema(OUT)
 
     def run_with(self, response):
         session = FakeSession(response)
         return reviewer.review_shard(
             session, self.template, self.digests, self.shard_path,
-            self.member["artifact_ids"], run_reviewer_a.schema_validator)
+            self.member["artifact_ids"], run_reviewer_a.schema_validator,
+            self.schema)
 
     def test_good_output_is_fixed(self):
         out = synthetic_output(self.shard, self.digests)
@@ -107,10 +109,24 @@ class ReviewShardChecks(unittest.TestCase):
         session = FakeSession(json.dumps(out))
         reviewer.review_shard(session, self.template, self.digests,
                               self.shard_path, self.member["artifact_ids"],
-                              run_reviewer_a.schema_validator)
+                              run_reviewer_a.schema_validator, self.schema)
         self.assertEqual(reviewer.scan_forbidden(session.prompt), [])
         for value in self.digests.values():
             self.assertIn(value, session.prompt)
+
+    def test_real_shard_prompt_carries_verified_schema_bytes(self):
+        out = synthetic_output(self.shard, self.digests)
+        session = FakeSession(json.dumps(out))
+        reviewer.review_shard(session, self.template, self.digests,
+                              self.shard_path, self.member["artifact_ids"],
+                              run_reviewer_a.schema_validator, self.schema)
+        embedded = reviewer.embedded_schema(session.prompt)
+        with open(run_reviewer_a.OUTPUT_SCHEMA, "rb") as f:
+            file_bytes = f.read()
+        self.assertEqual(embedded.encode("utf-8"), file_bytes)
+        self.assertEqual(canon.bytes_digest(embedded.encode("utf-8")),
+                         self.schema["sha256"])
+        self.assertIn(self.schema["sha256"], session.prompt)
 
 
 if __name__ == "__main__":
