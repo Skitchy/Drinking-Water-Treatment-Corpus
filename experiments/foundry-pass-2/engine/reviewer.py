@@ -276,21 +276,35 @@ FAILED_PREFLIGHT_MANIFEST = "failed-preflight-manifest.json"
 
 def persist_failure(evidence_path, evidence):
     """Write the failed-preflight record to a content-addressed sibling
-    (<stem>-FAILED-<sha256[:24]>.json, exclusive create so an existing
+    (<stem>-FAILED-<full sha256>.json, exclusive create so an existing
     file is never rewritten) and bind it into a failure-time manifest in
     the same directory. Returns (path, sha256). Each attempt carries a
-    unique attempt_id, so two attempts never share a digest."""
+    unique attempt_id, so two attempts never share a digest.
+
+    An existing file at the target path is an integrity condition, not an
+    assumption (discussioncomment-18197604): its bytes are read and must
+    hash to the full expected digest with the same length. On mismatch
+    this raises ReviewerError and writes no manifest member, so the
+    manifest can never bind bytes that are not on disk."""
     data = canon.canonical_bytes(evidence)
     digest = canon.bytes_digest(data)
     directory = os.path.dirname(evidence_path)
     stem, ext = os.path.splitext(os.path.basename(evidence_path))
-    path = os.path.join(directory, f"{stem}-FAILED-{digest[:24]}{ext}")
+    path = os.path.join(directory, f"{stem}-FAILED-{digest}{ext}")
     os.makedirs(directory, exist_ok=True)
     try:
         with open(path, "xb") as f:
             f.write(data)
     except FileExistsError:
-        pass  # identical bytes already on disk; content-addressed
+        with open(path, "rb") as f:
+            existing = f.read()
+        if len(existing) != len(data) or canon.bytes_digest(existing) != digest:
+            raise ReviewerError(
+                "failed-preflight evidence integrity mismatch: existing "
+                f"file at {os.path.basename(path)} has digest "
+                f"{canon.bytes_digest(existing)} and length {len(existing)}; "
+                f"expected {digest} and length {len(data)}; no manifest "
+                "member written")
     manifest_path = os.path.join(directory, FAILED_PREFLIGHT_MANIFEST)
     manifest = {"artifact_version":
                 "foundry-pass-2-failed-preflight-manifest/experimental-v0.1",

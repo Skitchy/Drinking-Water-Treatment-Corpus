@@ -14,9 +14,10 @@ sys.path.insert(0, PASS2)
 
 from engine import reviewer  # noqa: E402
 
-TEMPLATE = open(os.path.join(PASS2, "evaluator", "ari",
-                             "reviewer-task-template-v0.1.md"),
-                encoding="utf-8").read()
+with open(os.path.join(PASS2, "evaluator", "ari",
+                       "reviewer-task-template-v0.1.md"),
+          encoding="utf-8") as _f:
+    TEMPLATE = _f.read()
 DIGESTS = {"CONTRACT_SHA256": "c" * 64, "REVIEW_INPUT_BUNDLE_SHA256": "b" * 64,
            "SHARD_MANIFEST_SHA256": "m" * 64, "REVIEWER_IDENTITY_SHA256": "0" * 64}
 
@@ -307,7 +308,7 @@ class EvidenceFirst(unittest.TestCase):
             with open(os.path.join(d, m["path"]), "rb") as f:
                 data = f.read()
             self.assertEqual(reviewer.canon.bytes_digest(data), m["sha256"])
-            self.assertIn(m["sha256"][:24], m["path"])
+            self.assertIn(m["sha256"], m["path"])
         # the live file holds only the latest attempt; siblings are untouched
         latest = self.load()
         self.assertEqual(latest["records"][0]["check"]["reason"], "empty-dispositions")
@@ -331,6 +332,46 @@ class EvidenceFirst(unittest.TestCase):
         with self.assertRaises(FileExistsError):
             with open(path, "xb"):
                 pass
+
+    def test_mismatched_bytes_at_target_path_are_rejected(self):
+        """Adversarial (18197604): different bytes pre-placed at the computed
+        content-addressed path must be rejected, with no manifest member
+        claiming the expected identity."""
+        with self.assertRaises(reviewer.ReviewerError):
+            self.run_probes(EMPTY)
+        ev = self.load()
+        d = os.path.dirname(self.evidence)
+        # compute the path persist_failure will use for a fresh attempt and
+        # plant foreign bytes there first
+        ev2 = dict(ev, attempt_id="00000000-0000-4000-8000-000000000000")
+        data = reviewer.canon.canonical_bytes(ev2)
+        digest = reviewer.canon.bytes_digest(data)
+        target = os.path.join(d, f"leak-probe-transcript-FAILED-{digest}.json")
+        with open(target, "wb") as f:
+            f.write(b'{"forged": true}')
+        with open(os.path.join(d, reviewer.FAILED_PREFLIGHT_MANIFEST)) as f:
+            members_before = json.load(f)["members"]
+        with self.assertRaisesRegex(reviewer.ReviewerError, "integrity mismatch"):
+            reviewer.persist_failure(self.evidence, ev2)
+        with open(target, "rb") as f:
+            self.assertEqual(f.read(), b'{"forged": true}')  # untouched
+        with open(os.path.join(d, reviewer.FAILED_PREFLIGHT_MANIFEST)) as f:
+            members_after = json.load(f)["members"]
+        self.assertEqual(members_after, members_before)
+        self.assertFalse(any(m["sha256"] == digest for m in members_after))
+        # and every manifest member's bytes still hash to its digest
+        for m in members_after:
+            with open(os.path.join(d, m["path"]), "rb") as f:
+                self.assertEqual(reviewer.canon.bytes_digest(f.read()), m["sha256"])
+
+    def test_identical_bytes_at_target_path_are_verified_not_assumed(self):
+        with self.assertRaises(reviewer.ReviewerError):
+            self.run_probes(EMPTY)
+        ev = self.load()
+        path, digest = reviewer.persist_failure(self.evidence, ev)
+        self.assertTrue(path.endswith(f"-FAILED-{digest}.json"))
+        with open(path, "rb") as f:
+            self.assertEqual(reviewer.canon.bytes_digest(f.read()), digest)
 
     def test_failed_probe_leaves_complete_evidence_before_raise(self):
         with self.assertRaises(reviewer.ReviewerError):
