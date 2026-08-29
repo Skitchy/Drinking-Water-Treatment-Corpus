@@ -91,11 +91,20 @@ def bind_identity():
     # prompts are not reviews, and the bound identity includes the probe
     # transcript digest, so it cannot exist before the probes do.
     probe_digests = dict(digests, REVIEWER_IDENTITY_SHA256="0" * 64)
+    # Evidence-first: the harness writes every raw prompt and response to
+    # this path as it happens, and the complete failed-preflight record
+    # before any exception reaches us (discussioncomment-18197092). On
+    # failure the exception propagates and no identity is bound; the
+    # evidence stays on disk (plus a timestamped -FAILED- sibling).
+    transcript_path = os.path.join(A_OUT, "leak-probe-transcript.json")
     records, transcripts = reviewer.run_leak_probes(
-        session, template, probe_digests, cwd, FORBIDDEN_TARGET)
-    transcript_sha = canon.write_canonical(
-        os.path.join(A_OUT, "leak-probe-transcript.json"),
-        {"records": records, "transcripts": transcripts})
+        session, template, probe_digests, cwd, FORBIDDEN_TARGET,
+        evidence_path=transcript_path)
+    persisted = canon.load_json(transcript_path)
+    if persisted.get("preflight_result") != "PASS":
+        raise SystemExit("refusing to bind identity: persisted preflight "
+                         f"result is {persisted.get('preflight_result')!r}")
+    transcript_sha = _sha(transcript_path)
     boundary = session.environment_boundary()
     configuration = {"command": session.command()[:-1] + ["<system prompt>"],
                      "timeout_s": session.timeout, "attempts": session.attempts}
