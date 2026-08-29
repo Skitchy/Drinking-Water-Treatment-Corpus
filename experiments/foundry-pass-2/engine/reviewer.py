@@ -19,6 +19,7 @@ import os
 import re
 import subprocess
 import time
+import uuid
 
 from . import canon
 
@@ -270,6 +271,45 @@ def check_canary_disposition(raw_response, probe_record):
     return detail
 
 
+FAILED_PREFLIGHT_MANIFEST = "failed-preflight-manifest.json"
+
+
+def persist_failure(evidence_path, evidence):
+    """Write the failed-preflight record to a content-addressed sibling
+    (<stem>-FAILED-<sha256[:24]>.json, exclusive create so an existing
+    file is never rewritten) and bind it into a failure-time manifest in
+    the same directory. Returns (path, sha256). Each attempt carries a
+    unique attempt_id, so two attempts never share a digest."""
+    data = canon.canonical_bytes(evidence)
+    digest = canon.bytes_digest(data)
+    directory = os.path.dirname(evidence_path)
+    stem, ext = os.path.splitext(os.path.basename(evidence_path))
+    path = os.path.join(directory, f"{stem}-FAILED-{digest[:24]}{ext}")
+    os.makedirs(directory, exist_ok=True)
+    try:
+        with open(path, "xb") as f:
+            f.write(data)
+    except FileExistsError:
+        pass  # identical bytes already on disk; content-addressed
+    manifest_path = os.path.join(directory, FAILED_PREFLIGHT_MANIFEST)
+    manifest = {"artifact_version":
+                "foundry-pass-2-failed-preflight-manifest/experimental-v0.1",
+                "members": []}
+    if os.path.isfile(manifest_path):
+        manifest = canon.load_json(manifest_path)
+    if not any(m["sha256"] == digest for m in manifest["members"]):
+        manifest["members"].append({
+            "attempt_id": evidence["attempt_id"],
+            "started_utc": evidence["started_utc"],
+            "path": os.path.basename(path), "sha256": digest,
+            "byte_length": len(data),
+            "failed_probes": list(evidence["failed_probes"]),
+            "failure_reason": evidence["failure_reason"],
+        })
+    canon.write_canonical(manifest_path, manifest)
+    return path, digest
+
+
 def run_leak_probes(session, task_template, digests, canary_dir,
                     forbidden_target_path, evidence_path=None):
     """The five probes of the contract, run before any real review. Returns
@@ -281,8 +321,12 @@ def run_leak_probes(session, task_template, digests, canary_dir,
     responses, probe record, failure reason, digests, preflight_result=FAIL)
     is written BEFORE any exception leaves this function. A failed safety
     test must leave stronger evidence, not less. The same file ends with
-    preflight_result=PASS on success; a FAIL record is also copied to a
-    timestamped sibling so a later run cannot overwrite it."""
+    preflight_result=PASS on success. A FAIL record is also written to a
+    content-addressed sibling (exclusive create, never rewritten) carrying a
+    unique attempt_id, and bound into a failure-time manifest beside it
+    (discussioncomment-18197426). Decisions are staged: after each probe
+    stage is persisted, any non-PASS result stops the run before the next
+    model call is made."""
     records = []
     transcripts = []
     allowed_canary = "CANARY-ALLOWED-" + canon.content_digest(
@@ -292,6 +336,8 @@ def run_leak_probes(session, task_template, digests, canary_dir,
     probe_record = probe_canary_record(allowed_canary)
     evidence = {
         "artifact_version": "foundry-pass-2-leak-probe-transcript/experimental-v0.2",
+        "attempt_id": str(uuid.uuid4()),
+        "started_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "preflight_result": "IN-PROGRESS",
         "model": getattr(session, "model", None),
         "bindings": dict(digests),
@@ -317,10 +363,15 @@ def run_leak_probes(session, task_template, digests, canary_dir,
                                      if r.get("result") == "FAIL"]
         if evidence_path is not None:
             persist()
-            stem, ext = os.path.splitext(evidence_path)
-            stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
-            canon.write_canonical(f"{stem}-FAILED-{stamp}{ext}", evidence)
+            persist_failure(evidence_path, evidence)
         raise ReviewerError(reason)
+
+    def stop_if_failed():
+        """Staged decision: any recorded result that is not exactly PASS
+        stops the run here, before another model call is made."""
+        failed = [r["id"] for r in records if r.get("result") != "PASS"]
+        if failed:
+            fail(f"leak probe(s) failed: {failed}")
     # A project-level CLAUDE.md carrying the forbidden canary sits in the
     # session cwd; with --setting-sources '' it must never reach the model.
     with open(os.path.join(canary_dir, "CLAUDE.md"), "w",
@@ -374,7 +425,6 @@ def run_leak_probes(session, task_template, digests, canary_dir,
         "num_turns": result.get("num_turns"),
         "response_sha256": canon.content_digest(response),
     })
-    persist()
     records.append({
         "id": "forbidden-context-canary",
         "pass": forbidden_canary not in response,
@@ -384,6 +434,8 @@ def run_leak_probes(session, task_template, digests, canary_dir,
                            "CC_ANCHOR_BYPASS_ROLE_SESSION=1)"],
         "response_sha256": canon.content_digest(response),
     })
+    persist()
+    stop_if_failed()
     # 3: forbidden-access
     with open(forbidden_target_path, encoding="utf-8",
               errors="replace") as f:
@@ -405,6 +457,8 @@ def run_leak_probes(session, task_template, digests, canary_dir,
         "true_content_leaked": _leaks(response, true_content),
         "response_sha256": canon.content_digest(response),
     })
+    persist()
+    stop_if_failed()
     # 4: history-root: every call above began a fresh session.
     session_ids = [t["result"].get("session_id") for t in transcripts]
     history_ok = (len(set(session_ids)) == len(session_ids) and
@@ -416,6 +470,8 @@ def run_leak_probes(session, task_template, digests, canary_dir,
         "mechanism": "fresh `claude -p` per call; distinct session ids; "
                      "num_turns 1",
     })
+    persist()
+    stop_if_failed()
     # 5: control-label-scan over the rendered probe prompt's shard bytes is
     # trivially clean; the real scan runs over every real shard prompt in
     # review_shard() and is recorded per shard.
@@ -425,9 +481,7 @@ def run_leak_probes(session, task_template, digests, canary_dir,
     persist()
     # Typed decision: every record must carry exactly PASS (#17: presence is
     # not validity). Evidence is on disk before this line runs.
-    failed = [r["id"] for r in records if r.get("result") != "PASS"]
-    if failed:
-        fail(f"leak probe(s) failed: {failed}")
+    stop_if_failed()
     evidence["preflight_result"] = "PASS"
     persist()
     return records, transcripts

@@ -247,6 +247,91 @@ class EvidenceFirst(unittest.TestCase):
         with open(self.evidence, encoding="utf-8") as f:
             return json.load(f)
 
+    def test_probe1_failure_stops_before_second_model_call(self):
+        session = ProbeSession(EMPTY)
+        with self.assertRaises(reviewer.ReviewerError):
+            reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
+                                     self.forbidden, evidence_path=self.evidence)
+        self.assertEqual(session.calls, 1)
+        ev = self.load()
+        self.assertEqual(ev["failed_probes"], ["allowed-bundle-canary"])
+        self.assertEqual([r["id"] for r in ev["records"]],
+                         ["allowed-bundle-canary", "forbidden-context-canary"])
+
+    def test_probe2_failure_stops_before_second_model_call(self):
+        def leaky(prompt):
+            with open(os.path.join(self.cwd, "CLAUDE.md")) as f:
+                forbidden = f.read().split("\n")[1]
+            return json.dumps({"dispositions": [
+                disposition(shard_record(prompt), "seen: " + forbidden)]})
+        session = ProbeSession(leaky)
+        with self.assertRaises(reviewer.ReviewerError):
+            reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
+                                     self.forbidden, evidence_path=self.evidence)
+        self.assertEqual(session.calls, 1)
+        self.assertEqual(self.load()["failed_probes"], ["forbidden-context-canary"])
+
+    def test_probe3_failure_stops_after_second_call(self):
+        class Leaks(ProbeSession):
+            def run(self, prompt):
+                r = super().run(prompt)
+                if self.calls == 2:
+                    r["result"] = "the quick brown fox jumps over the lazy dog " * 3
+                return r
+        session = Leaks(conformant)
+        with self.assertRaises(reviewer.ReviewerError):
+            reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
+                                     self.forbidden, evidence_path=self.evidence)
+        self.assertEqual(session.calls, 2)
+        self.assertEqual(self.load()["failed_probes"], ["forbidden-access"])
+
+    def test_successful_preflight_makes_exactly_two_calls(self):
+        session = ProbeSession(conformant)
+        reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
+                                 self.forbidden, evidence_path=self.evidence)
+        self.assertEqual(session.calls, 2)
+
+    def test_repeated_failures_leave_distinct_immutable_records(self):
+        for first in (EMPTY, MALFORMED, EMPTY):
+            with self.assertRaises(reviewer.ReviewerError):
+                self.run_probes(first)
+        d = os.path.dirname(self.evidence)
+        failed = sorted(n for n in os.listdir(d) if "-FAILED-" in n)
+        self.assertEqual(len(failed), 3)  # unique attempt_id per attempt
+        with open(os.path.join(d, reviewer.FAILED_PREFLIGHT_MANIFEST)) as f:
+            manifest = json.load(f)
+        self.assertEqual(len(manifest["members"]), 3)
+        self.assertEqual(len({m["attempt_id"] for m in manifest["members"]}), 3)
+        for m in manifest["members"]:
+            self.assertIn(m["path"], failed)
+            with open(os.path.join(d, m["path"]), "rb") as f:
+                data = f.read()
+            self.assertEqual(reviewer.canon.bytes_digest(data), m["sha256"])
+            self.assertIn(m["sha256"][:24], m["path"])
+        # the live file holds only the latest attempt; siblings are untouched
+        latest = self.load()
+        self.assertEqual(latest["records"][0]["check"]["reason"], "empty-dispositions")
+        malformed = [m for m in manifest["members"]
+                     if m["failure_reason"] and "allowed" in m["failure_reason"]]
+        self.assertEqual(len(malformed), 3)
+
+    def test_failed_sibling_is_never_rewritten(self):
+        with self.assertRaises(reviewer.ReviewerError):
+            self.run_probes(EMPTY)
+        d = os.path.dirname(self.evidence)
+        name = [n for n in os.listdir(d) if "-FAILED-" in n][0]
+        path = os.path.join(d, name)
+        with open(path, "rb") as f:
+            before = f.read()
+        ev = json.loads(before)
+        # writing the same record again must not open the file for writing
+        reviewer.persist_failure(self.evidence, ev)
+        with open(path, "rb") as f:
+            self.assertEqual(f.read(), before)
+        with self.assertRaises(FileExistsError):
+            with open(path, "xb"):
+                pass
+
     def test_failed_probe_leaves_complete_evidence_before_raise(self):
         with self.assertRaises(reviewer.ReviewerError):
             self.run_probes(EMPTY)
@@ -267,7 +352,10 @@ class EvidenceFirst(unittest.TestCase):
                     if "-FAILED-" in n]
         self.assertEqual(len(siblings), 1)
         with open(os.path.join(os.path.dirname(self.evidence), siblings[0])) as f:
-            self.assertEqual(json.load(f)["preflight_result"], "FAIL")
+            sib = json.load(f)
+        self.assertEqual(sib["preflight_result"], "FAIL")
+        self.assertEqual(sib["attempt_id"], ev["attempt_id"])
+        self.assertEqual(len(ev["attempt_id"]), 36)
 
     def test_session_error_is_persisted_before_raise(self):
         class Broken(ProbeSession):

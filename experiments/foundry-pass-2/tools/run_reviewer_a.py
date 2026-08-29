@@ -201,6 +201,10 @@ def write_run_record_manifest():
             members.append({"kind": kind, "path": rel, "sha256": _sha(path),
                             "byte_length": os.path.getsize(path)})
     add("leak-probe-transcript", "leak-probe-transcript.json")
+    add("failed-preflight-manifest", reviewer.FAILED_PREFLIGHT_MANIFEST)
+    for name in sorted(os.listdir(A_OUT)):
+        if "-FAILED-" in name and name.endswith(".json"):
+            add("failed-preflight-evidence", name)
     add("identity", "reviewer-identity.json")
     for sub, kind in (("run-records", "run-record"), ("outputs", "fixed-output")):
         d = os.path.join(A_OUT, sub)
