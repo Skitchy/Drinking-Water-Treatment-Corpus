@@ -10,10 +10,10 @@ VERIFIER = os.path.join(
     PASS2,
     "evaluator",
     "ari",
-    "verify-ari-evaluator-bundle-v0.1.1.py",
+    "verify-ari-evaluator-bundle-v0.1.2.py",
 )
 
-spec = importlib.util.spec_from_file_location("ari_verifier_v0_1_1", VERIFIER)
+spec = importlib.util.spec_from_file_location("ari_verifier_v0_1_2", VERIFIER)
 ari_verifier = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(ari_verifier)
 
