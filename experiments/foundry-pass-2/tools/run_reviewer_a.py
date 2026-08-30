@@ -156,6 +156,7 @@ def bind_identity():
             ARI, "reviewer-task-template-v0.1.md")),
         "output_schema_sha256": schema["sha256"],
         "output_schema_model_visible": True,
+        "spliced_task_template_sha256": reviewer.SPLICED_TEMPLATE_SHA256,
         "harness_sha256": harness_sha,
         "parser_sha256": harness_sha,
         "tool_allowlist_sha256": canon.content_digest([]),
@@ -299,6 +300,7 @@ def qualify():
         "harness_sha256": _sha(os.path.join(PASS2, "engine", "reviewer.py")),
         "task_prompt_template_sha256": _sha(os.path.join(
             ARI, "reviewer-task-template-v0.1.md")),
+        "spliced_task_template_sha256": reviewer.SPLICED_TEMPLATE_SHA256,
         "system_prompt_sha256": _sha(os.path.join(
             ARI, "reviewer-system-prompt-v0.1.md")),
     }

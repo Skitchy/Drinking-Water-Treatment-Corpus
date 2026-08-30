@@ -17,9 +17,9 @@ sys.path.insert(0, os.path.join(PASS2, "tools"))
 from engine import canon, reviewer  # noqa: E402
 import run_reviewer_a  # noqa: E402
 
-with open(os.path.join(PASS2, "evaluator", "ari",
-                       "reviewer-task-template-v0.1.md"),
-          encoding="utf-8") as _f:
+TEMPLATE_PATH = os.path.join(PASS2, "evaluator", "ari",
+                             "reviewer-task-template-v0.1.md")
+with open(TEMPLATE_PATH, encoding="utf-8") as _f:
     TEMPLATE = _f.read()
 DIGESTS = {"CONTRACT_SHA256": "c" * 64, "REVIEW_INPUT_BUNDLE_SHA256": "b" * 64,
            "SHARD_MANIFEST_SHA256": "1" * 64, "REVIEWER_IDENTITY_SHA256": "0" * 64}
@@ -251,11 +251,82 @@ class LeakProbes(unittest.TestCase):
         with self.assertRaisesRegex(reviewer.ReviewerError, "digest mismatch"):
             reviewer.load_output_schema(SCHEMA_PATH, "0" * 64)
 
-    def test_template_without_schema_block_is_rejected(self):
-        bare = TEMPLATE.replace(reviewer.SCHEMA_BEGIN, "").replace(
-            reviewer.SCHEMA_END, "")
-        with self.assertRaisesRegex(reviewer.ReviewerError, "schema block"):
-            reviewer.render_review_prompt(bare, "probe", "{}", DIGESTS, SCHEMA)
+    # Path B (18198246): the ratified template file stays at its bound bytes;
+    # the harness splices the schema block at render time.
+    def test_ratified_template_file_is_unchanged(self):
+        with open(TEMPLATE_PATH, "rb") as f:
+            self.assertEqual(
+                canon.bytes_digest(f.read()),
+                "18b41b1e3113c35f927049a00f4fc6436289400b0ac204a8d91dce29f312cfce")
+        self.assertNotIn(reviewer.SCHEMA_BEGIN, TEMPLATE)
+
+    def test_spliced_template_is_byte_identical_to_qualified_template(self):
+        spliced = reviewer.splice_schema_block(TEMPLATE)
+        self.assertEqual(canon.bytes_digest(spliced.encode("utf-8")),
+                         reviewer.SPLICED_TEMPLATE_SHA256)
+        # and the qualified template is the fdcd340 file, digest from
+        # discussioncomment-18198246 and the PASS qualification record
+        self.assertEqual(
+            reviewer.SPLICED_TEMPLATE_SHA256,
+            "849464149a187fd5a0a6dfd84dc48dea2a72d332673407a0e4544f304569ad4a")
+
+    def test_rendered_prompt_equals_render_of_qualified_template(self):
+        qualified = reviewer.splice_schema_block(TEMPLATE)
+        via_splice = reviewer.render_review_prompt(TEMPLATE, "probe", "{}",
+                                                   DIGESTS, SCHEMA)
+        direct = reviewer.render_task(
+            qualified, SHARD_ID="probe", REVIEW_SHARD_JSON="{}",
+            OUTPUT_SCHEMA_JSON=SCHEMA["json"],
+            OUTPUT_SCHEMA_SHA256=SCHEMA["sha256"], **DIGESTS)
+        self.assertEqual(via_splice, direct)
+
+    def test_template_already_carrying_schema_block_is_rejected(self):
+        with self.assertRaisesRegex(reviewer.ReviewerError, "already carries"):
+            reviewer.render_review_prompt(
+                reviewer.splice_schema_block(TEMPLATE), "probe", "{}",
+                DIGESTS, SCHEMA)
+
+    def test_template_missing_splice_anchor_is_rejected(self):
+        for anchor in (reviewer.SPLICE_ANCHOR_SHARD_ID,
+                       reviewer.SPLICE_ANCHOR_SEPARATOR):
+            broken = TEMPLATE.replace(anchor, anchor.rstrip("\n") + "\n")
+            with self.assertRaisesRegex(reviewer.ReviewerError,
+                                        "splice anchor"):
+                reviewer.render_review_prompt(broken, "probe", "{}", DIGESTS,
+                                              SCHEMA)
+
+    def test_template_with_duplicate_shard_separator_is_rejected(self):
+        dup = TEMPLATE + "\n" + reviewer.SHARD_SEPARATOR + "\n"
+        with self.assertRaisesRegex(reviewer.ReviewerError, "separator"):
+            reviewer.render_review_prompt(dup, "probe", "{}", DIGESTS, SCHEMA)
+
+    def test_committed_bundle_is_restored_to_ratified_digest(self):
+        # Ari 18206021 condition 2: the committed run bundle, regardless of
+        # which universe the tests run against
+        bundle = os.path.join(PASS2, "out", "review-input-bundle.json")
+        self.assertEqual(
+            canon.file_sha256(bundle),
+            "93f0f79e1bba64f1ff6a201cfac75e0e85a6b31edc250af5929cb01ca1dabad6")
+
+    def test_template_edit_outside_anchors_is_rejected_by_digest(self):
+        edited = TEMPLATE.replace("Inspect the complete",
+                                  "Inspect the entire")
+        with self.assertRaisesRegex(reviewer.ReviewerError, "not the qualified"):
+            reviewer.render_review_prompt(edited, "probe", "{}", DIGESTS,
+                                          SCHEMA)
+
+    def test_probe_evidence_records_both_template_digests(self):
+        session = ProbeSession(conformant)
+        path = os.path.join(self.cwd, "evidence.json")
+        reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
+                                 self.forbidden, evidence_path=path,
+                                 schema=SCHEMA, schema_validator=VALIDATOR)
+        with open(path) as f:
+            ev = json.load(f)
+        self.assertEqual(ev["task_prompt_template_sha256"],
+                         canon.bytes_digest(TEMPLATE.encode("utf-8")))
+        self.assertEqual(ev["spliced_task_template_sha256"],
+                         reviewer.SPLICED_TEMPLATE_SHA256)
 
     def test_probes_require_schema(self):
         with self.assertRaisesRegex(reviewer.ReviewerError, "requires the"):
