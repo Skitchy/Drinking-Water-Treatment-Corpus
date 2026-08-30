@@ -23,7 +23,10 @@ class FakeSession:
     def __init__(self, response):
         self.response = response
 
+    calls = 0
+
     def run(self, prompt):
+        self.calls += 1
         self.prompt = prompt
         return {"result": self.response, "session_id": "fake-1",
                 "num_turns": 1}
@@ -76,6 +79,92 @@ class ReviewShardChecks(unittest.TestCase):
             session, self.template, self.digests, self.shard_path,
             self.member["artifact_ids"], run_reviewer_a.schema_validator,
             self.schema)
+
+    # 18206224 item 1 / ruling 18206234: deterministic identity gate before
+    # any model call, real-review path.
+    def _corrupt_shard(self, mutate):
+        import copy, tempfile
+        shard = copy.deepcopy(self.shard)
+        mutate(shard["records"][0])
+        d = tempfile.mkdtemp(prefix="foundry-corrupt-shard-")
+        path = os.path.join(d, "shard.json")
+        canon.write_canonical(path, shard)
+        return path
+
+    def _assert_stops_before_call(self, mutate, problem):
+        path = self._corrupt_shard(mutate)
+        session = FakeSession("{}")
+        with self.assertRaisesRegex(reviewer.ReviewerError,
+                                    "record-identity-failed.*" + problem):
+            reviewer.review_shard(session, self.template, self.digests, path,
+                                  self.member["artifact_ids"],
+                                  run_reviewer_a.schema_validator, self.schema)
+        self.assertEqual(session.calls, 0)
+
+    def test_corrupt_record_digest_stops_before_model_call(self):
+        self._assert_stops_before_call(
+            lambda r: r.__setitem__("record_sha256", "0" * 64),
+            "record-digest-mismatch")
+
+    def test_corrupt_artifact_id_stops_before_model_call(self):
+        self._assert_stops_before_call(
+            lambda r: r.__setitem__("artifact_id", "f2r-" + "0" * 24),
+            "artifact-id-derivation-mismatch")
+
+    def test_corrupt_payload_digest_stops_before_model_call(self):
+        self._assert_stops_before_call(
+            lambda r: r.__setitem__("claim_payload_sha256", "1" * 64),
+            "payload-digest-mismatch")
+
+    def test_corrupt_anchor_set_digest_stops_before_model_call(self):
+        self._assert_stops_before_call(
+            lambda r: r.__setitem__("normalized_support_anchor_set_sha256",
+                                    "2" * 64),
+            "anchor-set-digest-mismatch")
+
+    def test_corrupt_quote_span_stops_before_model_call(self):
+        def mutate(r):
+            r["evidence"][0]["exact_text"] = r["evidence"][0]["exact_text"] + "x"
+        self._assert_stops_before_call(mutate, "quote")
+
+    def test_record_missing_field_is_typed_hard_stop(self):
+        self._assert_stops_before_call(
+            lambda r: r.__delitem__("claim_payload"), "malformed")
+
+    def test_empty_shard_is_typed_hard_stop(self):
+        import copy, tempfile
+        shard = copy.deepcopy(self.shard)
+        shard["records"] = []
+        d = tempfile.mkdtemp(prefix="foundry-empty-shard-")
+        path = os.path.join(d, "shard.json")
+        canon.write_canonical(path, shard)
+        session = FakeSession("{}")
+        with self.assertRaisesRegex(reviewer.ReviewerError, "no records"):
+            reviewer.review_shard(session, self.template, self.digests, path,
+                                  [], run_reviewer_a.schema_validator,
+                                  self.schema)
+        self.assertEqual(session.calls, 0)
+
+    def test_clean_shard_records_verification_in_run_record(self):
+        out = synthetic_output(self.shard, self.digests)
+        rec = self.run_with(json.dumps(out))
+        ver = rec["pre_call_record_verification"]
+        self.assertEqual(len(ver), len(self.shard["records"]))
+        self.assertTrue(all(v["verdict"] == "verified" for v in ver))
+
+    def test_second_qualification_on_ledgered_head_is_refused(self):
+        import tempfile
+        d = tempfile.mkdtemp(prefix="foundry-ledger-")
+        ledger = os.path.join(d, "qualification-ledger.json")
+        canon.write_canonical(ledger, {
+            "artifact_version": "foundry-pass-2-qualification-ledger/experimental-v0.1",
+            "attempts": [{"attempt_id": "a-1", "head": "c" * 40,
+                          "result": "FAIL"}]})
+        with self.assertRaisesRegex(SystemExit, "already has 1 ledgered"):
+            run_reviewer_a.refuse_if_ledgered(ledger, "c" * 40)
+        run_reviewer_a.refuse_if_ledgered(ledger, "d" * 40)  # new head: ok
+        run_reviewer_a.refuse_if_ledgered(os.path.join(d, "absent.json"),
+                                          "c" * 40)  # no ledger yet: ok
 
     def test_good_output_is_fixed(self):
         out = synthetic_output(self.shard, self.digests)

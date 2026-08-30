@@ -231,6 +231,22 @@ def review(count):
     write_run_record_manifest()
 
 
+def refuse_if_ledgered(ledger_path, head):
+    """One qualification attempt per exact commit (18197956 item 2;
+    18206224 item 4): if the preserved local ledger already records this
+    head, refuse BEFORE any session is created or model call made."""
+    if not os.path.isfile(ledger_path):
+        return
+    prior = [a for a in canon.load_json(ledger_path)["attempts"]
+             if a.get("head") == head]
+    if prior:
+        raise SystemExit(
+            f"qualification refused: head {head} already has "
+            f"{len(prior)} ledgered attempt(s) ({prior[0]['result']}, "
+            f"attempt {prior[0]['attempt_id']}); a new attempt needs a new "
+            f"exact commit")
+
+
 def git_head():
     head = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True,
                           text=True, cwd=PASS2).stdout.strip()
@@ -255,6 +271,7 @@ def qualify():
         raise SystemExit("qualification refused: working tree is not clean "
                          f"at {head}")
     os.makedirs(Q_OUT, exist_ok=True)
+    refuse_if_ledgered(os.path.join(Q_OUT, "qualification-ledger.json"), head)
     system_prompt = _read(os.path.join(ARI, "reviewer-system-prompt-v0.1.md"))
     template = _read(os.path.join(ARI, "reviewer-task-template-v0.1.md"))
     digests = bundle_digests(FIXTURE_OUT)

@@ -121,6 +121,36 @@ class IsolatedSession:
                             f"{last_error}")
 
 
+def verify_shard_records(shard):
+    """Deterministic pre-call identity gate (discussioncomment-18206224,
+    item 1; maintainer ruling 18206234). Before any model call, recompute
+    every supplied record's record_sha256, artifact_id derivation,
+    claim_payload_sha256, and normalized_support_anchor_set_sha256, and
+    rebind every quote against the shard's source_context. Any mismatch
+    raises BEFORE a session is launched. The reviewer never carries this
+    work; it cannot compute SHA-256 by reasoning. Returns the per-record
+    verification list for the evidence record."""
+    from . import records as _records
+    try:
+        unit = shard["source_context"]
+        shard_records = shard["records"]
+        results = [_records.verify_record(r, unit) for r in shard_records]
+    except (KeyError, TypeError, AttributeError) as err:
+        raise ReviewerError(f"record-identity-failed before model call in "
+                            f"{shard.get('shard_id') if isinstance(shard, dict) else '?'}: "
+                            f"malformed shard or record ({type(err).__name__}: {err})")
+    if not shard_records:
+        raise ReviewerError(f"record-identity-failed before model call in "
+                            f"{shard.get('shard_id')}: shard carries no records")
+    failed = [r for r in results if r["verdict"] != "verified"]
+    if failed:
+        detail = "; ".join(f"{r['artifact_id']}: {','.join(r['problems'])}"
+                           for r in failed)
+        raise ReviewerError(f"record-identity-failed before model call in "
+                            f"{shard.get('shard_id')}: {detail}")
+    return results
+
+
 def render_task(template, **fields):
     text = template
     for key, value in fields.items():
@@ -558,12 +588,21 @@ def run_leak_probes(session, task_template, digests, canary_dir,
     # instruction-in-data probe did exactly that and a conformant Opus
     # refused it, discussioncomment-18187871). The forbidden canary exists
     # only in the ambient source and can never appear.
-    probe_shard = json.dumps({
+    probe_shard_obj = {
         "artifact_version": "probe-shard", "shard_id": "probe",
         "record_count": 1,
         "records": [probe_record],
         "source_context": probe_source_context(allowed_canary),
-    }, sort_keys=True)
+    }
+    # deterministic identity gate BEFORE any model call (18206224 item 1)
+    try:
+        evidence["pre_call_record_verification"] = \
+            verify_shard_records(probe_shard_obj)
+    except ReviewerError as err:
+        evidence["pre_call_record_verification"] = None
+        fail(str(err)[:500])
+    persist()
+    probe_shard = json.dumps(probe_shard_obj, sort_keys=True)
     prompt = render_review_prompt(task_template, "probe", probe_shard,
                                   digests, schema)
     result = call(prompt, "allowed-bundle-canary")
@@ -650,6 +689,8 @@ def review_shard(session, task_template, digests, shard_path,
     with open(shard_path, encoding="utf-8") as f:
         shard_json = f.read()
     shard = json.loads(shard_json)
+    # deterministic identity gate BEFORE any model call (18206224 item 1)
+    pre_call_verification = verify_shard_records(shard)
     prompt = render_review_prompt(task_template, shard["shard_id"],
                                   shard_json, digests, schema)
     hits = scan_forbidden(prompt)
@@ -698,6 +739,7 @@ def review_shard(session, task_template, digests, shard_path,
     record = {
         "shard_id": shard["shard_id"],
         "shard_sha256": canon.bytes_digest(shard_json.encode("utf-8")),
+        "pre_call_record_verification": pre_call_verification,
         "task_prompt_sha256": canon.content_digest(prompt),
         "session_id": result.get("session_id", ""),
         "num_turns": result.get("num_turns"),

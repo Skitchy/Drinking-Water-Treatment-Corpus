@@ -315,6 +315,44 @@ class LeakProbes(unittest.TestCase):
             reviewer.render_review_prompt(edited, "probe", "{}", DIGESTS,
                                           SCHEMA)
 
+    def test_probe_shard_identity_gate_runs_before_first_call(self):
+        # 18206224 item 1, probe path: a failing identity gate stops the run
+        # with zero model calls and the evidence says why
+        original = reviewer.verify_shard_records
+        reviewer.verify_shard_records = lambda shard: (_ for _ in ()).throw(
+            reviewer.ReviewerError("record-identity-failed before model call "
+                                   "in probe: forced"))
+        try:
+            session = ProbeSession(conformant)
+            path = os.path.join(self.cwd, "evidence.json")
+            with self.assertRaisesRegex(reviewer.ReviewerError,
+                                        "record-identity-failed"):
+                reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
+                                         self.forbidden, evidence_path=path,
+                                         schema=SCHEMA,
+                                         schema_validator=VALIDATOR)
+        finally:
+            reviewer.verify_shard_records = original
+        self.assertEqual(session.calls, 0)
+        with open(path) as f:
+            ev = json.load(f)
+        self.assertEqual(ev["preflight_result"], "FAIL")
+        self.assertIsNone(ev["pre_call_record_verification"])
+        self.assertIn("record-identity-failed", ev["failure_reason"])
+
+    def test_probe_shard_passes_identity_gate_and_records_it(self):
+        session = ProbeSession(conformant)
+        path = os.path.join(self.cwd, "evidence.json")
+        reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
+                                 self.forbidden, evidence_path=path,
+                                 schema=SCHEMA, schema_validator=VALIDATOR)
+        with open(path) as f:
+            ev = json.load(f)
+        ver = ev["pre_call_record_verification"]
+        self.assertEqual(len(ver), 1)
+        self.assertEqual(ver[0]["verdict"], "verified")
+        self.assertEqual(ver[0]["artifact_id"], ev["probe_record"]["artifact_id"])
+
     def test_probe_evidence_records_both_template_digests(self):
         session = ProbeSession(conformant)
         path = os.path.join(self.cwd, "evidence.json")
