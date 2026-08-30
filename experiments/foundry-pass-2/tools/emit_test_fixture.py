@@ -36,9 +36,9 @@ def main():
                                    "byte_length": os.path.getsize(BURNED_CONTROLS),
                                    "location": os.path.relpath(BURNED_CONTROLS, PASS2)},
         # the harness/gate tests read these two keys from the bundle
-        "reviewer_contract": {"path": "evaluator/ari/isolated-reviewer-contract-v0.2.json",
+        "reviewer_contract": {"path": "evaluator/ari/isolated-reviewer-contract-v0.3.json",
                               "sha256": canon.file_sha256(
-                                  os.path.join(ARI, "isolated-reviewer-contract-v0.2.json"))},
+                                  os.path.join(ARI, "isolated-reviewer-contract-v0.3.json"))},
         "brief": {"path": "FIXTURE", "sha256": "0" * 64},
     }
     controls = canon.load_json(BURNED_CONTROLS)["records"]

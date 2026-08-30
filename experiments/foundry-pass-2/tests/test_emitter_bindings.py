@@ -1,4 +1,4 @@
-"""The emitter binds only Ari's v0.2 packet and refuses the burned v0.1
+"""The emitter binds only Ari's v0.3 packet and refuses the burned v0.1
 controls, any default, and any controls file whose bytes do not match the
 public commitment. The public binding check must pass on the committed bundle."""
 
@@ -42,7 +42,7 @@ class EmitterBindings(unittest.TestCase):
                          emit_bundle.PROPOSED["evaluator_manifest_sha256"])
         self.assertEqual(b["control_records_bundle"]["byte_length"], 43688)
         self.assertEqual(b["sealed_oracle"]["byte_length"], 27615)
-        self.assertTrue(all(v.endswith("-v0.2.json") or "v0.1.1" in v
+        self.assertTrue(all(v.endswith("-v0.3.json") or "v0.1.2" in v
                             for k, v in emit_bundle.PUBLIC_MEMBERS.items()
                             if k in ("evaluator_manifest", "reviewer_contract",
                                      "mixed_control_commitment",

@@ -7,7 +7,7 @@ Checks that every public artifact the committed out/review-input-bundle.json
 binds still recomputes to the bound digest and length (brief, evaluator
 manifest, contract, prompts, schema, commitment, verifier, and the adapter's
 fixed Pass 1 inputs), and that the private control-bundle and sealed-oracle
-commitments in the bundle equal the ones in mixed-control-commitment-v0.2.json.
+commitments in the bundle equal the ones in mixed-control-commitment-v0.3.json.
 It cannot regenerate the bundle (that needs the private controls); the
 byte-identical regeneration replay is recorded in the run record instead.
 Exit 1 on any mismatch.

@@ -40,7 +40,7 @@ jobs:
       - name: Verify Foundry Pass 2 replacement commitments (Ari v0.3)
         run: python3 experiments/foundry-pass-2/evaluator/ari/verify-ari-evaluator-bundle-v0.1.2.py --repo-root .
 
-      - name: Foundry Pass 2 committed bundle binds the v0.2 packet (public check; controls are private)
+      - name: Foundry Pass 2 committed bundle binds the v0.3 packet (public check; controls are private)
         working-directory: experiments/foundry-pass-2
         run: python3 tools/check_bundle_bindings.py
 

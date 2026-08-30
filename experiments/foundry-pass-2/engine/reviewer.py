@@ -180,73 +180,41 @@ def load_output_schema(path, expected_sha256):
             "path": os.path.basename(path)}
 
 
-# Path B (discussioncomment-18198246): the ratified task template file keeps
-# its bound bytes (18b41b1e...). The harness splices the schema block into the
-# rendered prompt at render time, producing a template byte-identical to the
-# one that passed qualification at fdcd340 (849464149a...). The ratified
-# template is bound by the evaluator manifest, the reviewer contract, and,
-# through the contract digest, the sealed oracle; the file is never edited.
-SPLICE_ANCHOR_SHARD_ID = "Review shard ID: `{{SHARD_ID}}`\n\n"
-SPLICE_SCHEMA_SHA_LINE = "Output schema SHA-256: `{{OUTPUT_SCHEMA_SHA256}}`\n\n"
-SPLICE_ANCHOR_SEPARATOR = "The content-bound shard follows this separator:\n\n"
 SHARD_SEPARATOR = "--- BEGIN REVIEW SHARD ---"
-SPLICE_SCHEMA_BLOCK = (
-    "Your entire response must be one JSON object that validates against "
-    "the following JSON Schema. These are the exact bytes of the bound output "
-    "schema; the field names and enumerations it declares are the only ones "
-    "accepted.\n\n"
-    + SCHEMA_BEGIN + "\n\n{{OUTPUT_SCHEMA_JSON}}\n\n" + SCHEMA_END + "\n\n")
-# digest of the spliced template text, i.e. the fdcd340 template file bytes.
-# Note (Ari, 18206021): only this template segment is byte-identical to the
-# qualified head; the rendered prompt is not, because the bundle digest it
-# prints changed back to 93f0f79e and the canaries derive from the digests.
-SPLICED_TEMPLATE_SHA256 = (
-    "849464149a187fd5a0a6dfd84dc48dea2a72d332673407a0e4544f304569ad4a")
 
 
-def splice_schema_block(template):
-    """Insert the output-schema declaration and block into the ratified task
-    template text. Refuses a template that already carries the block, or
-    whose splice anchors are absent or ambiguous. The result must hash to
-    SPLICED_TEMPLATE_SHA256 (the template that passed qualification); a
-    mismatch is a hard stop, never a warning."""
-    if SCHEMA_BEGIN in template or SCHEMA_END in template:
-        raise ReviewerError("task template already carries an output schema "
-                            "block; the ratified template must not")
-    for anchor in (SPLICE_ANCHOR_SHARD_ID, SPLICE_ANCHOR_SEPARATOR):
-        if template.count(anchor) != 1:
-            raise ReviewerError("task template splice anchor absent or "
-                                "ambiguous: " + anchor.strip())
-    if template.count(SHARD_SEPARATOR) != 1:
-        raise ReviewerError("review-shard separator missing or not unique in "
-                            "the task template")
-    spliced = template.replace(
-        SPLICE_ANCHOR_SHARD_ID, SPLICE_ANCHOR_SHARD_ID + SPLICE_SCHEMA_SHA_LINE)
-    spliced = spliced.replace(
-        SPLICE_ANCHOR_SEPARATOR, SPLICE_SCHEMA_BLOCK + SPLICE_ANCHOR_SEPARATOR)
-    if spliced.count(SCHEMA_BEGIN) != 1 or spliced.count(SCHEMA_END) != 1:
-        raise ReviewerError("prompt assembly would produce a missing or "
-                            "duplicate output schema block")
-    if spliced.index(SCHEMA_END) > spliced.index(SHARD_SEPARATOR):
-        raise ReviewerError("output schema block must precede the "
-                            "review-shard separator")
-    digest = canon.bytes_digest(spliced.encode("utf-8"))
-    if digest != SPLICED_TEMPLATE_SHA256:
+def load_task_template(path, expected_sha256):
+    """Load the exact bytes of the ratified schema-bearing task template
+    (Ari packet v0.3, discussioncomment-18206443) and refuse to proceed
+    unless they hash to the digest the isolated-reviewer contract binds.
+    The Path B runtime splice is gone: the template file itself carries the
+    output-schema placeholder block, and it renders through the one shared
+    probe/real path."""
+    with open(path, "rb") as f:
+        data = f.read()
+    digest = canon.bytes_digest(data)
+    if digest != expected_sha256:
         raise ReviewerError(
-            f"spliced task template hashes to {digest}, not the qualified "
-            f"template {SPLICED_TEMPLATE_SHA256}")
-    return spliced
+            f"task template digest mismatch: {os.path.basename(path)} hashes "
+            f"to {digest}, contract binds {expected_sha256}")
+    return data.decode("utf-8")
 
 
 def render_review_prompt(template, shard_id, shard_json, digests, schema):
     """The one rendering path for probe shards and real shards alike
     (18197913, item 2): both carry the same verified schema bytes and the
-    same binding digests. The ratified template is spliced (Path B) and the
-    spliced text must declare the schema block."""
-    template = splice_schema_block(template)
-    if SCHEMA_BEGIN not in template or SCHEMA_END not in template:
-        raise ReviewerError("task template does not declare the output "
+    same binding digests. The ratified template must declare exactly one
+    output-schema block, placed before exactly one review-shard separator
+    (18206021 condition 4); anything else is a hard stop before rendering."""
+    if template.count(SCHEMA_BEGIN) != 1 or template.count(SCHEMA_END) != 1:
+        raise ReviewerError("task template must declare exactly one output "
                             "schema block")
+    if template.count(SHARD_SEPARATOR) != 1:
+        raise ReviewerError("review-shard separator missing or not unique in "
+                            "the task template")
+    if template.index(SCHEMA_END) > template.index(SHARD_SEPARATOR):
+        raise ReviewerError("output schema block must precede the "
+                            "review-shard separator")
     return render_task(template, SHARD_ID=shard_id,
                        REVIEW_SHARD_JSON=shard_json,
                        OUTPUT_SCHEMA_JSON=schema["json"],
@@ -524,7 +492,6 @@ def run_leak_probes(session, task_template, digests, canary_dir,
         "output_schema_sha256": schema["sha256"],
         "task_prompt_template_sha256": canon.bytes_digest(
             task_template.encode("utf-8")),
-        "spliced_task_template_sha256": SPLICED_TEMPLATE_SHA256,
         "allowed_canary": allowed_canary,
         "forbidden_canary": forbidden_canary,
         "probe_record": probe_record,

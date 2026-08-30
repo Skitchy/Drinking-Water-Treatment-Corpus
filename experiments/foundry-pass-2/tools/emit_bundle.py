@@ -1,13 +1,13 @@
 """Emit the Pass 2 review-input bundle from the fixed Pass 1 outputs and Ari's
-v0.2 evaluator packet. Run from experiments/foundry-pass-2:
+v0.3 evaluator packet. Run from experiments/foundry-pass-2:
 
-    python3 tools/emit_bundle.py --controls /private/path/control-records-v0.2.json
+    python3 tools/emit_bundle.py --controls /private/path/control-records-v0.3.json
 
 --controls is REQUIRED. There is no default: the v0.1 control bundle in
 evaluator/ari/ is public and its identities are burned (Ari's 2026-08-27
 ruling, discussioncomment-18177749). The replacement controls live OUTSIDE
 public git; the emitter refuses any controls file whose bytes do not match
-the digest and length committed in mixed-control-commitment-v0.2.json, and
+the digest and length committed in mixed-control-commitment-v0.3.json, and
 refuses a path inside the repository.
 
 The mixed review universe and shards (out/review-universe.json, out/shards/,
@@ -35,30 +35,32 @@ REPO_ROOT = os.path.abspath(os.path.join(PASS2, "..", ".."))
 ARI = os.path.join(PASS2, "evaluator", "ari")
 OUT = os.path.join(PASS2, "out")
 
-# Ari's v0.2 packet (discussioncomment-18187089), pending fresh ratification.
+# Ari's v0.3 packet (discussioncomment-18206443), pending fresh ratification.
 PROPOSED = {
     "status": "proposed-for-content-bound-maintainer-ratification",
     "supersedes_ratification": "discussioncomment-18176893 (brief v0.3; "
                                "superseded before any reviewer ran)",
-    "evaluator_packet_comment": "discussioncomment-18187089",
+    "evaluator_packet_comment": "discussioncomment-18206443",
+    "supersedes_packet": "v0.2 (discussioncomment-18187089; ratified 18187784; "
+                         "superseded by maintainer ruling 18206234)",
     "brief_path": "proposals/foundry-pass-2-experiment-brief-v0.4-DRAFT.md",
     "brief_commit": "8a45e78",
     "brief_sha256":
         "31468a1773d8928634e508c5508257c982131e95cbf64553478158a204b5d1c7",
     "evaluator_manifest_path":
-        "experiments/foundry-pass-2/evaluator/ari/ari-evaluator-public-manifest-v0.2.json",
+        "experiments/foundry-pass-2/evaluator/ari/ari-evaluator-public-manifest-v0.3.json",
     "evaluator_manifest_sha256":
-        "3251efdefe25565dc8d8e6dad0c676e5c46c5dc62776079d958985d1e65536af",
+        "6afb3d92e5fe4ed5c2218ed70ada20a93f2bea4bacf62df372c103dec00f4609",
     "sealed_oracle_sha256":
-        "58c1b5ec876543c2e09a187f7e697af15443c5d85d34858215e58a9fc98a5a2e",
+        "eb32264a19b34b7dbaac1875bce4bdbcc0969a9f11a27a89b98d7feec25c1d8d",
     "sealed_oracle_byte_length": 27615,
 }
 
 PUBLIC_MEMBERS = {
-    "evaluator_manifest": "ari-evaluator-public-manifest-v0.2.json",
-    "reviewer_contract": "isolated-reviewer-contract-v0.2.json",
-    "mixed_control_commitment": "mixed-control-commitment-v0.2.json",
-    "public_bundle_verifier": "verify-ari-evaluator-bundle-v0.1.1.py",
+    "evaluator_manifest": "ari-evaluator-public-manifest-v0.3.json",
+    "reviewer_contract": "isolated-reviewer-contract-v0.3.json",
+    "mixed_control_commitment": "mixed-control-commitment-v0.3.json",
+    "public_bundle_verifier": "verify-ari-evaluator-bundle-v0.1.2.py",
     "reviewer_system_prompt": "reviewer-system-prompt-v0.1.md",
     "reviewer_task_template": "reviewer-task-template-v0.1.md",
     "reviewer_output_schema": "reviewer-output-v0.1.schema.json",

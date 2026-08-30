@@ -57,6 +57,23 @@ def bundle_digests(out_root=None):
     }
 
 
+def load_template(out_root=None):
+    """The ratified schema-bearing task template the reviewer will SEE,
+    verified against the digest the bundle-bound reviewer contract binds
+    (`prompts.task_template.sha256`) before any prompt is rendered."""
+    bundle = canon.load_json(os.path.join(out_root or OUT,
+                                          "review-input-bundle.json"))
+    contract_binding = bundle["bindings"]["reviewer_contract"]
+    contract_path = os.path.join(ARI, os.path.basename(contract_binding["path"]))
+    if _sha(contract_path) != contract_binding["sha256"]:
+        raise SystemExit("reviewer contract bytes do not match the bundle "
+                         "binding; refusing to load the task template")
+    contract = canon.load_json(contract_path)
+    bound = contract["prompts"]["task_template"]
+    return reviewer.load_task_template(
+        os.path.join(ARI, os.path.basename(bound["path"])), bound["sha256"])
+
+
 def load_schema(out_root=None):
     """The output schema the reviewer will SEE, verified before any prompt
     is rendered (18197913, item 2) against the digest the isolated-reviewer
@@ -114,7 +131,7 @@ def cli_version():
 def bind_identity():
     os.makedirs(A_OUT, exist_ok=True)
     system_prompt = _read(os.path.join(ARI, "reviewer-system-prompt-v0.1.md"))
-    template = _read(os.path.join(ARI, "reviewer-task-template-v0.1.md"))
+    template = load_template()
     digests = bundle_digests()
     schema = load_schema()
     cwd = tempfile.mkdtemp(prefix="foundry-reviewer-a-")
@@ -156,7 +173,6 @@ def bind_identity():
             ARI, "reviewer-task-template-v0.1.md")),
         "output_schema_sha256": schema["sha256"],
         "output_schema_model_visible": True,
-        "spliced_task_template_sha256": reviewer.SPLICED_TEMPLATE_SHA256,
         "harness_sha256": harness_sha,
         "parser_sha256": harness_sha,
         "tool_allowlist_sha256": canon.content_digest([]),
@@ -179,11 +195,43 @@ def bind_identity():
     print("REVIEWER_IDENTITY_SHA256:", identity_sha)
 
 
-def review(count):
-    identity_path = os.path.join(A_OUT, "reviewer-identity.json")
+def select_pending(manifest, records_dir, count):
+    done = {n.replace(".json", "") for n in os.listdir(records_dir)}
+    pending = [m for m in manifest["shards"] if m["shard_id"] not in done]
+    return pending[:count]
+
+
+def preverify_selection(selected, out_root):
+    """Ari exact-diff review of 7b6d454 (discussioncomment-18206472): every
+    selected shard is digest-checked against the manifest AND has every
+    record's identity recomputed (reviewer.verify_shard_records) BEFORE any
+    reviewer session is constructed or any model call is made. A failure on
+    any shard aborts the whole review command; it is never swallowed into
+    the per-shard continuation path. Returns {shard_id: verification list}."""
+    verified = {}
+    for member in selected:
+        shard_path = os.path.join(out_root, member["path"])
+        if _sha(shard_path) != member["sha256"]:
+            raise SystemExit(f"review aborted before any session: shard "
+                             f"digest drift: {member['shard_id']}")
+        shard = canon.load_json(shard_path)
+        try:
+            verified[member["shard_id"]] = reviewer.verify_shard_records(shard)
+        except reviewer.ReviewerError as err:
+            raise SystemExit(f"review aborted before any session: "
+                             f"{str(err)[:600]}")
+    return verified
+
+
+def review(count, session_factory=None, out_root=None, a_out=None):
+    out_root = out_root or OUT
+    a_out = a_out or A_OUT
+    session_factory = session_factory or make_session
+    identity_path = os.path.join(a_out, "reviewer-identity.json")
     if not os.path.isfile(identity_path):
         raise SystemExit("identity not bound; run `identity` first")
-    digests = dict(bundle_digests(), REVIEWER_IDENTITY_SHA256=_sha(identity_path))
+    digests = dict(bundle_digests(out_root),
+                   REVIEWER_IDENTITY_SHA256=_sha(identity_path))
     identity = canon.load_json(identity_path)
     if identity.get("eligible_for_binding") is False or identity.get(
             "qualification_only"):
@@ -191,24 +239,23 @@ def review(count):
                          "for review")
     if identity["bindings"] != {k: digests[k] for k in identity["bindings"]}:
         raise SystemExit("bundle changed since identity was bound; rebind")
-    schema = load_schema()
+    schema = load_schema(out_root)
     if schema["sha256"] != identity["output_schema_sha256"]:
         raise SystemExit("output schema changed since identity was bound")
     system_prompt = _read(os.path.join(ARI, "reviewer-system-prompt-v0.1.md"))
-    template = _read(os.path.join(ARI, "reviewer-task-template-v0.1.md"))
-    manifest = canon.load_json(os.path.join(OUT, "shard-manifest.json"))
-    outputs_dir = os.path.join(A_OUT, "outputs")
-    records_dir = os.path.join(A_OUT, "run-records")
+    template = load_template(out_root)
+    manifest = canon.load_json(os.path.join(out_root, "shard-manifest.json"))
+    outputs_dir = os.path.join(a_out, "outputs")
+    records_dir = os.path.join(a_out, "run-records")
     os.makedirs(outputs_dir, exist_ok=True)
     os.makedirs(records_dir, exist_ok=True)
-    done = {n.replace(".json", "") for n in os.listdir(records_dir)}
-    pending = [m for m in manifest["shards"] if m["shard_id"] not in done]
+    selected = select_pending(manifest, records_dir, count)
+    # hard stop for the WHOLE selection before any session exists
+    preverify_selection(selected, out_root)
     cwd = tempfile.mkdtemp(prefix="foundry-reviewer-a-")
-    for member in pending[:count]:
-        shard_path = os.path.join(OUT, member["path"])
-        if _sha(shard_path) != member["sha256"]:
-            raise SystemExit(f"shard digest drift: {member['shard_id']}")
-        session = make_session(system_prompt, cwd)
+    for member in selected:
+        shard_path = os.path.join(out_root, member["path"])
+        session = session_factory(system_prompt, cwd)
         try:
             record = reviewer.review_shard(
                 session, template, digests, shard_path,
@@ -228,7 +275,7 @@ def review(count):
             counts[d["verdict"]] = counts.get(d["verdict"], 0) + 1
         print(member["shard_id"], record["verdict"], json.dumps(counts),
               record.get("problems", []), flush=True)
-    write_run_record_manifest()
+    write_run_record_manifest(a_out)
 
 
 def refuse_if_ledgered(ledger_path, head):
@@ -273,7 +320,7 @@ def qualify():
     os.makedirs(Q_OUT, exist_ok=True)
     refuse_if_ledgered(os.path.join(Q_OUT, "qualification-ledger.json"), head)
     system_prompt = _read(os.path.join(ARI, "reviewer-system-prompt-v0.1.md"))
-    template = _read(os.path.join(ARI, "reviewer-task-template-v0.1.md"))
+    template = load_template(FIXTURE_OUT)
     digests = bundle_digests(FIXTURE_OUT)
     schema = load_schema(FIXTURE_OUT)
     cwd = tempfile.mkdtemp(prefix="foundry-qualify-a-")
@@ -317,7 +364,6 @@ def qualify():
         "harness_sha256": _sha(os.path.join(PASS2, "engine", "reviewer.py")),
         "task_prompt_template_sha256": _sha(os.path.join(
             ARI, "reviewer-task-template-v0.1.md")),
-        "spliced_task_template_sha256": reviewer.SPLICED_TEMPLATE_SHA256,
         "system_prompt_sha256": _sha(os.path.join(
             ARI, "reviewer-system-prompt-v0.1.md")),
     }
@@ -344,10 +390,11 @@ def qualify():
     raise SystemExit(0 if result == "PASS" else 1)
 
 
-def write_run_record_manifest():
+def write_run_record_manifest(a_out=None):
     """Content-addressed manifest of every run artifact for Reviewer A:
     probe transcript, identity, each shard run record, each fixed output.
     Rewritten after every run so it always covers the current state."""
+    A_OUT = a_out or globals()["A_OUT"]
     members = []
     def add(kind, rel):
         path = os.path.join(A_OUT, rel)

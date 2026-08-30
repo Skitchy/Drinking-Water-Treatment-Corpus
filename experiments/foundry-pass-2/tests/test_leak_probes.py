@@ -251,109 +251,77 @@ class LeakProbes(unittest.TestCase):
         with self.assertRaisesRegex(reviewer.ReviewerError, "digest mismatch"):
             reviewer.load_output_schema(SCHEMA_PATH, "0" * 64)
 
-    # Path B (18198246): the ratified template file stays at its bound bytes;
-    # the harness splices the schema block at render time.
-    def test_ratified_template_file_is_unchanged(self):
+    # Ari packet v0.3 (18206443): the ratified template itself carries the
+    # schema block and the corrected no-tools instruction; no runtime splice.
+    RATIFIED_TEMPLATE_SHA256 = (
+        "7f3daca74376b45ff50e064e1a627e57198f78941324a5a434036bf108dd10b6")
+    CORRECTED_INSTRUCTION = (
+        "The deterministic harness has already recomputed and verified every "
+        "record's artifact-ID derivation, claim-payload digest, "
+        "normalized-support-anchor-set digest, and record digest; no tools "
+        "are available, so do not emit tool calls, shell commands, or prose, "
+        "and preserve those supplied identities exactly in your JSON "
+        "disposition while assessing semantic support from the supplied "
+        "shard content.")
+
+    def test_ratified_template_file_matches_contract_bound_digest(self):
         with open(TEMPLATE_PATH, "rb") as f:
-            self.assertEqual(
-                canon.bytes_digest(f.read()),
-                "18b41b1e3113c35f927049a00f4fc6436289400b0ac204a8d91dce29f312cfce")
-        self.assertNotIn(reviewer.SCHEMA_BEGIN, TEMPLATE)
+            self.assertEqual(canon.bytes_digest(f.read()),
+                             self.RATIFIED_TEMPLATE_SHA256)
+        loaded = reviewer.load_task_template(TEMPLATE_PATH,
+                                             self.RATIFIED_TEMPLATE_SHA256)
+        self.assertEqual(loaded, TEMPLATE)
+        with self.assertRaisesRegex(reviewer.ReviewerError, "digest mismatch"):
+            reviewer.load_task_template(TEMPLATE_PATH, "0" * 64)
 
-    def test_spliced_template_is_byte_identical_to_qualified_template(self):
-        spliced = reviewer.splice_schema_block(TEMPLATE)
-        self.assertEqual(canon.bytes_digest(spliced.encode("utf-8")),
-                         reviewer.SPLICED_TEMPLATE_SHA256)
-        # and the qualified template is the fdcd340 file, digest from
-        # discussioncomment-18198246 and the PASS qualification record
-        self.assertEqual(
-            reviewer.SPLICED_TEMPLATE_SHA256,
-            "849464149a187fd5a0a6dfd84dc48dea2a72d332673407a0e4544f304569ad4a")
+    def test_template_declares_schema_block_and_instruction_once(self):
+        self.assertEqual(TEMPLATE.count(reviewer.SCHEMA_BEGIN), 1)
+        self.assertEqual(TEMPLATE.count(reviewer.SCHEMA_END), 1)
+        self.assertEqual(TEMPLATE.count(reviewer.SHARD_SEPARATOR), 1)
+        self.assertEqual(TEMPLATE.count(self.CORRECTED_INSTRUCTION), 1)
+        self.assertEqual(TEMPLATE.count("{{OUTPUT_SCHEMA_JSON}}"), 1)
+        self.assertEqual(TEMPLATE.count("{{OUTPUT_SCHEMA_SHA256}}"), 1)
 
-    def test_rendered_prompt_equals_render_of_qualified_template(self):
-        qualified = reviewer.splice_schema_block(TEMPLATE)
-        via_splice = reviewer.render_review_prompt(TEMPLATE, "probe", "{}",
-                                                   DIGESTS, SCHEMA)
-        direct = reviewer.render_task(
-            qualified, SHARD_ID="probe", REVIEW_SHARD_JSON="{}",
-            OUTPUT_SCHEMA_JSON=SCHEMA["json"],
-            OUTPUT_SCHEMA_SHA256=SCHEMA["sha256"], **DIGESTS)
-        self.assertEqual(via_splice, direct)
+    def test_probe_prompt_carries_corrected_instruction_exactly_once(self):
+        session = ProbeSession(conformant)
+        reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
+                                 self.forbidden, schema=SCHEMA,
+                                 schema_validator=VALIDATOR)
+        self.assertEqual(session.first_prompt.count(self.CORRECTED_INSTRUCTION),
+                         1)
+        self.assertEqual(session.first_prompt.count(reviewer.SCHEMA_BEGIN), 1)
+        self.assertLess(session.first_prompt.index(reviewer.SCHEMA_END),
+                        session.first_prompt.index(reviewer.SHARD_SEPARATOR))
 
-    def test_template_already_carrying_schema_block_is_rejected(self):
-        with self.assertRaisesRegex(reviewer.ReviewerError, "already carries"):
-            reviewer.render_review_prompt(
-                reviewer.splice_schema_block(TEMPLATE), "probe", "{}",
-                DIGESTS, SCHEMA)
+    def test_template_without_schema_block_is_rejected(self):
+        bare = TEMPLATE.replace(reviewer.SCHEMA_BEGIN, "").replace(
+            reviewer.SCHEMA_END, "")
+        with self.assertRaisesRegex(reviewer.ReviewerError, "exactly one"):
+            reviewer.render_review_prompt(bare, "probe", "{}", DIGESTS, SCHEMA)
 
-    def test_template_missing_splice_anchor_is_rejected(self):
-        for anchor in (reviewer.SPLICE_ANCHOR_SHARD_ID,
-                       reviewer.SPLICE_ANCHOR_SEPARATOR):
-            broken = TEMPLATE.replace(anchor, anchor.rstrip("\n") + "\n")
-            with self.assertRaisesRegex(reviewer.ReviewerError,
-                                        "splice anchor"):
-                reviewer.render_review_prompt(broken, "probe", "{}", DIGESTS,
-                                              SCHEMA)
+    def test_template_with_duplicate_schema_block_is_rejected(self):
+        block = TEMPLATE[TEMPLATE.index(reviewer.SCHEMA_BEGIN):
+                         TEMPLATE.index(reviewer.SCHEMA_END)
+                         + len(reviewer.SCHEMA_END)]
+        dup = TEMPLATE.replace(block, block + "\n\n" + block)
+        with self.assertRaisesRegex(reviewer.ReviewerError, "exactly one"):
+            reviewer.render_review_prompt(dup, "probe", "{}", DIGESTS, SCHEMA)
 
     def test_template_with_duplicate_shard_separator_is_rejected(self):
         dup = TEMPLATE + "\n" + reviewer.SHARD_SEPARATOR + "\n"
         with self.assertRaisesRegex(reviewer.ReviewerError, "separator"):
             reviewer.render_review_prompt(dup, "probe", "{}", DIGESTS, SCHEMA)
 
-    def test_committed_bundle_is_restored_to_ratified_digest(self):
-        # Ari 18206021 condition 2: the committed run bundle, regardless of
-        # which universe the tests run against
-        bundle = os.path.join(PASS2, "out", "review-input-bundle.json")
-        self.assertEqual(
-            canon.file_sha256(bundle),
-            "93f0f79e1bba64f1ff6a201cfac75e0e85a6b31edc250af5929cb01ca1dabad6")
-
-    def test_template_edit_outside_anchors_is_rejected_by_digest(self):
-        edited = TEMPLATE.replace("Inspect the complete",
-                                  "Inspect the entire")
-        with self.assertRaisesRegex(reviewer.ReviewerError, "not the qualified"):
-            reviewer.render_review_prompt(edited, "probe", "{}", DIGESTS,
+    def test_schema_block_after_separator_is_rejected(self):
+        block = TEMPLATE[TEMPLATE.index(reviewer.SCHEMA_BEGIN):
+                         TEMPLATE.index(reviewer.SCHEMA_END)
+                         + len(reviewer.SCHEMA_END)]
+        moved = TEMPLATE.replace(block, "") + "\n" + block + "\n"
+        with self.assertRaisesRegex(reviewer.ReviewerError, "precede"):
+            reviewer.render_review_prompt(moved, "probe", "{}", DIGESTS,
                                           SCHEMA)
 
-    def test_probe_shard_identity_gate_runs_before_first_call(self):
-        # 18206224 item 1, probe path: a failing identity gate stops the run
-        # with zero model calls and the evidence says why
-        original = reviewer.verify_shard_records
-        reviewer.verify_shard_records = lambda shard: (_ for _ in ()).throw(
-            reviewer.ReviewerError("record-identity-failed before model call "
-                                   "in probe: forced"))
-        try:
-            session = ProbeSession(conformant)
-            path = os.path.join(self.cwd, "evidence.json")
-            with self.assertRaisesRegex(reviewer.ReviewerError,
-                                        "record-identity-failed"):
-                reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
-                                         self.forbidden, evidence_path=path,
-                                         schema=SCHEMA,
-                                         schema_validator=VALIDATOR)
-        finally:
-            reviewer.verify_shard_records = original
-        self.assertEqual(session.calls, 0)
-        with open(path) as f:
-            ev = json.load(f)
-        self.assertEqual(ev["preflight_result"], "FAIL")
-        self.assertIsNone(ev["pre_call_record_verification"])
-        self.assertIn("record-identity-failed", ev["failure_reason"])
-
-    def test_probe_shard_passes_identity_gate_and_records_it(self):
-        session = ProbeSession(conformant)
-        path = os.path.join(self.cwd, "evidence.json")
-        reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
-                                 self.forbidden, evidence_path=path,
-                                 schema=SCHEMA, schema_validator=VALIDATOR)
-        with open(path) as f:
-            ev = json.load(f)
-        ver = ev["pre_call_record_verification"]
-        self.assertEqual(len(ver), 1)
-        self.assertEqual(ver[0]["verdict"], "verified")
-        self.assertEqual(ver[0]["artifact_id"], ev["probe_record"]["artifact_id"])
-
-    def test_probe_evidence_records_both_template_digests(self):
+    def test_probe_evidence_records_ratified_template_digest(self):
         session = ProbeSession(conformant)
         path = os.path.join(self.cwd, "evidence.json")
         reviewer.run_leak_probes(session, TEMPLATE, DIGESTS, self.cwd,
@@ -363,8 +331,8 @@ class LeakProbes(unittest.TestCase):
             ev = json.load(f)
         self.assertEqual(ev["task_prompt_template_sha256"],
                          canon.bytes_digest(TEMPLATE.encode("utf-8")))
-        self.assertEqual(ev["spliced_task_template_sha256"],
-                         reviewer.SPLICED_TEMPLATE_SHA256)
+        self.assertEqual(ev["task_prompt_template_sha256"],
+                         self.RATIFIED_TEMPLATE_SHA256)
 
     def test_probes_require_schema(self):
         with self.assertRaisesRegex(reviewer.ReviewerError, "requires the"):

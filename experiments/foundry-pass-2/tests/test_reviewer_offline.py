@@ -152,6 +152,71 @@ class ReviewShardChecks(unittest.TestCase):
         self.assertEqual(len(ver), len(self.shard["records"]))
         self.assertTrue(all(v["verdict"] == "verified" for v in ver))
 
+    # discussioncomment-18206472: orchestration-level hard stop. Two selected
+    # shards; corrupt the first, then the second; the review command must
+    # exit on the identity failure with ZERO sessions across the selection.
+    def _review_fixture(self, corrupt_index):
+        import copy, shutil, tempfile
+        root = tempfile.mkdtemp(prefix="foundry-orch-")
+        out_root = os.path.join(root, "out")
+        shutil.copytree(OUT, out_root)
+        manifest_path = os.path.join(out_root, "shard-manifest.json")
+        manifest = canon.load_json(manifest_path)
+        selected = manifest["shards"][:2]
+        if corrupt_index is not None:
+            member = selected[corrupt_index]
+            shard_path = os.path.join(out_root, member["path"])
+            shard = canon.load_json(shard_path)
+            shard["records"][0]["record_sha256"] = "0" * 64
+            canon.write_canonical(shard_path, shard)
+            # manifest kept consistent with the corrupt bytes so the failure
+            # is the record-identity gate, not the shard-digest check
+            member["sha256"] = canon.file_sha256(shard_path)
+            canon.write_canonical(manifest_path, manifest)
+        a_out = os.path.join(root, "reviewer-a")
+        os.makedirs(a_out)
+        digests = run_reviewer_a.bundle_digests(out_root)
+        schema = run_reviewer_a.load_schema(out_root)
+        canon.write_canonical(os.path.join(a_out, "reviewer-identity.json"), {
+            "bindings": digests, "output_schema_sha256": schema["sha256"],
+            "eligible_for_binding": True})
+        return out_root, a_out
+
+    def _run_review_counting_sessions(self, out_root, a_out):
+        made = []
+
+        def factory(system_prompt, cwd):
+            made.append(cwd)
+            return FakeSession("{}")
+        try:
+            run_reviewer_a.review(2, session_factory=factory,
+                                  out_root=out_root, a_out=a_out)
+        except SystemExit as err:
+            return made, str(err)
+        return made, None
+
+    def test_review_aborts_before_any_session_when_first_shard_corrupt(self):
+        out_root, a_out = self._review_fixture(0)
+        made, err = self._run_review_counting_sessions(out_root, a_out)
+        self.assertEqual(made, [])
+        self.assertIn("aborted before any session", err)
+        self.assertIn("record-identity-failed", err)
+        self.assertEqual(os.listdir(os.path.join(a_out, "run-records")), [])
+
+    def test_review_aborts_before_any_session_when_second_shard_corrupt(self):
+        out_root, a_out = self._review_fixture(1)
+        made, err = self._run_review_counting_sessions(out_root, a_out)
+        self.assertEqual(made, [])
+        self.assertIn("aborted before any session", err)
+        self.assertIn("record-identity-failed", err)
+        self.assertEqual(os.listdir(os.path.join(a_out, "run-records")), [])
+
+    def test_review_preverifies_then_creates_one_session_per_shard(self):
+        out_root, a_out = self._review_fixture(None)
+        made, err = self._run_review_counting_sessions(out_root, a_out)
+        self.assertIsNone(err)
+        self.assertEqual(len(made), 2)
+
     def test_second_qualification_on_ledgered_head_is_refused(self):
         import tempfile
         d = tempfile.mkdtemp(prefix="foundry-ledger-")
