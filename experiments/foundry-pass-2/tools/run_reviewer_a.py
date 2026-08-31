@@ -144,7 +144,8 @@ def bind_identity():
     # this path as it happens, and the complete failed-preflight record
     # before any exception reaches us (discussioncomment-18197092). On
     # failure the exception propagates and no identity is bound; the
-    # evidence stays on disk (plus a timestamped -FAILED- sibling).
+    # evidence stays on disk. Every outcome also gets a content-addressed
+    # sibling (-FAILED- or -PASSED-) that no later attempt can rewrite.
     transcript_path = os.path.join(A_OUT, "leak-probe-transcript.json")
     records, transcripts = reviewer.run_leak_probes(
         session, template, probe_digests, cwd, FORBIDDEN_TARGET,
@@ -337,12 +338,43 @@ def qualify():
     except reviewer.ReviewerError as err:
         result = "FAIL"
         error = str(err)[:500]
+    except BaseException as err:  # noqa: B036 - a spent attempt is ledgered
+        # Defense in depth behind the harness's own conversion: nothing
+        # that happens after the attempt started may leave the head
+        # un-ledgered (self-adversarial pass on 89a56c9, hole 2).
+        result = "FAIL"
+        error = f"harness aborted: {type(err).__name__}: {str(err)[:400]}"
+    if not os.path.isfile(transcript_path):
+        # nothing was persisted, so no probe stage began and no model call
+        # was made; the head has not spent its attempt
+        raise SystemExit("qualification did not start an attempt: "
+                         f"{error or 'no evidence written'}")
     persisted = canon.load_json(transcript_path)
+    calls = sum(1 for t in persisted["transcripts"] if t["result"] is not None)
+    invocations = sum(t.get("cli_invocations", 1 if t["result"] is not None
+                            else 0) for t in persisted["transcripts"])
+    if persisted.get("preflight_result") == "IN-PROGRESS" and result == "FAIL":
+        # the harness never finalized (interrupted mid-attempt): ledger the
+        # spent attempt as FAIL rather than exit without a line
+        persisted["preflight_result"] = "FAIL"
+        persisted["failure_reason"] = persisted.get("failure_reason") or error
+        canon.write_canonical(transcript_path, persisted)
+        reviewer.persist_failure(transcript_path, persisted)
     if persisted.get("preflight_result") != result:
         raise SystemExit("qualification evidence disagrees with outcome: "
                          f"{persisted.get('preflight_result')!r} vs {result}")
-    calls = sum(1 for t in persisted["transcripts"] if t["result"] is not None)
+    # the durable evidence is the content-addressed sibling, never the
+    # working file (hole 1: the working file is rewritten by the next attempt)
+    sibling_manifest = canon.load_json(os.path.join(
+        Q_OUT, reviewer.PASSED_PREFLIGHT_MANIFEST if result == "PASS"
+        else reviewer.FAILED_PREFLIGHT_MANIFEST))
     evidence_sha = _sha(transcript_path)
+    sibling = [m for m in sibling_manifest["members"]
+               if m["sha256"] == evidence_sha]
+    if len(sibling) != 1 or not os.path.isfile(os.path.join(Q_OUT, sibling[0]["path"])):
+        raise SystemExit("qualification evidence has no content-addressed "
+                         f"sibling on disk for {evidence_sha}")
+    evidence_file = sibling[0]["path"]
     record = {
         "artifact_version": "foundry-pass-2-qualification-attempt/experimental-v0.1",
         "qualification_only": True,
@@ -356,8 +388,9 @@ def qualify():
         "result": result,
         "error": error,
         "model_calls": calls,
+        "cli_invocations": invocations,
         "failed_probes": persisted.get("failed_probes", []),
-        "evidence_path": os.path.basename(transcript_path),
+        "evidence_path": evidence_file,
         "evidence_sha256": evidence_sha,
         "output_schema_sha256": schema["sha256"],
         "fixture_bindings": digests,
@@ -376,6 +409,8 @@ def qualify():
     entries = canon.load_json(ledger)["attempts"] if os.path.isfile(ledger) else []
     entries.append({"attempt_id": record["attempt_id"], "head": head,
                     "model": MODEL, "result": result, "model_calls": calls,
+                    "cli_invocations": invocations,
+                    "evidence_path": evidence_file,
                     "evidence_sha256": evidence_sha, "record_sha256": rec_sha,
                     "started_utc": record["started_utc"]})
     canon.write_canonical(ledger, {
@@ -383,8 +418,8 @@ def qualify():
         "attempts": entries})
     print("QUALIFICATION LEDGER LINE:")
     print(f"head {head} | model {MODEL} | attempt {record['attempt_id']} | "
-          f"calls {calls} | result {result} | evidence {evidence_sha} | "
-          f"record {rec_sha}")
+          f"calls {calls} | invocations {invocations} | result {result} | "
+          f"evidence {evidence_sha} ({evidence_file}) | record {rec_sha}")
     if error:
         print("failure:", error)
     raise SystemExit(0 if result == "PASS" else 1)
@@ -403,9 +438,12 @@ def write_run_record_manifest(a_out=None):
                             "byte_length": os.path.getsize(path)})
     add("leak-probe-transcript", "leak-probe-transcript.json")
     add("failed-preflight-manifest", reviewer.FAILED_PREFLIGHT_MANIFEST)
+    add("passed-preflight-manifest", reviewer.PASSED_PREFLIGHT_MANIFEST)
     for name in sorted(os.listdir(A_OUT)):
         if "-FAILED-" in name and name.endswith(".json"):
             add("failed-preflight-evidence", name)
+        elif "-PASSED-" in name and name.endswith(".json"):
+            add("passed-preflight-evidence", name)
     add("identity", "reviewer-identity.json")
     for sub, kind in (("run-records", "run-record"), ("outputs", "fixed-output")):
         d = os.path.join(A_OUT, sub)

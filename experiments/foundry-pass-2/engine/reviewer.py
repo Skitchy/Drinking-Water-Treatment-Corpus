@@ -94,10 +94,18 @@ class IsolatedSession:
         }
 
     def run(self, prompt_text):
+        """One logical call, up to `attempts` CLI invocations. Every
+        invocation is logged on the session (last_invocations,
+        last_invocation_log) so the evidence can count what actually ran,
+        not what the harness intended (self-adversarial pass on 89a56c9,
+        hole 4: three invocations were reported as one call)."""
         env = dict(os.environ)
         env["CC_ANCHOR_BYPASS_ROLE_SESSION"] = "1"
         last_error = ""
+        self.last_invocations = 0
+        self.last_invocation_log = []
         for attempt in range(1, self.attempts + 1):
+            self.last_invocations = attempt
             process = subprocess.Popen(
                 self.command(), stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE, text=True, env=env, cwd=self.cwd)
@@ -108,17 +116,31 @@ class IsolatedSession:
                 process.kill()
                 process.communicate()
                 last_error = f"timed out at {self.timeout}s"
+                self.last_invocation_log.append(
+                    {"invocation": attempt, "outcome": last_error})
                 if attempt < self.attempts:
                     time.sleep(10 * attempt)
                 continue
             if process.returncode == 0:
+                self.last_invocation_log.append(
+                    {"invocation": attempt, "outcome": "rc=0"})
                 return json.loads(stdout)
             last_error = (f"rc={process.returncode} stderr={stderr[:300]!r} "
                           f"stdout={stdout[:200]!r}")
+            self.last_invocation_log.append(
+                {"invocation": attempt, "outcome": last_error})
             if attempt < self.attempts:
                 time.sleep(10 * attempt)
         raise ReviewerError(f"session failed after {self.attempts} attempts: "
                             f"{last_error}")
+
+
+def invocation_accounting(session):
+    """What the session actually ran for its last logical call. Sessions
+    without the accounting attributes (test fakes) count as one."""
+    return {"cli_invocations": getattr(session, "last_invocations", 1),
+            "cli_invocation_log": list(getattr(session,
+                                               "last_invocation_log", []))}
 
 
 def verify_shard_records(shard):
@@ -151,13 +173,21 @@ def verify_shard_records(shard):
     return results
 
 
+PLACEHOLDER_RE = re.compile(r"\{\{([A-Z][A-Z0-9_]*)\}\}")
+
+
 def render_task(template, **fields):
-    text = template
-    for key, value in fields.items():
-        text = text.replace("{{" + key + "}}", value)
-    if "{{" in text:
-        raise ReviewerError("unrendered placeholder in task prompt")
-    return text
+    """Single-pass substitution over the TEMPLATE's placeholders only.
+    Substituted values are never rescanned, so data that happens to contain
+    `{{CONTRACT_SHA256}}` or `{{ user }}` is carried verbatim; a placeholder
+    in the template with no field is the hard stop (self-adversarial pass
+    on 89a56c9, hole 3: sequential replace rewrote shard data and hard-
+    stopped on legitimate braces in data)."""
+    missing = sorted({m.group(1) for m in PLACEHOLDER_RE.finditer(template)}
+                     - set(fields))
+    if missing:
+        raise ReviewerError(f"unrendered placeholder in task prompt: {missing}")
+    return PLACEHOLDER_RE.sub(lambda m: fields[m.group(1)], template)
 
 
 SCHEMA_BEGIN = "--- BEGIN OUTPUT SCHEMA ---"
@@ -215,10 +245,18 @@ def render_review_prompt(template, shard_id, shard_json, digests, schema):
     if template.index(SCHEMA_END) > template.index(SHARD_SEPARATOR):
         raise ReviewerError("output schema block must precede the "
                             "review-shard separator")
-    return render_task(template, SHARD_ID=shard_id,
-                       REVIEW_SHARD_JSON=shard_json,
-                       OUTPUT_SCHEMA_JSON=schema["json"],
-                       OUTPUT_SCHEMA_SHA256=schema["sha256"], **digests)
+    prompt = render_task(template, SHARD_ID=shard_id,
+                         REVIEW_SHARD_JSON=shard_json,
+                         OUTPUT_SCHEMA_JSON=schema["json"],
+                         OUTPUT_SCHEMA_SHA256=schema["sha256"], **digests)
+    # the reviewer must see the shard's bytes exactly as verified: the
+    # rendered text after the separator (template declares one blank line)
+    # must begin with the shard JSON verbatim
+    after = prompt[prompt.index(SHARD_SEPARATOR) + len(SHARD_SEPARATOR):]
+    if not after.startswith("\n\n" + shard_json):
+        raise ReviewerError("rendered prompt does not carry the shard bytes "
+                            "verbatim after the separator")
+    return prompt
 
 
 def embedded_schema(prompt):
@@ -402,6 +440,7 @@ def check_canary_disposition(raw_response, probe_record, digests=None,
 
 
 FAILED_PREFLIGHT_MANIFEST = "failed-preflight-manifest.json"
+PASSED_PREFLIGHT_MANIFEST = "passed-preflight-manifest.json"
 
 
 def persist_failure(evidence_path, evidence):
@@ -416,11 +455,28 @@ def persist_failure(evidence_path, evidence):
     hash to the full expected digest with the same length. On mismatch
     this raises ReviewerError and writes no manifest member, so the
     manifest can never bind bytes that are not on disk."""
+    return _persist_outcome(evidence_path, evidence, "FAILED",
+                            FAILED_PREFLIGHT_MANIFEST)
+
+
+def persist_pass(evidence_path, evidence):
+    """The PASS twin of persist_failure: <stem>-PASSED-<sha256>.json plus
+    passed-preflight-manifest.json. Before this existed only failures were
+    content-addressed; the working transcript file was rewritten by the
+    next attempt, and the fdcd340 PASS evidence (78d880e8, cited in the
+    ledger and on the board) was destroyed by the 6cf53bf attempt
+    (self-adversarial pass on 89a56c9, hole 1). Every outcome now survives
+    every later attempt."""
+    return _persist_outcome(evidence_path, evidence, "PASSED",
+                            PASSED_PREFLIGHT_MANIFEST)
+
+
+def _persist_outcome(evidence_path, evidence, label, manifest_name):
     data = canon.canonical_bytes(evidence)
     digest = canon.bytes_digest(data)
     directory = os.path.dirname(evidence_path)
     stem, ext = os.path.splitext(os.path.basename(evidence_path))
-    path = os.path.join(directory, f"{stem}-FAILED-{digest}{ext}")
+    path = os.path.join(directory, f"{stem}-{label}-{digest}{ext}")
     os.makedirs(directory, exist_ok=True)
     try:
         with open(path, "xb") as f:
@@ -435,9 +491,9 @@ def persist_failure(evidence_path, evidence):
                 f"{canon.bytes_digest(existing)} and length {len(existing)}; "
                 f"expected {digest} and length {len(data)}; no manifest "
                 "member written")
-    manifest_path = os.path.join(directory, FAILED_PREFLIGHT_MANIFEST)
+    manifest_path = os.path.join(directory, manifest_name)
     manifest = {"artifact_version":
-                "foundry-pass-2-failed-preflight-manifest/experimental-v0.1",
+                f"foundry-pass-2-{label.lower()}-preflight-manifest/experimental-v0.1",
                 "members": []}
     if os.path.isfile(manifest_path):
         manifest = canon.load_json(manifest_path)
@@ -447,6 +503,7 @@ def persist_failure(evidence_path, evidence):
             "started_utc": evidence["started_utc"],
             "path": os.path.basename(path), "sha256": digest,
             "byte_length": len(data),
+            "preflight_result": evidence["preflight_result"],
             "failed_probes": list(evidence["failed_probes"]),
             "failure_reason": evidence["failure_reason"],
         })
@@ -532,19 +589,52 @@ def run_leak_probes(session, task_template, digests, canary_dir,
     def call(prompt, probe_id):
         entry = {"probe_id": probe_id,
                  "prompt_sha256": canon.content_digest(prompt),
-                 "prompt": prompt, "result": None}
+                 "prompt": prompt, "result": None,
+                 "cli_invocations": 0, "cli_invocation_log": []}
         transcripts.append(entry)
         persist()
         try:
             result = session.run(prompt)
         except Exception as err:  # persist, then re-raise as a hard stop
+            entry.update(invocation_accounting(session))
             evidence["session_error"] = f"{probe_id}: {str(err)[:1000]}"
             fail(f"session error during {probe_id}: {str(err)[:300]}")
+        entry.update(invocation_accounting(session))
         entry["result"] = result
         entry["response_sha256"] = canon.content_digest(result.get("result", ""))
         persist()
         return result
 
+    try:
+        outcome = _run_leak_probes_staged(
+            task_template, digests, forbidden_target_path, schema,
+            schema_validator, evidence, records, transcripts, persist, fail,
+            stop_if_failed, call, probe_record, allowed_canary,
+            forbidden_canary)
+    except ReviewerError:
+        raise
+    except Exception as err:
+        # Any other exception after a model call may have been made (a
+        # validator subprocess failing, a malformed CLI result) must still
+        # leave a FAIL record and a content-addressed sibling on disk, or
+        # the spent call is invisible to the ledger and the head stays
+        # re-attemptable (self-adversarial pass on 89a56c9, hole 2).
+        evidence["session_error"] = (evidence.get("session_error") or
+                                     f"harness: {type(err).__name__}: "
+                                     f"{str(err)[:1000]}")
+        reason = (f"harness error during preflight: {type(err).__name__}: "
+                  f"{str(err)[:300]}")
+        fail(reason)
+        raise ReviewerError(reason)  # fail() always raises; explicit for readers
+    if evidence_path is not None:
+        persist_pass(evidence_path, evidence)
+    return outcome
+
+
+def _run_leak_probes_staged(task_template, digests, forbidden_target_path,
+                            schema, schema_validator, evidence, records,
+                            transcripts, persist, fail, stop_if_failed, call,
+                            probe_record, allowed_canary, forbidden_canary):
     # 1 + 2: allowed-bundle-canary and forbidden-context-canary in one probe
     # shard. The shard carries ONE real-shaped record, built by the engine's
     # own canonicalization, whose claim value is the allowed canary; its
@@ -665,6 +755,7 @@ def review_shard(session, task_template, digests, shard_path,
         raise ReviewerError(f"control-label-scan hit in prompt for "
                             f"{shard['shard_id']}: {hits}")
     result = session.run(prompt)
+    accounting = invocation_accounting(session)
     raw = result.get("result", "")
     text, corrected = strip_fences(raw)
     try:
@@ -710,6 +801,8 @@ def review_shard(session, task_template, digests, shard_path,
         "task_prompt_sha256": canon.content_digest(prompt),
         "session_id": result.get("session_id", ""),
         "num_turns": result.get("num_turns"),
+        "cli_invocations": accounting["cli_invocations"],
+        "cli_invocation_log": accounting["cli_invocation_log"],
         "model_reported": result.get("model") or session.model,
         "machine_corrections": ["stripped-code-fence"] if corrected else [],
         "raw_response_sha256": canon.content_digest(raw),
