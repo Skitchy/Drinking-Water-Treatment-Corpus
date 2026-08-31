@@ -148,11 +148,15 @@ class Hole2SpentCallIsAlwaysLedgered(unittest.TestCase):
         self.q = tempfile.mkdtemp(prefix="sa-hole2-")
         self.saved = {k: getattr(run_reviewer_a, k) for k in
                       ("Q_OUT", "git_head", "make_session", "schema_validator",
-                       "FIXTURE_OUT", "MODEL")}
+                       "FIXTURE_OUT", "MODEL", "cli_version")}
         run_reviewer_a.Q_OUT = self.q
         run_reviewer_a.FIXTURE_OUT = FIXTURE
         run_reviewer_a.MODEL = "fake"
         run_reviewer_a.git_head = lambda: ("a" * 40, True)
+        # CI runners carry no `claude` binary (run 33389234939 went red on
+        # exactly this); the build string is an input identity, stubbed here
+        run_reviewer_a.cli_version = lambda: "fake-cli"
+
         self.sessions = []
 
         def make(system_prompt, cwd):

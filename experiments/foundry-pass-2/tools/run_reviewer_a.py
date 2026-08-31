@@ -320,6 +320,10 @@ def qualify():
                          f"at {head}")
     os.makedirs(Q_OUT, exist_ok=True)
     refuse_if_ledgered(os.path.join(Q_OUT, "qualification-ledger.json"), head)
+    # input identities are read BEFORE the attempt: anything that can fail
+    # here fails with nothing spent (CI on c0b7deb: cli_version() ran after
+    # the attempt and its failure would have lost the ledger line)
+    cli_build = cli_version()
     system_prompt = _read(os.path.join(ARI, "reviewer-system-prompt-v0.1.md"))
     template = load_template(FIXTURE_OUT)
     digests = bundle_digests(FIXTURE_OUT)
@@ -381,7 +385,7 @@ def qualify():
         "eligible_for_binding": False,
         "reviewer_role": "reviewer_a",
         "model_id": MODEL,
-        "model_version_or_build": cli_version(),
+        "model_version_or_build": cli_build,
         "head": head,
         "attempt_id": persisted["attempt_id"],
         "started_utc": persisted["started_utc"],
