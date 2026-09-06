@@ -18,6 +18,7 @@ against an unbound identity. Outputs: out/reviewer-a/.
 import json
 import os
 import re
+import stat
 import subprocess
 import sys
 import tempfile
@@ -323,9 +324,11 @@ def spent_head_reasons(q_out, head):
     looked, and a second call spent a second invocation."""
     reasons = []
     res = reservation_path(q_out, head)
-    if os.path.isfile(res):
+    if os.path.lexists(res):
+        # any object at the reservation path spends the head; a regular
+        # file is read without following links, anything else is reported
         try:
-            meta = canon.load_json(res)
+            meta = canon.load_json_regular(res)
             when = meta.get("reserved_utc", "?")
         except Exception as err:  # noqa: BLE001 - unreadable is still spent
             when = f"unreadable ({type(err).__name__})"
@@ -336,7 +339,7 @@ def spent_head_reasons(q_out, head):
         for name in sorted(os.listdir(q_out)):
             if name.startswith("qualification-attempt-") and name.endswith(".json"):
                 try:
-                    rec = canon.load_json(os.path.join(q_out, name))
+                    rec = canon.load_json_regular(os.path.join(q_out, name))
                 except Exception:  # noqa: BLE001 - unreadable records still count
                     rec = {"head": None}
                 if rec.get("head") == head or rec.get("head") is None:
@@ -345,12 +348,14 @@ def spent_head_reasons(q_out, head):
         reasons.append(f"{len(records)} attempt record(s) ("
                        + ", ".join(f"{n} {r}" for n, r in records) + ")")
     ledger = os.path.join(q_out, "qualification-ledger.json")
-    if os.path.lexists(ledger) and not os.path.isfile(ledger):
+    if os.path.lexists(ledger) and not canon.is_regular(ledger):
+        # a directory, a symlink (18321488 finding 2), a socket: none can
+        # prove the head unspent, and a symlink is never read through
         reasons.append("ledger path exists but is not a regular file; the "
                        "ledger cannot prove this head unspent")
-    elif os.path.isfile(ledger):
+    elif canon.is_regular(ledger):
         try:
-            prior = [a for a in canon.load_json(ledger)["attempts"]
+            prior = [a for a in canon.load_json_regular(ledger)["attempts"]
                      if a.get("head") == head]
         except Exception as err:  # noqa: BLE001 - adversary F7: report, not trace
             prior = []
@@ -385,6 +390,10 @@ def reserve_head(q_out, head, meta):
     head by design (it may have reached the model), and needs a new
     commit. Never modified after creation."""
     path = reservation_path(q_out, head)
+    try:
+        canon.refuse_unless_real_dir(os.path.dirname(path), "reservations directory")
+    except canon.PathBoundaryError as err:
+        raise SystemExit(f"qualification refused: {err}")
     os.makedirs(os.path.dirname(path), exist_ok=True)
     record = dict(meta, artifact_version=
                   "foundry-pass-2-qualification-reservation/experimental-v0.1",
@@ -426,12 +435,80 @@ def append_ledger(q_out, entry):
     failure here can be injected by tests (18321030 finding 2). The ledger
     is a convenience view; refusal never depends on it alone."""
     ledger = os.path.join(q_out, "qualification-ledger.json")
-    entries = canon.load_json(ledger)["attempts"] if os.path.isfile(ledger) else []
+    # lstat-gated read, no-follow; then a same-directory temporary regular
+    # file, fsync, atomic replace (18321488 finding 2: open(..., 'wb') on a
+    # symlinked ledger overwrote its external target)
+    canon.refuse_unless_regular(ledger, "ledger")
+    entries = (canon.load_json_regular(ledger)["attempts"]
+               if canon.is_regular(ledger) else [])
     entries.append(entry)
-    canon.write_canonical(ledger, {
+    canon.write_canonical_atomic(ledger, {
         "artifact_version": "foundry-pass-2-qualification-ledger/experimental-v0.1",
         "attempts": entries})
     return ledger
+
+
+def check_evidence_paths(q_out, root=None):
+    """Path-boundary gate for the mutable evidence root, run BEFORE any
+    reservation is written and before any pre-existing evidence is read
+    (18321488 blocking finding 2; authorized by 18321531). The evidence
+    directories are untracked, so a git-clean tree says nothing about
+    what sits in them. With lstat, never following links:
+
+    - q_out and every ancestor below the pass root must be real
+      directories (or absent);
+    - every entry directly inside q_out must be a regular file, except the
+      reservations directory, which must be a real directory whose
+      entries are all regular files.
+
+    Returns the list of violations (empty when clean); the caller refuses
+    on any. Nothing is opened, so a planted link's target is never read."""
+    root = PASS2 if root is None else root
+    problems = []
+
+    def describe(path):
+        try:
+            st = os.lstat(path)
+        except FileNotFoundError:
+            return None
+        if stat.S_ISLNK(st.st_mode):
+            return "symlink"
+        if stat.S_ISDIR(st.st_mode):
+            return "directory"
+        if stat.S_ISREG(st.st_mode):
+            return "regular file"
+        return "special file"
+
+    # ancestors between the pass root and q_out, then q_out itself
+    chain = []
+    cur = os.path.abspath(q_out)
+    root_abs = os.path.abspath(root)
+    while True:
+        chain.append(cur)
+        parent = os.path.dirname(cur)
+        if parent == cur or parent == root_abs or not cur.startswith(root_abs + os.sep):
+            break
+        cur = parent
+    for path in reversed(chain):
+        kind = describe(path)
+        if kind not in (None, "directory"):
+            problems.append(f"{os.path.relpath(path, root_abs) if path.startswith(root_abs) else path} is a {kind}, not a directory")
+    if problems or describe(os.path.abspath(q_out)) is None:
+        return problems
+    for name in sorted(os.listdir(q_out)):
+        path = os.path.join(q_out, name)
+        kind = describe(path)
+        if name == RESERVATIONS_DIR:
+            if kind != "directory":
+                problems.append(f"{name} is a {kind}, not a directory")
+                continue
+            for sub in sorted(os.listdir(path)):
+                skind = describe(os.path.join(path, sub))
+                if skind != "regular file":
+                    problems.append(f"{name}/{sub} is a {skind}, not a regular file")
+        elif kind != "regular file":
+            problems.append(f"{name} is a {kind}, not a regular file")
+    return problems
 
 
 HEAD_RE = re.compile(r"[0-9a-f]{40}")
@@ -494,10 +571,12 @@ def stash_stale_transcript(q_out, head):
     which heads were reserved at the time, so a zero-call crash at an
     earlier head keeps its proof (adversary N4)."""
     working = os.path.join(q_out, "leak-probe-transcript.json")
-    if not os.path.isfile(working):
+    # a symlink at the working path is refused by check_evidence_paths
+    # before this runs; here it is never read through (18321488 finding 2)
+    canon.refuse_unless_regular(working, "working transcript")
+    if not canon.is_regular(working):
         return None
-    with open(working, "rb") as f:
-        data = f.read()
+    data = canon.read_regular_bytes(working)
     digest = canon.bytes_digest(data)
     stale = os.path.join(q_out, f"leak-probe-transcript-STALE-{digest}.json")
     n = 0
@@ -509,8 +588,7 @@ def stash_stale_transcript(q_out, head):
                 os.fsync(f.fileno())
             break
         except FileExistsError:
-            with open(stale, "rb") as f:
-                existing = f.read()
+            existing = canon.read_regular_bytes(stale)
             if existing == data:
                 break  # the same bytes are already preserved under this name
             n += 1
@@ -544,15 +622,15 @@ def stash_stale_transcript(q_out, head):
     manifest = {"artifact_version":
                 "foundry-pass-2-stale-transcript-manifest/experimental-v0.1",
                 "members": []}
-    if os.path.isfile(manifest_path):
+    canon.refuse_unless_regular(manifest_path, "stale-transcript manifest")
+    if canon.is_regular(manifest_path):
         try:
-            manifest = canon.load_json(manifest_path)
+            manifest = canon.load_json_regular(manifest_path)
         except Exception:  # noqa: BLE001 - never lose the stash over bookkeeping
             manifest = {"artifact_version": manifest["artifact_version"],
                         "members": [], "note": "prior manifest unreadable"}
     manifest["members"].append(entry)
-    canon.write_canonical(manifest_path, manifest)
-    _fsync_path(manifest_path)
+    canon.write_canonical_atomic(manifest_path, manifest)
     os.unlink(working)
     _fsync_path(q_out)
     return stale
@@ -566,13 +644,14 @@ def known_attempt_ids(q_out):
         for name in os.listdir(q_out):
             if name.startswith("qualification-attempt-") and name.endswith(".json"):
                 try:
-                    ids.add(canon.load_json(os.path.join(q_out, name)).get("attempt_id"))
+                    ids.add(canon.load_json_regular(
+                        os.path.join(q_out, name)).get("attempt_id"))
                 except Exception:  # noqa: BLE001
                     pass
     ledger = os.path.join(q_out, "qualification-ledger.json")
-    if os.path.isfile(ledger):
+    if canon.is_regular(ledger):
         try:
-            for a in canon.load_json(ledger)["attempts"]:
+            for a in canon.load_json_regular(ledger)["attempts"]:
                 ids.add(a.get("attempt_id"))
         except Exception:  # noqa: BLE001
             pass
@@ -612,6 +691,14 @@ def qualify():
         raise SystemExit("qualification refused: the ruling names model "
                          f"{ruled_model!r} but the harness would run "
                          f"{MODEL!r}")
+    # path-boundary gate BEFORE anything under the evidence root is read
+    # or created (18321488 finding 2): the root, its ancestors, the
+    # reservations directory, and every pre-existing evidence file are
+    # inspected with lstat; symlinks and unexpected types are a refusal
+    problems = check_evidence_paths(Q_OUT)
+    if problems:
+        raise SystemExit("qualification refused: evidence path boundary: "
+                         + "; ".join(problems))
     os.makedirs(Q_OUT, exist_ok=True)
     refuse_if_spent(Q_OUT, head)
     # input identities are read BEFORE the attempt: anything that can fail
@@ -666,21 +753,88 @@ def qualify():
         # un-ledgered (self-adversarial pass on 89a56c9, hole 2).
         result = "FAIL"
         error = f"harness aborted: {type(err).__name__}: {str(err)[:400]}"
-    if not os.path.isfile(transcript_path):
-        # nothing was persisted, so no probe stage began and no model call
-        # was made; the head has not spent its attempt
+    # the live session's own count of the last logical call, read from the
+    # object in hand rather than from disk (isolated adversary, second pass
+    # on this correction, F1: the handler that copies the live count into
+    # the transcript can itself be interrupted, or both of its persists can
+    # fail, leaving the on-disk entry at zero while the session still holds
+    # the count; a receipt must never be lower than what the session says)
+    live = getattr(session, "last_invocations", None)
+    live = live if isinstance(live, int) else None
+    # the cumulative total, when the session keeps one, is the floor for
+    # every count published below: the per-call value passes through zero
+    # at the top of each call, so a second-probe interrupt in that window
+    # read as "nothing started" after the first probe had spent a call
+    # (second adversary pass on 18321531, N1)
+    total = getattr(session, "total_invocations", None)
+    total = total if isinstance(total, int) else None
+    started = total if total is not None else live
+    if not canon.is_regular(transcript_path):
+        if started:
+            live = started
+            # a call started (the session says so) and its evidence did not
+            # survive: this is NOT a zero-call exit; the head stays reserved
+            raise SystemExit("qualification attempt left no evidence on "
+                             f"disk but the session reports {live} CLI "
+                             "invocation(s) started; treat the head as "
+                             f"spent (it stays reserved): {error}")
+        # nothing was persisted and the session reports nothing started, so
+        # no model call was made; the head has not spent its attempt
         raise SystemExit("qualification did not start an attempt: "
                          f"{error or 'no evidence written'}")
-    persisted = canon.load_json(transcript_path)
+    persisted = canon.load_json_regular(transcript_path)
     if persisted.get("attempt_id") in prior_ids:
         raise SystemExit("qualification evidence carries a previously "
                          f"recorded attempt_id {persisted.get('attempt_id')}; "
                          "this run produced no evidence of its own")
     calls = sum(1 for t in persisted["transcripts"] if t["result"] is not None)
+    reconciliation = None
     if hasattr(session, "last_invocations"):
         invocations = sum(t.get("cli_invocations", 1 if t["result"] is not None
                                 else 0) for t in persisted["transcripts"])
         accounting = "session-reported"
+        entries = persisted["transcripts"]
+        # per-entry fallback for sessions without a cumulative total; with
+        # a total the per-call counter is not consulted at all (it can be
+        # stale across calls, second adversary pass D2)
+        if (total is None and entries and live is not None
+                and entries[-1]["result"] is None):
+            on_disk = entries[-1].get("cli_invocations", 0)
+            if live > on_disk:
+                invocations += live - on_disk
+                accounting = ("session-reported; live count applied to the "
+                              "interrupted call")
+                reconciliation = {"probe_id": entries[-1].get("probe_id"),
+                                  "on_disk_cli_invocations": on_disk,
+                                  "live_cli_invocations": live}
+                if persisted.get("preflight_result") == "IN-PROGRESS":
+                    # the evidence is not yet finalized: correct the entry
+                    # before the FAIL sibling is written below
+                    entries[-1]["cli_invocations"] = live
+        if total is not None and invocations < total:
+            # the cumulative total outranks every per-entry figure: the
+            # receipt is never lower than the number of invocations the
+            # session actually started across all calls (N1)
+            missing = total - invocations
+            reconciliation = dict(reconciliation or {},
+                                  on_disk_total=invocations, live_total=total)
+            invocations = total
+            accounting = ("session-reported; live total applied "
+                          f"({missing} invocation(s) absent from the transcript)")
+            if entries and persisted.get("preflight_result") == "IN-PROGRESS":
+                entries[-1]["cli_invocations"] = (
+                    entries[-1].get("cli_invocations", 0) + missing)
+        counts = [t.get("cli_invocations", 0) for t in entries] + [total or 0]
+        if any(not isinstance(c, int) or isinstance(c, bool) or c < 0
+               for c in counts):
+            # a session that reports a negative or non-integer count is
+            # publishing garbage; the receipt says so instead of the number
+            # (third adversary pass on 18321531, V1: a total that went
+            # backwards published "invocations -1" on a PASS)
+            invocations = None
+            accounting = ("unavailable (session reported an invalid "
+                          f"invocation count: {counts})")
+            reconciliation = None
     else:
         # the session never reported what it ran; a number here would be
         # the harness's guess published as a receipt (adversary F5)
@@ -691,20 +845,20 @@ def qualify():
         # spent attempt as FAIL rather than exit without a line
         persisted["preflight_result"] = "FAIL"
         persisted["failure_reason"] = persisted.get("failure_reason") or error
-        canon.write_canonical(transcript_path, persisted)
+        canon.write_canonical_atomic(transcript_path, persisted)
         reviewer.persist_failure(transcript_path, persisted)
     if persisted.get("preflight_result") != result:
         raise SystemExit("qualification evidence disagrees with outcome: "
                          f"{persisted.get('preflight_result')!r} vs {result}")
     # the durable evidence is the content-addressed sibling, never the
     # working file (hole 1: the working file is rewritten by the next attempt)
-    sibling_manifest = canon.load_json(os.path.join(
+    sibling_manifest = canon.load_json_regular(os.path.join(
         Q_OUT, reviewer.PASSED_PREFLIGHT_MANIFEST if result == "PASS"
         else reviewer.FAILED_PREFLIGHT_MANIFEST))
     evidence_sha = _sha(transcript_path)
     sibling = [m for m in sibling_manifest["members"]
                if m["sha256"] == evidence_sha]
-    if len(sibling) != 1 or not os.path.isfile(os.path.join(Q_OUT, sibling[0]["path"])):
+    if len(sibling) != 1 or not canon.is_regular(os.path.join(Q_OUT, sibling[0]["path"])):
         raise SystemExit("qualification evidence has no content-addressed "
                          f"sibling on disk for {evidence_sha}")
     evidence_file = sibling[0]["path"]
@@ -723,6 +877,7 @@ def qualify():
         "model_calls": calls,
         "cli_invocations": invocations,
         "invocation_accounting": accounting,
+        "invocation_reconciliation": reconciliation,
         "attempts_allowed": QUALIFY_ATTEMPTS,
         "ruled_model_id": ruled_model,
         "stale_transcript_stashed": (os.path.relpath(stale, Q_OUT)
@@ -746,6 +901,7 @@ def qualify():
         "model": MODEL, "result": result, "model_calls": calls,
         "cli_invocations": invocations,
         "invocation_accounting": accounting,
+        "invocation_reconciliation": reconciliation,
         "attempts_allowed": QUALIFY_ATTEMPTS,
         "reservation_path": record["reservation_path"],
         "evidence_path": evidence_file,

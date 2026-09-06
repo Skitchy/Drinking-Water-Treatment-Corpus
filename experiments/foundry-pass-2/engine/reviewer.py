@@ -55,6 +55,13 @@ class IsolatedSession:
         self.cwd = cwd
         self.attempts = attempts
         self.timeout = timeout
+        # per-call accounting (reset by every run()) and a cumulative total
+        # that is never reset: the total is what the qualification receipt
+        # floors on, because the per-call value passes through zero at the
+        # top of every call (second adversary pass on 18321531, N1)
+        self.last_invocations = 0
+        self.last_invocation_log = []
+        self.total_invocations = 0
 
     def command(self):
         return [
@@ -106,6 +113,7 @@ class IsolatedSession:
         self.last_invocation_log = []
         for attempt in range(1, self.attempts + 1):
             self.last_invocations = attempt
+            self.total_invocations += 1
             process = subprocess.Popen(
                 self.command(), stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE, text=True, env=env, cwd=self.cwd)
@@ -135,9 +143,20 @@ class IsolatedSession:
                             f"{last_error}")
 
 
-def invocation_accounting(session):
+def invocation_accounting(session, total_before=None):
     """What the session actually ran for its last logical call. Sessions
-    without the accounting attributes (test fakes) count as one."""
+    without the accounting attributes (test fakes) count as one.
+
+    When the session keeps a cumulative total and the caller captured it
+    before the call, the per-call value is the DELTA of that total: exact,
+    and immune to the per-call counter being stale (an interrupt before
+    run() resets it; second adversary pass on 18321531, D2) or reset to
+    zero (an interrupt after the reset, before the first invocation; N1)."""
+    total = getattr(session, "total_invocations", None)
+    if total_before is not None and isinstance(total, int):
+        n = total - total_before
+        log = list(getattr(session, "last_invocation_log", [])) if n else []
+        return {"cli_invocations": n, "cli_invocation_log": log}
     return {"cli_invocations": getattr(session, "last_invocations", 1),
             "cli_invocation_log": list(getattr(session,
                                                "last_invocation_log", []))}
@@ -482,8 +501,10 @@ def _persist_outcome(evidence_path, evidence, label, manifest_name):
         with open(path, "xb") as f:
             f.write(data)
     except FileExistsError:
-        with open(path, "rb") as f:
-            existing = f.read()
+        # the existing file is inspected with lstat and read without
+        # following a link (18321488 finding 2: a planted symlink must
+        # neither be read through nor written through)
+        existing = canon.read_regular_bytes(path)
         if len(existing) != len(data) or canon.bytes_digest(existing) != digest:
             raise ReviewerError(
                 "failed-preflight evidence integrity mismatch: existing "
@@ -495,8 +516,9 @@ def _persist_outcome(evidence_path, evidence, label, manifest_name):
     manifest = {"artifact_version":
                 f"foundry-pass-2-{label.lower()}-preflight-manifest/experimental-v0.1",
                 "members": []}
-    if os.path.isfile(manifest_path):
-        manifest = canon.load_json(manifest_path)
+    canon.refuse_unless_regular(manifest_path, "preflight manifest")
+    if canon.is_regular(manifest_path):
+        manifest = canon.load_json_regular(manifest_path)
     if not any(m["sha256"] == digest for m in manifest["members"]):
         manifest["members"].append({
             "attempt_id": evidence["attempt_id"],
@@ -507,7 +529,8 @@ def _persist_outcome(evidence_path, evidence, label, manifest_name):
             "failed_probes": list(evidence["failed_probes"]),
             "failure_reason": evidence["failure_reason"],
         })
-    canon.write_canonical(manifest_path, manifest)
+    # mutable manifest: temporary regular file + fsync + atomic replace
+    canon.write_canonical_atomic(manifest_path, manifest)
     return path, digest
 
 
@@ -562,9 +585,25 @@ def run_leak_probes(session, task_template, digests, canary_dir,
     def persist():
         if evidence_path is None:
             return None
-        return canon.write_canonical(evidence_path, evidence)
+        # the working transcript is mutable evidence: temporary regular
+        # file, fsync, atomic replace; a symlink destination is refused
+        return canon.write_canonical_atomic(evidence_path, evidence)
 
-    def fail(reason):
+    inflight = {}  # the entry whose model call has started and not returned
+
+    def refresh_inflight_accounting():
+        """Copy the session's live accounting into the in-flight entry, if
+        any. Called from every handler that finalizes FAIL, so the transcript
+        carries the count even when the handler inside call() was itself
+        interrupted before its own copy (second adversary pass, N2)."""
+        if inflight:
+            inflight["entry"].update(
+                invocation_accounting(session, inflight.get("total_before")))
+
+    def record_failure(reason):
+        """Finalize the evidence as FAIL on disk (working file plus the
+        content-addressed sibling) without raising."""
+        refresh_inflight_accounting()
         evidence["preflight_result"] = "FAIL"
         evidence["failure_reason"] = reason
         evidence["failed_probes"] = [r["id"] for r in records
@@ -572,6 +611,9 @@ def run_leak_probes(session, task_template, digests, canary_dir,
         if evidence_path is not None:
             persist()
             persist_failure(evidence_path, evidence)
+
+    def fail(reason):
+        record_failure(reason)
         raise ReviewerError(reason)
 
     def stop_if_failed():
@@ -593,13 +635,34 @@ def run_leak_probes(session, task_template, digests, canary_dir,
                  "cli_invocations": 0, "cli_invocation_log": []}
         transcripts.append(entry)
         persist()
+        inflight.clear()
+        inflight.update(entry=entry, total_before=getattr(
+            session, "total_invocations", None))
         try:
             result = session.run(prompt)
-        except Exception as err:  # persist, then re-raise as a hard stop
-            entry.update(invocation_accounting(session))
-            evidence["session_error"] = f"{probe_id}: {str(err)[:1000]}"
-            fail(f"session error during {probe_id}: {str(err)[:300]}")
-        entry.update(invocation_accounting(session))
+        except BaseException as err:  # noqa: B036 - persist, then hard stop
+            # EVERY exception type leaving the model call, including
+            # KeyboardInterrupt, copies the live invocation accounting into
+            # this entry and persists it BEFORE the attempt is finalized
+            # (18321488 blocking finding 1: an interrupt inside session.run
+            # skipped these lines and a possibly spent invocation was
+            # published as zero). The count is the session's live report of
+            # what it started; an interrupted invocation counts as spent.
+            entry.update(invocation_accounting(session, inflight.get("total_before")))
+            evidence["session_error"] = (f"{probe_id}: {type(err).__name__}: "
+                                         f"{str(err)[:1000]}")
+            persist()
+            reason = (f"session error during {probe_id}: "
+                      f"{type(err).__name__}: {str(err)[:300]}")
+            if isinstance(err, Exception):
+                fail(reason)
+            # an interrupt (or any other BaseException) is finalized as FAIL
+            # on disk, then propagates unchanged so the operator's signal
+            # keeps its meaning; qualify() ledgers it from the evidence
+            record_failure(reason)
+            raise
+        entry.update(invocation_accounting(session, inflight.get("total_before")))
+        inflight.clear()
         entry["result"] = result
         entry["response_sha256"] = canon.content_digest(result.get("result", ""))
         persist()
@@ -626,6 +689,17 @@ def run_leak_probes(session, task_template, digests, canary_dir,
                   f"{str(err)[:300]}")
         fail(reason)
         raise ReviewerError(reason)  # fail() always raises; explicit for readers
+    except BaseException as err:  # noqa: B036 - interrupt outside the call
+        # An interrupt between model calls (in a validator, in persist) is
+        # finalized as FAIL with whatever accounting the entries already
+        # hold, then propagates unchanged (18321488 finding 1, same class).
+        if evidence.get("preflight_result") == "IN-PROGRESS":
+            evidence["session_error"] = (evidence.get("session_error") or
+                                         f"harness: {type(err).__name__}: "
+                                         f"{str(err)[:1000]}")
+            record_failure(f"harness interrupted during preflight: "
+                           f"{type(err).__name__}: {str(err)[:300]}")
+        raise
     if evidence_path is not None:
         persist_pass(evidence_path, evidence)
     return outcome

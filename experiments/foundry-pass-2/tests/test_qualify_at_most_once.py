@@ -452,9 +452,14 @@ class SecondAdversaryPassHeldClosed(_QualifyHarness):
     def test_n3_ledger_path_that_is_a_directory_refuses_before_any_spend(self):
         os.makedirs(os.path.join(self.q, "qualification-ledger.json"))
         exc = self.qualify()
-        self.assert_refused(exc, "not a regular file")
+        # since 18321531 the path-boundary gate fires first, before any
+        # evidence is read; the spent-head check would refuse it too
+        self.assertIn("qualification refused", str(exc))
+        self.assertIn("not a regular file", str(exc))
         self.assertEqual(self.sessions, [])
         self.assertFalse(os.path.isdir(os.path.join(self.q, "reservations")))
+        self.assertIn("not a regular file",
+                      "; ".join(run_reviewer_a.spent_head_reasons(self.q, HEAD)))
 
     def test_n5_planted_collision_cannot_destroy_the_stale_transcript(self):
         working = os.path.join(self.q, "leak-probe-transcript.json")
