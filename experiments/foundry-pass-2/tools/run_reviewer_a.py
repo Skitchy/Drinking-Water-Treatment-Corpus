@@ -17,9 +17,11 @@ against an unbound identity. Outputs: out/reviewer-a/.
 
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
+import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PASS2 = os.path.dirname(HERE)
@@ -36,6 +38,14 @@ FORBIDDEN_TARGET = os.path.join(REPO_ROOT, "README.md")
 OUTPUT_SCHEMA = os.path.join(ARI, "reviewer-output-v0.1.schema.json")
 FIXTURE_OUT = os.path.join(PASS2, "out-fixture")
 Q_OUT = os.path.join(PASS2, "out-qualification", "reviewer-a")
+# A qualification ruling authorizes ONE CLI invocation (18218358: "any
+# invocation that reaches a model spends this one qualification authority.
+# No retry, second invocation ... is authorized"). The governed-review path
+# keeps IsolatedSession's default retry policy; the qualify path may not
+# retry at all (Ari, 18321030, blocking finding 1: counting is not
+# enforcement).
+QUALIFY_ATTEMPTS = 1
+RESERVATIONS_DIR = "reservations"
 
 
 def _sha(path):
@@ -118,8 +128,8 @@ def schema_validator(output):
     }
 
 
-def make_session(system_prompt, cwd):
-    return reviewer.IsolatedSession(MODEL, system_prompt, cwd)
+def make_session(system_prompt, cwd, attempts=3):
+    return reviewer.IsolatedSession(MODEL, system_prompt, cwd, attempts=attempts)
 
 
 def cli_version():
@@ -295,13 +305,279 @@ def refuse_if_ledgered(ledger_path, head):
             f"exact commit")
 
 
+def reservation_path(q_out, head):
+    if not valid_head(head):
+        raise SystemExit(f"qualification refused: {head[:60]!r} is not a "
+                         "40-hex commit sha (adversary F3: a non-sha head "
+                         "could name a path outside the qualification root)")
+    return os.path.join(q_out, RESERVATIONS_DIR, f"{head}.json")
+
+
+def spent_head_reasons(q_out, head):
+    """Every durable trace that this exact head has already been given to
+    qualify(), in authority order: (1) the pre-call reservation, (2) any
+    immutable attempt record, (3) the ledger projection. Any one of them
+    is sufficient to refuse. The ledger alone was the sole refusal source
+    before this (Ari, 18321030, blocking finding 2): a failed ledger write
+    after the model call left the head absent from the only place refusal
+    looked, and a second call spent a second invocation."""
+    reasons = []
+    res = reservation_path(q_out, head)
+    if os.path.isfile(res):
+        try:
+            meta = canon.load_json(res)
+            when = meta.get("reserved_utc", "?")
+        except Exception as err:  # noqa: BLE001 - unreadable is still spent
+            when = f"unreadable ({type(err).__name__})"
+        reasons.append(f"reservation {os.path.relpath(res, q_out)} "
+                       f"(reserved {when})")
+    records = []
+    if os.path.isdir(q_out):
+        for name in sorted(os.listdir(q_out)):
+            if name.startswith("qualification-attempt-") and name.endswith(".json"):
+                try:
+                    rec = canon.load_json(os.path.join(q_out, name))
+                except Exception:  # noqa: BLE001 - unreadable records still count
+                    rec = {"head": None}
+                if rec.get("head") == head or rec.get("head") is None:
+                    records.append((name, rec.get("result", "unknown")))
+    if records:
+        reasons.append(f"{len(records)} attempt record(s) ("
+                       + ", ".join(f"{n} {r}" for n, r in records) + ")")
+    ledger = os.path.join(q_out, "qualification-ledger.json")
+    if os.path.lexists(ledger) and not os.path.isfile(ledger):
+        reasons.append("ledger path exists but is not a regular file; the "
+                       "ledger cannot prove this head unspent")
+    elif os.path.isfile(ledger):
+        try:
+            prior = [a for a in canon.load_json(ledger)["attempts"]
+                     if a.get("head") == head]
+        except Exception as err:  # noqa: BLE001 - adversary F7: report, not trace
+            prior = []
+            reasons.append(f"ledger unreadable ({type(err).__name__}: "
+                           f"{str(err)[:120]}); the ledger cannot prove this "
+                           "head unspent")
+        if prior:
+            reasons.append(f"already has {len(prior)} ledgered attempt(s) "
+                           f"({prior[0]['result']}, attempt "
+                           f"{prior[0]['attempt_id']})")
+    return reasons
+
+
+def refuse_if_spent(q_out, head):
+    """One qualification attempt per exact commit, enforced against every
+    durable trace, BEFORE any session is created or model call made."""
+    reasons = spent_head_reasons(q_out, head)
+    if reasons:
+        raise SystemExit(
+            f"qualification refused: head {head} is spent: "
+            + "; ".join(reasons) + "; a new attempt needs a new exact commit")
+
+
+def reserve_head(q_out, head, meta):
+    """Exclusive, durable reservation of this exact head, written after
+    every deterministic input check has passed and BEFORE any session
+    exists. Exclusive create (O_EXCL) makes two concurrent calls resolve
+    to exactly one holder; fsync on the file and its directory makes the
+    reservation survive a crash before any later write. The reservation
+    is authoritative for refusal even if the attempt record or the ledger
+    is never written: a reserved head with no attempt record is a spent
+    head by design (it may have reached the model), and needs a new
+    commit. Never modified after creation."""
+    path = reservation_path(q_out, head)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    record = dict(meta, artifact_version=
+                  "foundry-pass-2-qualification-reservation/experimental-v0.1",
+                  head=head)
+    data = canon.canonical_bytes(record)
+    try:
+        fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
+    except FileExistsError:
+        raise SystemExit(
+            f"qualification refused: head {head} is already reserved "
+            f"({os.path.relpath(path, q_out)}); a new attempt needs a new "
+            "exact commit")
+    try:
+        os.write(fd, data)
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+    dfd = os.open(os.path.dirname(path), os.O_RDONLY)
+    try:
+        os.fsync(dfd)
+    finally:
+        os.close(dfd)
+    return path
+
+
+def write_attempt_record(q_out, record):
+    """Immutable, content-addressed attempt record. Separate seam so a
+    write failure here can be injected by tests (18321030 finding 2)."""
+    data = canon.canonical_bytes(record)
+    rec_sha = canon.bytes_digest(data)
+    rec_path = os.path.join(q_out, f"qualification-attempt-{rec_sha}.json")
+    with open(rec_path, "xb") as f:
+        f.write(data)
+    return rec_sha, rec_path
+
+
+def append_ledger(q_out, entry):
+    """Ledger projection of the attempt records. Separate seam so a write
+    failure here can be injected by tests (18321030 finding 2). The ledger
+    is a convenience view; refusal never depends on it alone."""
+    ledger = os.path.join(q_out, "qualification-ledger.json")
+    entries = canon.load_json(ledger)["attempts"] if os.path.isfile(ledger) else []
+    entries.append(entry)
+    canon.write_canonical(ledger, {
+        "artifact_version": "foundry-pass-2-qualification-ledger/experimental-v0.1",
+        "attempts": entries})
+    return ledger
+
+
+HEAD_RE = re.compile(r"[0-9a-f]{40}")
+
+
+def valid_head(head):
+    """A head is exactly one lowercase 40-hex commit sha. Anything else
+    (empty string from a failed git, the literal HEAD of an empty repo, a
+    path fragment) is refused before it can name a ledger line or be
+    interpolated into a reservation path (adversary F2, F3)."""
+    return isinstance(head, str) and HEAD_RE.fullmatch(head) is not None
+
+
 def git_head():
-    head = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True,
-                          text=True, cwd=PASS2).stdout.strip()
-    dirty = subprocess.run(["git", "status", "--porcelain",
-                            "--untracked-files=no"], capture_output=True,
-                           text=True, cwd=PASS2).stdout.strip()
-    return head, dirty == ""
+    """Exact commit sha and clean-tree flag, or a hard stop. A git failure
+    used to read as head '' with a clean tree (adversary F2: two model
+    calls spent at no head, ledger line naming no head)."""
+    rev = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True,
+                         text=True, cwd=PASS2)
+    status = subprocess.run(["git", "status", "--porcelain",
+                             "--untracked-files=no"], capture_output=True,
+                            text=True, cwd=PASS2)
+    if rev.returncode != 0 or status.returncode != 0:
+        raise SystemExit("qualification refused: git could not report the "
+                         f"head (rev-parse rc={rev.returncode} "
+                         f"{rev.stderr.strip()[:200]!r}; status "
+                         f"rc={status.returncode} {status.stderr.strip()[:200]!r})")
+    head = rev.stdout.strip()
+    if not valid_head(head):
+        raise SystemExit("qualification refused: git reported "
+                         f"{head[:60]!r}, not a 40-hex commit sha")
+    return head, status.stdout.strip() == ""
+
+
+STALE_MANIFEST = "stale-transcript-manifest.json"
+
+
+def _fsync_path(path):
+    fd = os.open(path, os.O_RDONLY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
+def stash_stale_transcript(q_out, head):
+    """The working transcript file has a fixed name; a copy left by a prior
+    attempt made a later zero-call abort look like a spent attempt and
+    ledgered the prior attempt's evidence under the new head (adversary
+    F4). Before any session exists, any working file present is moved
+    aside to a content-addressed STALE sibling (never deleted), so that
+    after the run the working file exists only if THIS run wrote it.
+
+    The sibling's bytes are compared, never assumed, when a file of that
+    name already exists (adversary N5: a planted collision let the
+    working file be unlinked while the sibling held other bytes), the
+    sibling is fsynced before the working file is removed, and a manifest
+    records what the stashed transcript said about itself (attempt_id,
+    started_utc, preflight_result, how many model calls it recorded) and
+    which heads were reserved at the time, so a zero-call crash at an
+    earlier head keeps its proof (adversary N4)."""
+    working = os.path.join(q_out, "leak-probe-transcript.json")
+    if not os.path.isfile(working):
+        return None
+    with open(working, "rb") as f:
+        data = f.read()
+    digest = canon.bytes_digest(data)
+    stale = os.path.join(q_out, f"leak-probe-transcript-STALE-{digest}.json")
+    n = 0
+    while True:
+        try:
+            with open(stale, "xb") as f:
+                f.write(data)
+                f.flush()
+                os.fsync(f.fileno())
+            break
+        except FileExistsError:
+            with open(stale, "rb") as f:
+                existing = f.read()
+            if existing == data:
+                break  # the same bytes are already preserved under this name
+            n += 1
+            stale = os.path.join(
+                q_out, f"leak-probe-transcript-STALE-{digest}-{n}.json")
+    _fsync_path(q_out)
+    try:
+        meta = json.loads(data.decode("utf-8"))
+    except Exception:  # noqa: BLE001 - unreadable stale bytes are still kept
+        meta = {}
+    transcripts = meta.get("transcripts") if isinstance(meta, dict) else None
+    calls = (sum(1 for t in transcripts if isinstance(t, dict)
+                 and t.get("result") is not None)
+             if isinstance(transcripts, list) else None)
+    res_dir = os.path.join(q_out, RESERVATIONS_DIR)
+    reserved = sorted(f[:-5] for f in os.listdir(res_dir)
+                      if f.endswith(".json")) if os.path.isdir(res_dir) else []
+    entry = {
+        "stale_path": os.path.relpath(stale, q_out), "sha256": digest,
+        "byte_length": len(data),
+        "attempt_id": meta.get("attempt_id") if isinstance(meta, dict) else None,
+        "started_utc": meta.get("started_utc") if isinstance(meta, dict) else None,
+        "preflight_result": (meta.get("preflight_result")
+                             if isinstance(meta, dict) else None),
+        "model_calls_recorded": calls,
+        "stashed_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "stashed_before_attempt_at_head": head,
+        "heads_reserved_at_stash_time": reserved,
+    }
+    manifest_path = os.path.join(q_out, STALE_MANIFEST)
+    manifest = {"artifact_version":
+                "foundry-pass-2-stale-transcript-manifest/experimental-v0.1",
+                "members": []}
+    if os.path.isfile(manifest_path):
+        try:
+            manifest = canon.load_json(manifest_path)
+        except Exception:  # noqa: BLE001 - never lose the stash over bookkeeping
+            manifest = {"artifact_version": manifest["artifact_version"],
+                        "members": [], "note": "prior manifest unreadable"}
+    manifest["members"].append(entry)
+    canon.write_canonical(manifest_path, manifest)
+    _fsync_path(manifest_path)
+    os.unlink(working)
+    _fsync_path(q_out)
+    return stale
+
+
+def known_attempt_ids(q_out):
+    """Every attempt_id already recorded under q_out (attempt records and
+    ledger). Evidence produced by this run must carry a NEW id."""
+    ids = set()
+    if os.path.isdir(q_out):
+        for name in os.listdir(q_out):
+            if name.startswith("qualification-attempt-") and name.endswith(".json"):
+                try:
+                    ids.add(canon.load_json(os.path.join(q_out, name)).get("attempt_id"))
+                except Exception:  # noqa: BLE001
+                    pass
+    ledger = os.path.join(q_out, "qualification-ledger.json")
+    if os.path.isfile(ledger):
+        try:
+            for a in canon.load_json(ledger)["attempts"]:
+                ids.add(a.get("attempt_id"))
+        except Exception:  # noqa: BLE001
+            pass
+    ids.discard(None)
+    return ids
 
 
 def qualify():
@@ -315,11 +591,29 @@ def qualify():
     if not os.path.isfile(os.path.join(FIXTURE_OUT, "review-input-bundle.json")):
         raise SystemExit("public fixture missing; run tools/emit_test_fixture.py")
     head, clean = git_head()
+    if not valid_head(head):
+        raise SystemExit(f"qualification refused: {str(head)[:60]!r} is not "
+                         "a 40-hex commit sha")
     if not clean:
         raise SystemExit("qualification refused: working tree is not clean "
                          f"at {head}")
+    # the ruling names a model ID; the operator states it from the ruling
+    # and it is checked against the harness's model BEFORE anything is
+    # spent, then recorded in the reservation, record, and ledger (adversary
+    # F6: an env override was accepted and ledgered silently). This is an
+    # attestation, not enforcement (adversary N1): the harness cannot read
+    # the ruling, so two matching operator strings satisfy it; the receipt
+    # makes the claim checkable, it does not make it true.
+    ruled_model = os.environ.get("FOUNDRY_QUALIFY_RULED_MODEL", "")
+    if not ruled_model:
+        raise SystemExit("qualification refused: FOUNDRY_QUALIFY_RULED_MODEL "
+                         "is not set; state the model ID the ruling names")
+    if ruled_model != MODEL:
+        raise SystemExit("qualification refused: the ruling names model "
+                         f"{ruled_model!r} but the harness would run "
+                         f"{MODEL!r}")
     os.makedirs(Q_OUT, exist_ok=True)
-    refuse_if_ledgered(os.path.join(Q_OUT, "qualification-ledger.json"), head)
+    refuse_if_spent(Q_OUT, head)
     # input identities are read BEFORE the attempt: anything that can fail
     # here fails with nothing spent (CI on c0b7deb: cli_version() ran after
     # the attempt and its failure would have lost the ledger line)
@@ -328,8 +622,32 @@ def qualify():
     template = load_template(FIXTURE_OUT)
     digests = bundle_digests(FIXTURE_OUT)
     schema = load_schema(FIXTURE_OUT)
+    # every deterministic check has passed; from here the head is spent
+    # whatever happens next (reservation is authoritative for refusal even
+    # if no later write succeeds)
+    reservation = reserve_head(Q_OUT, head, {
+        "reserved_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "model_id": MODEL, "ruled_model_id": ruled_model,
+        "model_version_or_build": cli_build,
+        "fixture_bindings": digests, "attempts_allowed": QUALIFY_ATTEMPTS})
+    # a working transcript left by a prior attempt must not be mistaken for
+    # this run's evidence (adversary F4); ids already recorded must not
+    # reappear as this run's attempt
+    stale = stash_stale_transcript(Q_OUT, head)
+    prior_ids = known_attempt_ids(Q_OUT)
     cwd = tempfile.mkdtemp(prefix="foundry-qualify-a-")
-    session = make_session(system_prompt, cwd)
+    try:
+        session = make_session(system_prompt, cwd, QUALIFY_ATTEMPTS)
+    except BaseException as err:  # noqa: B036 - zero-call, reported as such
+        raise SystemExit("qualification did not start an attempt: session "
+                         f"construction failed: {type(err).__name__}: "
+                         f"{str(err)[:300]} (head stays reserved)")
+    # the session must SAY what it allows; a session that does not expose
+    # its retry policy cannot be trusted to have one (adversary F5)
+    if getattr(session, "attempts", None) != QUALIFY_ATTEMPTS:
+        raise SystemExit("qualification refused before any call: session "
+                         f"reports attempts={getattr(session, 'attempts', None)!r}; "
+                         f"the ruling allows exactly {QUALIFY_ATTEMPTS}")
     probe_digests = dict(digests, REVIEWER_IDENTITY_SHA256="0" * 64)
     transcript_path = os.path.join(Q_OUT, "leak-probe-transcript.json")
     result = "PASS"
@@ -354,9 +672,20 @@ def qualify():
         raise SystemExit("qualification did not start an attempt: "
                          f"{error or 'no evidence written'}")
     persisted = canon.load_json(transcript_path)
+    if persisted.get("attempt_id") in prior_ids:
+        raise SystemExit("qualification evidence carries a previously "
+                         f"recorded attempt_id {persisted.get('attempt_id')}; "
+                         "this run produced no evidence of its own")
     calls = sum(1 for t in persisted["transcripts"] if t["result"] is not None)
-    invocations = sum(t.get("cli_invocations", 1 if t["result"] is not None
-                            else 0) for t in persisted["transcripts"])
+    if hasattr(session, "last_invocations"):
+        invocations = sum(t.get("cli_invocations", 1 if t["result"] is not None
+                                else 0) for t in persisted["transcripts"])
+        accounting = "session-reported"
+    else:
+        # the session never reported what it ran; a number here would be
+        # the harness's guess published as a receipt (adversary F5)
+        invocations = None
+        accounting = "unavailable"
     if persisted.get("preflight_result") == "IN-PROGRESS" and result == "FAIL":
         # the harness never finalized (interrupted mid-attempt): ledger the
         # spent attempt as FAIL rather than exit without a line
@@ -393,6 +722,13 @@ def qualify():
         "error": error,
         "model_calls": calls,
         "cli_invocations": invocations,
+        "invocation_accounting": accounting,
+        "attempts_allowed": QUALIFY_ATTEMPTS,
+        "ruled_model_id": ruled_model,
+        "stale_transcript_stashed": (os.path.relpath(stale, Q_OUT)
+                                     if stale else None),
+        "reservation_path": os.path.relpath(reservation, Q_OUT),
+        "reservation_sha256": _sha(reservation),
         "failed_probes": persisted.get("failed_probes", []),
         "evidence_path": evidence_file,
         "evidence_sha256": evidence_sha,
@@ -404,26 +740,24 @@ def qualify():
         "system_prompt_sha256": _sha(os.path.join(
             ARI, "reviewer-system-prompt-v0.1.md")),
     }
-    data = canon.canonical_bytes(record)
-    rec_sha = canon.bytes_digest(data)
-    rec_path = os.path.join(Q_OUT, f"qualification-attempt-{rec_sha}.json")
-    with open(rec_path, "xb") as f:
-        f.write(data)
-    ledger = os.path.join(Q_OUT, "qualification-ledger.json")
-    entries = canon.load_json(ledger)["attempts"] if os.path.isfile(ledger) else []
-    entries.append({"attempt_id": record["attempt_id"], "head": head,
-                    "model": MODEL, "result": result, "model_calls": calls,
-                    "cli_invocations": invocations,
-                    "evidence_path": evidence_file,
-                    "evidence_sha256": evidence_sha, "record_sha256": rec_sha,
-                    "started_utc": record["started_utc"]})
-    canon.write_canonical(ledger, {
-        "artifact_version": "foundry-pass-2-qualification-ledger/experimental-v0.1",
-        "attempts": entries})
+    rec_sha, _rec_path = write_attempt_record(Q_OUT, record)
+    append_ledger(Q_OUT, {
+        "attempt_id": record["attempt_id"], "head": head,
+        "model": MODEL, "result": result, "model_calls": calls,
+        "cli_invocations": invocations,
+        "invocation_accounting": accounting,
+        "attempts_allowed": QUALIFY_ATTEMPTS,
+        "reservation_path": record["reservation_path"],
+        "evidence_path": evidence_file,
+        "evidence_sha256": evidence_sha, "record_sha256": rec_sha,
+        "started_utc": record["started_utc"]})
+    shown = "unverified" if invocations is None else str(invocations)
     print("QUALIFICATION LEDGER LINE:")
     print(f"head {head} | model {MODEL} | attempt {record['attempt_id']} | "
-          f"calls {calls} | invocations {invocations} | result {result} | "
-          f"evidence {evidence_sha} ({evidence_file}) | record {rec_sha}")
+          f"calls {calls} | invocations {shown} (allowed "
+          f"{QUALIFY_ATTEMPTS} per call) | result {result} | "
+          f"evidence {evidence_sha} ({evidence_file}) | record {rec_sha} | "
+          f"reservation {record['reservation_path']}")
     if error:
         print("failure:", error)
     raise SystemExit(0 if result == "PASS" else 1)

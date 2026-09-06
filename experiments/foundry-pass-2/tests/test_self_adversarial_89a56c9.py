@@ -49,11 +49,18 @@ class ConformantSession:
     built from the probe record it was shown; refuses the access probe."""
     model = "fake"
 
+    attempts = 1
+
     def __init__(self):
         self.calls = 0
 
     def run(self, prompt):
         self.calls += 1
+        # a real session reports every CLI invocation it made (hole 4);
+        # the qualify path refuses to publish a count a session never
+        # reported (adversary F5), so the fake reports one per call
+        self.last_invocations = 1
+        self.last_invocation_log = [{"invocation": 1, "outcome": "fake"}]
         if self.calls == 1:
             shard = json.loads(prompt.split(reviewer.SHARD_SEPARATOR)[1]
                                .split("--- END REVIEW SHARD ---")[0])
@@ -156,10 +163,11 @@ class Hole2SpentCallIsAlwaysLedgered(unittest.TestCase):
         # CI runners carry no `claude` binary (run 33389234939 went red on
         # exactly this); the build string is an input identity, stubbed here
         run_reviewer_a.cli_version = lambda: "fake-cli"
+        os.environ["FOUNDRY_QUALIFY_RULED_MODEL"] = "fake"
 
         self.sessions = []
 
-        def make(system_prompt, cwd):
+        def make(system_prompt, cwd, attempts=3):
             s = ConformantSession()
             self.sessions.append(s)
             return s
@@ -172,6 +180,7 @@ class Hole2SpentCallIsAlwaysLedgered(unittest.TestCase):
     def tearDown(self):
         for k, v in self.saved.items():
             setattr(run_reviewer_a, k, v)
+        os.environ.pop("FOUNDRY_QUALIFY_RULED_MODEL", None)
         shutil.rmtree(self.q)
 
     def test_harness_error_after_call_is_ledgered_and_head_refused(self):
