@@ -139,9 +139,45 @@ def load_json_regular(path):
     return json.loads(read_regular_bytes(path).decode("utf-8"))
 
 
+class ShortWriteError(OSError):
+    """os.write returned a count that does not cover the bytes requested (a
+    short, zero, negative, non-integer, or out-of-range count). The caller
+    refuses to treat the destination as written."""
+
+
+os_write = os.write  # single seam so tests can inject short writes
+
+
+def write_all(fd, data, what="write"):
+    """Persist every byte of `data` to `fd`, or raise.
+
+    A successful os.write may legally return fewer bytes than requested
+    without raising; one call that ignores the count can install a
+    truncated file and report success with a digest of bytes that never
+    reached disk (Ari, discussioncomment-18322012). This loops over a
+    memoryview until the whole buffer is written and raises
+    ShortWriteError on a zero, negative, non-integer, or out-of-range
+    count so the caller fails closed."""
+    view = memoryview(data).cast("B")
+    total = len(view)
+    written = 0
+    while written < total:
+        n = os_write(fd, view[written:])
+        if (not isinstance(n, int) or isinstance(n, bool)
+                or n <= 0 or n > total - written):
+            raise ShortWriteError(
+                f"{what}: os.write returned {n!r} with {total - written} "
+                f"byte(s) remaining after {written} of {total}; refusing to "
+                "treat the destination as written")
+        written += n
+    return written
+
+
 def write_canonical_atomic(path, obj):
     """Canonical bytes to `path` via a same-directory temporary regular file,
-    fsync, atomic replace, directory fsync. Refuses a destination that
+    fsync, atomic replace, directory fsync. Every byte is written through
+    write_all (a short or zero-byte os.write is a refusal, and the
+    temporary file is removed, never installed). Refuses a destination that
     exists and is not a regular file (a symlink would otherwise be followed
     by open(..., 'wb') and its external target overwritten)."""
     refuse_unless_regular(path, "write destination")
@@ -150,8 +186,16 @@ def write_canonical_atomic(path, obj):
     os.makedirs(directory, exist_ok=True)
     fd, tmp = tempfile.mkstemp(prefix=".tmp-", suffix=".json", dir=directory)
     try:
-        os.write(fd, data)
+        write_all(fd, data, "write destination temporary file")
         os.fsync(fd)
+        # the count os.write reports is an assertion by the writer; the
+        # size the kernel reports after fsync is what actually landed
+        on_disk = os.fstat(fd).st_size
+        if on_disk != len(data):
+            raise ShortWriteError(
+                f"write destination temporary file: {on_disk} byte(s) on "
+                f"disk for a {len(data)} byte payload after fsync; refusing "
+                "to install the destination")
         os.close(fd)
         fd = None
         # the destination is re-inspected at the last moment; replace()

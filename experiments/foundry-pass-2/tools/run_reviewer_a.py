@@ -406,16 +406,63 @@ def reserve_head(q_out, head, meta):
             f"qualification refused: head {head} is already reserved "
             f"({os.path.relpath(path, q_out)}); a new attempt needs a new "
             "exact commit")
+    def fsync_best_effort():
+        # the reservation is authoritative by existence, so whatever is on
+        # disk must survive a crash that lands right after this function
+        # exits, on every exit path; failures here are swallowed because
+        # the refusal that follows must not depend on them
+        try:
+            os.fsync(fd)
+        except OSError:
+            pass
+        try:
+            dfd = os.open(os.path.dirname(path), os.O_RDONLY)
+            try:
+                os.fsync(dfd)
+            finally:
+                os.close(dfd)
+        except OSError:
+            pass
+
     try:
-        os.write(fd, data)
-        os.fsync(fd)
+        try:
+            canon.write_all(fd, data, "head reservation")
+            os.fsync(fd)
+            on_disk = os.fstat(fd).st_size
+            if on_disk != len(data):
+                raise canon.ShortWriteError(
+                    f"head reservation: {on_disk} byte(s) on disk for a "
+                    f"{len(data)} byte record after fsync")
+        except BaseException as err:
+            # The exclusive file exists and may hold partial bytes. No
+            # session exists yet, so nothing reached the model; but the
+            # reservation is authoritative by existence (spent_head_reasons
+            # refuses on lexists before it parses anything), so the head is
+            # treated as spent rather than un-reserved. Make that durable
+            # first, for every exception class including an operator
+            # interrupt; then refuse (OSError) or propagate (anything else).
+            fsync_best_effort()
+            if isinstance(err, OSError):
+                raise SystemExit(
+                    f"qualification refused: head reservation for {head} "
+                    f"could not be durably written ({err}); the head stays "
+                    "reserved and spent; no session was constructed; a new "
+                    "attempt needs a new exact commit")
+            raise
     finally:
         os.close(fd)
-    dfd = os.open(os.path.dirname(path), os.O_RDONLY)
     try:
-        os.fsync(dfd)
-    finally:
-        os.close(dfd)
+        dfd = os.open(os.path.dirname(path), os.O_RDONLY)
+        try:
+            os.fsync(dfd)
+        finally:
+            os.close(dfd)
+    except OSError as err:
+        raise SystemExit(
+            f"qualification refused: head reservation for {head} was written "
+            f"but its directory could not be fsynced ({err}); the head stays "
+            "reserved and spent; no session was constructed; a new attempt "
+            "needs a new exact commit")
     return path
 
 
