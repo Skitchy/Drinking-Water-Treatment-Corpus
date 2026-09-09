@@ -194,6 +194,7 @@ class _BindHarness(unittest.TestCase):
     def setUp(self):
         self.a = tempfile.mkdtemp(prefix="bind-")
         self.saved = {k: getattr(run_reviewer_a, k) for k in SAVED_KEYS}
+        self.saved_os_write = canon.os_write
         run_reviewer_a.MODEL = "fake"
         run_reviewer_a.git_head = lambda what="qualification": (HEAD, True)
         run_reviewer_a.cli_version = lambda: "fake-cli"
@@ -216,6 +217,7 @@ class _BindHarness(unittest.TestCase):
     def tearDown(self):
         for k, v in self.saved.items():
             setattr(run_reviewer_a, k, v)
+        canon.os_write = self.saved_os_write
         clear_binding_env()
         shutil.rmtree(self.a)
 
@@ -234,10 +236,13 @@ class _BindHarness(unittest.TestCase):
     def identity_path(self):
         return os.path.join(self.a, run_reviewer_a.IDENTITY_FILE)
 
-    def records(self):
-        return [canon.load_json(os.path.join(self.a, f))
+    def records(self, head=None):
+        recs = [canon.load_json(os.path.join(self.a, f))
                 for f in sorted(os.listdir(self.a))
                 if f.startswith(run_reviewer_a.BINDING_RECORD_PREFIX)]
+        if head is not None:
+            recs = [r for r in recs if r["head"] == head]
+        return recs
 
     def ledger(self):
         return canon.load_json(os.path.join(self.a, run_reviewer_a.BINDING_LEDGER))
@@ -361,10 +366,52 @@ class OneAttemptPerProbe(_BindHarness):
                 run_reviewer_a.git_head = lambda what="qualification", h=head: (h, True)
                 self.use_session(session)
                 self.assertEqual(self.bind().code, 1)
-                rec = self.records()[-1]
+                rec = self.records(head)[0]
                 self.assertEqual(rec["result"], "FAIL")
                 self.assertIsNone(rec["cli_invocations"])
                 self.assertIn("invocation count unavailable", rec["error"])
+                self.assertFalse(os.path.lexists(self.identity_path()))
+
+    def test_zero_or_mismatched_invocations_per_call_do_not_bind(self):
+        # Ari, review of 42bf839, blocking finding 2: exactly one CLI
+        # invocation per successful probe call, and the total reconciles
+        class Zero(BoundSession):
+            def run(self, prompt):
+                out = super().run(prompt)
+                self.last_invocations = 0
+                self.last_invocation_log = []
+                return out
+
+        class SecondCallZero(BoundSession):
+            def run(self, prompt):
+                out = super().run(prompt)
+                if self.calls == 2:
+                    self.last_invocations = 0
+                    self.last_invocation_log = []
+                return out
+        class TwoThenZero(BoundSession):
+            # total reconciles (2 for 2 calls) but the calls do not
+            def run(self, prompt):
+                out = super().run(prompt)
+                if self.calls == 1:
+                    self.last_invocations = 2
+                    self.last_invocation_log = [{"invocation": 1, "outcome": "fake"},
+                                                {"invocation": 2, "outcome": "fake"}]
+                else:
+                    self.last_invocations = 0
+                    self.last_invocation_log = []
+                return out
+        for name, session, head, expect in (
+                ("zero", Zero(), "3" * 40, "0 CLI invocation(s) for 2 probe call(s)"),
+                ("second-zero", SecondCallZero(), "4" * 40, "per call [1, 0]"),
+                ("two-then-zero", TwoThenZero(), "5" * 40, "per call [2, 0]")):
+            with self.subTest(session=name):
+                run_reviewer_a.git_head = lambda what="qualification", h=head: (h, True)
+                self.use_session(session)
+                self.assertEqual(self.bind().code, 1)
+                rec = self.records(head)[0]
+                self.assertEqual(rec["result"], "FAIL")
+                self.assertIn(expect, rec["error"])
                 self.assertFalse(os.path.lexists(self.identity_path()))
 
     def test_session_without_configuration_is_refused_before_any_call(self):
@@ -489,7 +536,7 @@ class AttemptRecordOnEveryOutcome(_BindHarness):
         self.assertEqual(self.bind().code, 0)
         rec = self.records()[0]
         self.assertEqual(rec["artifact_version"],
-                         "foundry-pass-2-binding-attempt/experimental-v0.1")
+                         "foundry-pass-2-binding-attempt/experimental-v0.2")
         self.assertEqual(rec["result"], "PASS")
         self.assertEqual(rec["head"], HEAD)
         self.assertEqual(rec["ruling_id"], RULING)
@@ -513,7 +560,12 @@ class AttemptRecordOnEveryOutcome(_BindHarness):
         self.assertEqual(entry["record_sha256"], name[len(run_reviewer_a.BINDING_RECORD_PREFIX):-5])
         self.assertEqual(entry["identity_sha256"], canon.file_sha256(self.identity_path()))
         identity = canon.load_json(self.identity_path())
-        self.assertEqual(identity["binding_attempt_record_sha256"], entry["record_sha256"])
+        # the record, written after the install, attests the identity's
+        # exact digest; the identity names the record only by attempt id
+        self.assertEqual(rec["identity_sha256"], canon.file_sha256(self.identity_path()))
+        self.assertEqual(identity["binding_attempt_id"], rec["attempt_id"])
+        self.assertNotIn("binding_attempt_record_sha256", identity)
+        self.assertEqual(rec["phase"], "finalized")
         self.assertEqual(identity["head"], HEAD)
         self.assertEqual(identity["leak_probe_transcript_sha256"], rec["evidence_sha256"])
         self.assertEqual(identity["leak_probe_evidence_path"], rec["evidence_path"])
@@ -590,8 +642,123 @@ class AttemptRecordOnEveryOutcome(_BindHarness):
         self.assertEqual(rec[0]["ruling_id"], RULING)
         self.assertEqual(rec[0]["result"], "PASS")
         self.assertIn("KeyboardInterrupt", rec[0]["record_write_interrupted"])
+        # the record is the last artifact: the identity it attests exists
+        self.assertTrue(canon.is_regular(self.identity_path()))
+        self.assertEqual(rec[0]["identity_sha256"], canon.file_sha256(self.identity_path()))
+        self.assertIn("already exists", str(self.bind()))
+
+    def test_install_failure_is_recorded_as_fail_with_no_identity(self):
+        # Ari, review of 42bf839, blocking finding 3: the record is written
+        # after the install and says what happened to it
+        real = self.saved_os_write
+        canon.os_write = (lambda fd, view: 0
+                          if b"reviewer-identity/experimental" in bytes(view[:96])
+                          else real(fd, view))   # only the identity write fails
+        try:
+            exc = self.bind()
+        finally:
+            canon.os_write = self.saved_os_write
+        self.assertIn("identity temporary file", str(exc))
+        rec = self.records()
+        self.assertEqual(len(rec), 1)
+        self.assertEqual(rec[0]["result"], "FAIL")
+        self.assertEqual(rec[0]["phase"], "install")
+        self.assertIn("identity not installed", rec[0]["error"])
+        self.assertIsNone(rec[0]["identity_sha256"])
+        self.assertEqual(rec[0]["model_calls"], 2)
+        self.assertFalse(os.path.lexists(self.identity_path()))
+        entry = self.ledger()["attempts"][0]
+        self.assertEqual(entry["result"], "FAIL")
+        self.assertIsNone(entry["identity_sha256"])
+        self.assert_spent(self.bind(), "reservation", "1 attempt record(s)")
+
+    def test_post_reservation_refusals_leave_a_record(self):
+        # Ari, blocking finding 3: a refusal after the reservation is an
+        # outcome; it gets the same immutable record, result REFUSED
+        def multi(system_prompt, cwd, attempts=3):
+            s = _bound(system_prompt, 3)
+            self.sessions.append(s)
+            return s
+        run_reviewer_a.make_session = multi
+        exc = self.bind()
+        self.assertIn("reports attempts=3", str(exc))
+        rec = self.records()
+        self.assertEqual(len(rec), 1)
+        self.assertEqual(rec[0]["result"], "REFUSED")
+        self.assertEqual(rec[0]["phase"], "session-construction")
+        self.assertEqual(rec[0]["model_calls"], 0)
+        self.assertIsNone(rec[0]["attempt_id"])
+        self.assertEqual(rec[0]["head"], HEAD)
+        self.assertEqual(rec[0]["ruling_id"], RULING)
+        self.assertEqual(canon.file_sha256(os.path.join(self.a, rec[0]["reservation_path"])),
+                         rec[0]["reservation_sha256"])
+        self.assertEqual(self.ledger()["attempts"][0]["result"], "REFUSED")
+
+    def test_evidence_loss_after_a_started_invocation_is_recorded_with_the_live_count(self):
+        # Ari, blocking finding 3: evidence loss must still record the head,
+        # ruling, reservation, accounting, and error
+        s = BoundInterruptedSession(interrupt_on=1)
+        self.use_session(s)
+        saved_write = canon.write_canonical_atomic
+        state = {"fail": False}
+
+        def failing_write(path, obj):
+            if state["fail"] and path.endswith("leak-probe-transcript.json"):
+                try:
+                    os.unlink(path)
+                except FileNotFoundError:
+                    pass
+                raise OSError("disk gone")
+            return saved_write(path, obj)
+        original_run = s.run
+
+        def run_then_lose_disk(prompt):
+            state["fail"] = True
+            return original_run(prompt)
+        s.run = run_then_lose_disk
+        canon.write_canonical_atomic = failing_write
+        try:
+            exc = self.bind()
+        finally:
+            canon.write_canonical_atomic = saved_write
+        self.assertIn("session reports 1 CLI invocation(s) started", str(exc))
+        rec = self.records()
+        self.assertEqual(len(rec), 1)
+        self.assertEqual(rec[0]["result"], "FAIL")
+        self.assertEqual(rec[0]["phase"], "reconcile")
+        self.assertEqual(rec[0]["cli_invocations"], 1)
+        self.assertEqual(rec[0]["live_invocations_started"], 1)
+        self.assertIn("evidence on disk was not available", rec[0]["invocation_accounting"])
+        self.assertIn("started", rec[0]["error"])
+        self.assertIsNone(rec[0]["evidence_sha256"])
         self.assertFalse(os.path.lexists(self.identity_path()))
         self.assert_spent(self.bind(), "reservation", "1 attempt record(s)")
+
+    def test_record_write_is_durable_and_never_leaves_a_partial_named_file(self):
+        # pass three, finding 3: an interrupt inside the record write cannot
+        # leave a partial file under the complete record's name
+        real = self.saved_os_write
+        state = {"armed": True}
+
+        def interrupt_mid_record(fd, view):
+            if state["armed"] and b"binding-attempt/experimental" in bytes(view[:96]):
+                state["armed"] = False
+                real(fd, view[:40])
+                raise KeyboardInterrupt()
+            return real(fd, view)
+        canon.os_write = interrupt_mid_record
+        try:
+            with self.assertRaises(KeyboardInterrupt):
+                run_reviewer_a.bind_identity(out_root=FIXTURE, a_out=self.a)
+        finally:
+            canon.os_write = self.saved_os_write
+        names = [f for f in os.listdir(self.a)
+                 if f.startswith(run_reviewer_a.BINDING_RECORD_PREFIX)]
+        self.assertEqual(len(names), 1)
+        self.assertEqual(canon.file_sha256(os.path.join(self.a, names[0])),
+                         names[0][len(run_reviewer_a.BINDING_RECORD_PREFIX):-5])
+        self.assertIn("record_write_interrupted", canon.load_json(os.path.join(self.a, names[0])))
+        self.assertEqual([f for f in os.listdir(self.a) if f.startswith(".tmp-")], [])
 
     def test_record_write_that_persists_then_raises_is_not_written_twice(self):
         # pass two, F7
@@ -629,7 +796,13 @@ class AttemptRecordOnEveryOutcome(_BindHarness):
         with self.assertRaises(OSError):
             run_reviewer_a.bind_identity(out_root=FIXTURE, a_out=self.a)
         self.assertEqual(self.sessions[0].calls, 2)
-        self.assertFalse(os.path.lexists(self.identity_path()))
+        # the install precedes the record; without a record the identity is
+        # installed but unattested, and review() refuses it (below); the
+        # head is spent by the reservation alone
+        self.assertTrue(canon.is_regular(self.identity_path()))
+        self.assertEqual(self.records(), [])
+        self.assertIn("already exists", str(self.bind()))
+        os.unlink(self.identity_path())
         self.assert_spent(self.bind(), "reservation")
         self.assertEqual(len(self.sessions), 1)
 
@@ -740,6 +913,42 @@ class AuxiliaryModelPolicy(_BindHarness):
         self.assertIn(HAIKU, self.records()[0]["error"])
         self.assertFalse(os.path.lexists(self.identity_path()))
 
+    def test_reviewer_model_must_be_reported_by_every_call(self):
+        # Ari, review of 42bf839, blocking finding 1: an accepted auxiliary
+        # model is additional, never a substitute for the ruled reviewer
+        self.usage = {HAIKU: {"canonicalModel": "claude-haiku-4-5", "inputTokens": 5}}
+        os.environ[run_reviewer_a.AUX_MODEL_POLICY_VAR] = f"accept:{HAIKU}"
+        self.assertEqual(self.bind().code, 1)
+        rec = self.records()[0]
+        self.assertEqual(rec["result"], "FAIL")
+        self.assertIn("reviewer model fake not reported", rec["error"])
+        self.assertFalse(os.path.lexists(self.identity_path()))
+
+    def test_reviewer_model_reported_with_no_tokens_is_not_credible(self):
+        # pass three, finding 4
+        for usage in ({"fake": {"canonicalModel": "fake", "inputTokens": 0, "outputTokens": 0}},
+                      {"fake": "not-a-dict"}, {"fake": {"canonicalModel": "fake"}}):
+            with self.subTest(usage=usage):
+                head = canon.bytes_digest(json.dumps(usage, sort_keys=True).encode())[:40]
+                run_reviewer_a.git_head = lambda what="qualification", h=head: (h, True)
+                self.usage = usage
+                self.assertEqual(self.bind().code, 1)
+                self.assertIn("reported with no tokens", self.records(head)[0]["error"])
+                self.assertFalse(os.path.lexists(self.identity_path()))
+
+    def test_reviewer_model_missing_on_the_second_call_only_fails(self):
+        class SecondCallHaikuOnly(BoundSession):
+            def run(self, prompt):
+                out = super().run(prompt)
+                if self.calls == 2:
+                    out["modelUsage"] = {HAIKU: {"canonicalModel": "claude-haiku-4-5"}}
+                return out
+        os.environ[run_reviewer_a.AUX_MODEL_POLICY_VAR] = f"accept:{HAIKU}"
+        self.use_session(SecondCallHaikuOnly())
+        self.assertEqual(self.bind().code, 1)
+        self.assertIn("forbidden-access: reviewer model fake not reported",
+                      self.records()[0]["error"])
+
     def test_reject_with_only_the_reviewer_model_observed_binds(self):
         self.usage = {"fake": {"canonicalModel": "fake", "inputTokens": 1,
                                "outputTokens": 1}}
@@ -761,7 +970,7 @@ class AuxiliaryModelPolicy(_BindHarness):
                 run_reviewer_a.git_head = lambda what="qualification", p=policy: (
                     ("c" if policy == "reject" else "d") * 40, True)
                 self.assertEqual(self.bind().code, 1)
-                rec = self.records()[-1]
+                rec = self.records(("c" if policy == "reject" else "d") * 40)[0]
                 self.assertEqual(rec["result"], "FAIL")
                 self.assertIn("could not be checked", rec["error"])
                 for call in rec["observed_model_usage"]:
@@ -787,10 +996,10 @@ class AuxiliaryModelPolicy(_BindHarness):
                     self.sessions.append(s)
                     return s
                 run_reviewer_a.make_session = make
-                run_reviewer_a.git_head = lambda what="qualification", b=str(bad): (
-                    canon.bytes_digest(b.encode())[:40], True)
+                head = canon.bytes_digest(str(bad).encode())[:40]
+                run_reviewer_a.git_head = lambda what="qualification", h=head: (h, True)
                 self.assertEqual(self.bind().code, 1)
-                self.assertIn("could not be checked", self.records()[-1]["error"])
+                self.assertIn("could not be checked", self.records(head)[0]["error"])
                 self.assertFalse(os.path.lexists(self.identity_path()))
 
     def test_empty_usage_on_the_second_call_only_fails(self):
@@ -821,6 +1030,39 @@ class AuxiliaryModelPolicy(_BindHarness):
                 os.environ[run_reviewer_a.AUX_MODEL_POLICY_VAR] = bad
                 self.assert_refused_before_reservation(
                     self.bind(), run_reviewer_a.AUX_MODEL_POLICY_VAR)
+
+    def test_forged_policy_is_rerun_against_the_verified_usage_at_review(self):
+        # pass three, finding 2: identity and record both rewritten to say
+        # "reject" over a transcript that reported the accepted Haiku call
+        self.usage = HAIKU_USAGE
+        os.environ[run_reviewer_a.AUX_MODEL_POLICY_VAR] = f"accept:{HAIKU}"
+        self.assertEqual(self.bind().code, 0)
+        identity = canon.load_json(self.identity_path())
+        forged_policy = dict(identity["auxiliary_model_policy"], policy="reject",
+                             auxiliary_model=None, disclosed_role=None)
+        identity["auxiliary_model_policy"] = forged_policy
+        os.unlink(self.identity_path())
+        canon.write_canonical(self.identity_path(), identity)
+        new_sha = canon.file_sha256(self.identity_path())
+        name = [f for f in os.listdir(self.a)
+                if f.startswith(run_reviewer_a.BINDING_RECORD_PREFIX)][0]
+        record = canon.load_json(os.path.join(self.a, name))
+        record["auxiliary_model_policy"] = forged_policy
+        record["identity_sha256"] = new_sha
+        data = canon.canonical_bytes(record)
+        os.unlink(os.path.join(self.a, name))
+        with open(os.path.join(self.a, f"{run_reviewer_a.BINDING_RECORD_PREFIX}{canon.bytes_digest(data)}.json"), "wb") as f:
+            f.write(data)
+        made = []
+
+        def factory(system_prompt, cwd):
+            made.append(cwd)
+            return BoundSession(system_prompt)
+        with self.assertRaises(SystemExit) as ctx:
+            run_reviewer_a.review(1, session_factory=factory, out_root=FIXTURE, a_out=self.a)
+        self.assertIn("verified probe evidence violates the auxiliary model policy",
+                      str(ctx.exception))
+        self.assertEqual(made, [])
 
     def test_policy_record_names_its_own_limit(self):
         self.assertEqual(self.bind().code, 0)
@@ -1019,11 +1261,31 @@ class ReviewTimeEnforcement(_BindHarness):
             return str(err)
         return None
 
-    def rewrite_identity(self, **changes):
+    def rewrite_identity(self, reattest=True, **changes):
+        """Edit the identity on disk. The binding record attests the
+        identity's exact digest, so by default the record is re-attested to
+        the edited bytes (rewritten under its new content-addressed name):
+        that models a forger who can write records too, and lets each deeper
+        check be exercised on its own. reattest=False leaves the record as
+        it was, so the digest attestation itself is what fires."""
         identity = canon.load_json(self.identity_path())
         identity.update(changes)
         os.unlink(self.identity_path())
         canon.write_canonical(self.identity_path(), identity)
+        if reattest:
+            new_sha = canon.file_sha256(self.identity_path())
+            for name in os.listdir(self.a):
+                if not name.startswith(run_reviewer_a.BINDING_RECORD_PREFIX):
+                    continue
+                path = os.path.join(self.a, name)
+                record = canon.load_json(path)
+                if record.get("attempt_id") != identity.get("binding_attempt_id"):
+                    continue
+                record["identity_sha256"] = new_sha
+                data = canon.canonical_bytes(record)
+                os.unlink(path)
+                with open(os.path.join(self.a, f"{run_reviewer_a.BINDING_RECORD_PREFIX}{canon.bytes_digest(data)}.json"), "wb") as f:
+                    f.write(data)
 
     def test_matching_state_reaches_a_session(self):
         err = self.review()
@@ -1130,13 +1392,22 @@ class ReviewTimeEnforcement(_BindHarness):
             with self.subTest(field=field):
                 original = canon.load_json(self.identity_path())[field]
                 self.rewrite_identity(**{field: value})
-                err = self.review()
-                if field == "bindings":
-                    self.assertIn("bundle changed since identity was bound", err)
-                else:
-                    self.assertIn(f"identity {field} does not match the binding attempt record", err)
-                self.assertEqual(self.made, [])
-                self.rewrite_identity(**{field: original})
+                try:
+                    err = self.review()
+                    if field == "bindings":
+                        self.assertIn("bundle changed since identity was bound", err)
+                    elif field == "binding_attempt_id":
+                        # the verified transcript names the real attempt first
+                        self.assertIn("the probe evidence it names records attempt", err)
+                    elif field == "observed_model_usage":
+                        self.assertIn("does not match the verified probe evidence", err)
+                    elif field == "auxiliary_model_policy":
+                        self.assertIn("auxiliary model policy is malformed", err)
+                    else:
+                        self.assertIn("binding attempt record", err)
+                    self.assertEqual(self.made, [])
+                finally:
+                    self.rewrite_identity(**{field: original})
 
     def test_published_configuration_must_hash_to_its_digest(self):
         identity = canon.load_json(self.identity_path())
@@ -1161,6 +1432,13 @@ class ReviewTimeEnforcement(_BindHarness):
                 self.assertEqual(self.made, [])
                 self.rewrite_identity(**{field: original})
 
+    def test_any_edit_without_reattestation_is_refused_by_the_digest(self):
+        self.rewrite_identity(reattest=False, operator_lineage="someone else")
+        err = self.review()
+        self.assertIn("attests identity", err)
+        self.assertIn("edited or replaced", err)
+        self.assertEqual(self.made, [])
+
     def test_missing_reservation_is_refused(self):
         # adversary finding 2
         os.unlink(run_reviewer_a.reservation_path(self.a, HEAD))
@@ -1177,6 +1455,47 @@ class ReviewTimeEnforcement(_BindHarness):
         err = self.review()
         self.assertIn("lacks bound fields ['ruling_id']", err)
         self.assertEqual(self.made, [])
+
+    def test_non_regular_record_is_refused_in_the_harness_words(self):
+        # pass three, finding 5
+        for kind in ("fifo", "symlink"):
+            with self.subTest(kind=kind):
+                path = os.path.join(self.a, f"{run_reviewer_a.BINDING_RECORD_PREFIX}{'7' * 64}.json")
+                if kind == "fifo":
+                    os.mkfifo(path)
+                else:
+                    os.symlink(os.path.join(self.a, "nowhere.json"), path)
+                err = self.review()
+                self.assertIn("is not a regular file", err)
+                self.assertEqual(self.made, [])
+                os.unlink(path)
+
+    def test_identity_claims_are_recomputed_from_the_verified_transcript(self):
+        # pass three, finding 2: a forger who rewrites both the identity and
+        # the record still loses to the transcript the digest check just
+        # verified
+        identity = canon.load_json(self.identity_path())
+        probes = json.loads(json.dumps(identity["leak_probes"]))
+        probes[0]["result"] = "FAIL-EDITED"
+        self.rewrite_identity(leak_probes=probes,
+                              leak_probes_sha256=canon.content_digest(probes))
+        self.assertIn("leak_probes_sha256 does not match the verified probe evidence",
+                      self.review())
+        self.rewrite_identity(leak_probes=identity["leak_probes"],
+                              leak_probes_sha256=identity["leak_probes_sha256"],
+                              binding_attempt_id="00000000-0000-0000-0000-000000000000")
+        self.assertIn("the probe evidence it names records attempt", self.review())
+        self.rewrite_identity(binding_attempt_id=identity["binding_attempt_id"],
+                              observed_model_usage=[])
+        self.assertIn("observed_model_usage does not match the verified probe evidence",
+                      self.review())
+        self.rewrite_identity(observed_model_usage=identity["observed_model_usage"],
+                              session_ids_sha256="8" * 64)
+        self.assertIn("session_ids_sha256 does not match the verified probe evidence",
+                      self.review())
+        self.rewrite_identity(session_ids_sha256=identity["session_ids_sha256"])
+        self.assertIsNone(self.review())
+        self.assertEqual(len(self.made), 1)
 
     def test_symlinked_identity_is_refused_and_never_followed(self):
         # adversary finding 12
@@ -1233,23 +1552,31 @@ class ReviewTimeEnforcement(_BindHarness):
         self.assertIn("bundle changed", self.review())
         self.assertEqual(self.made, [])
 
-    def test_identity_naming_a_failed_record_is_refused(self):
-        # pass two, F4: the record's result and purpose are load-bearing
-        identity = canon.load_json(self.identity_path())
-        name = f"{run_reviewer_a.BINDING_RECORD_PREFIX}{identity['binding_attempt_record_sha256']}.json"
+    def test_identity_over_a_failed_or_forged_record_is_refused(self):
+        # pass two, F4, and Ari's finding 3: the record is found by attempt
+        # id, must be unique, must say PASS, and must attest this identity
+        name = [f for f in os.listdir(self.a)
+                if f.startswith(run_reviewer_a.BINDING_RECORD_PREFIX)][0]
         record = canon.load_json(os.path.join(self.a, name))
-        for change in ({"result": "FAIL"}, {"purpose": "qualification"}):
-            with self.subTest(change=change):
-                forged = dict(record, **change)
-                data = canon.canonical_bytes(forged)
-                digest = canon.bytes_digest(data)
-                with open(os.path.join(self.a, f"{run_reviewer_a.BINDING_RECORD_PREFIX}{digest}.json"), "wb") as f:
-                    f.write(data)
-                self.rewrite_identity(binding_attempt_record_sha256=digest)
-                err = self.review()
-                self.assertIn("not a passed identity-binding attempt", err)
-                self.assertEqual(self.made, [])
-                self.rewrite_identity(binding_attempt_record_sha256=identity["binding_attempt_record_sha256"])
+        # a second record for the same attempt: ambiguity is a refusal
+        forged = dict(record, result="FAIL", identity_sha256=None)
+        data = canon.canonical_bytes(forged)
+        extra = os.path.join(self.a, f"{run_reviewer_a.BINDING_RECORD_PREFIX}{canon.bytes_digest(data)}.json")
+        with open(extra, "wb") as f:
+            f.write(data)
+        self.assertIn("2 binding attempt record(s) name attempt", self.review())
+        self.assertEqual(self.made, [])
+        os.unlink(os.path.join(self.a, name))
+        # only the FAIL record remains: refused as not a passed attempt
+        self.assertIn("not a passed identity-binding attempt", self.review())
+        os.unlink(extra)
+        # a PASS record attesting a different identity digest
+        forged = dict(record, identity_sha256="9" * 64)
+        data = canon.canonical_bytes(forged)
+        with open(os.path.join(self.a, f"{run_reviewer_a.BINDING_RECORD_PREFIX}{canon.bytes_digest(data)}.json"), "wb") as f:
+            f.write(data)
+        self.assertIn("attests identity 9999", self.review())
+        self.assertEqual(self.made, [])
 
 
 @unittest.skipUnless(FIXTURE_READY, "public fixture not emitted")

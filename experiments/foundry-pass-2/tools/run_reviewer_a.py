@@ -246,26 +246,37 @@ def observed_model_usage(persisted):
 
 
 def aux_policy_violations(usage, reviewer_model, policy):
-    """Model ids observed that the policy does not allow. The reviewer model
-    is always allowed, by its exact id; under accept, the auxiliary model
-    the ruling names is allowed by its exact id (the id the CLI reports,
-    not a canonical alias: an alias field is the model's own claim, pass
-    two F2); anything else is a violation."""
-    aux = {policy["auxiliary_model"]} if policy["policy"] == "accept" else set()
+    """Model usage the policy does not allow. Every call that reports usage
+    must report the ruled reviewer model by its exact id (Ari, exact-diff
+    review of 42bf839, blocking finding 1: an accepted auxiliary model is
+    additional, never a substitute); under accept, the auxiliary model the
+    ruling names is allowed by its exact id (the id the CLI reports, not a
+    canonical alias, which is the entry's own claim); anything else is a
+    violation."""
+    aux = ({policy.get("auxiliary_model")} if policy.get("policy") == "accept"
+           else set())
     violations = []
     for call in usage:
+        ids = [item["model_id"] for item in call["models"]]
+        if ids and reviewer_model not in ids:
+            violations.append(f"{call['probe_id']}: reviewer model "
+                              f"{reviewer_model} not reported")
         for item in call["models"]:
-            model_id = item["model_id"]
-            # the reviewer model is matched by its exact id only: a hostile
-            # entry cannot borrow it through a canonicalModel field
-            # (isolated adversary on this head, finding 4)
-            if model_id == reviewer_model:
-                continue
-            if model_id in aux:
+            if item["model_id"] == reviewer_model:
+                tokens = [item.get(k) for k in ("inputTokens", "outputTokens",
+                                                "cacheReadInputTokens",
+                                                "cacheCreationInputTokens")]
+                if not any(isinstance(t, int) and not isinstance(t, bool) and t > 0
+                           for t in tokens):
+                    # the ruled model is named but credited with no work:
+                    # not a credible report of a call (pass three, finding 4)
+                    violations.append(f"{call['probe_id']}: reviewer model "
+                                      f"{reviewer_model} reported with no tokens")
+        for model_id in ids:
+            if model_id == reviewer_model or model_id in aux:
                 continue
             violations.append(f"{call['probe_id']}: {model_id}")
     return violations
-
 
 os_link = os.link  # single seam so tests can plant a file between check and install
 
@@ -448,9 +459,15 @@ def bind_identity(out_root=None, a_out=None, session_factory=None):
     schema = load_schema(out_root)
     harness_sha = _sha(os.path.join(PASS2, "engine", "reviewer.py"))
     # every deterministic check has passed; from here the head is spent
-    # whatever happens next
+    # whatever happens next, and every exit writes ONE immutable binding
+    # attempt record that says what actually happened, including whether
+    # the identity was installed and with which digest (Ari, exact-diff
+    # review of 42bf839, blocking finding 3: a record written before the
+    # install said PASS for an install that failed, and refusals after the
+    # reservation left no record at all)
+    reserved_utc = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     reservation = reserve_head(a_out, head, {
-        "reserved_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "reserved_utc": reserved_utc,
         "purpose": "identity-binding",
         "model_id": MODEL, "ruled_model_id": ruled_model,
         "ruling_id": ruling_id,
@@ -460,92 +477,8 @@ def bind_identity(out_root=None, a_out=None, session_factory=None):
         "harness_sha256": harness_sha},
         artifact_version="foundry-pass-2-binding-reservation/experimental-v0.1",
         what=what)
-    stale = stash_stale_transcript(a_out, head)
-    prior_ids = known_attempt_ids(a_out, BINDING_RECORD_PREFIX, BINDING_LEDGER)
-    cwd = tempfile.mkdtemp(prefix="foundry-reviewer-a-bind-")
-    try:
-        session = session_factory(system_prompt, cwd, BINDING_ATTEMPTS)
-    except BaseException as err:  # noqa: B036 - zero-call, reported as such
-        raise SystemExit(f"{what} did not start an attempt: session "
-                         f"construction failed: {type(err).__name__}: "
-                         f"{str(err)[:300]} (head stays reserved)")
-    # the session must SAY what it allows and what it runs; one that does
-    # not expose its retry policy or its command line cannot be bound
-    if getattr(session, "attempts", None) != BINDING_ATTEMPTS:
-        raise SystemExit(f"{what} refused before any call: session reports "
-                         f"attempts={getattr(session, 'attempts', None)!r}; "
-                         f"the ruling allows exactly {BINDING_ATTEMPTS}")
-    if not (callable(getattr(session, "command", None))
-            and callable(getattr(session, "environment_boundary", None))
-            and isinstance(getattr(session, "timeout", None), int)
-            and not isinstance(getattr(session, "timeout", None), bool)
-            and getattr(session, "timeout", 0) > 0):
-        raise SystemExit(f"{what} refused before any call: session does not "
-                         "expose its command, environment boundary, and "
-                         "timeout; the identity cannot bind a configuration "
-                         "it cannot see (head stays reserved)")
-    # Probes run with a provisional identity digest (all zeros): the probe
-    # prompts are not reviews, and the bound identity includes the probe
-    # transcript digest, so it cannot exist before the probes do.
-    probe_digests = dict(digests, REVIEWER_IDENTITY_SHA256="0" * 64)
-    # Evidence-first: the harness writes every raw prompt and response to
-    # this path as it happens, and the complete failed-preflight record
-    # before any exception reaches us (discussioncomment-18197092). Every
-    # outcome also gets a content-addressed sibling (-FAILED- or -PASSED-)
-    # that no later attempt can rewrite.
-    transcript_path = os.path.join(a_out, "leak-probe-transcript.json")
-    result = "PASS"
-    error = None
-    try:
-        reviewer.run_leak_probes(
-            session, template, probe_digests, cwd, FORBIDDEN_TARGET,
-            evidence_path=transcript_path, schema=schema,
-            schema_validator=schema_validator)
-    except reviewer.ReviewerError as err:
-        result = "FAIL"
-        error = str(err)[:500]
-    except BaseException as err:  # noqa: B036 - a spent attempt is recorded
-        result = "FAIL"
-        error = f"harness aborted: {type(err).__name__}: {str(err)[:400]}"
-    receipt = reconcile_attempt(session, transcript_path, result, error,
-                                prior_ids, what)
-    persisted = receipt["persisted"]
-    usage = observed_model_usage(persisted)
-    violations = aux_policy_violations(usage, MODEL, policy)
-    unreported = [u["probe_id"] for u in usage if not u["model_usage_reported"]]
-    if violations and result == "PASS":
-        # the probes passed but the CLI reported a model the ruling did not
-        # allow: the attempt is spent and recorded, and no identity is bound
-        result = "FAIL"
-        error = ("auxiliary model policy violated: observed "
-                 + "; ".join(violations))[:500]
-    elif unreported and result == "PASS":
-        # a call that reports no model usage cannot show the policy was
-        # honoured (isolated adversary on this head, finding 3)
-        result = "FAIL"
-        error = ("auxiliary model policy could not be checked: no modelUsage "
-                 f"reported for {unreported}")[:500]
-    invocations = receipt["invocations"]
-    if result == "PASS" and not isinstance(invocations, int):
-        # the qualify receipt may publish "unverified"; a bound identity
-        # may not rest on a count the session could not or would not
-        # report (pass two, F5)
-        result = "FAIL"
-        error = ("invocation count unavailable: the session did not report "
-                 "a valid CLI invocation count; the ruling's budget cannot "
-                 f"be shown to have held ({receipt['accounting']})")[:500]
-    if (result == "PASS" and isinstance(invocations, int)
-            and invocations > receipt["calls"] * BINDING_ATTEMPTS):
-        # counting is not enforcement (Ari 18321030): a session that says
-        # it allows one attempt and then reports more invocations than
-        # calls has broken the ruling; the attempt is spent and recorded
-        # (isolated adversary on this head, finding 6)
-        result = "FAIL"
-        error = (f"session reported {invocations} CLI invocation(s) for "
-                 f"{receipt['calls']} probe call(s); the ruling allows "
-                 f"{BINDING_ATTEMPTS} per call")
-    record = {
-        "artifact_version": "foundry-pass-2-binding-attempt/experimental-v0.1",
+    outcome = {
+        "artifact_version": "foundry-pass-2-binding-attempt/experimental-v0.2",
         "purpose": "identity-binding",
         "reviewer_role": "reviewer_a",
         "model_id": MODEL,
@@ -553,135 +486,322 @@ def bind_identity(out_root=None, a_out=None, session_factory=None):
         "head": head,
         "ruling_id": ruling_id,
         "ruled_model_id": ruled_model,
-        "attempt_id": persisted["attempt_id"],
-        "started_utc": persisted["started_utc"],
-        "result": result,
-        "error": error,
-        "model_calls": receipt["calls"],
-        "cli_invocations": receipt["invocations"],
-        "invocation_accounting": receipt["accounting"],
-        "invocation_reconciliation": receipt["reconciliation"],
+        "attempt_id": None,
+        "started_utc": reserved_utc,
+        "result": None,
+        "phase": "reserved",
+        "error": None,
+        "model_calls": 0,
+        "cli_invocations": None,
+        "invocation_accounting": "unavailable",
+        "invocation_reconciliation": None,
+        "live_invocations_started": None,
         "attempts_allowed": BINDING_ATTEMPTS,
         "auxiliary_model_policy": policy,
-        "auxiliary_model_violations": violations,
-        "observed_model_usage": usage,
-        "stale_transcript_stashed": (os.path.relpath(stale, a_out)
-                                     if stale else None),
+        "auxiliary_model_violations": [],
+        "observed_model_usage": [],
+        "stale_transcript_stashed": None,
         "reservation_path": os.path.relpath(reservation, a_out),
         "reservation_sha256": _sha(reservation),
-        "failed_probes": persisted.get("failed_probes", []),
-        "evidence_path": receipt["evidence_file"],
-        "evidence_sha256": receipt["evidence_sha"],
+        "failed_probes": [],
+        "evidence_path": None,
+        "evidence_sha256": None,
         "output_schema_sha256": schema["sha256"],
         "bindings": digests,
         "harness_sha256": harness_sha,
         "task_prompt_template_sha256": _sha(os.path.join(
             ARI, "reviewer-task-template-v0.1.md")),
         "system_prompt_sha256": _sha(system_prompt_path),
-        "leak_probes_sha256": canon.content_digest(persisted.get("records", [])),
-        "session_ids_sha256": canon.content_digest(
-            [(t.get("result") or {}).get("session_id")
-             for t in persisted.get("transcripts", [])]),
+        "leak_probes_sha256": None,
+        "session_ids_sha256": None,
         "identity_path": IDENTITY_FILE,
+        "identity_sha256": None,
     }
-    # the immutable record exists before the identity does: an interrupt
-    # during the install leaves the reservation, the evidence, and this
-    # record, and no identity; review() refuses without one
-    try:
-        rec_sha, _rec_path = write_binding_record(a_out, record)
-    except BaseException as err:  # noqa: B036 - the record is the evidence
-        # the five things the ruling wants on disk for every outcome live
-        # in this one artifact; if its write is what was interrupted, try
-        # once more with the interruption named, then propagate unchanged
-        # (isolated adversary on this head, finding 7)
-        try:
-            if record["attempt_id"] not in known_attempt_ids(
-                    a_out, BINDING_RECORD_PREFIX, BINDING_LEDGER):
-                write_binding_record(a_out, dict(
-                    record, record_write_interrupted=f"{type(err).__name__}: "
-                                                     f"{str(err)[:200]}"))
-        except BaseException:  # noqa: B036, BLE001 - best effort only
-            pass
-        raise
-    identity_sha = None
-    if result == "PASS":
-        boundary = session.environment_boundary()
-        configuration = {"command": session.command()[:-1] + ["<system prompt>"],
-                         "timeout_s": session.timeout}
-        identity = {
-            "artifact_version": "foundry-pass-2-reviewer-identity/experimental-v0.2",
-            "reviewer_role": "reviewer_a",
-            "operator_lineage": "CC (Claude Code harness); fresh headless role "
-                                "sessions, not the interactive or builder session",
-            "model_provider": "Anthropic",
-            "model_id": MODEL,
-            "ruled_model_id": ruled_model,
-            "ruling_id": ruling_id,
-            "model_version_or_build": cli_build,
-            "head": head,
-            "system_prompt_sha256": record["system_prompt_sha256"],
-            "task_prompt_template_sha256": record["task_prompt_template_sha256"],
-            "output_schema_sha256": schema["sha256"],
-            "output_schema_model_visible": True,
-            "harness_sha256": harness_sha,
-            "parser_sha256": harness_sha,
-            "tool_allowlist_sha256": canon.content_digest([]),
-            "settings_sources_sha256": canon.content_digest(""),
-            "configuration_sha256": canon.content_digest(configuration),
-            "environment_boundary_sha256": canon.content_digest(boundary),
-            "leak_probe_transcript_sha256": receipt["evidence_sha"],
-            "leak_probe_evidence_path": receipt["evidence_file"],
-            "leak_probes_sha256": record["leak_probes_sha256"],
-            "session_ids_sha256": record["session_ids_sha256"],
-            "bound_before_first_real_review": True,
-            "eligible_for_binding": True,
-            "qualification_only": False,
-            "binding_attempts_allowed": BINDING_ATTEMPTS,
-            "binding_attempt_id": persisted["attempt_id"],
-            "binding_attempt_record_sha256": rec_sha,
-            "reservation_path": record["reservation_path"],
-            "reservation_sha256": record["reservation_sha256"],
-            "auxiliary_model_policy": policy,
-            "observed_model_usage": usage,
-            "bindings": digests,
-            "configuration": configuration,
-            "environment_boundary": boundary,
-            "leak_probes": persisted["records"],
-        }
-        identity_sha = install_identity_readback(identity_path, identity)
-        write_run_record_manifest(a_out)
-    append_binding_ledger(a_out, {
-        "attempt_id": record["attempt_id"], "head": head,
-        "ruling_id": ruling_id, "model": MODEL, "result": result,
-        "model_calls": record["model_calls"],
-        "cli_invocations": record["cli_invocations"],
-        "invocation_accounting": record["invocation_accounting"],
-        "invocation_reconciliation": record["invocation_reconciliation"],
-        "attempts_allowed": BINDING_ATTEMPTS,
-        "auxiliary_model_policy": policy["policy"],
-        "auxiliary_model_violations": violations,
-        "reservation_path": record["reservation_path"],
-        "evidence_path": record["evidence_path"],
-        "evidence_sha256": record["evidence_sha256"],
-        "record_sha256": rec_sha,
-        "identity_sha256": identity_sha,
-        "started_utc": record["started_utc"]})
-    shown = ("unverified" if record["cli_invocations"] is None
-             else str(record["cli_invocations"]))
-    print("IDENTITY BINDING LEDGER LINE:")
-    print(f"head {head} | ruling {ruling_id} | model {MODEL} | attempt "
-          f"{record['attempt_id']} | calls {record['model_calls']} | "
-          f"invocations {shown} (allowed {BINDING_ATTEMPTS} per call) | "
-          f"aux-policy {policy['policy']} | result {result} | evidence "
-          f"{record['evidence_sha256']} ({record['evidence_path']}) | record "
-          f"{rec_sha} | identity {identity_sha or 'none'} | reservation "
-          f"{record['reservation_path']}")
-    if error:
-        print("failure:", error)
-    if identity_sha:
-        print("REVIEWER_IDENTITY_SHA256:", identity_sha)
-    raise SystemExit(0 if result == "PASS" else 1)
 
+    def refuse(message):
+        outcome["result"] = "REFUSED"
+        outcome["error"] = message
+        raise SystemExit(message)
+
+    try:
+        outcome["phase"] = "stash"
+        stale = stash_stale_transcript(a_out, head)
+        outcome["stale_transcript_stashed"] = (os.path.relpath(stale, a_out)
+                                              if stale else None)
+        prior_ids = known_attempt_ids(a_out, BINDING_RECORD_PREFIX, BINDING_LEDGER)
+        cwd = tempfile.mkdtemp(prefix="foundry-reviewer-a-bind-")
+        outcome["phase"] = "session-construction"
+        try:
+            session = session_factory(system_prompt, cwd, BINDING_ATTEMPTS)
+        except BaseException as err:  # noqa: B036 - zero-call, reported as such
+            refuse(f"{what} did not start an attempt: session construction "
+                   f"failed: {type(err).__name__}: {str(err)[:300]} (head "
+                   "stays reserved)")
+        # the session must SAY what it allows and what it runs; one that does
+        # not expose its retry policy or its command line cannot be bound
+        if getattr(session, "attempts", None) != BINDING_ATTEMPTS:
+            refuse(f"{what} refused before any call: session reports "
+                   f"attempts={getattr(session, 'attempts', None)!r}; the "
+                   f"ruling allows exactly {BINDING_ATTEMPTS} (head stays "
+                   "reserved)")
+        if not (callable(getattr(session, "command", None))
+                and callable(getattr(session, "environment_boundary", None))
+                and isinstance(getattr(session, "timeout", None), int)
+                and not isinstance(getattr(session, "timeout", None), bool)
+                and getattr(session, "timeout", 0) > 0):
+            refuse(f"{what} refused before any call: session does not expose "
+                   "its command, environment boundary, and a positive timeout; "
+                   "the identity cannot bind a configuration it cannot see "
+                   "(head stays reserved)")
+        # Probes run with a provisional identity digest (all zeros): the
+        # probe prompts are not reviews, and the bound identity includes
+        # the probe transcript digest, so it cannot exist before the probes.
+        probe_digests = dict(digests, REVIEWER_IDENTITY_SHA256="0" * 64)
+        transcript_path = os.path.join(a_out, "leak-probe-transcript.json")
+        outcome["phase"] = "probes"
+        result = "PASS"
+        error = None
+        try:
+            reviewer.run_leak_probes(
+                session, template, probe_digests, cwd, FORBIDDEN_TARGET,
+                evidence_path=transcript_path, schema=schema,
+                schema_validator=schema_validator)
+        except reviewer.ReviewerError as err:
+            result = "FAIL"
+            error = str(err)[:500]
+        except BaseException as err:  # noqa: B036 - a spent attempt is recorded
+            result = "FAIL"
+            error = f"harness aborted: {type(err).__name__}: {str(err)[:400]}"
+        outcome["result"] = result
+        outcome["error"] = error
+        # the live count the session holds, kept on the record even when the
+        # evidence on disk is lost and reconcile_attempt refuses below
+        live_total = getattr(session, "total_invocations", None)
+        live_last = getattr(session, "last_invocations", None)
+        started = live_total if isinstance(live_total, int) else live_last
+        outcome["live_invocations_started"] = (
+            started if isinstance(started, int) and not isinstance(started, bool)
+            else None)
+        outcome["phase"] = "reconcile"
+        receipt = reconcile_attempt(session, transcript_path, result, error,
+                                    prior_ids, what)
+        persisted = receipt["persisted"]
+        usage = observed_model_usage(persisted)
+        violations = aux_policy_violations(usage, MODEL, policy)
+        unreported = [u["probe_id"] for u in usage if not u["model_usage_reported"]]
+        invocations = receipt["invocations"]
+        per_call = [t.get("cli_invocations") for t in persisted["transcripts"]
+                    if t.get("result") is not None]
+        if violations and result == "PASS":
+            # the probes passed but the CLI reported usage the ruling does
+            # not allow, or did not report the ruled reviewer model: the
+            # attempt is spent and recorded, and no identity is bound
+            result = "FAIL"
+            error = ("auxiliary model policy violated: observed "
+                     + "; ".join(violations))[:500]
+        elif unreported and result == "PASS":
+            # a call that reports no model usage cannot show the policy was
+            # honoured (isolated adversary on this head, finding 3)
+            result = "FAIL"
+            error = ("auxiliary model policy could not be checked: no "
+                     f"modelUsage reported for {unreported}")[:500]
+        if result == "PASS" and not isinstance(invocations, int):
+            # a bound identity may not rest on a count the session could
+            # not or would not report (pass two, F5)
+            result = "FAIL"
+            error = ("invocation count unavailable: the session did not "
+                     "report a valid CLI invocation count; the ruling's "
+                     f"budget cannot be shown to have held "
+                     f"({receipt['accounting']})")[:500]
+        if result == "PASS" and (
+                invocations != receipt["calls"] * BINDING_ATTEMPTS
+                or any(c != BINDING_ATTEMPTS for c in per_call)):
+            # counting is not enforcement (Ari 18321030): every successful
+            # probe call must have made exactly one CLI invocation and the
+            # total must reconcile; zero, more, or a mismatch has broken the
+            # ruling's sentence (Ari, review of 42bf839, blocking finding 2)
+            result = "FAIL"
+            error = (f"invocation accounting does not match the ruling: "
+                     f"{invocations} CLI invocation(s) for {receipt['calls']} "
+                     f"probe call(s), per call {per_call}; the ruling allows "
+                     f"exactly {BINDING_ATTEMPTS} per call")
+        outcome.update({
+            "attempt_id": persisted["attempt_id"],
+            "started_utc": persisted["started_utc"],
+            "result": result,
+            "error": error,
+            "model_calls": receipt["calls"],
+            "cli_invocations": invocations,
+            "invocation_accounting": receipt["accounting"],
+            "invocation_reconciliation": receipt["reconciliation"],
+            "auxiliary_model_violations": violations,
+            "observed_model_usage": usage,
+            "failed_probes": persisted.get("failed_probes", []),
+            "evidence_path": receipt["evidence_file"],
+            "evidence_sha256": receipt["evidence_sha"],
+            "leak_probes_sha256": canon.content_digest(persisted.get("records", [])),
+            "session_ids_sha256": canon.content_digest(
+                [(t.get("result") or {}).get("session_id")
+                 for t in persisted.get("transcripts", [])]),
+        })
+        if result == "PASS":
+            outcome["phase"] = "install"
+            boundary = session.environment_boundary()
+            configuration = {"command": session.command()[:-1] + ["<system prompt>"],
+                             "timeout_s": session.timeout}
+            identity = {
+                "artifact_version": "foundry-pass-2-reviewer-identity/experimental-v0.2",
+                "reviewer_role": "reviewer_a",
+                "operator_lineage": "CC (Claude Code harness); fresh headless role "
+                                    "sessions, not the interactive or builder session",
+                "model_provider": "Anthropic",
+                "model_id": MODEL,
+                "ruled_model_id": ruled_model,
+                "ruling_id": ruling_id,
+                "model_version_or_build": cli_build,
+                "head": head,
+                "system_prompt_sha256": outcome["system_prompt_sha256"],
+                "task_prompt_template_sha256": outcome["task_prompt_template_sha256"],
+                "output_schema_sha256": schema["sha256"],
+                "output_schema_model_visible": True,
+                "harness_sha256": harness_sha,
+                "parser_sha256": harness_sha,
+                "tool_allowlist_sha256": canon.content_digest([]),
+                "settings_sources_sha256": canon.content_digest(""),
+                "configuration_sha256": canon.content_digest(configuration),
+                "environment_boundary_sha256": canon.content_digest(boundary),
+                "leak_probe_transcript_sha256": receipt["evidence_sha"],
+                "leak_probe_evidence_path": receipt["evidence_file"],
+                "leak_probes_sha256": outcome["leak_probes_sha256"],
+                "session_ids_sha256": outcome["session_ids_sha256"],
+                "bound_before_first_real_review": True,
+                "eligible_for_binding": True,
+                "qualification_only": False,
+                "binding_attempts_allowed": BINDING_ATTEMPTS,
+                # the identity names its attempt; the record, written after
+                # the install, names the identity's digest; no cycle
+                "binding_attempt_id": persisted["attempt_id"],
+                "reservation_path": outcome["reservation_path"],
+                "reservation_sha256": outcome["reservation_sha256"],
+                "auxiliary_model_policy": policy,
+                "observed_model_usage": usage,
+                "bindings": digests,
+                "configuration": configuration,
+                "environment_boundary": boundary,
+                "leak_probes": persisted["records"],
+            }
+            outcome["identity_sha256"] = install_identity_readback(identity_path, identity)
+            write_run_record_manifest(a_out)
+        outcome["phase"] = "finalized"
+    except SystemExit as err:
+        if outcome["identity_sha256"] is None and outcome["result"] != "REFUSED":
+            outcome["result"] = "FAIL"
+            message = f"{err.code}"[:500]
+            if outcome["phase"] == "install":
+                message = f"identity not installed: {err.code}"[:500]
+            outcome["error"] = (f"{outcome['error']}; {message}"[:800]
+                                if outcome["error"] and message not in outcome["error"]
+                                else message)
+        raise
+    except BaseException as err:  # noqa: B036 - recorded, then propagated
+        if outcome["identity_sha256"] is None:
+            outcome["result"] = "FAIL"
+            outcome["error"] = (f"harness aborted during {outcome['phase']}: "
+                                f"{type(err).__name__}: {str(err)[:400]}")
+            if outcome["phase"] == "install" and isinstance(err, OSError):
+                # a write, fsync, size, read-back, or link failure while
+                # installing is a refusal in the harness's words, recorded
+                # as such, not a traceback; the attempt is spent
+                outcome["error"] = (f"identity not installed: "
+                                    f"{type(err).__name__}: {str(err)[:400]}")
+                raise SystemExit(f"{what} refused: {outcome['error']}") from None
+        else:
+            outcome["error"] = (outcome["error"] or
+                                f"after install: {type(err).__name__}: "
+                                f"{str(err)[:300]}")
+        raise
+    finally:
+        finalize_binding_attempt(a_out, outcome)
+    raise SystemExit(0 if outcome["result"] == "PASS" else 1)
+
+
+def finalize_binding_attempt(a_out, outcome):
+    """Write the one immutable binding attempt record for this attempt,
+    append the ledger projection, and print the ledger line. Runs on every
+    post-reservation exit. A record for this attempt (by attempt id, or by
+    reservation digest when no attempt started) is never written twice; an
+    interrupt inside the record write is retried once with the interruption
+    named, then propagated unchanged."""
+    live = outcome["live_invocations_started"]
+    if (outcome["cli_invocations"] is None and outcome["evidence_sha256"] is None
+            and isinstance(live, int) and live > 0):
+        # the evidence on disk was lost after a call started: the record
+        # keeps the session's live count rather than nothing
+        outcome["cli_invocations"] = live
+        outcome["invocation_accounting"] = ("live count applied; evidence "
+                                            "on disk was not available")
+    key_field, key = (("attempt_id", outcome["attempt_id"])
+                      if outcome["attempt_id"] else
+                      ("reservation_sha256", outcome["reservation_sha256"]))
+
+    def existing():
+        for name in os.listdir(a_out):
+            if name.startswith(BINDING_RECORD_PREFIX) and name.endswith(".json"):
+                try:
+                    rec = canon.load_json_regular(os.path.join(a_out, name))
+                except Exception:  # noqa: BLE001
+                    continue
+                if rec.get(key_field) == key and (
+                        key_field == "attempt_id" or not rec.get("attempt_id")):
+                    return name[len(BINDING_RECORD_PREFIX):-5]
+        return None
+
+    rec_sha = existing()
+    if rec_sha is None:
+        try:
+            rec_sha, _rec_path = write_binding_record(a_out, outcome)
+        except BaseException as err:  # noqa: B036 - the record is the evidence
+            try:
+                if existing() is None:
+                    write_binding_record(a_out, dict(
+                        outcome, record_write_interrupted=f"{type(err).__name__}: "
+                                                          f"{str(err)[:200]}"))
+            except BaseException:  # noqa: B036, BLE001 - best effort only
+                pass
+            raise
+    append_binding_ledger(a_out, {
+        "attempt_id": outcome["attempt_id"], "head": outcome["head"],
+        "ruling_id": outcome["ruling_id"], "model": outcome["model_id"],
+        "result": outcome["result"], "phase": outcome["phase"],
+        "model_calls": outcome["model_calls"],
+        "cli_invocations": outcome["cli_invocations"],
+        "invocation_accounting": outcome["invocation_accounting"],
+        "invocation_reconciliation": outcome["invocation_reconciliation"],
+        "attempts_allowed": outcome["attempts_allowed"],
+        "auxiliary_model_policy": outcome["auxiliary_model_policy"]["policy"],
+        "auxiliary_model_violations": outcome["auxiliary_model_violations"],
+        "reservation_path": outcome["reservation_path"],
+        "evidence_path": outcome["evidence_path"],
+        "evidence_sha256": outcome["evidence_sha256"],
+        "record_sha256": rec_sha,
+        "identity_sha256": outcome["identity_sha256"],
+        "started_utc": outcome["started_utc"]})
+    shown = ("unverified" if outcome["cli_invocations"] is None
+             else str(outcome["cli_invocations"]))
+    print("IDENTITY BINDING LEDGER LINE:")
+    print(f"head {outcome['head']} | ruling {outcome['ruling_id']} | model "
+          f"{outcome['model_id']} | attempt {outcome['attempt_id'] or 'none'} | "
+          f"calls {outcome['model_calls']} | invocations {shown} (allowed "
+          f"{outcome['attempts_allowed']} per call) | aux-policy "
+          f"{outcome['auxiliary_model_policy']['policy']} | result "
+          f"{outcome['result']} | evidence {outcome['evidence_sha256'] or 'none'}"
+          f" ({outcome['evidence_path'] or 'none'}) | record {rec_sha} | identity "
+          f"{outcome['identity_sha256'] or 'none'} | reservation "
+          f"{outcome['reservation_path']}")
+    if outcome["error"]:
+        print("failure:", outcome["error"])
+    if outcome["identity_sha256"]:
+        print("REVIEWER_IDENTITY_SHA256:", outcome["identity_sha256"])
 
 def select_pending(manifest, records_dir, count):
     done = {n.replace(".json", "") for n in os.listdir(records_dir)}
@@ -741,7 +861,8 @@ def review(count, session_factory=None, out_root=None, a_out=None):
     # review-time enforcement of the bound head and configuration
     # (18371886): a review never runs against an identity whose head,
     # harness, model, CLI build, configuration, or evidence has drifted
-    enforce_bound_identity(identity, a_out, system_prompt)
+    enforce_bound_identity(identity, a_out, system_prompt,
+                           digests["REVIEWER_IDENTITY_SHA256"])
     template = load_template(out_root)
     manifest = canon.load_json(os.path.join(out_root, "shard-manifest.json"))
     outputs_dir = os.path.join(a_out, "outputs")
@@ -785,15 +906,15 @@ IDENTITY_BOUND_FIELDS = (
     "output_schema_sha256", "configuration_sha256", "configuration",
     "environment_boundary_sha256", "environment_boundary",
     "leak_probe_transcript_sha256", "leak_probe_evidence_path",
-    "binding_attempt_record_sha256", "binding_attempt_id",
-    "reservation_path", "reservation_sha256", "auxiliary_model_policy",
-    "observed_model_usage", "bindings", "reviewer_role",
-    "binding_attempts_allowed", "leak_probes", "leak_probes_sha256",
-    "session_ids_sha256",
+    "binding_attempt_id", "reservation_path", "reservation_sha256",
+    "auxiliary_model_policy", "observed_model_usage", "bindings",
+    "reviewer_role", "binding_attempts_allowed", "leak_probes",
+    "leak_probes_sha256", "session_ids_sha256",
 )
 # fields the identity must carry with the same value as its binding attempt
-# record (the record is digest-verified first; the identity's copies are
-# then held to it, so an edited identity cannot publish one thing while
+# record (the record is found by the identity's attempt id, verified against
+# its own name, and must attest the identity's digest; the identity's copies
+# are then held to it, so an edited identity cannot publish one thing while
 # the record says another; isolated adversary on this head, finding 1)
 IDENTITY_RECORD_FIELDS = (
     ("head", "head"), ("ruling_id", "ruling_id"),
@@ -818,7 +939,33 @@ IDENTITY_RECORD_FIELDS = (
 )
 
 
-def enforce_bound_identity(identity, a_out, system_prompt):
+def binding_record_for(a_out, attempt_id):
+    """The one binding attempt record naming `attempt_id`, every record
+    under a_out verified against its own content-addressed name first.
+    Zero or several records for the attempt is a refusal."""
+    matches = []
+    for name in sorted(os.listdir(a_out)):
+        if not (name.startswith(BINDING_RECORD_PREFIX) and name.endswith(".json")):
+            continue
+        path = os.path.join(a_out, name)
+        if not canon.is_regular(path):
+            raise SystemExit(f"review refused: binding attempt record {name} is "
+                             "not a regular file")
+        data = canon.read_regular_bytes(path)
+        if canon.bytes_digest(data) != name[len(BINDING_RECORD_PREFIX):-5]:
+            raise SystemExit(f"review refused: binding attempt record {name} "
+                             "does not hash to its name; it has been altered")
+        rec = json.loads(data.decode("utf-8"))
+        if rec.get("attempt_id") == attempt_id:
+            matches.append(rec)
+    if len(matches) != 1:
+        raise SystemExit(f"review refused: {len(matches)} binding attempt "
+                         f"record(s) name attempt {attempt_id}; exactly one "
+                         "is required")
+    return matches[0]
+
+
+def enforce_bound_identity(identity, a_out, system_prompt, identity_sha):
     """Review-time enforcement of the bound head and configuration
     (authorization 18371886; Ari's scope: binding parity alone would not
     prevent later code drift). Before any real shard session: the tree
@@ -827,9 +974,12 @@ def enforce_bound_identity(identity, a_out, system_prompt):
     names; the system prompt and task template files must hash to what
     the identity binds; the session configuration and environment boundary
     recomputed from the real session class must hash to what the identity
-    binds; and
-    the probe evidence and binding record the identity names must be on
-    disk with their digests. Anything else refuses before any session."""
+    binds, and so must the identity's published copies; the probe evidence
+    must be on disk with its digest; the binding attempt record named by
+    the identity's attempt id must be on disk, hash to its name, say PASS,
+    attest this identity's exact digest, and agree with the identity on
+    every shared field; the reservation must be on disk with its digest.
+    Anything else refuses before any session."""
     missing = [f for f in IDENTITY_BOUND_FIELDS
                if f not in identity or identity[f] in (None, "")]
     if missing:
@@ -878,20 +1028,50 @@ def enforce_bound_identity(identity, a_out, system_prompt):
             identity["leak_probe_transcript_sha256"]:
         raise SystemExit("review refused: the probe evidence the identity "
                          "names is absent or altered")
-    rec_sha = identity["binding_attempt_record_sha256"]
-    record_path = os.path.join(a_out, f"{BINDING_RECORD_PREFIX}{rec_sha}.json")
-    if not canon.is_regular(record_path):
-        raise SystemExit("review refused: the binding attempt record the "
-                         "identity names is absent or altered")
-    record_bytes = canon.read_regular_bytes(record_path)
-    if canon.bytes_digest(record_bytes) != rec_sha:
-        raise SystemExit("review refused: the binding attempt record the "
-                         "identity names is absent or altered")
-    record = json.loads(record_bytes.decode("utf-8"))
+    # the identity's account of its own attempt is recomputed from the
+    # transcript just verified by digest, never trusted from the pair of
+    # artifacts alone (pass three, finding 2)
+    transcript = json.loads(canon.read_regular_bytes(evidence).decode("utf-8"))
+    if transcript.get("attempt_id") != identity["binding_attempt_id"]:
+        raise SystemExit("review refused: the identity names attempt "
+                         f"{identity['binding_attempt_id']}; the probe evidence "
+                         f"it names records attempt {transcript.get('attempt_id')}")
+    if transcript.get("preflight_result") != "PASS":
+        raise SystemExit("review refused: the probe evidence the identity names "
+                         "is not a passed preflight")
+    if canon.content_digest(transcript.get("records", [])) != identity["leak_probes_sha256"]:
+        raise SystemExit("review refused: the identity's leak_probes_sha256 does "
+                         "not match the verified probe evidence")
+    if canon.content_digest([(t.get("result") or {}).get("session_id")
+                             for t in transcript.get("transcripts", [])]) != \
+            identity["session_ids_sha256"]:
+        raise SystemExit("review refused: the identity's session_ids_sha256 does "
+                         "not match the verified probe evidence")
+    policy = identity["auxiliary_model_policy"]
+    if not isinstance(policy, dict) or policy.get("policy") not in ("reject", "accept") or (
+            policy.get("policy") == "accept" and not (
+                isinstance(policy.get("auxiliary_model"), str)
+                and MODEL_ID_RE.fullmatch(policy["auxiliary_model"]))):
+        raise SystemExit("review refused: the identity's auxiliary model policy "
+                         "is malformed; rebind")
+    recomputed_usage = observed_model_usage(transcript)
+    if recomputed_usage != identity["observed_model_usage"]:
+        raise SystemExit("review refused: the identity's observed_model_usage "
+                         "does not match the verified probe evidence")
+    if aux_policy_violations(recomputed_usage, identity["model_id"],
+                             identity["auxiliary_model_policy"]) or \
+            any(not u["model_usage_reported"] for u in recomputed_usage):
+        raise SystemExit("review refused: the verified probe evidence violates "
+                         "the auxiliary model policy the identity carries")
+    record = binding_record_for(a_out, identity["binding_attempt_id"])
     if record.get("result") != "PASS" or record.get("purpose") != "identity-binding":
-        raise SystemExit("review refused: the binding attempt record the "
-                         "identity names is not a passed identity-binding "
-                         "attempt")
+        raise SystemExit("review refused: the binding attempt record for this "
+                         "identity is not a passed identity-binding attempt")
+    if record.get("identity_sha256") != identity_sha:
+        raise SystemExit("review refused: the binding attempt record attests "
+                         f"identity {record.get('identity_sha256')}; the "
+                         f"identity on disk hashes to {identity_sha}; the "
+                         "identity has been edited or replaced; rebind")
     for identity_field, record_field in IDENTITY_RECORD_FIELDS:
         if identity.get(identity_field) != record.get(record_field):
             raise SystemExit(f"review refused: identity {identity_field} does "
@@ -932,7 +1112,6 @@ def enforce_bound_identity(identity, a_out, system_prompt):
             identity["reservation_sha256"]:
         raise SystemExit("review refused: the head reservation the identity "
                          "names is absent or altered")
-
 
 def refuse_if_ledgered(ledger_path, head):
     """One qualification attempt per exact commit (18197956 item 2;
@@ -1128,8 +1307,38 @@ def write_attempt_record(q_out, record):
 
 
 def write_binding_record(a_out, record):
-    """The binding path's immutable attempt record; its own seam."""
-    return _write_record(a_out, record, BINDING_RECORD_PREFIX)
+    """The binding path's immutable attempt record; its own seam. Written
+    durably (temporary file, write_all, fsync, link into place, directory
+    fsync) so an interrupt can never leave a partial file under the name of
+    the complete record (pass three, finding 3); the qualify path keeps its
+    own writer unchanged."""
+    data = canon.canonical_bytes(record)
+    rec_sha = canon.bytes_digest(data)
+    rec_path = os.path.join(a_out, f"{BINDING_RECORD_PREFIX}{rec_sha}.json")
+    fd, tmp = tempfile.mkstemp(prefix=".tmp-record-", suffix=".json", dir=a_out)
+    try:
+        canon.write_all(fd, data, "binding attempt record")
+        os.fsync(fd)
+        if os.fstat(fd).st_size != len(data):
+            raise canon.ShortWriteError("binding attempt record: size on disk "
+                                        "differs from the payload after fsync")
+        os.fchmod(fd, 0o644)
+        os.close(fd)
+        fd = None
+        os_link(tmp, rec_path)   # FileExistsError: the record already exists
+    finally:
+        if fd is not None:
+            os.close(fd)
+        try:
+            os.unlink(tmp)
+        except FileNotFoundError:
+            pass
+    dfd = os.open(a_out, os.O_RDONLY)
+    try:
+        os.fsync(dfd)
+    finally:
+        os.close(dfd)
+    return rec_sha, rec_path
 
 
 def append_ledger(q_out, entry, ledger_name=QUALIFY_LEDGER, artifact_version=
