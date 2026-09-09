@@ -13,6 +13,11 @@ sys.path.insert(0, os.path.join(PASS2, "tools"))
 
 from engine import canon, reviewer  # noqa: E402
 import run_reviewer_a  # noqa: E402
+try:  # `discover -s tests -t .` imports as a package; direct runs do not
+    from tests.test_identity_binding import bind_fixture_identity, HEAD as BOUND_HEAD  # noqa: E402
+except ImportError:
+    sys.path.insert(0, HERE)
+    from test_identity_binding import bind_fixture_identity, HEAD as BOUND_HEAD  # noqa: E402
 
 OUT = os.path.join(PASS2, os.environ.get("FOUNDRY_PASS2_OUT", "out"))  # CI: out-fixture
 
@@ -175,11 +180,11 @@ class ReviewShardChecks(unittest.TestCase):
             canon.write_canonical(manifest_path, manifest)
         a_out = os.path.join(root, "reviewer-a")
         os.makedirs(a_out)
-        digests = run_reviewer_a.bundle_digests(out_root)
-        schema = run_reviewer_a.load_schema(out_root)
-        canon.write_canonical(os.path.join(a_out, "reviewer-identity.json"), {
-            "bindings": digests, "output_schema_sha256": schema["sha256"],
-            "eligible_for_binding": True})
+        # review() now enforces the bound head, harness, model, CLI build,
+        # configuration, and evidence (18371886): the fixture identity is
+        # bound for real, with a fake session and the stubs the binding
+        # tests use, so it carries every bound field
+        bind_fixture_identity(out_root, a_out)
         return out_root, a_out
 
     def _run_review_counting_sessions(self, out_root, a_out):
@@ -188,11 +193,19 @@ class ReviewShardChecks(unittest.TestCase):
         def factory(system_prompt, cwd):
             made.append(cwd)
             return FakeSession("{}")
+        saved = {k: getattr(run_reviewer_a, k)
+                 for k in ("git_head", "cli_version", "MODEL")}
+        run_reviewer_a.git_head = lambda what="qualification": (BOUND_HEAD, True)
+        run_reviewer_a.cli_version = lambda: "fake-cli"
+        run_reviewer_a.MODEL = "fake"
         try:
             run_reviewer_a.review(2, session_factory=factory,
                                   out_root=out_root, a_out=a_out)
         except SystemExit as err:
             return made, str(err)
+        finally:
+            for k, v in saved.items():
+                setattr(run_reviewer_a, k, v)
         return made, None
 
     def test_review_aborts_before_any_session_when_first_shard_corrupt(self):
