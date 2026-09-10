@@ -175,9 +175,15 @@ class ReviewShardChecks(unittest.TestCase):
             shard["records"][0]["record_sha256"] = "0" * 64
             canon.write_canonical(shard_path, shard)
             # manifest kept consistent with the corrupt bytes so the failure
-            # is the record-identity gate, not the shard-digest check
+            # is the record-identity gate, not the shard-digest check; and
+            # the bundle's declaration kept consistent with the manifest, so
+            # the failure is not the bound-manifest digest check either
             member["sha256"] = canon.file_sha256(shard_path)
             canon.write_canonical(manifest_path, manifest)
+            bundle_path = os.path.join(out_root, "review-input-bundle.json")
+            bundle = canon.load_json(bundle_path)
+            bundle["shard_manifest"]["sha256"] = canon.file_sha256(manifest_path)
+            canon.write_canonical(bundle_path, bundle)
         a_out = os.path.join(root, "reviewer-a")
         os.makedirs(a_out)
         # review() now enforces the bound head, harness, model, CLI build,
@@ -188,24 +194,43 @@ class ReviewShardChecks(unittest.TestCase):
         return out_root, a_out
 
     def _run_review_counting_sessions(self, out_root, a_out):
+        """One governed command over the first two shard IDs (18376129:
+        selection by explicit IDs under a ruling reference), with a
+        conformant one-attempt session per shard. Returns the scratch
+        directories handed to sessions and the exit: None on a PASS (exit
+        0), the refusal text otherwise."""
+        import contextlib, io
+        try:
+            from tests.test_review_governance import GovernedShardSession
+        except ImportError:
+            from test_review_governance import GovernedShardSession
         made = []
 
-        def factory(system_prompt, cwd):
+        def factory(system_prompt, cwd, attempts=run_reviewer_a.REVIEW_ATTEMPTS):
             made.append(cwd)
-            return FakeSession("{}")
+            s = GovernedShardSession(system_prompt)
+            s.attempts = attempts
+            return s
         saved = {k: getattr(run_reviewer_a, k)
                  for k in ("git_head", "cli_version", "MODEL")}
         run_reviewer_a.git_head = lambda what="qualification": (BOUND_HEAD, True)
         run_reviewer_a.cli_version = lambda: "fake-cli"
         run_reviewer_a.MODEL = "fake"
+        os.environ[run_reviewer_a.REVIEW_RULED_MODEL_VAR] = "fake"
+        os.environ[run_reviewer_a.REVIEW_RULING_VAR] = "18376129"
+        manifest = canon.load_json(os.path.join(out_root, "shard-manifest.json"))
+        ids = [m["shard_id"] for m in manifest["shards"][:2]]
         try:
-            run_reviewer_a.review(2, session_factory=factory,
-                                  out_root=out_root, a_out=a_out)
+            with contextlib.redirect_stdout(io.StringIO()):
+                run_reviewer_a.review(ids, session_factory=factory,
+                                      out_root=out_root, a_out=a_out)
         except SystemExit as err:
-            return made, str(err)
+            return made, (None if err.code == 0 else str(err))
         finally:
             for k, v in saved.items():
                 setattr(run_reviewer_a, k, v)
+            os.environ.pop(run_reviewer_a.REVIEW_RULED_MODEL_VAR, None)
+            os.environ.pop(run_reviewer_a.REVIEW_RULING_VAR, None)
         return made, None
 
     def test_review_aborts_before_any_session_when_first_shard_corrupt(self):
@@ -214,7 +239,12 @@ class ReviewShardChecks(unittest.TestCase):
         self.assertEqual(made, [])
         self.assertIn("aborted before any session", err)
         self.assertIn("record-identity-failed", err)
-        self.assertEqual(os.listdir(os.path.join(a_out, "run-records")), [])
+        # nothing reserved, claimed, or recorded: the abort precedes the
+        # command reservation
+        for sub in ("run-records", "claims", "outputs", "command-records"):
+            self.assertFalse(os.path.lexists(os.path.join(a_out, sub)))
+        self.assertEqual([n for n in os.listdir(os.path.join(a_out, "reservations"))
+                          if n.startswith("review-")], [])
 
     def test_review_aborts_before_any_session_when_second_shard_corrupt(self):
         out_root, a_out = self._review_fixture(1)
@@ -222,13 +252,17 @@ class ReviewShardChecks(unittest.TestCase):
         self.assertEqual(made, [])
         self.assertIn("aborted before any session", err)
         self.assertIn("record-identity-failed", err)
-        self.assertEqual(os.listdir(os.path.join(a_out, "run-records")), [])
+        for sub in ("run-records", "claims", "outputs", "command-records"):
+            self.assertFalse(os.path.lexists(os.path.join(a_out, sub)))
 
     def test_review_preverifies_then_creates_one_session_per_shard(self):
         out_root, a_out = self._review_fixture(None)
         made, err = self._run_review_counting_sessions(out_root, a_out)
-        self.assertIsNone(err)
+        self.assertIsNone(err, err)
         self.assertEqual(len(made), 2)
+        self.assertEqual(len(set(made)), 2)   # a fresh scratch dir per shard
+        self.assertEqual(len(os.listdir(os.path.join(a_out, "outputs"))), 2)
+        self.assertEqual(len(os.listdir(os.path.join(a_out, "run-records"))), 2)
 
     def test_second_qualification_on_ledgered_head_is_refused(self):
         import tempfile

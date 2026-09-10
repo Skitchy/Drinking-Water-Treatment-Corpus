@@ -7,11 +7,18 @@
                                                   FOUNDRY_IDENTITY_RULING_ID,
                                                   FOUNDRY_IDENTITY_AUX_MODEL_POLICY
                                                   = reject | accept:<model-id>)
-    python3 tools/run_reviewer_a.py review [N]    review next N unreviewed shards
-                                                  (refused unless the tree,
+    python3 tools/run_reviewer_a.py review <shard-id> [<shard-id> ...]
+                                                  one governed review command
+                                                  over exactly the named shards,
+                                                  in that order, under a ruling
+                                                  (FOUNDRY_REVIEW_RULED_MODEL,
+                                                  FOUNDRY_REVIEW_RULING_ID);
+                                                  refused unless the tree,
                                                   harness, model, CLI build, and
                                                   configuration match the bound
-                                                  identity)
+                                                  identity; one CLI invocation
+                                                  per shard, no retry; a claimed
+                                                  shard is never re-run
     python3 tools/run_reviewer_a.py status
     python3 tools/run_reviewer_a.py qualify       bounded public-only instrument
                                                   qualification (18197913 /
@@ -28,11 +35,13 @@ against an unbound identity. Outputs: out/reviewer-a/.
 import json
 import os
 import re
+import shutil
 import stat
 import subprocess
 import sys
 import tempfile
 import time
+import uuid
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PASS2 = os.path.dirname(HERE)
@@ -75,6 +84,30 @@ IDENTITY_RULING_VAR = "FOUNDRY_IDENTITY_RULING_ID"
 AUX_MODEL_POLICY_VAR = "FOUNDRY_IDENTITY_AUX_MODEL_POLICY"
 RULING_ID_RE = re.compile(r"[0-9]{6,12}")
 MODEL_ID_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,80}")
+# Governed review (maintainer authorization discussioncomment-18376129, scope
+# from Ari in the project room, 2026-09-09, message 255): the review path
+# carries the discipline binding earned. One CLI invocation per shard call;
+# selection by explicit ordered shard IDs under a ruling reference; ONE
+# immutable command reservation keyed by the ruling ID before any call; an
+# immutable per-shard execution claim keyed by shard ID immediately before
+# that shard's call (so a crash after the invocation can never re-run the
+# shard); the output installed atomically with a same-descriptor read-back
+# and THEN an immutable shard record written last, at every exit, attesting
+# the output digest or the failure phase; stop on the first failure with a
+# terminal command record marking every remaining shard NOT_RUN; the run
+# manifest a rebuildable index, never the source of truth.
+REVIEW_ATTEMPTS = 1
+REVIEW_RULED_MODEL_VAR = "FOUNDRY_REVIEW_RULED_MODEL"
+REVIEW_RULING_VAR = "FOUNDRY_REVIEW_RULING_ID"
+REVIEW_RESERVATION_PREFIX = "review-ruling-"
+REVIEW_LEDGER = "review-ledger.json"
+CLAIMS_DIR = "claims"
+RUN_RECORDS_DIR = "run-records"
+OUTPUTS_DIR = "outputs"
+COMMAND_RECORDS_DIR = "command-records"
+REVIEW_EVIDENCE_DIRS = (RESERVATIONS_DIR, CLAIMS_DIR, RUN_RECORDS_DIR,
+                        OUTPUTS_DIR, COMMAND_RECORDS_DIR)
+SHARD_ID_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,80}")
 
 
 def _sha(path):
@@ -803,10 +836,127 @@ def finalize_binding_attempt(a_out, outcome):
     if outcome["identity_sha256"]:
         print("REVIEWER_IDENTITY_SHA256:", outcome["identity_sha256"])
 
-def select_pending(manifest, records_dir, count):
-    done = {n.replace(".json", "") for n in os.listdir(records_dir)}
-    pending = [m for m in manifest["shards"] if m["shard_id"] not in done]
-    return pending[:count]
+def select_by_id(manifest, shard_ids, what="review"):
+    """The ordered members the ruling names, or a refusal. Selection by
+    count is gone (authorization 18376129): a ruling names exact shard IDs,
+    and the command honours exactly that list in that order. Duplicate and
+    unknown IDs are refused here, before anything is reserved."""
+    if isinstance(shard_ids, (int, str)) or not isinstance(shard_ids, (list, tuple)) \
+            or not shard_ids:
+        raise SystemExit(f"{what} refused: selection must be a non-empty list "
+                         "of explicit shard IDs named by the ruling; selection "
+                         "by count is not authorized")
+    seen = set()
+    for sid in shard_ids:
+        if not isinstance(sid, str) or not SHARD_ID_RE.fullmatch(sid):
+            raise SystemExit(f"{what} refused: {str(sid)[:60]!r} is not a shard "
+                             "ID")
+        if sid in seen:
+            raise SystemExit(f"{what} refused: shard ID {sid} is named more "
+                             "than once")
+        seen.add(sid)
+    by_id = {m["shard_id"]: m for m in manifest["shards"]}
+    unknown = [sid for sid in shard_ids if sid not in by_id]
+    if unknown:
+        raise SystemExit(f"{what} refused: shard ID(s) not in the bound "
+                         f"manifest: {unknown}")
+    return [by_id[sid] for sid in shard_ids]
+
+
+def claimed_shard_ids(a_out):
+    """Every shard ID that any durable trace under a_out already spends:
+    a claim (any object at claims/<id>.json, by existence, never parsed to
+    decide), a shard record (by its CONTENT's shard_id, and by the name
+    part before the digest; a record whose name and content disagree
+    spends both), or an installed output (outputs/<id>.json). Any one is
+    sufficient to refuse. Temporary files (a leading dot) are not traces
+    (isolated adversary on this head, findings 7 and 12)."""
+    spent = set()
+    claims = os.path.join(a_out, CLAIMS_DIR)
+    if canon.is_real_dir(claims):
+        for name in os.listdir(claims):
+            if name.endswith(".json") and not name.startswith("."):
+                spent.add(name[:-5])
+    records = os.path.join(a_out, RUN_RECORDS_DIR)
+    if canon.is_real_dir(records):
+        for name in os.listdir(records):
+            if not name.endswith(".json") or name.startswith("."):
+                continue
+            if "." in name[:-5]:
+                spent.add(name[:-5].rsplit(".", 1)[0])
+            try:
+                rec = canon.load_json_regular(os.path.join(records, name))
+            except Exception:  # noqa: BLE001 - reported by store_problems
+                continue
+            if isinstance(rec, dict) and isinstance(rec.get("shard_id"), str):
+                spent.add(rec["shard_id"])
+    outputs = os.path.join(a_out, OUTPUTS_DIR)
+    if canon.is_real_dir(outputs):
+        for name in os.listdir(outputs):
+            if name.endswith(".json") and not name.startswith("."):
+                spent.add(name[:-5])
+    return spent
+
+
+RECORD_NAME_RE = re.compile(r"(.+)\.([0-9a-f]{64})\.json")
+
+
+def review_store_problems(a_out):
+    """Anything under the review directories that the harness did not
+    write in the shape it writes: a shard record whose name is not
+    <shard_id>.<sha256>.json, whose content is unreadable, or whose
+    content names another shard; a command record likewise; a leftover
+    temporary file. Every one is reported, and a command refuses on any
+    (isolated adversary on this head, finding 7: a record named
+    <shard_id>.json spent a different ID than the one it named)."""
+    problems = []
+    if canon.is_real_dir(a_out):
+        # the evidence root itself: the temporaries land here, and so do
+        # quarantined outputs; either one refuses the next command until a
+        # maintainer has looked (second isolated pass, findings 1 and 7)
+        for name in sorted(os.listdir(a_out)):
+            if name.startswith("."):
+                problems.append(f"{name}: leftover temporary file")
+            elif name.startswith("REFUSED-"):
+                problems.append(f"{name}: quarantined bytes from a refused install")
+    for sub in REVIEW_EVIDENCE_DIRS:
+        d = os.path.join(a_out, sub)
+        if not canon.is_real_dir(d):
+            continue
+        for name in sorted(os.listdir(d)):
+            if name.startswith("."):
+                problems.append(f"{sub}/{name}: leftover temporary file")
+                continue
+            if sub == OUTPUTS_DIR and not (name.endswith(".json")
+                                           and SHARD_ID_RE.fullmatch(name[:-5])
+                                           and "-REFUSED-" not in name):
+                # the gate reads every file here: only <shard_id>.json is
+                # ever written here (second pass, finding 1)
+                problems.append(f"{sub}/{name}: not a shard output the harness wrote")
+                continue
+            if sub not in (RUN_RECORDS_DIR, COMMAND_RECORDS_DIR):
+                continue
+            m = RECORD_NAME_RE.fullmatch(name)
+            if m is None:
+                problems.append(f"{sub}/{name}: not a content-addressed record name")
+                continue
+            try:
+                data = canon.read_regular_bytes(os.path.join(d, name))
+                rec = json.loads(data.decode("utf-8"))
+            except Exception as err:  # noqa: BLE001
+                problems.append(f"{sub}/{name}: unreadable ({type(err).__name__})")
+                continue
+            if canon.bytes_digest(data) != m.group(2):
+                # the name's digest part is the bytes' digest, exactly the
+                # shape the harness writes (second pass, note 8: a greedy
+                # match let <id>.<hex>.<hex>.json through)
+                problems.append(f"{sub}/{name}: does not hash to its name")
+                continue
+            key = "shard_id" if sub == RUN_RECORDS_DIR else "command_attempt_id"
+            if not isinstance(rec, dict) or rec.get(key) != m.group(1):
+                problems.append(f"{sub}/{name}: content names "
+                                f"{(rec or {}).get(key)!r}, not {m.group(1)!r}")
+    return problems
 
 
 def preverify_selection(selected, out_root):
@@ -818,11 +968,15 @@ def preverify_selection(selected, out_root):
     the per-shard continuation path. Returns {shard_id: verification list}."""
     verified = {}
     for member in selected:
-        shard_path = os.path.join(out_root, member["path"])
-        if _sha(shard_path) != member["sha256"]:
+        shard_path = bound_shard_path(out_root, member)
+        if not canon.is_regular(shard_path):
+            raise SystemExit(f"review aborted before any session: shard "
+                             f"{member['shard_id']} input is absent or not a "
+                             f"regular file ({member['path']})")
+        if canon.bytes_digest(canon.read_regular_bytes(shard_path)) != member["sha256"]:
             raise SystemExit(f"review aborted before any session: shard "
                              f"digest drift: {member['shard_id']}")
-        shard = canon.load_json(shard_path)
+        shard = canon.load_json_regular(shard_path)
         try:
             verified[member["shard_id"]] = reviewer.verify_shard_records(shard)
         except reviewer.ReviewerError as err:
@@ -831,7 +985,75 @@ def preverify_selection(selected, out_root):
     return verified
 
 
-def review(count, session_factory=None, out_root=None, a_out=None):
+def bound_shard_path(out_root, member):
+    """The on-disk path of a manifest member, refused unless it is a
+    relative, normalized path that stays under out_root (isolated
+    adversary on this head, finding 1: a manifest row with '../' named a
+    file outside the bundle root and it was read)."""
+    rel = member.get("path")
+    if (not isinstance(rel, str) or not rel or os.path.isabs(rel)
+            or os.path.normpath(rel) != rel or rel.startswith("..")
+            or ".." in rel.split("/") or "\\" in rel):
+        raise SystemExit(f"review refused: shard {member.get('shard_id')!r} "
+                         f"names a path outside the bundle root: {rel!r}")
+    root = os.path.realpath(out_root)
+    full = os.path.join(root, rel)
+    # every directory component under the root is inspected with lstat: a
+    # symlinked directory would carry the read outside the root while the
+    # leaf's own no-follow guard held (second isolated pass, finding 6)
+    cur = root
+    for part in rel.split("/")[:-1]:
+        cur = os.path.join(cur, part)
+        try:
+            st = os.lstat(cur)
+        except FileNotFoundError:
+            raise SystemExit(f"review refused: shard {member.get('shard_id')!r} "
+                             f"names a path whose directory is absent: {rel!r}")
+        if not stat.S_ISDIR(st.st_mode):
+            raise SystemExit(f"review refused: shard {member.get('shard_id')!r} "
+                             f"names a path through a non-directory or a link: "
+                             f"{rel!r}")
+    if os.path.commonpath([root, os.path.realpath(full)]) != root:
+        raise SystemExit(f"review refused: shard {member.get('shard_id')!r} "
+                         f"names a path outside the bundle root: {rel!r}")
+    return full
+
+
+def load_bound_shard_manifest(out_root, digests, what="review"):
+    """shard-manifest.json read without following links and REQUIRED to
+    hash to the digest the bundle (and so the identity) binds. Before
+    this, the bundle's self-declared digest was trusted and the file on
+    disk never hashed, so an edited manifest could name a shard the
+    ruling never named and send the same bytes to the model twice
+    (isolated adversary on this head, finding 1)."""
+    path = os.path.join(out_root, "shard-manifest.json")
+    if not canon.is_regular(path):
+        raise SystemExit(f"{what} refused: shard-manifest.json is absent or "
+                         "not a regular file")
+    data = canon.read_regular_bytes(path)
+    digest = canon.bytes_digest(data)
+    if digest != digests["SHARD_MANIFEST_SHA256"]:
+        raise SystemExit(f"{what} refused: shard-manifest.json hashes to "
+                         f"{digest}; the bundle binds "
+                         f"{digests['SHARD_MANIFEST_SHA256']}; the manifest "
+                         "on disk is not the bound manifest")
+    manifest = json.loads(data.decode("utf-8"))
+    ids = [m.get("shard_id") for m in manifest.get("shards", [])]
+    if len(ids) != len(set(ids)):
+        raise SystemExit(f"{what} refused: the bound manifest names a shard "
+                         "ID more than once")
+    return manifest
+
+
+def review(shard_ids, session_factory=None, out_root=None, a_out=None):
+    """One governed review command over the exact ordered shard IDs a
+    maintainer ruling names (authorization 18376129). Every deterministic
+    check below runs before anything is reserved; the command reservation
+    keyed by the ruling ID spends the ruling; each shard is claimed
+    immediately before its one CLI invocation; every post-reservation exit
+    leaves a terminal command record, and every claimed shard leaves an
+    immutable shard record written after its output. Reads the bundle under
+    out_root; writes ONLY under a_out."""
     out_root = out_root or OUT
     a_out = a_out or A_OUT
     session_factory = session_factory or make_session
@@ -863,39 +1085,905 @@ def review(count, session_factory=None, out_root=None, a_out=None):
     # harness, model, CLI build, configuration, or evidence has drifted
     enforce_bound_identity(identity, a_out, system_prompt,
                            digests["REVIEWER_IDENTITY_SHA256"])
+    what = "review"
+    identity_sha = digests["REVIEWER_IDENTITY_SHA256"]
+    # the ruling reference and the ruled model, after the identity checks
+    # (nothing is spent either way, and the identity is the trust root)
+    ruled_model = os.environ.get(REVIEW_RULED_MODEL_VAR, "")
+    if not ruled_model:
+        raise SystemExit(f"{what} refused: {REVIEW_RULED_MODEL_VAR} is not "
+                         "set; state the model ID the review ruling names")
+    if ruled_model != MODEL or ruled_model != identity["model_id"]:
+        raise SystemExit(f"{what} refused: the ruling names model "
+                         f"{ruled_model!r}; the harness would run {MODEL!r} "
+                         f"and the identity binds {identity['model_id']!r}")
+    ruling_id = os.environ.get(REVIEW_RULING_VAR, "")
+    if not RULING_ID_RE.fullmatch(ruling_id):
+        raise SystemExit(f"{what} refused: {REVIEW_RULING_VAR}="
+                         f"{ruling_id[:40]!r} is not a discussion comment ID "
+                         "(6 to 12 digits); name the maintainer ruling")
     template = load_template(out_root)
-    manifest = canon.load_json(os.path.join(out_root, "shard-manifest.json"))
-    outputs_dir = os.path.join(a_out, "outputs")
-    records_dir = os.path.join(a_out, "run-records")
-    os.makedirs(outputs_dir, exist_ok=True)
-    os.makedirs(records_dir, exist_ok=True)
-    selected = select_pending(manifest, records_dir, count)
+    manifest = load_bound_shard_manifest(out_root, digests, what)
+    selected = select_by_id(manifest, shard_ids, what)
+    for member in selected:
+        bound_shard_path(out_root, member)
+    # path-boundary gate over the whole evidence root, every directory the
+    # review path writes included, BEFORE anything under it is read to
+    # decide (18376129: checks on creation and every later read or write)
+    problems = check_evidence_paths(a_out, allowed_dirs=REVIEW_EVIDENCE_DIRS)
+    if problems:
+        raise SystemExit(f"{what} refused: evidence path boundary: "
+                         + "; ".join(problems))
+    problems = review_store_problems(a_out)
+    if problems:
+        raise SystemExit(f"{what} refused: the evidence store holds what the "
+                         "harness did not write: " + "; ".join(problems))
+    spent = claimed_shard_ids(a_out)
+    already = [m["shard_id"] for m in selected if m["shard_id"] in spent]
+    if already:
+        raise SystemExit(f"{what} refused: shard ID(s) already claimed, "
+                         f"recorded, or installed under this evidence root: "
+                         f"{already}; a claimed shard is never re-run")
+    # every relationship among the artifacts already on disk is recomputed
+    # before a new ruling is spent: a corrupt or forged evidence root never
+    # hosts another command (Ari, room 255: recompute at status and review)
+    corrupt = {sid: s["problems"] for sid, s in
+               shard_states(out_root, a_out).items() if s["state"] == "CORRUPT"}
+    if corrupt:
+        raise SystemExit(f"{what} refused: evidence root is inconsistent: "
+                         + "; ".join(f"{sid}: {', '.join(p)}"
+                                     for sid, p in sorted(corrupt.items())))
+    unfinalized = [c for c in command_states(a_out) if c["problems"]]
+    if unfinalized:
+        raise SystemExit(f"{what} refused: prior command(s) are not finalized "
+                         "or not consistent: " + "; ".join(
+                             f"ruling {c['ruling_id']}: {', '.join(c['problems'])}"
+                             for c in unfinalized))
+    reservation_file = os.path.join(a_out, RESERVATIONS_DIR,
+                                    f"{REVIEW_RESERVATION_PREFIX}{ruling_id}.json")
+    if os.path.lexists(reservation_file):
+        raise SystemExit(f"{what} refused: ruling {ruling_id} is already "
+                         f"reserved ({os.path.relpath(reservation_file, a_out)})"
+                         "; a ruling authorizes exactly one review command")
     # hard stop for the WHOLE selection before any session exists
     preverify_selection(selected, out_root)
-    cwd = tempfile.mkdtemp(prefix="foundry-reviewer-a-")
-    for member in selected:
-        shard_path = os.path.join(out_root, member["path"])
-        session = session_factory(system_prompt, cwd)
+    cli_build = cli_version()
+    # every directory the command writes exists as a real directory BEFORE
+    # the reservation, so nothing that runs during the command can plant a
+    # file at those names (isolated adversary on this head, finding 3b)
+    for sub in REVIEW_EVIDENCE_DIRS:
+        d = os.path.join(a_out, sub)
         try:
-            record = reviewer.review_shard(
-                session, template, digests, shard_path,
+            canon.refuse_unless_real_dir(d, f"{sub} directory")
+        except canon.PathBoundaryError as err:
+            raise SystemExit(f"{what} refused: {err}")
+        os.makedirs(d, exist_ok=True)
+    policy = identity["auxiliary_model_policy"]
+    command_attempt_id = str(uuid.uuid4())
+    shards = [{"shard_id": m["shard_id"], "input_sha256": m["sha256"],
+               "input_path": m["path"], "result": "NOT_RUN", "phase": None,
+               "claim_path": None, "record_path": None, "record_sha256": None,
+               "output_path": None, "output_sha256": None,
+               "model_calls": 0, "cli_invocations": None, "error": None,
+               "manifest_error": None}
+              for m in selected]
+    # every deterministic check has passed; from here the ruling is spent
+    # whatever happens next, and every exit writes ONE terminal command
+    # record that says what happened to every shard it named
+    reserved_utc = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    reservation_meta = {
+        "artifact_version": "foundry-pass-2-review-reservation/experimental-v0.1",
+        "purpose": "governed-review", "reserved_utc": reserved_utc,
+        "command_attempt_id": command_attempt_id,
+        "ruling_id": ruling_id, "head": head_of(identity),
+        "identity_sha256": identity_sha,
+        "model_id": MODEL, "ruled_model_id": ruled_model,
+        "model_version_or_build": cli_build,
+        "configuration_sha256": identity["configuration_sha256"],
+        "environment_boundary_sha256": identity["environment_boundary_sha256"],
+        "auxiliary_model_policy": policy,
+        "shards": [{"shard_id": s["shard_id"], "input_sha256": s["input_sha256"]}
+                   for s in shards],
+        "call_ceiling": len(shards), "attempts_allowed": REVIEW_ATTEMPTS,
+        "stopping_rule": ("one CLI invocation per shard call, in the order "
+                          "named; the first shard that does not finish DONE "
+                          "stops the command and every remaining shard is "
+                          "NOT_RUN; a claimed shard is never re-run; the "
+                          "ruling is spent by this reservation"),
+        "bindings": expected,
+    }
+    outcome = {
+        "artifact_version": "foundry-pass-2-review-command/experimental-v0.1",
+        "purpose": "governed-review", "reviewer_role": "reviewer_a",
+        "command_attempt_id": command_attempt_id,
+        "ruling_id": ruling_id, "head": head_of(identity),
+        "identity_sha256": identity_sha,
+        "model_id": MODEL, "ruled_model_id": ruled_model,
+        "model_version_or_build": cli_build,
+        "configuration_sha256": identity["configuration_sha256"],
+        "auxiliary_model_policy": policy,
+        "reservation_path": os.path.relpath(reservation_file, a_out),
+        "reservation_sha256": None,
+        "started_utc": reserved_utc, "finished_utc": None,
+        "call_ceiling": len(shards), "attempts_allowed": REVIEW_ATTEMPTS,
+        "model_calls": 0, "cli_invocations": 0,
+        "result": None, "phase": "reservation", "error": None,
+        "shards": shards,
+    }
+    try:
+        reservation = _reserve_exclusive(
+            a_out, reservation_file, reservation_meta, what,
+            subject=f"ruling {ruling_id}",
+            tail="a new command needs a new maintainer ruling")
+    except BaseException as err:  # noqa: B036
+        if os.path.lexists(reservation_file):
+            # the ruling is spent by existence (partial bytes or not) with
+            # no session: the terminal record says so, every shard NOT_RUN
+            # (isolated adversary on this head, finding 3a)
+            try:
+                outcome["reservation_sha256"] = canon.bytes_digest(
+                    canon.read_regular_bytes(reservation_file))
+            except Exception:  # noqa: BLE001
+                outcome["reservation_sha256"] = None
+            outcome["result"] = "FAIL"
+            outcome["error"] = (f"reservation not durably written: "
+                                f"{type(err).__name__}: {str(err)[:400]}")
+            finalize_review_command(a_out, outcome)
+        raise
+    try:
+        # nothing after the reservation runs outside these handlers: an
+        # exception anywhere from here leaves T (second isolated pass,
+        # finding 4: a signal between the reservation and the loop left
+        # a spent ruling with no terminal record and no output)
+        outcome["reservation_sha256"] = _sha(reservation)
+        outcome["phase"] = "reserved"
+        for entry, member in zip(shards, selected):
+            outcome["phase"] = f"shard {member['shard_id']}"
+            try:
+                _review_one_shard(entry, member, out_root, a_out, session_factory,
+                                  system_prompt, template, digests, schema,
+                                  identity, outcome, what)
+            finally:
+                # the command's counts are accumulated on EVERY exit from
+                # the shard, a propagating signal included: the terminal
+                # record and the ledger line must never publish fewer
+                # invocations than the shard record attests (isolated
+                # adversary on this head, finding 4)
+                outcome["model_calls"] += entry["model_calls"]
+                if isinstance(entry["cli_invocations"], int):
+                    outcome["cli_invocations"] += entry["cli_invocations"]
+            if entry["result"] != "DONE":
+                outcome["result"] = "FAIL"
+                outcome["error"] = (f"{member['shard_id']}: {entry['result']} "
+                                    f"in phase {entry['phase']}: {entry['error']}")[:800]
+                break
+            # the index is refreshed durably after every terminal shard exit
+            # (18376129); the shard's record is already the truth, so a
+            # failure here stops the command without touching that record
+            try:
+                write_run_record_manifest(a_out)
+            except Exception as err:  # noqa: BLE001
+                entry["manifest_error"] = f"{type(err).__name__}: {str(err)[:200]}"
+                outcome["result"] = "FAIL"
+                outcome["error"] = (f"manifest not rebuilt after "
+                                    f"{member['shard_id']}: {entry['manifest_error']}")
+                break
+        else:
+            outcome["result"] = "PASS"
+        outcome["phase"] = "finalized"
+    except BaseException as err:  # noqa: B036 - recorded, then propagated
+        outcome["result"] = "FAIL"
+        outcome["error"] = (outcome["error"] or
+                            f"harness aborted during {outcome['phase']}: "
+                            f"{type(err).__name__}: {str(err)[:400]}")
+        if isinstance(err, SystemExit):
+            # a SystemExit raised by a session or a seam is not this
+            # command's verdict; the exit status is derived from the
+            # terminal record, never from a foreign exit code (finding 9)
+            raise SystemExit(f"review failed: {outcome['error']}") from None
+        raise
+    finally:
+        projections_ok = finalize_review_command(a_out, outcome)
+    raise SystemExit(0 if outcome["result"] == "PASS" and projections_ok else 1)
+
+
+def head_of(identity):
+    return identity["head"]
+
+
+class _ObservedSession:
+    """The session as review_shard sees it, plus the raw CLI result of its
+    last call kept where the record can attest it (modelUsage, session id).
+    Every attribute review_shard and invocation_accounting read is the
+    inner session's own; nothing is invented here."""
+
+    def __init__(self, inner):
+        object.__setattr__(self, "_inner", inner)
+        object.__setattr__(self, "last_result", None)
+        object.__setattr__(self, "calls", 0)
+
+    def run(self, prompt):
+        object.__setattr__(self, "calls", self.calls + 1)
+        result = self._inner.run(prompt)
+        object.__setattr__(self, "last_result", result)
+        return result
+
+    def __getattr__(self, name):
+        return getattr(self._inner, name)
+
+
+def _review_one_shard(entry, member, out_root, a_out, session_factory,
+                      system_prompt, template, digests, schema, identity,
+                      command, what):
+    """One shard under the command: a fresh scratch directory and a fresh
+    one-attempt session whose configuration must hash to what the identity
+    binds; the claim installed immediately before the one call; the output
+    installed with read-back; then the immutable shard record written LAST
+    at every exit that follows the claim. Updates `entry` in place; returns
+    nothing; propagates any BaseException after the record is written."""
+    shard_id = member["shard_id"]
+    shard_path = bound_shard_path(out_root, member)
+    policy = identity["auxiliary_model_policy"]
+    record = {
+        "artifact_version": "foundry-pass-2-shard-attempt/experimental-v0.1",
+        "purpose": "shard-review", "reviewer_role": "reviewer_a",
+        "command_attempt_id": command["command_attempt_id"],
+        "ruling_id": command["ruling_id"], "head": command["head"],
+        "identity_sha256": command["identity_sha256"],
+        "model_id": command["model_id"], "ruled_model_id": command["ruled_model_id"],
+        "model_version_or_build": command["model_version_or_build"],
+        "configuration_sha256": command["configuration_sha256"],
+        "auxiliary_model_policy": policy,
+        "auxiliary_model_violations": [],
+        "observed_model_usage": None,
+        "shard_id": shard_id, "input_path": member["path"],
+        "input_sha256": member["sha256"],
+        "reservation_path": command["reservation_path"],
+        "claim_path": None, "claim_sha256": None,
+        "started_utc": None, "phase": "session-construction",
+        "result": None, "error": None,
+        "attempts_allowed": REVIEW_ATTEMPTS,
+        "model_calls": 0, "cli_invocations": None,
+        "live_invocations_started": None,
+        "invocation_accounting": "unavailable",
+        "cli_invocation_log": [],
+        "session_id": None, "num_turns": None,
+        "prompt_sha256": None, "raw_response_sha256": None, "raw_response": None,
+        "machine_corrections": None, "pre_call_record_verification": None,
+        "completeness_check": None, "schema_report": None,
+        "problems": None, "verdict": None,
+        "output_path": None, "output_sha256": None, "output_byte_length": None,
+    }
+    entry["phase"] = record["phase"]
+    cwd = tempfile.mkdtemp(prefix=f"foundry-reviewer-a-{shard_id}-")
+    try:
+        session = session_factory(system_prompt, cwd, REVIEW_ATTEMPTS)
+    except BaseException as err:  # noqa: B036 - zero-call, no claim, reported
+        entry.update(result="NOT_RUN", error=(
+            f"session construction failed: {type(err).__name__}: "
+            f"{str(err)[:300]}"))
+        _rmtree_best_effort(cwd)
+        if isinstance(err, Exception):
+            return
+        raise
+    # the session must SAY what it allows and what it runs, and it must be
+    # the configuration the identity binds; anything else is refused before
+    # the claim, so the shard stays NOT_RUN and the command stops
+    reason = None
+    if getattr(session, "attempts", None) != REVIEW_ATTEMPTS:
+        reason = (f"session reports attempts={getattr(session, 'attempts', None)!r}; "
+                  f"the ruling allows exactly {REVIEW_ATTEMPTS}")
+    elif not (callable(getattr(session, "command", None))
+              and callable(getattr(session, "environment_boundary", None))
+              and isinstance(getattr(session, "timeout", None), int)
+              and not isinstance(getattr(session, "timeout", None), bool)
+              and getattr(session, "timeout", 0) > 0):
+        reason = ("session does not expose its command, environment boundary, "
+                  "and a positive timeout")
+    else:
+        reason = _session_drift(session, identity)
+    if reason:
+        entry.update(result="NOT_RUN", error=reason)
+        _rmtree_best_effort(cwd)
+        return
+    # the input bytes are read once, without following links, hashed, and
+    # copied into this shard's private scratch directory; the call reads
+    # the copy, so the digest the record attests is the digest of the bytes
+    # the model was sent, not a manifest field (isolated adversary on this
+    # head, finding 5)
+    try:
+        input_bytes = canon.read_regular_bytes(shard_path)
+    except (OSError, canon.PathBoundaryError) as err:
+        entry.update(result="NOT_RUN", error=(
+            f"input unreadable at call time: {type(err).__name__}: {str(err)[:200]}"))
+        _rmtree_best_effort(cwd)
+        return
+    input_sha = canon.bytes_digest(input_bytes)
+    if input_sha != member["sha256"]:
+        entry.update(result="NOT_RUN", error=(
+            f"input digest drift since preverify: {input_sha} is not the bound "
+            f"{member['sha256']}"))
+        _rmtree_best_effort(cwd)
+        return
+    scratch_shard = os.path.join(cwd, "shard.json")
+    fd = os.open(scratch_shard, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    try:
+        canon.write_all(fd, input_bytes, "scratch shard copy")
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+    if canon.read_regular_bytes(scratch_shard) != input_bytes:
+        entry.update(result="NOT_RUN", error="scratch shard copy does not hold "
+                                              "the input bytes")
+        _rmtree_best_effort(cwd)
+        return
+    record["input_sha256"] = input_sha
+    # the claim: the shard is spent from here whatever happens next
+    record["phase"] = entry["phase"] = "claim"
+    claim_file = os.path.join(a_out, CLAIMS_DIR, f"{shard_id}.json")
+    started_utc = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    record["started_utc"] = started_utc
+    claim_meta = {
+        "artifact_version": "foundry-pass-2-shard-claim/experimental-v0.1",
+        "purpose": "shard-review", "claimed_utc": started_utc,
+        "command_attempt_id": command["command_attempt_id"],
+        "ruling_id": command["ruling_id"], "head": command["head"],
+        "identity_sha256": command["identity_sha256"],
+        "shard_id": shard_id, "input_sha256": member["sha256"],
+        "model_id": command["model_id"],
+        "reservation_path": command["reservation_path"],
+        "reservation_sha256": command["reservation_sha256"],
+        "attempts_allowed": REVIEW_ATTEMPTS,
+    }
+    propagate = None
+    try:
+        try:
+            claim = _reserve_exclusive(
+                a_out, claim_file, claim_meta, what,
+                subject=f"shard {shard_id}",
+                tail="a claimed shard is never re-run")
+        except AlreadyReserved as err:
+            # another command claimed this shard between this command's
+            # pre-check and its claim (Ari, room 266: two overlapping
+            # commands past precheck; exactly one claim can win). Nothing
+            # was created here, no call is made, no record is written under
+            # the winner's shard; this command stops with the shard NOT_RUN
+            entry.update(result="NOT_RUN", error=(
+                f"claimed by another command before this one could claim it: "
+                f"{str(err)[:300]}"))
+            _rmtree_best_effort(cwd)
+            return
+        except BaseException as err:  # noqa: B036
+            # the claim path may now exist (spent) or not (nothing spent);
+            # existence decides, exactly as it does for refusal
+            if os.path.lexists(claim_file):
+                record["claim_path"] = os.path.relpath(claim_file, a_out)
+                record["result"] = "FAIL"
+                record["error"] = (f"claim not durably written: "
+                                   f"{type(err).__name__}: {str(err)[:300]}")
+                propagate = err
+                raise _ShardStop()
+            entry.update(result="NOT_RUN", error=(
+                f"claim could not be created: {type(err).__name__}: "
+                f"{str(err)[:300]}"))
+            if isinstance(err, Exception):
+                return
+            raise
+        record["claim_path"] = os.path.relpath(claim, a_out)
+        record["claim_sha256"] = _sha(claim)
+        entry["claim_path"] = record["claim_path"]
+        record["phase"] = entry["phase"] = "invocation"
+        observed = _ObservedSession(session)
+        total_before = getattr(session, "total_invocations", None)
+        total_before = total_before if isinstance(total_before, int) and \
+            not isinstance(total_before, bool) else None
+        review_record = None
+        try:
+            review_record = reviewer.review_shard(
+                observed, template, digests, scratch_shard,
                 member["artifact_ids"], schema_validator, schema)
         except reviewer.ReviewerError as err:
-            record = {"shard_id": member["shard_id"],
-                      "verdict": "review-execution-failure",
-                      "problems": [str(err)[:500]]}
-        canon.write_canonical(
-            os.path.join(records_dir, member["shard_id"] + ".json"), record)
-        if record["verdict"] == "fixed":
-            canon.write_canonical(
-                os.path.join(outputs_dir, member["shard_id"] + ".json"),
-                record["output"])
-        counts = {}
-        for d in record.get("output", {}).get("dispositions", []):
-            counts[d["verdict"]] = counts.get(d["verdict"], 0) + 1
-        print(member["shard_id"], record["verdict"], json.dumps(counts),
-              record.get("problems", []), flush=True)
-    write_run_record_manifest(a_out)
+            record["result"] = "FAIL"
+            record["error"] = str(err)[:500]
+            if observed.last_result is not None:
+                record["phase"] = "validation"
+        except BaseException as err:  # noqa: B036 - a spent call is recorded
+            record["result"] = "FAIL"
+            record["error"] = (f"harness aborted: {type(err).__name__}: "
+                               f"{str(err)[:400]}")
+            if observed.last_result is not None:
+                record["phase"] = "validation"
+            if not isinstance(err, Exception):
+                # an interrupt keeps its meaning after the record; any other
+                # exception is the shard's failure and the command's stop
+                propagate = err
+        # the live accounting, from the session in hand, never from disk
+        total_after = getattr(session, "total_invocations", None)
+        if total_before is not None and isinstance(total_after, int) and \
+                not isinstance(total_after, bool):
+            invocations = total_after - total_before
+            accounting = "session-reported (cumulative total delta)"
+        else:
+            live = getattr(session, "last_invocations", None)
+            invocations = live if isinstance(live, int) and \
+                not isinstance(live, bool) else None
+            accounting = ("session-reported (per-call count)"
+                          if invocations is not None else "unavailable")
+        if isinstance(invocations, int) and invocations < 0:
+            invocations = None
+            accounting = "unavailable (session reported a count that went backwards)"
+        record["cli_invocations"] = invocations
+        record["live_invocations_started"] = invocations
+        record["invocation_accounting"] = accounting
+        record["cli_invocation_log"] = list(getattr(session, "last_invocation_log", []) or [])
+        record["model_calls"] = observed.calls
+        last = observed.last_result
+        if isinstance(last, dict):
+            record["session_id"] = last.get("session_id")
+            record["num_turns"] = last.get("num_turns")
+            record["raw_response"] = last.get("result", "")
+            record["raw_response_sha256"] = canon.content_digest(last.get("result", ""))
+            usage = observed_model_usage({"transcripts": [
+                {"probe_id": shard_id, "result": last}]})
+            record["observed_model_usage"] = usage
+        else:
+            usage = []
+        if review_record is not None:
+            for key in ("prompt_sha256", "session_id", "num_turns",
+                        "machine_corrections", "pre_call_record_verification",
+                        "completeness_check", "schema_report", "problems",
+                        "verdict", "raw_response_sha256"):
+                if key in review_record:
+                    record[key] = review_record[key] if key != "prompt_sha256" \
+                        else review_record["task_prompt_sha256"]
+        if record["result"] is None:
+            # the call returned: the ruling's sentence is checked against
+            # what the session and the CLI reported before any output is
+            # installed (binding parity: counting is not enforcement)
+            record["phase"] = "policy"
+            violations = aux_policy_violations(usage, command["model_id"], policy) \
+                if usage else []
+            record["auxiliary_model_violations"] = violations
+            drift = _session_drift(session, identity)
+            scratch_now = (canon.bytes_digest(canon.read_regular_bytes(scratch_shard))
+                           if canon.is_regular(scratch_shard) else None)
+            if drift:
+                # the configuration is what it was when checked, or the
+                # shard is not bound to the identity (finding 8)
+                record["result"] = "FAIL"
+                record["error"] = f"after the call, {drift}"
+            elif scratch_now != input_sha:
+                record["result"] = "FAIL"
+                record["error"] = ("the scratch input was altered during the "
+                                   f"call: {scratch_now} is not {input_sha}")
+            elif not isinstance(invocations, int):
+                record["result"] = "FAIL"
+                record["error"] = ("invocation count unavailable: the session did "
+                                   "not report a valid CLI invocation count "
+                                   f"({accounting})")
+            elif invocations != REVIEW_ATTEMPTS:
+                record["result"] = "FAIL"
+                record["error"] = (f"invocation accounting does not match the "
+                                   f"ruling: {invocations} CLI invocation(s) for "
+                                   f"1 shard call; exactly {REVIEW_ATTEMPTS} allowed")
+            elif not usage or not usage[0]["model_usage_reported"]:
+                record["result"] = "FAIL"
+                record["error"] = ("auxiliary model policy could not be checked: "
+                                   "no modelUsage reported for the shard call")
+            elif violations:
+                record["result"] = "FAIL"
+                record["error"] = ("model usage violates the bound policy: "
+                                   + "; ".join(violations))[:500]
+            elif review_record.get("verdict") != "fixed":
+                record["phase"] = "validation"
+                record["result"] = "FAIL"
+                record["error"] = (f"verdict {review_record.get('verdict')!r}: "
+                                   f"{review_record.get('problems')}")[:500]
+        if record["result"] is None:
+            record["phase"] = "install"
+            output_file = os.path.join(a_out, OUTPUTS_DIR, f"{shard_id}.json")
+            try:
+                sha, length = install_output_readback(output_file,
+                                                      review_record["output"])
+            except SystemExit as err:
+                record["result"] = "FAIL"
+                record["error"] = f"output not installed: {err.code}"[:500]
+            except BaseException as err:  # noqa: B036
+                record["result"] = "FAIL"
+                record["error"] = (f"output not installed: {type(err).__name__}: "
+                                   f"{str(err)[:400]}")
+                if not isinstance(err, Exception):
+                    propagate = err
+            else:
+                record["output_path"] = os.path.relpath(output_file, a_out)
+                record["output_sha256"] = sha
+                record["output_byte_length"] = length
+                record["result"] = "DONE"
+                record["phase"] = "finalized"
+        raise _ShardStop()
+    except _ShardStop:
+        pass
+    finally:
+        _rmtree_best_effort(cwd)
+        if record["claim_path"] is not None:
+            # the record is written LAST, after the output, at every exit
+            # that follows the claim; a claim with no record is a spent,
+            # unattested shard that status reports and review refuses
+            entry.update(result=record["result"], phase=record["phase"],
+                         error=record["error"], model_calls=record["model_calls"],
+                         cli_invocations=record["cli_invocations"],
+                         output_path=record["output_path"],
+                         output_sha256=record["output_sha256"])
+            try:
+                (rec_sha, rec_path), interrupted = _write_shard_record_once(
+                    a_out, record)
+            except BaseException as err:  # noqa: B036
+                entry.update(result="UNATTESTED", error=(
+                    f"shard record not written: {type(err).__name__}: "
+                    f"{str(err)[:300]}"))
+                if propagate is None:
+                    raise
+            else:
+                entry.update(record_path=os.path.relpath(rec_path, a_out),
+                             record_sha256=rec_sha)
+                if interrupted is not None and propagate is None:
+                    # the record is on disk; the signal that interrupted
+                    # its write still stops the command
+                    propagate = interrupted
+    if propagate is not None:
+        raise propagate
+
+
+class _ShardStop(Exception):
+    """Internal: leave the shard body; the finally clause writes the record."""
+
+
+def _session_drift(session, identity):
+    """Why this session is not the one the identity binds, or None. Read
+    before the claim and again after the call, from the session object in
+    hand (isolated adversary on this head, finding 8: the command line was
+    read once, and the model attribute never).
+
+    Honest limit: the harness can only compare what the session object
+    SAYS about itself; a session that reports the bound command on both
+    reads while running something else is outside what any caller can
+    observe. The session class the identity binds is the real
+    IsolatedSession, whose command() is what it runs; the invocation and
+    model-usage checks are the observations that do not depend on the
+    session's word."""
+    if getattr(session, "model", None) != identity["model_id"]:
+        return (f"session model {getattr(session, 'model', None)!r} is not the "
+                f"bound {identity['model_id']!r}")
+    try:
+        configuration = {"command": list(session.command())[:-1] + ["<system prompt>"],
+                         "timeout_s": session.timeout}
+        boundary = session.environment_boundary()
+    except Exception as err:  # noqa: BLE001
+        return f"session configuration unreadable: {type(err).__name__}"
+    if canon.content_digest(configuration) != identity["configuration_sha256"]:
+        return "session configuration differs from the one the identity binds"
+    if canon.content_digest(boundary) != identity["environment_boundary_sha256"]:
+        return "session environment boundary differs from the one the identity binds"
+    return None
+
+
+def _rmtree_best_effort(path):
+    try:
+        shutil.rmtree(path)
+    except OSError:
+        pass
+
+
+def _write_shard_record_once(a_out, record):
+    """The immutable shard record, content-addressed under the shard's own
+    name (run-records/<shard_id>.<sha256>.json); an interrupt inside the
+    write is retried once with the interruption named, then propagated."""
+    directory = os.path.join(a_out, RUN_RECORDS_DIR)
+    prefix = f"{record['shard_id']}."
+    return _write_record_once(directory, prefix, {
+        "shard_id": record["shard_id"],
+        "command_attempt_id": record["command_attempt_id"]}, record)
+
+
+def _write_record_once(directory, prefix, fields, record):
+    """Returns ((sha, path), interruption). A record for this key is never
+    written twice: one that already exists is returned; one whose write
+    raised after the bytes landed is returned with the exception; one whose
+    write was interrupted before the bytes landed is retried once with the
+    interruption named, and that exception is returned beside the retried
+    record so the caller can still honour the signal; if the retry fails
+    too, the original exception propagates."""
+    existing = _existing_record(directory, prefix, fields)
+    if existing is not None:
+        return existing, None
+    try:
+        return write_review_record(directory, prefix, record), None
+    except BaseException as err:  # noqa: B036 - the record is the evidence
+        existing = _existing_record(directory, prefix, fields)
+        if existing is not None:
+            return existing, err
+        try:
+            return write_review_record(directory, prefix, dict(
+                record, record_write_interrupted=f"{type(err).__name__}: "
+                                                 f"{str(err)[:200]}")), err
+        except BaseException:  # noqa: B036, BLE001 - the first failure is reported
+            raise err
+
+
+def _existing_record(directory, prefix, fields):
+    """The (sha, path) of the one record under `directory` whose name has
+    `prefix` and whose content carries every field in `fields`; None if
+    there is none. Read without following links; unreadable files do not
+    match."""
+    if not canon.is_real_dir(directory):
+        return None
+    for name in sorted(os.listdir(directory)):
+        if name.startswith(prefix) and name.endswith(".json"):
+            try:
+                rec = canon.load_json_regular(os.path.join(directory, name))
+            except Exception:  # noqa: BLE001
+                continue
+            if all(rec.get(k) == v for k, v in fields.items()):
+                return name[len(prefix):-5], os.path.join(directory, name)
+    return None
+
+
+def write_review_record(directory, prefix, record):
+    """Immutable, content-addressed record for the review path (shard and
+    command records), written durably: temporary file, write_all, fsync,
+    link into place (never replacing an existing name), directory fsync.
+    Its own seam so tests can inject failures and interrupts."""
+    try:
+        canon.refuse_unless_real_dir(directory, "record directory")
+    except canon.PathBoundaryError as err:
+        raise SystemExit(f"review refused: {err}")
+    os.makedirs(directory, exist_ok=True)
+    data = canon.canonical_bytes(record)
+    rec_sha = canon.bytes_digest(data)
+    rec_path = os.path.join(directory, f"{prefix}{rec_sha}.json")
+    # the temporary lives in the evidence root, never in the indexed
+    # directory, so a crash leaves no pseudo-member behind (finding 12)
+    fd, tmp = tempfile.mkstemp(prefix=".tmp-record-", suffix=".json",
+                               dir=os.path.dirname(directory))
+    try:
+        canon.write_all(fd, data, "review record")
+        os.fsync(fd)
+        if os.fstat(fd).st_size != len(data):
+            raise canon.ShortWriteError("review record: size on disk differs "
+                                        "from the payload after fsync")
+        os.fchmod(fd, 0o644)
+        os.close(fd)
+        fd = None
+        os_link(tmp, rec_path)   # FileExistsError: the record already exists
+    finally:
+        if fd is not None:
+            os.close(fd)
+        try:
+            os.unlink(tmp)
+        except FileNotFoundError:
+            pass
+    dfd = os.open(directory, os.O_RDONLY)
+    try:
+        os.fsync(dfd)
+    finally:
+        os.close(dfd)
+    return rec_sha, rec_path
+
+
+def install_output_readback(path, obj):
+    """Install one shard output exactly once, verified from the same
+    descriptor that wrote it (18376129: output installed atomically with
+    read-back, then the shard record). The same sequence as the identity
+    install, kept separate so the identity primitive stays byte-identical:
+    refuse if anything exists at `path`; canonical bytes to a same-directory
+    temporary file through write_all; fsync; fstat size equal to the
+    payload; every byte read back from the same descriptor with pread and
+    equal to the payload; digest from the bytes read back; link() into
+    place, never replacing; directory fsync; the installed path read once
+    more without following links and equal to the payload. Returns
+    (sha256, byte_length)."""
+    directory = os.path.dirname(path) or "."
+    try:
+        canon.refuse_unless_real_dir(directory, "outputs directory")
+    except canon.PathBoundaryError as err:
+        raise SystemExit(f"review output refused: {err}")
+    os.makedirs(directory, exist_ok=True)
+    if os.path.lexists(path):
+        raise SystemExit(f"review output refused: {os.path.basename(path)} "
+                         "already exists; an output is never overwritten")
+    data = canon.canonical_bytes(obj)
+    fd, tmp = tempfile.mkstemp(prefix=".tmp-output-", suffix=".json",
+                               dir=os.path.dirname(directory))
+    try:
+        canon.write_all(fd, data, "output temporary file")
+        os.fsync(fd)
+        on_disk = os.fstat(fd).st_size
+        if on_disk != len(data):
+            raise canon.ShortWriteError(
+                f"output temporary file: {on_disk} byte(s) on disk for a "
+                f"{len(data)} byte payload after fsync; refusing to install")
+        back = bytearray()
+        while len(back) < len(data):
+            chunk = os.pread(fd, min(65536, len(data) - len(back)), len(back))
+            if not chunk:
+                raise canon.ShortWriteError(
+                    f"output temporary file: read back ended after "
+                    f"{len(back)} of {len(data)} byte(s); refusing to install")
+            back += chunk
+        if os.pread(fd, 1, len(data)) != b"":
+            raise canon.ShortWriteError(
+                "output temporary file: more bytes on disk than the payload; "
+                "refusing to install")
+        if bytes(back) != data:
+            raise canon.ShortWriteError(
+                "output temporary file: bytes read back from the same "
+                "descriptor differ from the payload; refusing to install")
+        digest = canon.bytes_digest(bytes(back))
+        os.fchmod(fd, 0o644)
+        os.close(fd)
+        fd = None
+        try:
+            os_link(tmp, path)
+        except FileExistsError:
+            raise SystemExit(f"review output refused: {os.path.basename(path)} "
+                             "appeared during install and was not overwritten")
+        except OSError as err:
+            raise SystemExit(f"review output refused: {os.path.basename(path)} "
+                             f"could not be installed by link ({err}); nothing "
+                             "was installed")
+    finally:
+        if fd is not None:
+            os.close(fd)
+        try:
+            os.unlink(tmp)
+        except FileNotFoundError:
+            pass
+    dfd = os.open(directory, os.O_RDONLY)
+    try:
+        os.fsync(dfd)
+    finally:
+        os.close(dfd)
+    try:
+        installed = canon.read_regular_bytes(path)
+    except (OSError, canon.PathBoundaryError) as err:
+        installed = None
+        detail = f"{type(err).__name__}: {err}"
+    else:
+        detail = "bytes differ"
+    if installed != data:
+        # the bytes are moved OUT of the outputs directory, which the gate
+        # reads whole, into the evidence root under a name the store check
+        # refuses on (second isolated pass, finding 1: a quarantined file
+        # inside outputs/ was indexed as a fixed output and consumed by the
+        # gate for a shard that was never reviewed)
+        stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+        n = 0
+        while True:
+            quarantine = os.path.join(
+                os.path.dirname(directory),
+                f"REFUSED-output-{os.path.basename(path)[:-5]}-{stamp}-{n}.json")
+            if not os.path.lexists(quarantine):
+                break
+            n += 1
+        moved = None
+        if os.path.lexists(path):
+            try:
+                os.rename(path, quarantine)
+                moved = os.path.basename(quarantine)
+            except OSError:
+                moved = None
+        raise SystemExit(f"review output refused: {os.path.basename(path)} on "
+                         f"disk does not hold the verified bytes after install "
+                         f"({detail}); "
+                         + (f"moved to {moved}" if moved else
+                            "nothing was moved (the path was absent or the "
+                            "move failed)"))
+    return digest, len(data)
+
+
+def finalize_review_command(a_out, outcome):
+    """The one terminal command record for this command, the ledger
+    projection, the rebuilt manifest, and the ledger line. Runs on every
+    post-reservation exit. Never written twice for one command attempt;
+    an interrupt inside the write is retried once with the interruption
+    named, then propagated. The manifest is an index: its failure is
+    reported on the line, never allowed to mask the record."""
+    outcome["finished_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    if outcome["result"] is None:
+        outcome["result"] = "FAIL"
+    directory = os.path.join(a_out, COMMAND_RECORDS_DIR)
+    prefix = f"{outcome['command_attempt_id']}."
+    try:
+        (rec_sha, _rec_path), interrupted = _write_record_once(
+            directory, prefix, {"command_attempt_id": outcome["command_attempt_id"]},
+            outcome)
+    except BaseException as err:  # noqa: B036 - loud, then propagated
+        # nothing can be projected from a record that is not on disk; the
+        # operator is told in words, and status reports the reservation as
+        # unfinalized until it is (finding 3b)
+        print("TERMINAL COMMAND RECORD NOT WRITTEN for command "
+              f"{outcome['command_attempt_id']} (ruling {outcome['ruling_id']}): "
+              f"{type(err).__name__}: {str(err)[:300]}")
+        for s in outcome["shards"]:
+            print(f"  {s['shard_id']} {s['result']}"
+                  + (f" record {s['record_sha256']}" if s["record_sha256"] else ""))
+        raise
+    counts = {"DONE": 0, "FAIL": 0, "NOT_RUN": 0, "UNATTESTED": 0}
+    for s in outcome["shards"]:
+        counts[s["result"]] = counts.get(s["result"], 0) + 1
+    ledger_note = ""
+    try:
+        _append_review_ledger(a_out, outcome, rec_sha)
+    except BaseException as err:  # noqa: B036 - a projection; T is on disk
+        # the ledger is a projection of T: its failure is said on the line
+        # and in the exit status, and never hides T or the line itself
+        # (isolated adversary on this head, finding 10)
+        ledger_note = f" | ledger NOT appended ({type(err).__name__})"
+        if not isinstance(err, Exception):
+            _print_review_ledger_line(outcome, rec_sha, counts, ledger_note
+                                      + " (interrupted; terminal record is on disk)")
+            raise
+    manifest_note = ""
+    try:
+        write_run_record_manifest(a_out)
+    except BaseException as err:  # noqa: B036 - an index, reported not masked
+        manifest_note = f" | manifest NOT rebuilt ({type(err).__name__})"
+        if not isinstance(err, Exception):
+            _print_review_ledger_line(outcome, rec_sha, counts, ledger_note
+                                      + manifest_note
+                                      + " (interrupted; terminal record is on disk)")
+            raise
+    if manifest_note or any(s.get("manifest_error") for s in outcome["shards"]):
+        manifest_note = manifest_note or " | manifest NOT rebuilt after a shard"
+    manifest_note = ledger_note + manifest_note
+    _print_review_ledger_line(outcome, rec_sha, counts, manifest_note)
+    if interrupted is not None:
+        # the record and the ledger are on disk; the signal that interrupted
+        # the record write keeps its meaning
+        raise interrupted
+    return manifest_note == ""
+
+
+def _print_review_ledger_line(outcome, rec_sha, counts, manifest_note):
+    print("REVIEW LEDGER LINE:")
+    print(f"head {outcome['head']} | ruling {outcome['ruling_id']} | model "
+          f"{outcome['model_id']} | identity {outcome['identity_sha256']} | "
+          f"command {outcome['command_attempt_id']} | shards "
+          f"{len(outcome['shards'])} | done {counts['DONE']} | failed "
+          f"{counts['FAIL']} | unattested {counts['UNATTESTED']} | not-run "
+          f"{counts['NOT_RUN']} | calls {outcome['model_calls']} | invocations "
+          f"{outcome['cli_invocations']} (allowed {outcome['attempts_allowed']} "
+          f"per call, ceiling {outcome['call_ceiling']}) | result "
+          f"{outcome['result']} | record {rec_sha} | reservation "
+          f"{outcome['reservation_path']}{manifest_note}")
+    for s in outcome["shards"]:
+        print(f"  {s['shard_id']} {s['result']}"
+              + (f" output {s['output_sha256']}" if s["output_sha256"] else "")
+              + (f" record {s['record_sha256']}" if s["record_sha256"] else "")
+              + (f" ({s['phase']}: {s['error']})" if s["error"] else ""))
+    if outcome["error"]:
+        print("failure:", outcome["error"])
+
+
+def _append_review_ledger(a_out, outcome, rec_sha):
+    append_ledger(a_out, {
+        "command_attempt_id": outcome["command_attempt_id"],
+        "head": outcome["head"], "ruling_id": outcome["ruling_id"],
+        "identity_sha256": outcome["identity_sha256"],
+        "model": outcome["model_id"], "result": outcome["result"],
+        "phase": outcome["phase"], "shards": [
+            {"shard_id": s["shard_id"], "result": s["result"],
+             "record_sha256": s["record_sha256"],
+             "output_sha256": s["output_sha256"]} for s in outcome["shards"]],
+        "model_calls": outcome["model_calls"],
+        "cli_invocations": outcome["cli_invocations"],
+        "call_ceiling": outcome["call_ceiling"],
+        "attempts_allowed": outcome["attempts_allowed"],
+        "reservation_path": outcome["reservation_path"],
+        "record_sha256": rec_sha,
+        "started_utc": outcome["started_utc"],
+        "finished_utc": outcome["finished_utc"]},
+        REVIEW_LEDGER, "foundry-pass-2-review-ledger/experimental-v0.1")
 
 
 IDENTITY_BOUND_FIELDS = (
@@ -1217,20 +2305,38 @@ def reserve_head(q_out, head, meta, artifact_version=
     head by design (it may have reached the model), and needs a new
     commit. Never modified after creation."""
     path = reservation_path(q_out, head, what)
+    record = dict(meta, artifact_version=artifact_version, head=head)
+    return _reserve_exclusive(q_out, path, record, what, subject=f"head {head}",
+                              tail="a new attempt needs a new exact commit")
+
+
+class AlreadyReserved(SystemExit):
+    """The exclusive create found the name taken: nothing was created by
+    this caller. A SystemExit for every existing caller; the review path
+    tells it apart from a write failure after the create (a racing command
+    that lost a shard claim must not record the winner's shard as its own)."""
+
+
+def _reserve_exclusive(q_out, path, record, what, subject, tail):
+    """The exclusive durable create behind reserve_head, shared verbatim by
+    the review path's command reservation (keyed by ruling ID) and shard
+    claims (keyed by shard ID): O_EXCL create, write_all, fsync, fstat size
+    check, directory fsync; on any failure after the create the object is
+    left in place and reported as spent. `subject` and `tail` only shape
+    the refusal wording."""
     try:
-        canon.refuse_unless_real_dir(os.path.dirname(path), "reservations directory")
+        canon.refuse_unless_real_dir(os.path.dirname(path),
+                                     f"{os.path.basename(os.path.dirname(path))} directory")
     except canon.PathBoundaryError as err:
         raise SystemExit(f"{what} refused: {err}")
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    record = dict(meta, artifact_version=artifact_version, head=head)
     data = canon.canonical_bytes(record)
     try:
         fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
     except FileExistsError:
-        raise SystemExit(
-            f"{what} refused: head {head} is already reserved "
-            f"({os.path.relpath(path, q_out)}); a new attempt needs a new "
-            "exact commit")
+        raise AlreadyReserved(
+            f"{what} refused: {subject} is already reserved "
+            f"({os.path.relpath(path, q_out)}); {tail}")
     def fsync_best_effort():
         # the reservation is authoritative by existence, so whatever is on
         # disk must survive a crash that lands right after this function
@@ -1269,10 +2375,9 @@ def reserve_head(q_out, head, meta, artifact_version=
             fsync_best_effort()
             if isinstance(err, OSError):
                 raise SystemExit(
-                    f"{what} refused: head reservation for {head} "
-                    f"could not be durably written ({err}); the head stays "
-                    "reserved and spent; no session was constructed; a new "
-                    "attempt needs a new exact commit")
+                    f"{what} refused: reservation for {subject} "
+                    f"could not be durably written ({err}); {subject} stays "
+                    f"reserved and spent; no session was constructed; {tail}")
             raise
     finally:
         os.close(fd)
@@ -1284,10 +2389,9 @@ def reserve_head(q_out, head, meta, artifact_version=
             os.close(dfd)
     except OSError as err:
         raise SystemExit(
-            f"{what} refused: head reservation for {head} was written "
-            f"but its directory could not be fsynced ({err}); the head stays "
-            "reserved and spent; no session was constructed; a new attempt "
-            "needs a new exact commit")
+            f"{what} refused: reservation for {subject} was written "
+            f"but its directory could not be fsynced ({err}); {subject} stays "
+            f"reserved and spent; no session was constructed; {tail}")
     return path
 
 
@@ -1366,7 +2470,7 @@ def append_binding_ledger(a_out, entry):
                          "foundry-pass-2-binding-ledger/experimental-v0.1")
 
 
-def check_evidence_paths(q_out, root=None):
+def check_evidence_paths(q_out, root=None, allowed_dirs=(RESERVATIONS_DIR,)):
     """Path-boundary gate for the mutable evidence root, run BEFORE any
     reservation is written and before any pre-existing evidence is read
     (18321488 blocking finding 2; authorized by 18321531). The evidence
@@ -1376,7 +2480,9 @@ def check_evidence_paths(q_out, root=None):
     - q_out and every ancestor below the pass root must be real
       directories (or absent);
     - every entry directly inside q_out must be a regular file, except the
-      reservations directory, which must be a real directory whose
+      directories named in `allowed_dirs` (the reservations directory by
+      default; the review path adds claims, run-records, outputs, and
+      command-records), each of which must be a real directory whose
       entries are all regular files.
 
     Returns the list of violations (empty when clean); the caller refuses
@@ -1416,7 +2522,7 @@ def check_evidence_paths(q_out, root=None):
     for name in sorted(os.listdir(q_out)):
         path = os.path.join(q_out, name)
         kind = describe(path)
-        if name == RESERVATIONS_DIR:
+        if name in allowed_dirs:
             if kind != "directory":
                 problems.append(f"{name} is a {kind}, not a directory")
                 continue
@@ -1864,15 +2970,21 @@ def qualify():
 
 def write_run_record_manifest(a_out=None):
     """Content-addressed manifest of every run artifact for Reviewer A:
-    probe transcript, identity, each shard run record, each fixed output.
-    Rewritten after every run so it always covers the current state."""
+    probe transcript, identity, reservations, claims, each shard record,
+    each installed output, each command record. A rebuildable INDEX,
+    never the source of truth (18376129): rewritten durably (temporary
+    file, fsync, atomic replace, symlink destination refused) after every
+    terminal exit, and every member is inspected with lstat and read
+    without following links."""
     A_OUT = a_out or globals()["A_OUT"]
     members = []
     def add(kind, rel):
         path = os.path.join(A_OUT, rel)
-        if os.path.isfile(path):
-            members.append({"kind": kind, "path": rel, "sha256": _sha(path),
-                            "byte_length": os.path.getsize(path)})
+        if canon.is_regular(path):
+            data = canon.read_regular_bytes(path)
+            members.append({"kind": kind, "path": rel,
+                            "sha256": canon.bytes_digest(data),
+                            "byte_length": len(data)})
     add("leak-probe-transcript", "leak-probe-transcript.json")
     add("failed-preflight-manifest", reviewer.FAILED_PREFLIGHT_MANIFEST)
     add("passed-preflight-manifest", reviewer.PASSED_PREFLIGHT_MANIFEST)
@@ -1882,15 +2994,30 @@ def write_run_record_manifest(a_out=None):
         elif "-PASSED-" in name and name.endswith(".json"):
             add("passed-preflight-evidence", name)
     add("identity", "reviewer-identity.json")
-    for sub, kind in (("run-records", "run-record"), ("outputs", "fixed-output")):
+    # the kinds the gate consumes (engine/gate.py check_run_record_manifest
+    # requires "run-record") keep their names; the review path's new kinds
+    # are additive (isolated adversary on this head, finding 2). Temporary
+    # files are never members (finding 12).
+    for sub, kind in ((RESERVATIONS_DIR, "reservation"), (CLAIMS_DIR, "shard-claim"),
+                      (RUN_RECORDS_DIR, "run-record"), (OUTPUTS_DIR, "fixed-output"),
+                      (COMMAND_RECORDS_DIR, "command-record")):
         d = os.path.join(A_OUT, sub)
-        if os.path.isdir(d):
+        if canon.is_real_dir(d):
             for name in sorted(os.listdir(d)):
+                if name.startswith("."):
+                    continue
+                if sub == OUTPUTS_DIR and not (
+                        name.endswith(".json") and SHARD_ID_RE.fullmatch(name[:-5])
+                        and "-REFUSED-" not in name):
+                    continue   # only <shard_id>.json is a fixed output
+                if sub in (RUN_RECORDS_DIR, COMMAND_RECORDS_DIR) and \
+                        RECORD_NAME_RE.fullmatch(name) is None:
+                    continue   # only content-addressed records are members
                 add(kind, os.path.join(sub, name))
-    manifest = {"artifact_version": "foundry-pass-2-run-record-manifest/experimental-v0.1",
+    manifest = {"artifact_version": "foundry-pass-2-run-record-manifest/experimental-v0.2",
                 "reviewer_role": "reviewer_a", "members": members}
-    return canon.write_canonical(os.path.join(A_OUT, "run-record-manifest.json"),
-                                 manifest)
+    return canon.write_canonical_atomic(
+        os.path.join(A_OUT, "run-record-manifest.json"), manifest)
 
 
 def expected_identity_fields():
@@ -1912,16 +3039,368 @@ def expected_identity_fields():
     return fields
 
 
-def status():
-    manifest = canon.load_json(os.path.join(OUT, "shard-manifest.json"))
-    records_dir = os.path.join(A_OUT, "run-records")
-    done = {}
-    if os.path.isdir(records_dir):
-        for name in os.listdir(records_dir):
-            rec = canon.load_json(os.path.join(records_dir, name))
-            done[rec["shard_id"]] = rec["verdict"]
+def shard_states(out_root=None, a_out=None):
+    """The state of every shard in the bound manifest, rebuilt from the
+    immutable artifacts alone (claims, shard records, outputs), never from
+    the manifest index or the ledger (18376129). Every relationship is
+    recomputed: a record must hash to its name, name the shard and a claim
+    that exists, and attest an output that is on disk with that digest and
+    length. Read-only; nothing is opened through a link."""
+    out_root = out_root or OUT
+    a_out = a_out or A_OUT
+    manifest = canon.load_json(os.path.join(out_root, "shard-manifest.json"))
+    claims_dir = os.path.join(a_out, CLAIMS_DIR)
+    records_dir = os.path.join(a_out, RUN_RECORDS_DIR)
+    outputs_dir = os.path.join(a_out, OUTPUTS_DIR)
+    identity_path = os.path.join(a_out, IDENTITY_FILE)
+    identity_sha = None
+    identity = None
+    if canon.is_regular(identity_path):
+        identity_bytes = canon.read_regular_bytes(identity_path)
+        identity_sha = canon.bytes_digest(identity_bytes)
+        try:
+            identity = json.loads(identity_bytes.decode("utf-8"))
+        except Exception:  # noqa: BLE001
+            identity = None
+    states = {}
     for m in manifest["shards"]:
-        print(m["shard_id"], m["record_count"], done.get(m["shard_id"], "pending"))
+        sid = m["shard_id"]
+        claim = os.path.join(claims_dir, f"{sid}.json")
+        claimed = os.path.lexists(claim)
+        found = _existing_record(records_dir, f"{sid}.", {"shard_id": sid})
+        output = os.path.join(outputs_dir, f"{sid}.json")
+        problems = []
+        state = "pending"
+        rec = None
+        if found is not None:
+            rec_sha, rec_path = found
+            data = canon.read_regular_bytes(rec_path)
+            if canon.bytes_digest(data) != rec_sha:
+                problems.append("record does not hash to its name")
+            rec = json.loads(data.decode("utf-8"))
+            others = [n for n in os.listdir(records_dir)
+                      if n.startswith(f"{sid}.") and n.endswith(".json")
+                      and n != os.path.basename(rec_path)]
+            for n in others:
+                try:
+                    other = canon.load_json_regular(os.path.join(records_dir, n))
+                except Exception:  # noqa: BLE001
+                    other = {}
+                if other.get("shard_id") == sid:
+                    problems.append("more than one record for this shard")
+                    break
+            if not claimed:
+                problems.append("record without a claim")
+            else:
+                try:
+                    claim_meta = canon.load_json_regular(claim)
+                except Exception as err:  # noqa: BLE001
+                    claim_meta = None
+                    if not (rec.get("result") == "FAIL" and rec.get("phase") == "claim"):
+                        # a claim whose bytes never landed is what a record
+                        # in phase claim attests; anywhere else it is damage
+                        problems.append(f"claim unreadable ({type(err).__name__})")
+                if claim_meta is not None and (
+                        claim_meta.get("shard_id") != sid
+                        or claim_meta.get("command_attempt_id")
+                        != rec.get("command_attempt_id")):
+                    problems.append("claim and record disagree on the shard "
+                                    "or the command")
+            if rec.get("input_sha256") != m["sha256"]:
+                problems.append("record input digest differs from the manifest")
+            if rec.get("input_path") != m["path"]:
+                problems.append("record input path differs from the manifest")
+            if identity_sha is not None and rec.get("identity_sha256") != identity_sha:
+                problems.append("record identity digest differs from the "
+                                "identity on disk")
+            try:
+                problems.extend(_record_relationship_problems(
+                    a_out, rec, rec_sha, claim, sid, identity, identity_sha))
+            except Exception as err:  # noqa: BLE001 - malformed is CORRUPT, not a crash
+                problems.append(f"record malformed ({type(err).__name__}: "
+                                f"{str(err)[:120]})")
+            if rec.get("result") == "DONE":
+                if not canon.is_regular(output):
+                    problems.append("attested output missing")
+                else:
+                    out_bytes = canon.read_regular_bytes(output)
+                    if (canon.bytes_digest(out_bytes) != rec.get("output_sha256")
+                            or len(out_bytes) != rec.get("output_byte_length")):
+                        problems.append("output on disk does not match the "
+                                        "record's attestation")
+            elif canon.is_regular(output):
+                problems.append("output present for a shard whose record is "
+                                f"{rec.get('result')}")
+            state = rec.get("result") or "FAIL"
+        elif claimed:
+            # a claim with no record: spent and unattested, whether or not an
+            # output landed; never re-run, never trusted, reported as such
+            state = "UNATTESTED"
+        elif canon.is_regular(output):
+            state = "UNATTESTED"
+            problems.append("output present without a claim or a record")
+        if problems:
+            state = "CORRUPT"
+        states[sid] = {"state": state, "record_count": m["record_count"],
+                       "problems": problems,
+                       "phase": rec.get("phase") if rec else None,
+                       "error": rec.get("error") if rec else None,
+                       "output_sha256": rec.get("output_sha256") if rec else None}
+    return states
+
+
+RESERVATION_RECORD_FIELDS = (
+    "ruling_id", "head", "model_id", "ruled_model_id", "model_version_or_build",
+    "configuration_sha256", "auxiliary_model_policy", "attempts_allowed",
+    "command_attempt_id", "identity_sha256")
+RESERVATION_IDENTITY_FIELDS = (
+    ("head", "head"), ("model_id", "model_id"),
+    ("model_version_or_build", "model_version_or_build"),
+    ("configuration_sha256", "configuration_sha256"),
+    ("environment_boundary_sha256", "environment_boundary_sha256"),
+    ("auxiliary_model_policy", "auxiliary_model_policy"),
+    ("bindings", "bindings"))
+
+
+def _reservation_problems(a_out, res, res_sha, identity, identity_sha, label):
+    """The reservation is the authority artifact for a command: it is held
+    against the identity on disk on every field it binds, and whoever
+    names it (a claim, a record, a terminal record) is held against its
+    bytes (second isolated pass, findings 2 and 3: the reservation was
+    written as the authority and never used as one)."""
+    problems = []
+    if res.get("purpose") != "governed-review":
+        problems.append(f"{label}: reservation is not a governed-review reservation")
+    if identity is not None:
+        for res_field, id_field in RESERVATION_IDENTITY_FIELDS:
+            if res.get(res_field) != identity.get(id_field):
+                problems.append(f"{label}: reservation {res_field} differs from "
+                                "the identity on disk")
+    if identity_sha is not None and res.get("identity_sha256") != identity_sha:
+        problems.append(f"{label}: reservation identity digest differs from "
+                        "the identity on disk")
+    if res.get("call_ceiling") != len(res.get("shards", [])) or \
+            res.get("attempts_allowed") != REVIEW_ATTEMPTS:
+        problems.append(f"{label}: reservation ceiling or attempts are not "
+                        "the ones this harness reserves")
+    return problems
+
+
+def _record_relationship_problems(a_out, rec, rec_sha, claim, sid, identity=None,
+                                  identity_sha=None):
+    """Every relationship a shard record asserts, recomputed from the
+    artifacts it names (isolated adversary on this head, finding 6: only
+    three were recomputed, and a record rewritten with a fabricated ruling,
+    command, identity, response, and count passed as DONE; second pass,
+    findings 2 and 3: the reservation was never recomputed, and the record's
+    copies of the binding fields never held against it)."""
+    problems = []
+    raw = rec.get("raw_response")
+    if raw is not None and canon.content_digest(raw) != rec.get("raw_response_sha256"):
+        problems.append("raw response does not hash to the record's digest")
+    reservation = os.path.join(a_out, RESERVATIONS_DIR,
+                               f"{REVIEW_RESERVATION_PREFIX}{rec.get('ruling_id')}.json")
+    if rec.get("reservation_path") != os.path.relpath(reservation, a_out):
+        problems.append("record names a reservation path that is not its ruling's")
+    res = None
+    res_sha = None
+    if not canon.is_regular(reservation):
+        problems.append("the reservation the record names is absent")
+    else:
+        res_bytes = canon.read_regular_bytes(reservation)
+        res_sha = canon.bytes_digest(res_bytes)
+        try:
+            res = json.loads(res_bytes.decode("utf-8"))
+        except Exception as err:  # noqa: BLE001
+            res = None
+            problems.append(f"reservation unreadable ({type(err).__name__})")
+        if res is not None:
+            for field in RESERVATION_RECORD_FIELDS:
+                if res.get(field) != rec.get(field):
+                    problems.append(f"reservation and record disagree on {field}")
+            named = {s.get("shard_id"): s.get("input_sha256")
+                     for s in res.get("shards", []) if isinstance(s, dict)}
+            if sid not in named:
+                problems.append("the reservation does not name this shard")
+            elif named[sid] != rec.get("input_sha256"):
+                problems.append("reservation and record disagree on the input digest")
+            problems.extend(_reservation_problems(a_out, res, res_sha, identity,
+                                                  identity_sha, "record"))
+    if identity is not None:
+        for field in ("head", "model_id", "ruled_model_id", "model_version_or_build",
+                      "configuration_sha256", "auxiliary_model_policy"):
+            if rec.get(field) != identity.get(field if field != "ruled_model_id"
+                                              else "model_id"):
+                problems.append(f"record {field} differs from the identity on disk")
+    if rec.get("claim_sha256") is not None and canon.is_regular(claim):
+        claim_bytes = canon.read_regular_bytes(claim)
+        if canon.bytes_digest(claim_bytes) != rec.get("claim_sha256"):
+            problems.append("claim bytes do not hash to the record's claim digest")
+        try:
+            claim_meta = json.loads(claim_bytes.decode("utf-8"))
+        except Exception:  # noqa: BLE001
+            claim_meta = {}
+        if res_sha is not None and claim_meta.get("reservation_sha256") != res_sha:
+            problems.append("the claim's reservation digest is not the "
+                            "reservation on disk")
+        for field in ("ruling_id", "head", "model_id", "identity_sha256",
+                      "input_sha256", "reservation_path"):
+            if claim_meta.get(field) != rec.get(field):
+                problems.append(f"claim and record disagree on {field}")
+    command = _existing_record(os.path.join(a_out, COMMAND_RECORDS_DIR),
+                               f"{rec.get('command_attempt_id')}.",
+                               {"command_attempt_id": rec.get("command_attempt_id")})
+    if command is None:
+        problems.append("no terminal command record for this shard's command")
+    else:
+        cmd_sha, cmd_path = command
+        data = canon.read_regular_bytes(cmd_path)
+        if canon.bytes_digest(data) != cmd_sha:
+            problems.append("terminal command record does not hash to its name")
+        cmd = json.loads(data.decode("utf-8"))
+        listed = {s.get("shard_id"): s for s in cmd.get("shards", [])
+                  if isinstance(s, dict)}
+        if sid not in listed:
+            problems.append("the terminal command record does not list this shard")
+        elif listed[sid].get("record_sha256") != rec_sha or \
+                listed[sid].get("result") != rec.get("result"):
+            problems.append("the terminal command record disagrees with the "
+                            "shard record")
+        for field in ("ruling_id", "head", "model_id", "identity_sha256",
+                      "model_version_or_build", "configuration_sha256",
+                      "auxiliary_model_policy"):
+            if cmd.get(field) != rec.get(field):
+                problems.append(f"the terminal command record and the shard "
+                                f"record disagree on {field}")
+        if res_sha is not None and cmd.get("reservation_sha256") != res_sha:
+            problems.append("the terminal command record's reservation digest "
+                            "is not the reservation on disk")
+    if rec.get("result") == "DONE":
+        usage = rec.get("observed_model_usage") or []
+        # the policy and the model the usage is judged against are the
+        # identity's, never the record's own copies (second pass, finding 3:
+        # a forged triple always agreed with itself)
+        model = identity.get("model_id") if identity else rec.get("model_id")
+        policy = (identity.get("auxiliary_model_policy") if identity
+                  else rec.get("auxiliary_model_policy")) or {}
+        if (rec.get("cli_invocations") != REVIEW_ATTEMPTS
+                or rec.get("model_calls") != 1
+                or rec.get("verdict") != "fixed"
+                or rec.get("attempts_allowed") != REVIEW_ATTEMPTS
+                or not usage or not isinstance(usage[0], dict)
+                or not usage[0].get("model_usage_reported")
+                or aux_policy_violations(usage, model, policy)
+                or rec.get("auxiliary_model_violations")):
+            problems.append("a DONE record whose accounting, verdict, or model "
+                            "usage does not satisfy the ruling's sentence")
+    return problems
+
+
+def command_states(a_out=None):
+    """Every review reservation under a_out with the terminal command
+    record it should have, rebuilt from the artifacts: a reservation with
+    no command record is an unfinalized command (finding 3); a command
+    record must hash to its name, name its reservation's command, and list
+    exactly the reservation's shards."""
+    a_out = a_out or A_OUT
+    res_dir = os.path.join(a_out, RESERVATIONS_DIR)
+    out = []
+    if not canon.is_real_dir(res_dir):
+        return out
+    identity_path = os.path.join(a_out, IDENTITY_FILE)
+    identity_sha = None
+    identity = None
+    if canon.is_regular(identity_path):
+        identity_bytes = canon.read_regular_bytes(identity_path)
+        identity_sha = canon.bytes_digest(identity_bytes)
+        try:
+            identity = json.loads(identity_bytes.decode("utf-8"))
+        except Exception:  # noqa: BLE001
+            identity = None
+    for name in sorted(os.listdir(res_dir)):
+        if not (name.startswith(REVIEW_RESERVATION_PREFIX) and name.endswith(".json")):
+            continue
+        ruling = name[len(REVIEW_RESERVATION_PREFIX):-5]
+        problems = []
+        res_sha = None
+        try:
+            res_bytes = canon.read_regular_bytes(os.path.join(res_dir, name))
+            res_sha = canon.bytes_digest(res_bytes)
+            res = json.loads(res_bytes.decode("utf-8"))
+        except Exception as err:  # noqa: BLE001
+            res = {}
+            # a reservation whose bytes never landed is what a terminal
+            # record in phase reservation attests (finding 3a); anywhere
+            # else it is damage
+            explained = _existing_record(os.path.join(a_out, COMMAND_RECORDS_DIR),
+                                         "", {"ruling_id": ruling,
+                                              "phase": "reservation",
+                                              "result": "FAIL"})
+            if explained is None:
+                problems.append(f"reservation unreadable ({type(err).__name__})")
+            else:
+                res = {"command_attempt_id": canon.load_json_regular(
+                    explained[1]).get("command_attempt_id")}
+        cid = res.get("command_attempt_id")
+        found = (_existing_record(os.path.join(a_out, COMMAND_RECORDS_DIR),
+                                  f"{cid}.", {"command_attempt_id": cid})
+                 if cid else None)
+        result = None
+        if found is None:
+            problems.append("no terminal command record (unfinalized)")
+        else:
+            cmd_sha, cmd_path = found
+            data = canon.read_regular_bytes(cmd_path)
+            if canon.bytes_digest(data) != cmd_sha:
+                problems.append("terminal command record does not hash to its name")
+            cmd = json.loads(data.decode("utf-8"))
+            result = cmd.get("result")
+            if cmd.get("ruling_id") != ruling:
+                problems.append("command record names another ruling")
+            want = [s.get("shard_id") for s in res.get("shards", []) if isinstance(s, dict)]
+            got = [s.get("shard_id") for s in cmd.get("shards", []) if isinstance(s, dict)]
+            if "shards" in res and want != got:
+                problems.append("command record does not list the reservation's shards")
+            if "shards" in res:
+                # a readable reservation is held against the identity and
+                # the terminal record on every field it binds (second
+                # isolated pass, findings 2 and 3)
+                try:
+                    for field in ("head", "identity_sha256", "model_id",
+                                  "ruled_model_id", "model_version_or_build",
+                                  "configuration_sha256", "auxiliary_model_policy",
+                                  "call_ceiling", "attempts_allowed",
+                                  "command_attempt_id"):
+                        if cmd.get(field) != res.get(field):
+                            problems.append(f"command record and reservation "
+                                            f"disagree on {field}")
+                    if cmd.get("reservation_sha256") != res_sha:
+                        problems.append("command record's reservation digest is "
+                                        "not the reservation on disk")
+                    problems.extend(_reservation_problems(
+                        a_out, res, res_sha, identity, identity_sha, "command"))
+                except Exception as err:  # noqa: BLE001
+                    problems.append(f"malformed ({type(err).__name__})")
+        out.append({"ruling_id": ruling, "command_attempt_id": cid,
+                    "result": result, "problems": problems})
+    return out
+
+
+def status(out_root=None, a_out=None):
+    for c in command_states(a_out):
+        line = f"command ruling {c['ruling_id']} {c['command_attempt_id']} {c['result'] or 'UNFINALIZED'}"
+        if c["problems"]:
+            line += " PROBLEMS: " + "; ".join(c["problems"])
+        print(line)
+    for sid, s in shard_states(out_root, a_out).items():
+        line = f"{sid} {s['record_count']} {s['state']}"
+        if s["output_sha256"]:
+            line += f" output {s['output_sha256']}"
+        if s["error"]:
+            line += f" ({s['phase']}: {s['error']})"
+        if s["problems"]:
+            line += " PROBLEMS: " + "; ".join(s["problems"])
+        print(line)
 
 
 if __name__ == "__main__":
@@ -1931,6 +3410,6 @@ if __name__ == "__main__":
     elif mode == "qualify":
         qualify()
     elif mode == "review":
-        review(int(sys.argv[2]) if len(sys.argv) > 2 else 1)
+        review(sys.argv[2:])
     else:
         status()

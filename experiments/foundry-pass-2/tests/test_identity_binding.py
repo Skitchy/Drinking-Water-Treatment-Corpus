@@ -1251,14 +1251,28 @@ class ReviewTimeEnforcement(_BindHarness):
         self.made = []
 
     def review(self):
-        def factory(system_prompt, cwd):
+        """The enforcement claim under test is 'a matching state reaches a
+        session; anything else refuses before one'. review() now runs one
+        governed command over explicit shard IDs under a ruling reference
+        (18376129) and always exits through SystemExit, so: None once a
+        session was constructed, the refusal text otherwise."""
+        def factory(system_prompt, cwd, attempts=run_reviewer_a.REVIEW_ATTEMPTS):
             self.made.append(cwd)
-            return BoundSession(system_prompt)
+            s = BoundSession(system_prompt)
+            s.attempts = attempts
+            return s
+        manifest = canon.load_json(os.path.join(FIXTURE, "shard-manifest.json"))
+        os.environ[run_reviewer_a.REVIEW_RULED_MODEL_VAR] = "fake"
+        os.environ[run_reviewer_a.REVIEW_RULING_VAR] = "18376129"
         try:
-            run_reviewer_a.review(1, session_factory=factory,
+            run_reviewer_a.review([manifest["shards"][0]["shard_id"]],
+                                  session_factory=factory,
                                   out_root=FIXTURE, a_out=self.a)
         except SystemExit as err:
-            return str(err)
+            return None if self.made else str(err)
+        finally:
+            os.environ.pop(run_reviewer_a.REVIEW_RULED_MODEL_VAR, None)
+            os.environ.pop(run_reviewer_a.REVIEW_RULING_VAR, None)
         return None
 
     def rewrite_identity(self, reattest=True, **changes):
