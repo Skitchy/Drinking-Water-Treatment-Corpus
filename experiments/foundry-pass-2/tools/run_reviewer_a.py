@@ -32,6 +32,7 @@ identity digest is part of every task prompt, so a review can never run
 against an unbound identity. Outputs: out/reviewer-a/.
 """
 
+import io
 import json
 import os
 import re
@@ -111,22 +112,79 @@ SHARD_ID_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,80}")
 
 
 def _sha(path):
-    return canon.file_sha256(path)
+    try:
+        return canon.file_sha256(path)
+    except OSError as err:
+        # a ratified file that cannot be read refuses in words, never a
+        # traceback (third isolated pass on 18388418, finding 2)
+        raise SystemExit(f"refused: {os.path.basename(path)} could not be read "
+                         f"({type(err).__name__})")
 
 
 def _read(path):
-    with open(path, encoding="utf-8") as f:
-        return f.read()
+    try:
+        with open(path, encoding="utf-8") as f:
+            return f.read()
+    except OSError as err:
+        raise SystemExit(f"refused: {os.path.basename(path)} could not be read "
+                         f"({type(err).__name__})")
 
 
 def bundle_digests(out_root=None):
     bundle_path = os.path.join(out_root or OUT, "review-input-bundle.json")
-    bundle = canon.load_json(bundle_path)
+    try:
+        bundle = canon.load_json(bundle_path)
+    except (OSError, ValueError) as err:
+        raise SystemExit(f"refused: review-input-bundle.json could not be read "
+                         f"({type(err).__name__}: {str(err)[:120]})")
     return {
         "CONTRACT_SHA256": bundle["bindings"]["reviewer_contract"]["sha256"],
         "REVIEW_INPUT_BUNDLE_SHA256": _sha(bundle_path),
         "SHARD_MANIFEST_SHA256": bundle["shard_manifest"]["sha256"],
     }
+
+
+def bound_artifact_problems(out_root=None):
+    """Every artifact the bundle binds by digest and locates under the pass
+    root must hash to its binding: the reviewer contract (also checked by
+    the loaders) and the control-records bundle. A binding whose location
+    is not a path under the pass root (the fixture's "FIXTURE" brief) binds
+    no file and is skipped. The bundle's own digest is the identity's
+    binding; what the bundle names was not held to anything before (third
+    isolated pass on 18388418, finding 8). review-universe.json is not
+    bound by the bundle at all; holding it is the release gate's rule."""
+    bundle = canon.load_json(os.path.join(out_root or OUT, "review-input-bundle.json"))
+    problems = []
+    for name, binding in sorted(bundle.get("bindings", {}).items()):
+        if not isinstance(binding, dict) or not _hex64(binding.get("sha256")):
+            continue
+        rel = binding.get("location") or binding.get("path")
+        # a location is a path when it looks like one (no whitespace, a
+        # separator); a sentence ("private until ...") binds no file and is
+        # skipped; a path that is absolute or escapes is refused, and an
+        # absent bound file is named, never skipped (fourth isolated pass on
+        # 18388418, finding 3: the emitter's locations are repo-root
+        # relative and every one was silently skipped)
+        if not isinstance(rel, str) or not rel or "/" not in rel or any(
+                c.isspace() for c in rel):
+            continue
+        if os.path.isabs(rel) or ".." in rel.split("/"):
+            problems.append(f"bound artifact {name} names a location outside the "
+                            f"repository: {rel!r}")
+            continue
+        candidates = [os.path.join(REPO_ROOT, rel), os.path.join(PASS2, rel)]
+        present = [p for p in candidates if os.path.lexists(p)]
+        if not present:
+            problems.append(f"bound artifact {name} ({rel}) is absent")
+            continue
+        actual = _digest_or_none(present[0])
+        if actual is None:
+            problems.append(f"bound artifact {name} ({rel}) could not be read or is "
+                            "not a regular file")
+        elif actual != binding["sha256"]:
+            problems.append(f"bound artifact {name} ({rel}) hashes to {actual}; the "
+                            f"bundle binds {binding['sha256']}")
+    return problems
 
 
 def load_template(out_root=None):
@@ -142,8 +200,12 @@ def load_template(out_root=None):
                          "binding; refusing to load the task template")
     contract = canon.load_json(contract_path)
     bound = contract["prompts"]["task_template"]
-    return reviewer.load_task_template(
-        os.path.join(ARI, os.path.basename(bound["path"])), bound["sha256"])
+    try:
+        return reviewer.load_task_template(
+            os.path.join(ARI, os.path.basename(bound["path"])), bound["sha256"])
+    except OSError as err:
+        raise SystemExit(f"refused: the task template could not be read "
+                         f"({type(err).__name__})")
 
 
 def load_schema(out_root=None):
@@ -165,11 +227,30 @@ def load_schema(out_root=None):
     if direct is not None and direct != bound:
         raise SystemExit("bundle and contract bind different output schema "
                          "digests")
-    return reviewer.load_output_schema(OUTPUT_SCHEMA, bound)
+    try:
+        return reviewer.load_output_schema(OUTPUT_SCHEMA, bound)
+    except OSError as err:
+        raise SystemExit(f"refused: the output schema could not be read "
+                         f"({type(err).__name__})")
+
+
+_RATIFIED_VALIDATOR_SHA = None
 
 
 def schema_validator(output):
-    """Ari's validator, run as delivered (node + ajv from the repo)."""
+    """Ari's validator (node + ajv from the repo). A pass is an object the
+    validator printed PASS for; an exit status alone is not a verdict, and
+    a non-object (an empty array is one the validator prints PASS for) is
+    never a pass (third isolated pass on 18388418, finding 6). Once a
+    command has named the ratified validator (`_RATIFIED_VALIDATOR_SHA`,
+    from the bundle-bound contract), a validator file that does not hash
+    to it is never a pass either (fourth pass, finding 4)."""
+    validator_path = os.path.join(ARI, "validate-reviewer-output-v0.1.mjs")
+    on_disk = _digest_or_none(validator_path)
+    if _RATIFIED_VALIDATOR_SHA is not None and on_disk != _RATIFIED_VALIDATOR_SHA:
+        return False, {"validator_sha256": on_disk, "returncode": None,
+                       "stderr_head": "validator on disk is not the one the "
+                                      "ratified contract binds; not run"}
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False,
                                      encoding="utf-8") as f:
         json.dump(output, f)
@@ -182,7 +263,9 @@ def schema_validator(output):
             env={**os.environ, "DWTC_REPO_ROOT": REPO_ROOT})
     finally:
         os.unlink(path)
-    return proc.returncode == 0, {
+    ok = (isinstance(output, dict) and proc.returncode == 0
+          and f"{path}: PASS" in proc.stdout)
+    return ok, {
         "validator_sha256": _sha(os.path.join(
             ARI, "validate-reviewer-output-v0.1.mjs")),
         "returncode": proc.returncode,
@@ -490,6 +573,8 @@ def bind_identity(out_root=None, a_out=None, session_factory=None):
     template = load_template(out_root)
     digests = bundle_digests(out_root)
     schema = load_schema(out_root)
+    global _RATIFIED_VALIDATOR_SHA
+    _RATIFIED_VALIDATOR_SHA = ratified_validator_sha(out_root)
     harness_sha = _sha(os.path.join(PASS2, "engine", "reviewer.py"))
     # every deterministic check has passed; from here the head is spent
     # whatever happens next, and every exit writes ONE immutable binding
@@ -899,17 +984,126 @@ def claimed_shard_ids(a_out):
 
 
 RECORD_NAME_RE = re.compile(r"(.+)\.([0-9a-f]{64})\.json")
+SHA_RE = re.compile(r"[0-9a-f]{64}")
+# every regular file the harness writes at the evidence root, by name; a
+# root entry outside this list is foreign and refuses the next command
+# (Ari, review of 0466557, finding 1: refuse-loud let unknown root entries
+# through). The review directories are checked by shape below; the
+# reservations directory holds the binding reservation (<head>.json) and
+# the review reservations (review-ruling-<ruling>.json), nothing else.
+ROOT_FILE_RES = (
+    re.compile(re.escape(IDENTITY_FILE)),
+    re.compile(r"leak-probe-transcript\.json"),
+    re.compile(r"leak-probe-transcript-(PASSED|FAILED)-[0-9a-f]{64}\.json"),
+    re.compile(r"leak-probe-transcript-STALE-[0-9a-f]{64}(-[0-9]+)?\.json"),
+    re.compile(re.escape(reviewer.FAILED_PREFLIGHT_MANIFEST)),
+    re.compile(re.escape(reviewer.PASSED_PREFLIGHT_MANIFEST)),
+    re.compile(r"stale-transcript-manifest\.json"),
+    re.compile(re.escape(BINDING_RECORD_PREFIX) + r"[0-9a-f]{64}\.json"),
+    re.compile(re.escape(BINDING_LEDGER)),
+    re.compile(re.escape(REVIEW_LEDGER)),
+    re.compile(r"run-record-manifest\.json"),
+)
+RESERVATION_NAME_RES = (
+    re.compile(r"[0-9a-f]{40}\.json"),
+    re.compile(re.escape(REVIEW_RESERVATION_PREFIX) + r"[0-9]{6,12}\.json"),
+)
 
 
-def review_store_problems(a_out):
-    """Anything under the review directories that the harness did not
-    write in the shape it writes: a shard record whose name is not
-    <shard_id>.<sha256>.json, whose content is unreadable, or whose
-    content names another shard; a command record likewise; a leftover
-    temporary file. Every one is reported, and a command refuses on any
-    (isolated adversary on this head, finding 7: a record named
-    <shard_id>.json spent a different ID than the one it named)."""
+def _reservation_for(a_out, ruling_id):
+    """(bytes, digest, parsed or None) of the review reservation for a
+    ruling, or None when nothing exists at its name; the bytes are read
+    without following links."""
+    if not isinstance(ruling_id, str) or not RULING_ID_RE.fullmatch(ruling_id):
+        return None
+    path = os.path.join(a_out, RESERVATIONS_DIR,
+                        f"{REVIEW_RESERVATION_PREFIX}{ruling_id}.json")
+    if not os.path.lexists(path):
+        return None
+    if not canon.is_regular(path):
+        return (None, None, None)
+    try:
+        data = canon.read_regular_bytes(path)
+    except (OSError, canon.PathBoundaryError):
+        # a regular file that cannot be read is unreadable, reported by
+        # the caller in words, never a traceback (isolated adversary on
+        # 18388418, finding 6)
+        return (None, None, None)
+    try:
+        parsed = json.loads(data.decode("utf-8"))
+    except Exception:  # noqa: BLE001
+        parsed = None
+    return (data, canon.bytes_digest(data), parsed if isinstance(parsed, dict) else None)
+
+
+def _digest_or_none(path):
+    """The digest of a regular file's bytes, or None when it is absent, not
+    regular, or unreadable."""
+    if not canon.is_regular(path):
+        return None
+    try:
+        return canon.bytes_digest(canon.read_regular_bytes(path))
+    except (OSError, canon.PathBoundaryError):
+        return None
+
+
+def _records_naming(directory, field, value):
+    """Every content-addressed record under `directory` whose content
+    carries field == value, as (name, bytes, parsed); unreadable files and
+    non-dicts are skipped (the store check reports them)."""
+    found = []
+    if not canon.is_real_dir(directory):
+        return found
+    for name in sorted(os.listdir(directory)):
+        if name.startswith(".") or RECORD_NAME_RE.fullmatch(name) is None:
+            continue
+        try:
+            data = canon.read_regular_bytes(os.path.join(directory, name))
+            rec = json.loads(data.decode("utf-8"))
+        except Exception:  # noqa: BLE001
+            continue
+        if isinstance(rec, dict) and rec.get(field) == value:
+            found.append((name, data, rec))
+    return found
+
+
+def review_store_problems(a_out, manifest=None):
+    """Anything under the evidence root that the harness did not write in
+    the shape it writes, every one reported, and a command refuses on any:
+    a root entry outside the names the harness writes; a leftover
+    temporary file; quarantined bytes; a reservation under a foreign name;
+    a claim, record, or output for a shard the bound manifest does not
+    name (when the manifest is given); a claim that is unreadable without
+    a shard record attesting the interrupted write, that names another
+    shard, or that names a command no reservation on disk connects to; a
+    shard record whose name is not <shard_id>.<sha256>.json, whose content
+    is unreadable or names another shard, or whose command has no
+    reservation or whose shard has no claim; a command record likewise,
+    or one that no reservation names, or a second one for one command
+    (isolated adversary finding 7 on 0466557's parent; Ari, review of
+    0466557, findings 1 and 4: refuse-loud let unknown root and claim
+    files and a validly addressed orphan command record through)."""
     problems = []
+    named = None
+    if isinstance(manifest, dict):
+        named = {m.get("shard_id") for m in manifest.get("shards", [])
+                 if isinstance(m, dict)}
+    # review artifacts without an identity to verify them against are
+    # foreign by definition; deleting or linking the identity is named,
+    # never treated as a fresh root (isolated adversary on 18388418, finding 1)
+    if not canon.is_regular(os.path.join(a_out, IDENTITY_FILE)):
+        populated = []
+        for sub in (CLAIMS_DIR, RUN_RECORDS_DIR, OUTPUTS_DIR, COMMAND_RECORDS_DIR):
+            d = os.path.join(a_out, sub)
+            if canon.is_real_dir(d) and any(not n.startswith(".") for n in os.listdir(d)):
+                populated.append(sub)
+        res_dir = os.path.join(a_out, RESERVATIONS_DIR)
+        if canon.is_real_dir(res_dir) and any(
+                n.startswith(REVIEW_RESERVATION_PREFIX) for n in os.listdir(res_dir)):
+            populated.append(RESERVATIONS_DIR)
+        if populated:
+            problems.append(f"{IDENTITY_FILE}: absent or not a regular file while "
+                            f"review artifacts exist ({', '.join(populated)})")
     if canon.is_real_dir(a_out):
         # the evidence root itself: the temporaries land here, and so do
         # quarantined outputs; either one refuses the next command until a
@@ -917,9 +1111,24 @@ def review_store_problems(a_out):
         for name in sorted(os.listdir(a_out)):
             if name.startswith("."):
                 problems.append(f"{name}: leftover temporary file")
-            elif name.startswith("REFUSED-"):
+            elif name.startswith("REFUSED-") or "-REFUSED-" in name:
                 problems.append(f"{name}: quarantined bytes from a refused install")
-    for sub in REVIEW_EVIDENCE_DIRS:
+            elif name in REVIEW_EVIDENCE_DIRS:
+                continue
+            elif not any(r.fullmatch(name) for r in ROOT_FILE_RES):
+                problems.append(f"{name}: not an artifact the harness writes")
+    res_dir = os.path.join(a_out, RESERVATIONS_DIR)
+    if canon.is_real_dir(res_dir):
+        for name in sorted(os.listdir(res_dir)):
+            if name.startswith("."):
+                problems.append(f"{RESERVATIONS_DIR}/{name}: leftover temporary file")
+            elif not any(r.fullmatch(name) for r in RESERVATION_NAME_RES):
+                problems.append(f"{RESERVATIONS_DIR}/{name}: not a reservation "
+                                "the harness writes")
+    records_dir = os.path.join(a_out, RUN_RECORDS_DIR)
+    commands_dir = os.path.join(a_out, COMMAND_RECORDS_DIR)
+    claims_dir = os.path.join(a_out, CLAIMS_DIR)
+    for sub in (CLAIMS_DIR, RUN_RECORDS_DIR, OUTPUTS_DIR, COMMAND_RECORDS_DIR):
         d = os.path.join(a_out, sub)
         if not canon.is_real_dir(d):
             continue
@@ -927,14 +1136,23 @@ def review_store_problems(a_out):
             if name.startswith("."):
                 problems.append(f"{sub}/{name}: leftover temporary file")
                 continue
-            if sub == OUTPUTS_DIR and not (name.endswith(".json")
-                                           and SHARD_ID_RE.fullmatch(name[:-5])
-                                           and "-REFUSED-" not in name):
-                # the gate reads every file here: only <shard_id>.json is
-                # ever written here (second pass, finding 1)
-                problems.append(f"{sub}/{name}: not a shard output the harness wrote")
-                continue
-            if sub not in (RUN_RECORDS_DIR, COMMAND_RECORDS_DIR):
+            if sub in (OUTPUTS_DIR, CLAIMS_DIR):
+                if not (name.endswith(".json") and SHARD_ID_RE.fullmatch(name[:-5])
+                        and "-REFUSED-" not in name):
+                    # the gate reads every file here: only <shard_id>.json is
+                    # ever written here (second pass, finding 1)
+                    problems.append(f"{sub}/{name}: not a shard "
+                                    f"{'output' if sub == OUTPUTS_DIR else 'claim'} "
+                                    "the harness wrote")
+                    continue
+                sid = name[:-5]
+                if named is not None and sid not in named:
+                    problems.append(f"{sub}/{name}: not a shard the bound manifest names")
+                    continue
+                if sub == OUTPUTS_DIR:
+                    continue
+                problems.extend(_claim_store_problems(a_out, claims_dir, records_dir,
+                                                      name, sid))
                 continue
             m = RECORD_NAME_RE.fullmatch(name)
             if m is None:
@@ -956,6 +1174,77 @@ def review_store_problems(a_out):
             if not isinstance(rec, dict) or rec.get(key) != m.group(1):
                 problems.append(f"{sub}/{name}: content names "
                                 f"{(rec or {}).get(key)!r}, not {m.group(1)!r}")
+                continue
+            if sub == RUN_RECORDS_DIR and named is not None and m.group(1) not in named:
+                problems.append(f"{sub}/{name}: not a shard the bound manifest names")
+                continue
+            # every record connects to the governed state: its command's
+            # reservation on disk names its command (or, unreadable, is
+            # explained by a terminal record in phase reservation), and a
+            # shard record's shard has a claim
+            cid = rec.get("command_attempt_id")
+            res = _reservation_for(a_out, rec.get("ruling_id"))
+            if res is None:
+                problems.append(f"{sub}/{name}: no reservation on disk for its ruling")
+                continue
+            _data, _sha, parsed = res
+            if parsed is not None:
+                if parsed.get("command_attempt_id") != cid:
+                    problems.append(f"{sub}/{name}: the reservation on disk for its "
+                                    "ruling names another command")
+                    continue
+            elif not (sub == COMMAND_RECORDS_DIR and rec.get("phase") == "reservation"
+                      and rec.get("result") == "FAIL"):
+                problems.append(f"{sub}/{name}: the reservation on disk for its "
+                                "ruling is unreadable and nothing explains it")
+                continue
+            if sub == RUN_RECORDS_DIR:
+                claim = os.path.join(claims_dir, f"{m.group(1)}.json")
+                if not os.path.lexists(claim):
+                    problems.append(f"{sub}/{name}: no claim on disk for its shard")
+    # a second terminal record for one command is refused by command_states
+    # (every reservation's command is enumerated there) and by the shard
+    # side; the store check does not repeat it
+    return problems
+
+
+def _claim_store_problems(a_out, claims_dir, records_dir, name, sid):
+    """A claim is the harness's only when its bytes parse to a claim for
+    its own shard under a command whose reservation is on disk with the
+    digest the claim pins and names that shard; an unreadable claim is
+    the harness's only when a shard record in phase claim attests the
+    interrupted write (Ari, review of 0466557, finding 1)."""
+    path = os.path.join(claims_dir, name)
+    try:
+        data = canon.read_regular_bytes(path)
+        claim = json.loads(data.decode("utf-8"))
+        if not isinstance(claim, dict):
+            raise ValueError("not an object")
+    except Exception as err:  # noqa: BLE001
+        attested = [r for _n, _d, r in _records_naming(records_dir, "shard_id", sid)
+                    if r.get("phase") == "claim" and r.get("result") == "FAIL"]
+        if attested:
+            return []
+        return [f"{CLAIMS_DIR}/{name}: unreadable ({type(err).__name__}) and no "
+                "shard record attests an interrupted claim write"]
+    problems = []
+    if claim.get("shard_id") != sid:
+        return [f"{CLAIMS_DIR}/{name}: content names {claim.get('shard_id')!r}, "
+                f"not {sid!r}"]
+    res = _reservation_for(a_out, claim.get("ruling_id"))
+    if res is None:
+        return [f"{CLAIMS_DIR}/{name}: no reservation on disk for its ruling"]
+    _data, res_sha, parsed = res
+    if parsed is None or parsed.get("command_attempt_id") != claim.get("command_attempt_id"):
+        return [f"{CLAIMS_DIR}/{name}: the reservation on disk for its ruling does "
+                "not name its command"]
+    if claim.get("reservation_sha256") != res_sha:
+        problems.append(f"{CLAIMS_DIR}/{name}: its reservation digest is not the "
+                        "reservation on disk")
+    if sid not in {s.get("shard_id") for s in parsed.get("shards", [])
+                   if isinstance(s, dict)}:
+        problems.append(f"{CLAIMS_DIR}/{name}: the reservation on disk does not name "
+                        "its shard")
     return problems
 
 
@@ -973,10 +1262,17 @@ def preverify_selection(selected, out_root):
             raise SystemExit(f"review aborted before any session: shard "
                              f"{member['shard_id']} input is absent or not a "
                              f"regular file ({member['path']})")
-        if canon.bytes_digest(canon.read_regular_bytes(shard_path)) != member["sha256"]:
+        try:
+            shard_bytes = canon.read_regular_bytes(shard_path)
+        except (OSError, canon.PathBoundaryError) as err:
+            # in words, never a traceback (fourth isolated pass, finding 2)
+            raise SystemExit(f"review aborted before any session: shard "
+                             f"{member['shard_id']} input could not be read "
+                             f"({type(err).__name__})")
+        if canon.bytes_digest(shard_bytes) != member["sha256"]:
             raise SystemExit(f"review aborted before any session: shard "
                              f"digest drift: {member['shard_id']}")
-        shard = canon.load_json_regular(shard_path)
+        shard = json.loads(shard_bytes.decode("utf-8"))
         try:
             verified[member["shard_id"]] = reviewer.verify_shard_records(shard)
         except reviewer.ReviewerError as err:
@@ -1030,7 +1326,11 @@ def load_bound_shard_manifest(out_root, digests, what="review"):
     if not canon.is_regular(path):
         raise SystemExit(f"{what} refused: shard-manifest.json is absent or "
                          "not a regular file")
-    data = canon.read_regular_bytes(path)
+    try:
+        data = canon.read_regular_bytes(path)
+    except (OSError, canon.PathBoundaryError) as err:
+        raise SystemExit(f"{what} refused: shard-manifest.json is unreadable "
+                         f"({type(err).__name__})")
     digest = canon.bytes_digest(data)
     if digest != digests["SHARD_MANIFEST_SHA256"]:
         raise SystemExit(f"{what} refused: shard-manifest.json hashes to "
@@ -1057,17 +1357,22 @@ def review(shard_ids, session_factory=None, out_root=None, a_out=None):
     out_root = out_root or OUT
     a_out = a_out or A_OUT
     session_factory = session_factory or make_session
-    identity_path = os.path.join(a_out, "reviewer-identity.json")
-    if os.path.lexists(identity_path) and not canon.is_regular(identity_path):
-        raise SystemExit("review refused: reviewer-identity.json is not a "
-                         "regular file; the identity is never read through a "
-                         "link")
-    if not canon.is_regular(identity_path):
+    # path-boundary gate over the whole evidence root FIRST, before anything
+    # under it is read to decide, as the gate's own sentence says (third
+    # isolated pass on 18388418, finding 3: the identity, bundle, and
+    # enforcement reads ran before it and an unlistable directory escaped
+    # as a traceback)
+    problems = check_evidence_paths(a_out, allowed_dirs=REVIEW_EVIDENCE_DIRS)
+    if problems:
+        raise SystemExit("review refused: evidence path boundary: "
+                         + "; ".join(problems))
+    # the identity is read through the one reader every consumer shares: a
+    # link, an unreadable file, or malformed bytes refuse in words, never
+    # a traceback (second isolated pass on 18388418, finding 5)
+    identity, identity_digest = _identity_on_disk(a_out, "review")
+    if identity is None:
         raise SystemExit("identity not bound; run `identity` first")
-    identity_bytes = canon.read_regular_bytes(identity_path)
-    digests = dict(bundle_digests(out_root),
-                   REVIEWER_IDENTITY_SHA256=canon.bytes_digest(identity_bytes))
-    identity = json.loads(identity_bytes.decode("utf-8"))
+    digests = dict(bundle_digests(out_root), REVIEWER_IDENTITY_SHA256=identity_digest)
     if identity.get("eligible_for_binding") is not True or identity.get(
             "qualification_only") is not False:
         raise SystemExit("identity is a qualification identity, ineligible "
@@ -1076,6 +1381,11 @@ def review(shard_ids, session_factory=None, out_root=None, a_out=None):
     expected = {k: v for k, v in digests.items() if k != "REVIEWER_IDENTITY_SHA256"}
     if not isinstance(bindings, dict) or bindings != expected:
         raise SystemExit("bundle changed since identity was bound; rebind")
+    problems = bound_artifact_problems(out_root)
+    if problems:
+        raise SystemExit("review refused: " + "; ".join(problems))
+    global _RATIFIED_VALIDATOR_SHA
+    _RATIFIED_VALIDATOR_SHA = ratified_validator_sha(out_root)
     schema = load_schema(out_root)
     if schema["sha256"] != identity.get("output_schema_sha256"):
         raise SystemExit("output schema changed since identity was bound")
@@ -1107,28 +1417,26 @@ def review(shard_ids, session_factory=None, out_root=None, a_out=None):
     selected = select_by_id(manifest, shard_ids, what)
     for member in selected:
         bound_shard_path(out_root, member)
-    # path-boundary gate over the whole evidence root, every directory the
-    # review path writes included, BEFORE anything under it is read to
-    # decide (18376129: checks on creation and every later read or write)
-    problems = check_evidence_paths(a_out, allowed_dirs=REVIEW_EVIDENCE_DIRS)
-    if problems:
-        raise SystemExit(f"{what} refused: evidence path boundary: "
-                         + "; ".join(problems))
-    problems = review_store_problems(a_out)
-    if problems:
-        raise SystemExit(f"{what} refused: the evidence store holds what the "
-                         "harness did not write: " + "; ".join(problems))
+    # (the path-boundary gate over the whole evidence root ran first, at
+    # the top of this command, before anything under it was read)
+    # a selected shard spent by any object at its names is refused by
+    # existence first; then everything else on disk must be the harness's
     spent = claimed_shard_ids(a_out)
     already = [m["shard_id"] for m in selected if m["shard_id"] in spent]
     if already:
         raise SystemExit(f"{what} refused: shard ID(s) already claimed, "
                          f"recorded, or installed under this evidence root: "
                          f"{already}; a claimed shard is never re-run")
+    problems = review_store_problems(a_out, manifest)
+    if problems:
+        raise SystemExit(f"{what} refused: the evidence store holds what the "
+                         "harness did not write: " + "; ".join(problems))
     # every relationship among the artifacts already on disk is recomputed
     # before a new ruling is spent: a corrupt or forged evidence root never
-    # hosts another command (Ari, room 255: recompute at status and review)
+    # hosts another command (Ari, room 255: recompute at status and review);
+    # the manifest handed down is the one verified above, never re-read
     corrupt = {sid: s["problems"] for sid, s in
-               shard_states(out_root, a_out).items() if s["state"] == "CORRUPT"}
+               shard_states(out_root, a_out, manifest).items() if s["state"] == "CORRUPT"}
     if corrupt:
         raise SystemExit(f"{what} refused: evidence root is inconsistent: "
                          + "; ".join(f"{sid}: {', '.join(p)}"
@@ -1529,13 +1837,18 @@ def _review_one_shard(entry, member, out_root, a_out, session_factory,
         else:
             usage = []
         if review_record is not None:
-            for key in ("prompt_sha256", "session_id", "num_turns",
+            for key in ("session_id", "num_turns",
                         "machine_corrections", "pre_call_record_verification",
                         "completeness_check", "schema_report", "problems",
                         "verdict", "raw_response_sha256"):
                 if key in review_record:
-                    record[key] = review_record[key] if key != "prompt_sha256" \
-                        else review_record["task_prompt_sha256"]
+                    record[key] = review_record[key]
+            # the prompt digest review_shard computed (task_prompt_sha256);
+            # at 0466557 this copy was keyed on a name the review record
+            # never carried, so every record published prompt_sha256 null
+            # (found while closing Ari's finding 3 on 0466557)
+            if "task_prompt_sha256" in review_record:
+                record["prompt_sha256"] = review_record["task_prompt_sha256"]
         if record["result"] is None:
             # the call returned: the ruling's sentence is checked against
             # what the session and the CLI reported before any output is
@@ -1838,40 +2151,40 @@ def install_output_readback(path, obj):
             os.unlink(tmp)
         except FileNotFoundError:
             pass
-    dfd = os.open(directory, os.O_RDONLY)
+    # the link is in place; from here every refusal moves the bytes out of
+    # outputs/ first (Ari, review of 0466557, finding 5: a directory fsync
+    # failure after the link left the output in outputs/ with a FAIL record)
     try:
-        os.fsync(dfd)
-    finally:
-        os.close(dfd)
+        dfd = os.open(directory, os.O_RDONLY)
+        try:
+            os.fsync(dfd)
+        finally:
+            os.close(dfd)
+    except BaseException as err:  # noqa: B036 - every failure of this fsync quarantines
+        # an interrupt delivered during the fsync is a failure of the same
+        # fsync: the bytes leave outputs/ first, then the signal keeps its
+        # meaning (isolated adversary on 18388418, finding 5)
+        moved = _quarantine_output(path, directory)
+        if not isinstance(err, OSError):
+            raise
+        raise SystemExit(f"review output refused: the outputs directory could "
+                         f"not be fsynced after {os.path.basename(path)} was "
+                         f"installed ({type(err).__name__}: {err}); "
+                         + (f"moved to {moved}" if moved else
+                            "nothing was moved (the path was absent or the "
+                            "move failed)"))
     try:
         installed = canon.read_regular_bytes(path)
     except (OSError, canon.PathBoundaryError) as err:
         installed = None
         detail = f"{type(err).__name__}: {err}"
+    except BaseException:  # noqa: B036 - the final read interrupted: quarantine, then propagate
+        _quarantine_output(path, directory)
+        raise
     else:
         detail = "bytes differ"
     if installed != data:
-        # the bytes are moved OUT of the outputs directory, which the gate
-        # reads whole, into the evidence root under a name the store check
-        # refuses on (second isolated pass, finding 1: a quarantined file
-        # inside outputs/ was indexed as a fixed output and consumed by the
-        # gate for a shard that was never reviewed)
-        stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
-        n = 0
-        while True:
-            quarantine = os.path.join(
-                os.path.dirname(directory),
-                f"REFUSED-output-{os.path.basename(path)[:-5]}-{stamp}-{n}.json")
-            if not os.path.lexists(quarantine):
-                break
-            n += 1
-        moved = None
-        if os.path.lexists(path):
-            try:
-                os.rename(path, quarantine)
-                moved = os.path.basename(quarantine)
-            except OSError:
-                moved = None
+        moved = _quarantine_output(path, directory)
         raise SystemExit(f"review output refused: {os.path.basename(path)} on "
                          f"disk does not hold the verified bytes after install "
                          f"({detail}); "
@@ -1879,6 +2192,41 @@ def install_output_readback(path, obj):
                             "nothing was moved (the path was absent or the "
                             "move failed)"))
     return digest, len(data)
+
+
+def _quarantine_output(path, directory):
+    """Move whatever sits at an output name OUT of the outputs directory,
+    which the gate reads whole, into the evidence root under a name the
+    store check refuses on (second isolated pass, finding 1: a quarantined
+    file inside outputs/ was indexed as a fixed output and consumed by the
+    gate for a shard that was never reviewed). Returns the quarantine
+    name, or None when nothing was moved."""
+    stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+    n = 0
+    while True:
+        quarantine = os.path.join(
+            os.path.dirname(directory),
+            f"REFUSED-output-{os.path.basename(path)[:-5]}-{stamp}-{n}.json")
+        if not os.path.lexists(quarantine):
+            break
+        n += 1
+    if not os.path.lexists(path):
+        return None
+    try:
+        os.rename(path, quarantine)
+    except OSError as err:
+        # the kernel refused the move: said in words, on stderr, since the
+        # caller's refusal may be an exception the harness did not build
+        # (second isolated pass on 18388418, finding 6)
+        print(f"QUARANTINE FAILED: {os.path.basename(path)} remains in "
+              f"{os.path.basename(directory)}/ ({type(err).__name__}: {err})",
+              file=sys.stderr)
+        return None
+    except BaseException:  # noqa: B036 - an interrupt inside the move
+        print(f"QUARANTINE INTERRUPTED: {os.path.basename(path)} may remain in "
+              f"{os.path.basename(directory)}/", file=sys.stderr)
+        raise
+    return os.path.basename(quarantine)
 
 
 def finalize_review_command(a_out, outcome):
@@ -2039,7 +2387,11 @@ def binding_record_for(a_out, attempt_id):
         if not canon.is_regular(path):
             raise SystemExit(f"review refused: binding attempt record {name} is "
                              "not a regular file")
-        data = canon.read_regular_bytes(path)
+        try:
+            data = canon.read_regular_bytes(path)
+        except (OSError, canon.PathBoundaryError) as err:
+            raise SystemExit(f"review refused: binding attempt record {name} could "
+                             f"not be read ({type(err).__name__})")
         if canon.bytes_digest(data) != name[len(BINDING_RECORD_PREFIX):-5]:
             raise SystemExit(f"review refused: binding attempt record {name} "
                              "does not hash to its name; it has been altered")
@@ -2111,15 +2463,21 @@ def enforce_bound_identity(identity, a_out, system_prompt, identity_sha):
                          "the one the identity binds; rebind")
     evidence = os.path.join(a_out, os.path.basename(
         identity["leak_probe_evidence_path"]))
-    if not canon.is_regular(evidence) or \
-            canon.bytes_digest(canon.read_regular_bytes(evidence)) != \
-            identity["leak_probe_transcript_sha256"]:
+    if not canon.is_regular(evidence):
+        raise SystemExit("review refused: the probe evidence the identity "
+                         "names is absent or altered")
+    try:
+        evidence_bytes = canon.read_regular_bytes(evidence)
+    except (OSError, canon.PathBoundaryError) as err:
+        raise SystemExit("review refused: the probe evidence the identity names "
+                         f"could not be read ({type(err).__name__})")
+    if canon.bytes_digest(evidence_bytes) != identity["leak_probe_transcript_sha256"]:
         raise SystemExit("review refused: the probe evidence the identity "
                          "names is absent or altered")
     # the identity's account of its own attempt is recomputed from the
     # transcript just verified by digest, never trusted from the pair of
     # artifacts alone (pass three, finding 2)
-    transcript = json.loads(canon.read_regular_bytes(evidence).decode("utf-8"))
+    transcript = json.loads(evidence_bytes.decode("utf-8"))
     if transcript.get("attempt_id") != identity["binding_attempt_id"]:
         raise SystemExit("review refused: the identity names attempt "
                          f"{identity['binding_attempt_id']}; the probe evidence "
@@ -2195,9 +2553,14 @@ def enforce_bound_identity(identity, a_out, system_prompt, identity_sha):
     # (isolated adversary on this head, finding 2)
     reservation = os.path.join(a_out, os.path.basename(os.path.dirname(
         identity["reservation_path"])), os.path.basename(identity["reservation_path"]))
-    if not canon.is_regular(reservation) or \
-            canon.bytes_digest(canon.read_regular_bytes(reservation)) != \
-            identity["reservation_sha256"]:
+    if not canon.is_regular(reservation):
+        raise SystemExit("review refused: the head reservation the identity "
+                         "names is absent or altered")
+    reservation_digest = _digest_or_none(reservation)
+    if reservation_digest is None:
+        raise SystemExit("review refused: the head reservation the identity names "
+                         "could not be read")
+    if reservation_digest != identity["reservation_sha256"]:
         raise SystemExit("review refused: the head reservation the identity "
                          "names is absent or altered")
 
@@ -2519,14 +2882,25 @@ def check_evidence_paths(q_out, root=None, allowed_dirs=(RESERVATIONS_DIR,)):
             problems.append(f"{os.path.relpath(path, root_abs) if path.startswith(root_abs) else path} is a {kind}, not a directory")
     if problems or describe(os.path.abspath(q_out)) is None:
         return problems
-    for name in sorted(os.listdir(q_out)):
+    try:
+        entries = sorted(os.listdir(q_out))
+    except OSError as err:
+        # a root that cannot be listed cannot be checked; said in words
+        # (second isolated pass on 18388418, finding 5)
+        return [f"evidence root is not listable ({type(err).__name__})"]
+    for name in entries:
         path = os.path.join(q_out, name)
         kind = describe(path)
         if name in allowed_dirs:
             if kind != "directory":
                 problems.append(f"{name} is a {kind}, not a directory")
                 continue
-            for sub in sorted(os.listdir(path)):
+            try:
+                subs = sorted(os.listdir(path))
+            except OSError as err:
+                problems.append(f"{name} is not listable ({type(err).__name__})")
+                continue
+            for sub in subs:
                 skind = describe(os.path.join(path, sub))
                 if skind != "regular file":
                     problems.append(f"{name}/{sub} is a {skind}, not a regular file")
@@ -2858,6 +3232,8 @@ def qualify():
     template = load_template(FIXTURE_OUT)
     digests = bundle_digests(FIXTURE_OUT)
     schema = load_schema(FIXTURE_OUT)
+    global _RATIFIED_VALIDATOR_SHA
+    _RATIFIED_VALIDATOR_SHA = ratified_validator_sha(FIXTURE_OUT)
     # every deterministic check has passed; from here the head is spent
     # whatever happens next (reservation is authoritative for refusal even
     # if no later write succeeds)
@@ -3039,30 +3415,105 @@ def expected_identity_fields():
     return fields
 
 
-def shard_states(out_root=None, a_out=None):
+def _identity_on_disk(a_out, what="status"):
+    """(identity dict, its digest) read without following links, or
+    (None, None) when nothing exists at the identity name. Anything at the
+    name that is not a readable regular file holding a JSON object refuses
+    in words: an identity that is a link, unreadable, or malformed is never
+    treated as absent, because absence would switch off every check that
+    needs it (isolated adversary on 18388418, findings 1 and 4)."""
+    identity_path = os.path.join(a_out, IDENTITY_FILE)
+    if not os.path.lexists(identity_path):
+        return None, None
+    if not canon.is_regular(identity_path):
+        raise SystemExit(f"{what} refused: {IDENTITY_FILE} is not a regular file; "
+                         "the identity is never read through a link")
+    try:
+        identity_bytes = canon.read_regular_bytes(identity_path)
+    except (OSError, canon.PathBoundaryError) as err:
+        raise SystemExit(f"{what} refused: {IDENTITY_FILE} is unreadable "
+                         f"({type(err).__name__}: {str(err)[:120]})")
+    identity_sha = canon.bytes_digest(identity_bytes)
+    try:
+        identity = json.loads(identity_bytes.decode("utf-8"))
+    except Exception as err:  # noqa: BLE001
+        raise SystemExit(f"{what} refused: {IDENTITY_FILE} is not JSON "
+                         f"({type(err).__name__}); the identity on disk is "
+                         "malformed; rebind")
+    if not isinstance(identity, dict):
+        raise SystemExit(f"{what} refused: {IDENTITY_FILE} is not a JSON object; "
+                         "the identity on disk is malformed; rebind")
+    return identity, identity_sha
+
+
+def bound_manifest(out_root, a_out, what="status"):
+    """The shard manifest verified against the digest the installed
+    identity binds, read without following links; a manifest that does
+    not hash to that digest refuses in words (Ari, review of 0466557,
+    finding 2: standalone status trusted the manifest because it parsed).
+    An identity on disk that carries no well-formed binding refuses too,
+    never falling back to the bundle's own declaration (isolated adversary
+    on 18388418, finding 4); only when nothing exists at the identity name
+    is the bundle's declaration the digest checked."""
+    identity, _sha = _identity_on_disk(a_out, what)
+    if identity is not None:
+        bindings = identity.get("bindings")
+        bound = bindings.get("SHARD_MANIFEST_SHA256") if isinstance(bindings, dict) else None
+        if not _hex64(bound):
+            raise SystemExit(f"{what} refused: the identity on disk carries no "
+                             "well-formed shard manifest binding; rebind")
+        digests = {"SHARD_MANIFEST_SHA256": bound}
+    else:
+        digests = bundle_digests(out_root)
+    return load_bound_shard_manifest(out_root, digests, what)
+
+
+def shard_states(out_root=None, a_out=None, manifest=None):
     """The state of every shard in the bound manifest, rebuilt from the
     immutable artifacts alone (claims, shard records, outputs), never from
     the manifest index or the ledger (18376129). Every relationship is
     recomputed: a record must hash to its name, name the shard and a claim
     that exists, and attest an output that is on disk with that digest and
-    length. Read-only; nothing is opened through a link."""
+    length; a DONE record must carry every attestation the harness writes,
+    and its output must be the parsed raw response under the bound headers;
+    no two records may share a session or a prompt. The manifest is the
+    one the caller verified, or else the one verified here against the
+    identity's binding. Read-only; nothing is opened through a link."""
     out_root = out_root or OUT
     a_out = a_out or A_OUT
-    manifest = canon.load_json(os.path.join(out_root, "shard-manifest.json"))
+    if manifest is None:
+        manifest = bound_manifest(out_root, a_out)
     claims_dir = os.path.join(a_out, CLAIMS_DIR)
     records_dir = os.path.join(a_out, RUN_RECORDS_DIR)
     outputs_dir = os.path.join(a_out, OUTPUTS_DIR)
-    identity_path = os.path.join(a_out, IDENTITY_FILE)
-    identity_sha = None
-    identity = None
-    if canon.is_regular(identity_path):
-        identity_bytes = canon.read_regular_bytes(identity_path)
-        identity_sha = canon.bytes_digest(identity_bytes)
-        try:
-            identity = json.loads(identity_bytes.decode("utf-8"))
-        except Exception:  # noqa: BLE001
-            identity = None
+    identity, identity_sha = _identity_on_disk(a_out)
     states = {}
+    seen_records = []
+    context = {"value": None}
+
+    def ctx():
+        """The ratified template, schema, bindings, and validator digest,
+        loaded once per call; a refusal is kept in words and counts
+        against every shard that needs it."""
+        if context["value"] is None:
+            try:
+                context["value"] = _prompt_context(out_root, identity_sha)
+            except BaseException as err:  # noqa: B036 - SystemExit from a loader is a refusal in words
+                if not isinstance(err, (Exception, SystemExit)):
+                    raise
+                context["value"] = f"{type(err).__name__}: {str(err)[:120]}"
+        return context["value"]
+
+    def shard_input(m):
+        """The shard input the record names, or a problem string."""
+        try:
+            return canon.read_regular_bytes(bound_shard_path(out_root, m)), None
+        except BaseException as err:  # noqa: B036 - a path refusal is in words
+            if not isinstance(err, (Exception, SystemExit)):
+                raise
+            return None, (f"shard input could not be read for recomputation "
+                          f"({type(err).__name__}: {str(err)[:120]})")
+
     for m in manifest["shards"]:
         sid = m["shard_id"]
         claim = os.path.join(claims_dir, f"{sid}.json")
@@ -3078,6 +3529,12 @@ def shard_states(out_root=None, a_out=None):
             if canon.bytes_digest(data) != rec_sha:
                 problems.append("record does not hash to its name")
             rec = json.loads(data.decode("utf-8"))
+            if identity is None:
+                # a record names an identity; with none on disk nothing it
+                # attests can be recomputed, and DONE is never granted on
+                # trust (isolated adversary on 18388418, finding 1)
+                problems.append("no identity on disk; the record cannot be "
+                                "verified against the identity it names")
             others = [n for n in os.listdir(records_dir)
                       if n.startswith(f"{sid}.") and n.endswith(".json")
                       and n != os.path.basename(rec_path)]
@@ -3120,22 +3577,87 @@ def shard_states(out_root=None, a_out=None):
                 problems.append(f"record malformed ({type(err).__name__}: "
                                 f"{str(err)[:120]})")
             if rec.get("result") == "DONE":
+                out_bytes = None
                 if not canon.is_regular(output):
                     problems.append("attested output missing")
                 else:
-                    out_bytes = canon.read_regular_bytes(output)
-                    if (canon.bytes_digest(out_bytes) != rec.get("output_sha256")
-                            or len(out_bytes) != rec.get("output_byte_length")):
-                        problems.append("output on disk does not match the "
-                                        "record's attestation")
+                    try:
+                        out_bytes = canon.read_regular_bytes(output)
+                    except (OSError, canon.PathBoundaryError) as err:
+                        problems.append(f"attested output unreadable "
+                                        f"({type(err).__name__})")
+                if out_bytes is not None and (
+                        canon.bytes_digest(out_bytes) != rec.get("output_sha256")
+                        or len(out_bytes) != rec.get("output_byte_length")):
+                    problems.append("output on disk does not match the "
+                                    "record's attestation")
+                    out_bytes = None
+                shard_bytes = None
+                if identity is not None:
+                    # the shard input the record names, read once for the
+                    # output recomputation and the prompt rederivation
+                    shard_bytes, why = shard_input(m)
+                    if why:
+                        problems.append(why)
+                prompt_context = ctx() if identity is not None else None
+                validator_sha = (prompt_context[3]
+                                 if isinstance(prompt_context, tuple) else None)
+                schema_sha = (prompt_context[1]["sha256"]
+                              if isinstance(prompt_context, tuple) else None)
+                if out_bytes is not None:
+                    try:
+                        problems.extend(_done_output_problems(
+                            rec, sid, out_bytes, identity, identity_sha, m,
+                            shard_bytes, validator_sha, schema_sha=schema_sha))
+                    except Exception as err:  # noqa: BLE001
+                        problems.append(f"output malformed ({type(err).__name__}: "
+                                        f"{str(err)[:120]})")
+                if identity is not None and shard_bytes is not None:
+                    # the prompt digest is rederived by rendering the bound
+                    # prompt for this shard from the bundle, the identity,
+                    # and the input bytes, never trusted from the record
+                    # (Ari, room 20: absent, null, malformed, or
+                    # non-rederived prompt_sha256 is refused)
+                    try:
+                        if not isinstance(prompt_context, tuple):
+                            raise SystemExit(prompt_context)
+                        template, schema, digests, _validator = prompt_context
+                        # the same text the call rendered: review_shard reads
+                        # the scratch copy in text mode (universal newlines)
+                        shard_text = io.TextIOWrapper(io.BytesIO(shard_bytes),
+                                                      encoding="utf-8").read()
+                        rendered = reviewer.render_review_prompt(
+                            template, sid, shard_text, digests, schema)
+                        if canon.content_digest(rendered) != rec.get("prompt_sha256"):
+                            problems.append("prompt_sha256 does not rederive from "
+                                            "the bound prompt for this shard")
+                    except BaseException as err:  # noqa: B036 - SystemExit from a loader is a refusal in words
+                        if not isinstance(err, (Exception, SystemExit)):
+                            raise
+                        problems.append(f"prompt could not be rederived "
+                                        f"({type(err).__name__}: {str(err)[:120]})")
             elif canon.is_regular(output):
                 problems.append("output present for a shard whose record is "
                                 f"{rec.get('result')}")
             state = rec.get("result") or "FAIL"
+            seen_records.append((sid, rec))
         elif claimed:
             # a claim with no record: spent and unattested, whether or not an
-            # output landed; never re-run, never trusted, reported as such
+            # output landed; never re-run, never trusted, reported as such.
+            # An output on disk here must be the one the claim's command
+            # attests in its terminal record (it installed it, then the
+            # record store failed); anything else at that name is foreign
+            # (second isolated pass on 18388418, finding 1)
             state = "UNATTESTED"
+            if os.path.lexists(output):
+                shard_bytes, why = shard_input(m) if identity is not None else (None, None)
+                if why:
+                    problems.append(why)
+                pc = ctx() if identity is not None else None
+                problems.extend(_unattested_output_problems(
+                    a_out, claim, sid, output, identity, identity_sha, m, shard_bytes,
+                    pc[3] if isinstance(pc, tuple) else None,
+                    pc[1]["sha256"] if isinstance(pc, tuple) else None))
         elif canon.is_regular(output):
             state = "UNATTESTED"
             problems.append("output present without a claim or a record")
@@ -3146,7 +3668,313 @@ def shard_states(out_root=None, a_out=None):
                        "phase": rec.get("phase") if rec else None,
                        "error": rec.get("error") if rec else None,
                        "output_sha256": rec.get("output_sha256") if rec else None}
+    # a session and a prompt belong to exactly one shard call: two records
+    # sharing either are one call's evidence copied under two shards
+    # (Ari, review of 0466557, finding 3: session-specific attestations)
+    for field in ("session_id", "prompt_sha256"):
+        owners = {}
+        for sid, rec in seen_records:
+            value = rec.get(field)
+            if isinstance(value, str) and value:
+                owners.setdefault(value, []).append(sid)
+        for value, sids in owners.items():
+            if len(sids) > 1:
+                for sid in sids:
+                    states[sid]["problems"].append(
+                        f"{field} is shared with another record ({sorted(sids)})")
+                    states[sid]["state"] = "CORRUPT"
     return states
+
+
+def _prompt_context(out_root, identity_sha):
+    """What recomputing a DONE shard needs: the ratified template and
+    schema (each verified against the contract the bundle binds), the
+    binding digests with the identity digest on disk, and the digest the
+    ratified contract binds for the output validator."""
+    template = load_template(out_root)
+    schema = load_schema(out_root)
+    digests = dict(bundle_digests(out_root), REVIEWER_IDENTITY_SHA256=identity_sha)
+    return template, schema, digests, ratified_validator_sha(out_root)
+
+
+def ratified_validator_sha(out_root):
+    """The output validator's digest as the ratified isolated-reviewer
+    contract binds it (`output_schema.validator_sha256`), the contract
+    itself verified against the bundle first (second isolated pass on
+    18388418, finding 3: the validator was run as found, never as
+    ratified)."""
+    bundle = canon.load_json(os.path.join(out_root, "review-input-bundle.json"))
+    contract_binding = bundle["bindings"]["reviewer_contract"]
+    contract_path = os.path.join(ARI, os.path.basename(contract_binding["path"]))
+    if _sha(contract_path) != contract_binding["sha256"]:
+        raise SystemExit("reviewer contract bytes do not match the bundle "
+                         "binding; refusing to name the ratified validator")
+    bound = canon.load_json(contract_path)["output_schema"].get("validator_sha256")
+    if not _hex64(bound):
+        raise SystemExit("the ratified contract binds no validator digest")
+    return bound
+
+
+_REVALIDATION_CACHE = {}
+
+
+def revalidate_output(output, out_bytes, validator_sha, schema_sha=None):
+    """The ratified schema's verdict on an installed output, recomputed
+    with the validator as ratified. Returns one of "pass", "reject", or
+    "did-not-run: <why>". The validator file on disk must hash to the
+    digest the contract binds before it is run; a validator that cannot
+    start (no node, no ajv, a crash) is reported as not having run, in
+    different words from a rejection, because a missing toolchain is a
+    fact about the machine, not about the evidence (second isolated pass
+    on 18388418, finding 2). Verdicts are cached per (installed bytes,
+    ratified validator, schema file) digests for the life of the process;
+    a did-not-run is never cached."""
+    validator_path = os.path.join(ARI, "validate-reviewer-output-v0.1.mjs")
+    on_disk = _digest_or_none(validator_path)
+    if on_disk != validator_sha:
+        return (f"did-not-run: the validator on disk ({on_disk}) is not the one "
+                f"the ratified contract binds ({validator_sha})")
+    # the schema file the validator is given must be the ratified one, so a
+    # parse failure can only be the installed bytes' (fourth pass, finding 5)
+    schema_on_disk = _digest_or_none(OUTPUT_SCHEMA)
+    if schema_sha is not None and schema_on_disk != schema_sha:
+        return (f"did-not-run: the output schema on disk ({schema_on_disk}) is not "
+                f"the ratified one ({schema_sha})")
+    # the validator parses two files and its SyntaxError names neither; a
+    # schema file that will not parse is a fact about the machine and is
+    # never blamed on the installed bytes, digest or no digest (fourth
+    # isolated pass on 18388418, finding 5)
+    try:
+        json.loads(canon.read_regular_bytes(OUTPUT_SCHEMA).decode("utf-8"))
+    except (OSError, ValueError, canon.PathBoundaryError) as err:
+        return f"did-not-run: the output schema on disk is not JSON ({type(err).__name__})"
+    # the key covers every input to the verdict: the installed bytes, the
+    # ratified validator, and the schema file it is given (third isolated
+    # pass on 18388418, finding 5)
+    key = (canon.bytes_digest(out_bytes), validator_sha, schema_on_disk)
+    if key in _REVALIDATION_CACHE:
+        return _REVALIDATION_CACHE[key]
+    # the validator reads the INSTALLED bytes, never a re-serialization: a
+    # value the ratified reader cannot parse (NaN, Infinity) is a fact
+    # about the evidence and is reported as one (third pass, finding 4)
+    fd, path = tempfile.mkstemp(suffix=".json")
+    try:
+        with os.fdopen(fd, "wb") as f:
+            f.write(out_bytes)
+        try:
+            proc = subprocess.run(
+                ["node", validator_path, OUTPUT_SCHEMA, path],
+                capture_output=True, text=True,
+                env={**os.environ, "DWTC_REPO_ROOT": REPO_ROOT})
+        except OSError as err:
+            return f"did-not-run: {type(err).__name__}"
+    finally:
+        os.unlink(path)
+    if proc.returncode == 0 and f"{path}: PASS" in proc.stdout:
+        verdict = "pass"
+    elif proc.returncode == 1 and f"{path}[0]: FAIL" in proc.stderr:
+        verdict = "reject"
+    elif "SyntaxError" in proc.stderr and "JSON" in proc.stderr:
+        verdict = "reject: the installed bytes are not JSON the ratified validator can parse"
+    else:
+        # nothing the validator wrote is echoed: its stderr may hold bytes
+        # the adversary wrote into the output (third pass, finding 4)
+        verdict = (f"did-not-run: validator exited {proc.returncode} without a "
+                   f"verdict ({len(proc.stderr)} bytes of stderr, not echoed)")
+    if not verdict.startswith("did-not-run"):
+        _REVALIDATION_CACHE[key] = verdict
+    return verdict
+
+
+def _unattested_output_problems(a_out, claim, sid, output, identity, identity_sha,
+                                member, shard_bytes, validator_sha, schema_sha=None):
+    """An output at a claimed, unrecorded shard's name is the harness's
+    only when the claim's command has exactly one terminal record that
+    lists the shard UNATTESTED with this output's digest, AND the bytes
+    satisfy everything a DONE output must short of a record: they parse,
+    name this shard, carry the bound headers, cover exactly the manifest's
+    artifacts once each, preserve the shard input's digests, and pass the
+    ratified validator (third isolated pass on 18388418, finding 1: the
+    digest alone was a number written beside the bytes by the same hand).
+
+    Honest limit, the same as the DONE path's: the verdicts inside are
+    the reviewer's word; a rewrite that keeps every one of these
+    properties, with the terminal record re-addressed to the new digest,
+    is indistinguishable offline. An UNATTESTED output is also never a
+    fixed output in the harness's own eyes; whether the release gate
+    consumes it is the gate's rule, not this reader's."""
+    digest = _digest_or_none(output)
+    if digest is None:
+        return ["output present for an unattested shard but not a readable "
+                "regular file"]
+    try:
+        cid = canon.load_json_regular(claim).get("command_attempt_id")
+    except Exception:  # noqa: BLE001
+        cid = None
+    commands = _records_naming(os.path.join(a_out, COMMAND_RECORDS_DIR),
+                               "command_attempt_id", cid) if cid else []
+    if len(commands) != 1:
+        return ["output present for an unattested shard and no single terminal "
+                "record of its command attests it"]
+    listed = {s.get("shard_id"): s for s in commands[0][2].get("shards", [])
+              if isinstance(s, dict)}
+    entry = listed.get(sid)
+    if not entry or entry.get("result") != "UNATTESTED" or \
+            entry.get("output_sha256") != digest:
+        return ["output present for an unattested shard is not the one its "
+                "command's terminal record attests"]
+    if identity is None:
+        return ["output present for an unattested shard cannot be verified "
+                "without the identity"]
+    try:
+        out_bytes = canon.read_regular_bytes(output)
+        problems = _done_output_problems({}, sid, out_bytes, identity, identity_sha,
+                                         member, shard_bytes, validator_sha,
+                                         record_checks=False, schema_sha=schema_sha)
+    except Exception as err:  # noqa: BLE001
+        return [f"output present for an unattested shard is malformed "
+                f"({type(err).__name__}: {str(err)[:120]})"]
+    return [f"unattested output: {p}" for p in problems]
+
+
+def _done_output_problems(rec, sid, out_bytes, identity, identity_sha,
+                          member=None, shard_bytes=None, validator_sha=None,
+                          record_checks=True, schema_sha=None):
+    """The installed output of a DONE shard, held against the record, the
+    identity, and the shard input: it is the canonical form of the parsed
+    raw response the record attests; it names this shard and carries the
+    bound headers (the identity digest and the bundle bindings); its
+    dispositions cover exactly the artifact IDs the bound manifest names
+    for the shard, once each, and preserve every record's digests as the
+    shard input declares them; its own completeness block and the
+    record's completeness check are both the one recomputed here; it
+    validates against the ratified schema with the validator the ratified
+    contract binds, and the record's schema report names that validator
+    and a pass. The harness's own success path guarantees each of these;
+    status recomputes them so an edited output or response cannot stay
+    DONE (Ari, review of 0466557, finding 3; isolated adversary on
+    18388418, finding 2; second pass, findings 2, 3, 4).
+
+    Honest limit: the verdicts themselves are the reviewer's word. An
+    output rewritten with different, schema-valid, digest-preserving
+    dispositions over the same artifacts is indistinguishable offline
+    from the one the model produced; that includes a verdict "correct"
+    with a fabricated proposed_correction, which is a payload that goes
+    on to change the corpus, not only a judgement about it; and it
+    extends to a whole command forged together for a shard no session
+    ever reviewed. Nothing outside the evidence root and the bundle
+    anchors the response text; the anchor that would close this is the
+    maintainer's ruling on the board, which the harness cannot read."""
+    problems = []
+    raw = rec.get("raw_response") if record_checks else None
+    if isinstance(raw, str):
+        text, _corrected = reviewer.strip_fences(raw)
+        try:
+            parsed = json.loads(text)
+        except Exception:  # noqa: BLE001
+            parsed = None
+        if parsed is None or canon.canonical_bytes(parsed) != out_bytes:
+            problems.append("raw response does not parse to the installed output")
+    output = json.loads(out_bytes.decode("utf-8"))
+    # the harness installs canonical bytes and nothing else: a file whose
+    # bytes are not the canonical form of the value they parse to (another
+    # serialization, duplicate keys, a lone surrogate the harness could
+    # never have written) is not the harness's, whatever the value says
+    # (fourth isolated pass on 18388418, finding 1)
+    try:
+        canonical = canon.canonical_bytes(output)
+    except (UnicodeEncodeError, ValueError, TypeError) as err:
+        problems.append(f"the installed bytes are not JSON the harness can write "
+                        f"({type(err).__name__})")
+        return problems
+    if canonical != out_bytes:
+        problems.append("the installed bytes are not the canonical form the "
+                        "harness writes")
+    if not isinstance(output, dict) or output.get("shard_id") != sid:
+        problems.append(f"the installed output names shard "
+                        f"{(output or {}).get('shard_id')!r}, not {sid!r}")
+        return problems
+    expected = {}
+    if identity_sha is not None:
+        expected["reviewer_identity_sha256"] = identity_sha
+    bindings = identity.get("bindings") if identity else None
+    if isinstance(bindings, dict):
+        for key, field in (("CONTRACT_SHA256", "contract_sha256"),
+                           ("REVIEW_INPUT_BUNDLE_SHA256", "review_input_bundle_sha256"),
+                           ("SHARD_MANIFEST_SHA256", "shard_manifest_sha256")):
+            if key in bindings:
+                expected[field] = bindings[key]
+    wrong = [f for f, v in expected.items() if output.get(f) != v]
+    if wrong:
+        problems.append("the installed output does not carry the bound headers: "
+                        + ", ".join(wrong))
+    dispositions = output.get("dispositions")
+    if not isinstance(dispositions, list) or not all(isinstance(d, dict)
+                                                     for d in dispositions):
+        problems.append("the installed output's dispositions are not a list")
+        return problems
+    if isinstance(member, dict) and isinstance(member.get("artifact_ids"), list):
+        # completeness exactly as review_shard computed it
+        expected_ids = member["artifact_ids"]
+        ids = [d.get("artifact_id") for d in dispositions]
+        seen = set()
+        duplicates = sorted({i for i in ids if i in seen or seen.add(i)})
+        completeness = {
+            "input_artifact_count": len(expected_ids),
+            "output_disposition_count": len(ids),
+            "duplicate_artifact_ids": duplicates,
+            "missing_artifact_ids": sorted(set(expected_ids) - set(ids)),
+            "unexpected_artifact_ids": sorted(set(ids) - set(expected_ids)),
+        }
+        if duplicates or completeness["missing_artifact_ids"] or \
+                completeness["unexpected_artifact_ids"]:
+            problems.append("the installed output does not cover exactly the "
+                            "shard's artifacts once each (completeness)")
+        # byte-equal, not compare-equal: 12.0 is not the 12 the harness
+        # writes (third isolated pass on 18388418, finding 7)
+        want = canon.canonical_bytes(completeness)
+        if record_checks and canon.canonical_bytes(rec.get("completeness_check")) != want:
+            problems.append("the record's completeness_check is not the one "
+                            "recomputed from the installed output")
+        if canon.canonical_bytes(output.get("completeness")) != want:
+            # the output's own block is an output-specific attestation that
+            # travels with the fixed output (second pass, finding 4)
+            problems.append("the installed output's own completeness block is "
+                            "not the one recomputed from its dispositions")
+    if shard_bytes is not None:
+        shard = json.loads(shard_bytes.decode("utf-8"))
+        declared = {r.get("artifact_id"): r for r in shard.get("records", [])
+                    if isinstance(r, dict)}
+        for d in dispositions:
+            r = declared.get(d.get("artifact_id"))
+            if r is not None and any(
+                    d.get(k) != r.get(k) for k in
+                    ("record_sha256", "claim_payload_sha256",
+                     "normalized_support_anchor_set_sha256")):
+                problems.append(f"digest-not-preserved:{d.get('artifact_id')}")
+    # the schema verdict is recomputed with the validator as ratified, and
+    # the record's report must name that validator and a pass
+    schema_report = rec.get("schema_report")
+    if validator_sha is None:
+        problems.append("schema could not be revalidated: the ratified validator "
+                        "digest is unavailable")
+    else:
+        verdict = revalidate_output(output, out_bytes, validator_sha, schema_sha)
+        if verdict == "reject":
+            problems.append("the installed output does not validate against the "
+                            "ratified schema")
+        elif verdict.startswith("reject:"):
+            problems.append(f"the installed output does not validate: "
+                            f"{verdict[len('reject: '):]}")
+        elif verdict != "pass":
+            problems.append(f"schema could not be revalidated ({verdict}); the "
+                            "toolchain, not the evidence, is in question")
+        if record_checks and (
+                not isinstance(schema_report, dict) or schema_report.get("returncode") != 0
+                or schema_report.get("validator_sha256") != validator_sha):
+            problems.append("the record's schema_report is not a pass by the "
+                            "ratified validator")
+    return problems
 
 
 RESERVATION_RECORD_FIELDS = (
@@ -3232,7 +4060,13 @@ def _record_relationship_problems(a_out, rec, rec_sha, claim, sid, identity=None
             if rec.get(field) != identity.get(field if field != "ruled_model_id"
                                               else "model_id"):
                 problems.append(f"record {field} differs from the identity on disk")
-    if rec.get("claim_sha256") is not None and canon.is_regular(claim):
+    # the claim is held against the record whenever the record is past the
+    # claim phase; a DONE or post-claim record that drops its claim digest
+    # is not excused from the check (Ari, review of 0466557, finding 3)
+    past_claim = rec.get("phase") not in (None, "session-construction", "claim")
+    if past_claim and not SHA_RE.fullmatch(str(rec.get("claim_sha256") or "")):
+        problems.append("a record past the claim phase lacks a valid claim_sha256")
+    if (rec.get("claim_sha256") is not None or past_claim) and canon.is_regular(claim):
         claim_bytes = canon.read_regular_bytes(claim)
         if canon.bytes_digest(claim_bytes) != rec.get("claim_sha256"):
             problems.append("claim bytes do not hash to the record's claim digest")
@@ -3247,23 +4081,27 @@ def _record_relationship_problems(a_out, rec, rec_sha, claim, sid, identity=None
                       "input_sha256", "reservation_path"):
             if claim_meta.get(field) != rec.get(field):
                 problems.append(f"claim and record disagree on {field}")
-    command = _existing_record(os.path.join(a_out, COMMAND_RECORDS_DIR),
-                               f"{rec.get('command_attempt_id')}.",
-                               {"command_attempt_id": rec.get("command_attempt_id")})
-    if command is None:
+        if claim_meta.get("command_attempt_id") != rec.get("command_attempt_id"):
+            problems.append("claim and record disagree on command_attempt_id")
+    commands = _records_naming(os.path.join(a_out, COMMAND_RECORDS_DIR),
+                               "command_attempt_id", rec.get("command_attempt_id"))
+    if not commands:
         problems.append("no terminal command record for this shard's command")
+    elif len(commands) > 1:
+        problems.append("more than one terminal command record for this shard's "
+                        "command")
     else:
-        cmd_sha, cmd_path = command
-        data = canon.read_regular_bytes(cmd_path)
-        if canon.bytes_digest(data) != cmd_sha:
+        cmd_name, data, cmd = commands[0]
+        if canon.bytes_digest(data) != RECORD_NAME_RE.fullmatch(cmd_name).group(2):
             problems.append("terminal command record does not hash to its name")
-        cmd = json.loads(data.decode("utf-8"))
         listed = {s.get("shard_id"): s for s in cmd.get("shards", [])
                   if isinstance(s, dict)}
         if sid not in listed:
             problems.append("the terminal command record does not list this shard")
-        elif listed[sid].get("record_sha256") != rec_sha or \
-                listed[sid].get("result") != rec.get("result"):
+        elif listed[sid].get("record_sha256") != rec_sha or any(
+                listed[sid].get(f) != rec.get(f) for f in
+                ("result", "phase", "error", "output_sha256", "cli_invocations",
+                 "model_calls", "input_sha256")):
             problems.append("the terminal command record disagrees with the "
                             "shard record")
         for field in ("ruling_id", "head", "model_id", "identity_sha256",
@@ -3276,23 +4114,89 @@ def _record_relationship_problems(a_out, rec, rec_sha, claim, sid, identity=None
             problems.append("the terminal command record's reservation digest "
                             "is not the reservation on disk")
     if rec.get("result") == "DONE":
-        usage = rec.get("observed_model_usage") or []
-        # the policy and the model the usage is judged against are the
-        # identity's, never the record's own copies (second pass, finding 3:
-        # a forged triple always agreed with itself)
-        model = identity.get("model_id") if identity else rec.get("model_id")
-        policy = (identity.get("auxiliary_model_policy") if identity
-                  else rec.get("auxiliary_model_policy")) or {}
-        if (rec.get("cli_invocations") != REVIEW_ATTEMPTS
-                or rec.get("model_calls") != 1
-                or rec.get("verdict") != "fixed"
-                or rec.get("attempts_allowed") != REVIEW_ATTEMPTS
-                or not usage or not isinstance(usage[0], dict)
-                or not usage[0].get("model_usage_reported")
-                or aux_policy_violations(usage, model, policy)
-                or rec.get("auxiliary_model_violations")):
-            problems.append("a DONE record whose accounting, verdict, or model "
-                            "usage does not satisfy the ruling's sentence")
+        problems.extend(_done_record_problems(rec, sid, identity))
+    return problems
+
+
+def _hex64(value):
+    return isinstance(value, str) and SHA_RE.fullmatch(value) is not None
+
+
+def _positive_int(value):
+    return isinstance(value, int) and not isinstance(value, bool) and value > 0
+
+
+# every field a DONE shard record carries on the harness's success path,
+# with the check that recomputes it; a DONE record lacking any of them, or
+# carrying a failure-shaped value, is CORRUPT however it is addressed
+# (Ari, review of 0466557, finding 3: removing raw_response and
+# re-addressing the record and its terminal record preserved DONE)
+DONE_RECORD_FIELDS = (
+    ("raw_response", lambda v, rec, sid: isinstance(v, str) and v != ""),
+    # the digest is recomputed against raw_response by the caller's raw
+    # check; here only its shape is required
+    ("raw_response_sha256", lambda v, rec, sid: _hex64(v)),
+    ("session_id", lambda v, rec, sid: isinstance(v, str) and v != ""),
+    ("num_turns", lambda v, rec, sid: _positive_int(v)),
+    ("prompt_sha256", lambda v, rec, sid: _hex64(v)),
+    ("claim_sha256", lambda v, rec, sid: _hex64(v)),
+    ("claim_path", lambda v, rec, sid: v == f"{CLAIMS_DIR}/{sid}.json"),
+    ("output_path", lambda v, rec, sid: v == f"{OUTPUTS_DIR}/{sid}.json"),
+    ("output_sha256", lambda v, rec, sid: _hex64(v)),
+    ("output_byte_length", lambda v, rec, sid: _positive_int(v)),
+    ("started_utc", lambda v, rec, sid: isinstance(v, str) and v != ""),
+    ("phase", lambda v, rec, sid: v == "finalized"),
+    ("error", lambda v, rec, sid: v is None),
+    ("live_invocations_started", lambda v, rec, sid: v == REVIEW_ATTEMPTS),
+    ("cli_invocations", lambda v, rec, sid: v == REVIEW_ATTEMPTS),
+    ("model_calls", lambda v, rec, sid: v == 1),
+    ("invocation_accounting", lambda v, rec, sid: isinstance(v, str)
+        and v.startswith("session-reported")),
+    ("cli_invocation_log", lambda v, rec, sid: isinstance(v, list)
+        and len(v) == REVIEW_ATTEMPTS),
+    ("machine_corrections", lambda v, rec, sid: isinstance(v, list)),
+    ("pre_call_record_verification", lambda v, rec, sid: isinstance(v, list)),
+    ("completeness_check", lambda v, rec, sid: isinstance(v, dict)),
+    ("schema_report", lambda v, rec, sid: isinstance(v, dict)),
+    ("problems", lambda v, rec, sid: v == []),
+    ("verdict", lambda v, rec, sid: v == "fixed"),
+    ("attempts_allowed", lambda v, rec, sid: v == REVIEW_ATTEMPTS),
+    ("auxiliary_model_violations", lambda v, rec, sid: v == []),
+    ("observed_model_usage", lambda v, rec, sid: isinstance(v, list) and len(v) == 1
+        and isinstance(v[0], dict) and v[0].get("probe_id") == sid
+        and v[0].get("model_usage_reported") is True
+        and isinstance(v[0].get("models"), list) and v[0]["models"] != []),
+    ("input_sha256", lambda v, rec, sid: _hex64(v)),
+    ("identity_sha256", lambda v, rec, sid: _hex64(v)),
+    ("command_attempt_id", lambda v, rec, sid: isinstance(v, str) and v != ""),
+    ("purpose", lambda v, rec, sid: v == "shard-review"),
+    ("reviewer_role", lambda v, rec, sid: v == "reviewer_a"),
+)
+
+
+def _done_record_problems(rec, sid, identity):
+    """Every attestation a DONE record must carry, recomputed; then the
+    ruling's sentence on the usage, judged against the identity's model
+    and policy, never the record's own copies (second pass, finding 3: a
+    forged triple always agreed with itself)."""
+    problems = []
+    for field, ok in DONE_RECORD_FIELDS:
+        if field not in rec or not ok(rec.get(field), rec, sid):
+            problems.append(f"a DONE record lacks a valid {field}")
+    usage = rec.get("observed_model_usage") or []
+    model = identity.get("model_id") if identity else rec.get("model_id")
+    policy = (identity.get("auxiliary_model_policy") if identity
+              else rec.get("auxiliary_model_policy")) or {}
+    if (rec.get("cli_invocations") != REVIEW_ATTEMPTS
+            or rec.get("model_calls") != 1
+            or rec.get("verdict") != "fixed"
+            or rec.get("attempts_allowed") != REVIEW_ATTEMPTS
+            or not usage or not isinstance(usage[0], dict)
+            or not usage[0].get("model_usage_reported")
+            or aux_policy_violations(usage, model, policy)
+            or rec.get("auxiliary_model_violations")):
+        problems.append("a DONE record whose accounting, verdict, or model "
+                        "usage does not satisfy the ruling's sentence")
     return problems
 
 
@@ -3307,16 +4211,9 @@ def command_states(a_out=None):
     out = []
     if not canon.is_real_dir(res_dir):
         return out
-    identity_path = os.path.join(a_out, IDENTITY_FILE)
-    identity_sha = None
-    identity = None
-    if canon.is_regular(identity_path):
-        identity_bytes = canon.read_regular_bytes(identity_path)
-        identity_sha = canon.bytes_digest(identity_bytes)
-        try:
-            identity = json.loads(identity_bytes.decode("utf-8"))
-        except Exception:  # noqa: BLE001
-            identity = None
+    # the one shared reader: a link, unreadable, or malformed identity
+    # refuses in words here too (second isolated pass on 18388418, finding 5)
+    identity, identity_sha = _identity_on_disk(a_out)
     for name in sorted(os.listdir(res_dir)):
         if not (name.startswith(REVIEW_RESERVATION_PREFIX) and name.endswith(".json")):
             continue
@@ -3342,18 +4239,21 @@ def command_states(a_out=None):
                 res = {"command_attempt_id": canon.load_json_regular(
                     explained[1]).get("command_attempt_id")}
         cid = res.get("command_attempt_id")
-        found = (_existing_record(os.path.join(a_out, COMMAND_RECORDS_DIR),
-                                  f"{cid}.", {"command_attempt_id": cid})
-                 if cid else None)
+        found = (_records_naming(os.path.join(a_out, COMMAND_RECORDS_DIR),
+                                 "command_attempt_id", cid) if cid else [])
         result = None
-        if found is None:
+        if not found:
             problems.append("no terminal command record (unfinalized)")
+        elif len(found) > 1:
+            # exactly one terminal record per command; a second one, however
+            # addressed, is not the harness's (Ari, review of 0466557,
+            # finding 4)
+            problems.append("more than one terminal command record for this "
+                            f"command ({[n for n, _d, _r in found]})")
         else:
-            cmd_sha, cmd_path = found
-            data = canon.read_regular_bytes(cmd_path)
-            if canon.bytes_digest(data) != cmd_sha:
+            cmd_name, data, cmd = found[0]
+            if canon.bytes_digest(data) != RECORD_NAME_RE.fullmatch(cmd_name).group(2):
                 problems.append("terminal command record does not hash to its name")
-            cmd = json.loads(data.decode("utf-8"))
             result = cmd.get("result")
             if cmd.get("ruling_id") != ruling:
                 problems.append("command record names another ruling")
@@ -3381,12 +4281,202 @@ def command_states(a_out=None):
                         a_out, res, res_sha, identity, identity_sha, "command"))
                 except Exception as err:  # noqa: BLE001
                     problems.append(f"malformed ({type(err).__name__})")
+            try:
+                problems.extend(_terminal_record_problems(a_out, cmd, res, ruling))
+            except Exception as err:  # noqa: BLE001
+                problems.append(f"terminal record malformed ({type(err).__name__}: "
+                                f"{str(err)[:120]})")
         out.append({"ruling_id": ruling, "command_attempt_id": cid,
                     "result": result, "problems": problems})
     return out
 
 
+TERMINAL_SHARD_RESULTS = ("DONE", "FAIL", "NOT_RUN", "UNATTESTED")
+
+
+def _terminal_record_problems(a_out, cmd, res, ruling):
+    """The terminal command record rederived from the artifacts it
+    summarizes (Ari, review of 0466557, finding 4): every listed shard's
+    state, record digest, output digest, and counts are recomputed from
+    the shard record and output on disk (or their required absence), the
+    listing follows the reservation's order and input digests, the
+    command's calls and invocations are the sums, the overall result is
+    PASS exactly when every shard is DONE and every index refresh held,
+    the ceiling is the listing's length, and the reservation path is the
+    ruling's."""
+    problems = []
+    cid = cmd.get("command_attempt_id")
+    shards = cmd.get("shards")
+    if not isinstance(shards, list) or not all(isinstance(s, dict) for s in shards):
+        return ["terminal record shards are not a list of shard entries"]
+    expected_path = f"{RESERVATIONS_DIR}/{REVIEW_RESERVATION_PREFIX}{ruling}.json"
+    if cmd.get("reservation_path") != expected_path:
+        problems.append("terminal record names a reservation path that is not "
+                        "its ruling's")
+    if cmd.get("call_ceiling") != len(shards):
+        problems.append("terminal record call_ceiling is not the number of shards "
+                        "it lists")
+    if cmd.get("attempts_allowed") != REVIEW_ATTEMPTS:
+        problems.append("terminal record attempts_allowed is not the one this "
+                        "harness reserves")
+    reserved = [s for s in res.get("shards", []) if isinstance(s, dict)] \
+        if "shards" in res else None
+    if reserved is not None:
+        for entry, want in zip(shards, reserved):
+            if entry.get("shard_id") == want.get("shard_id") and \
+                    entry.get("input_sha256") != want.get("input_sha256"):
+                problems.append(f"terminal record and reservation disagree on the "
+                                f"input digest of {entry.get('shard_id')}")
+    records_dir = os.path.join(a_out, RUN_RECORDS_DIR)
+    claims_dir = os.path.join(a_out, CLAIMS_DIR)
+    outputs_dir = os.path.join(a_out, OUTPUTS_DIR)
+    calls = 0
+    invocations = 0
+    all_done = True
+    for entry in shards:
+        sid = entry.get("shard_id")
+        state = entry.get("result")
+        if not isinstance(sid, str) or not SHARD_ID_RE.fullmatch(sid):
+            problems.append(f"terminal record lists an invalid shard id {sid!r}")
+            all_done = False
+            continue
+        if state not in TERMINAL_SHARD_RESULTS:
+            problems.append(f"terminal record lists {sid} in state {state!r}")
+            all_done = False
+            continue
+        if state != "DONE" or entry.get("manifest_error"):
+            all_done = False
+        on_disk = [(n, d, r) for n, d, r in _records_naming(records_dir, "shard_id", sid)
+                   if r.get("command_attempt_id") == cid]
+        claim = os.path.join(claims_dir, f"{sid}.json")
+        output = os.path.join(outputs_dir, f"{sid}.json")
+        if state in ("DONE", "FAIL"):
+            if len(on_disk) != 1:
+                problems.append(f"terminal record lists {sid} as {state} but "
+                                f"{len(on_disk)} shard record(s) for this command are "
+                                "on disk" if on_disk else
+                                f"terminal record lists {sid} as {state} but no shard "
+                                "record on disk attests it")
+            else:
+                name, data, rec = on_disk[0]
+                rec_sha = RECORD_NAME_RE.fullmatch(name).group(2)
+                if canon.bytes_digest(data) != rec_sha:
+                    problems.append(f"the shard record of {sid} does not hash to its name")
+                if entry.get("record_sha256") != rec_sha or any(
+                        entry.get(f) != rec.get(f) for f in
+                        ("result", "phase", "error", "output_sha256",
+                         "cli_invocations", "model_calls", "input_sha256")):
+                    problems.append(f"terminal record disagrees with the shard record "
+                                    f"of {sid}")
+                if entry.get("record_path") != f"{RUN_RECORDS_DIR}/{name}":
+                    problems.append(f"terminal record names a record path for {sid} "
+                                    "that is not the record on disk")
+                if not os.path.lexists(claim):
+                    problems.append(f"terminal record lists {sid} as {state} with no "
+                                    "claim on disk")
+            if state == "DONE":
+                if not _hex64(entry.get("output_sha256")) or \
+                        _digest_or_none(output) != entry.get("output_sha256"):
+                    problems.append(f"terminal record lists {sid} as DONE but the "
+                                    "output on disk is not the one it attests")
+                if entry.get("output_path") != f"{OUTPUTS_DIR}/{sid}.json":
+                    problems.append(f"terminal record names an output path for {sid} "
+                                    "that is not the harness's")
+            elif entry.get("output_sha256") is not None or canon.is_regular(output):
+                problems.append(f"terminal record lists {sid} as FAIL with an output")
+        else:
+            if on_disk:
+                problems.append(f"terminal record lists {sid} as {state} but a shard "
+                                "record on disk attests it for this command")
+            if entry.get("record_sha256") is not None or entry.get("record_path") \
+                    is not None:
+                problems.append(f"terminal record lists {sid} as {state} with a "
+                                "record digest")
+            if state == "NOT_RUN" and (entry.get("output_sha256") is not None
+                                       or entry.get("output_path") is not None):
+                problems.append(f"terminal record lists {sid} as NOT_RUN with an output")
+            if state == "UNATTESTED":
+                # an output may have landed before the record store failed
+                # (exit E7): the listing names it exactly when it did, and
+                # the output on disk is that one or absent; a null with an
+                # output on disk, or a digest with none, is foreign (second
+                # isolated pass on 18388418, finding 1: the absence was
+                # tolerated, not required)
+                attested = entry.get("output_sha256")
+                on_disk = _digest_or_none(output)
+                if attested is None and os.path.lexists(output):
+                    problems.append(f"terminal record lists {sid} as UNATTESTED with "
+                                    "no output but one is on disk")
+                elif attested is not None and (not _hex64(attested) or on_disk != attested):
+                    problems.append(f"terminal record lists {sid} as UNATTESTED with an "
+                                    "output that is not on disk as attested")
+            if state == "UNATTESTED":
+                try:
+                    owner = canon.load_json_regular(claim).get("command_attempt_id")
+                except Exception:  # noqa: BLE001
+                    owner = None
+                if owner != cid:
+                    problems.append(f"terminal record lists {sid} as UNATTESTED with "
+                                    "no claim of this command on disk")
+            elif os.path.lexists(claim):
+                try:
+                    owner = canon.load_json_regular(claim).get("command_attempt_id")
+                except Exception:  # noqa: BLE001
+                    owner = None
+                if owner == cid:
+                    problems.append(f"terminal record lists {sid} as NOT_RUN but this "
+                                    "command claimed it")
+        mc = entry.get("model_calls")
+        ci = entry.get("cli_invocations")
+        if isinstance(mc, int) and not isinstance(mc, bool):
+            calls += mc
+        else:
+            problems.append(f"terminal record lists {sid} with model_calls {mc!r}")
+        if isinstance(ci, int) and not isinstance(ci, bool):
+            invocations += ci
+        elif ci is not None:
+            problems.append(f"terminal record lists {sid} with cli_invocations {ci!r}")
+    if cmd.get("model_calls") != calls:
+        problems.append(f"terminal record model_calls {cmd.get('model_calls')!r} does "
+                        f"not rederive from the shards ({calls})")
+    if cmd.get("cli_invocations") != invocations:
+        problems.append(f"terminal record cli_invocations {cmd.get('cli_invocations')!r} "
+                        f"does not rederive from the shards ({invocations})")
+    expected = "PASS" if all_done and shards else "FAIL"
+    if cmd.get("result") != expected:
+        problems.append(f"terminal record result {cmd.get('result')} does not "
+                        f"rederive from the shards ({expected})")
+    if expected == "PASS" and cmd.get("phase") != "finalized":
+        problems.append("terminal record is PASS in a phase other than finalized")
+    return problems
+
+
 def status(out_root=None, a_out=None):
+    """Read-only. The manifest is verified against the identity's binding
+    before any state is rebuilt; the store check runs first so foreign
+    artifacts are named, never silently counted or skipped."""
+    out_root = out_root or OUT
+    a_out = a_out or A_OUT
+    path_problems = check_evidence_paths(a_out, allowed_dirs=REVIEW_EVIDENCE_DIRS)
+    for problem in path_problems:
+        print(f"PATH PROBLEM: {problem}")
+    if path_problems:
+        # nothing below can be read to decide across a broken boundary
+        raise SystemExit("status stopped: evidence path boundary: "
+                         + "; ".join(path_problems))
+    manifest = bound_manifest(out_root, a_out)
+    identity, _sha = _identity_on_disk(a_out)
+    if identity is not None and identity.get("bindings") != bundle_digests(out_root):
+        # the check review() runs, in the same words, so a moved bundle is
+        # named as the cause rather than as a prompt that fails to rederive
+        # (second isolated pass on 18388418, note 7)
+        raise SystemExit("status refused: bundle changed since identity was "
+                         "bound; rebind")
+    problems = bound_artifact_problems(out_root)
+    if problems:
+        raise SystemExit("status refused: " + "; ".join(problems))
+    for problem in review_store_problems(a_out, manifest):
+        print(f"STORE PROBLEM: {problem}")
     for c in command_states(a_out):
         line = f"command ruling {c['ruling_id']} {c['command_attempt_id']} {c['result'] or 'UNFINALIZED'}"
         if c["problems"]:

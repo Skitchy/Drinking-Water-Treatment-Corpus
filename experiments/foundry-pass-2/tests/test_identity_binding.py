@@ -1480,7 +1480,11 @@ class ReviewTimeEnforcement(_BindHarness):
                 else:
                     os.symlink(os.path.join(self.a, "nowhere.json"), path)
                 err = self.review()
-                self.assertIn("is not a regular file", err)
+                # the path-boundary gate now runs first in review() (18388418
+                # head, third isolated pass, finding 3) and names the object
+                # in its own words; the property is the same refusal before
+                # any session
+                self.assertIn("not a regular file", err)
                 self.assertEqual(self.made, [])
                 os.unlink(path)
 

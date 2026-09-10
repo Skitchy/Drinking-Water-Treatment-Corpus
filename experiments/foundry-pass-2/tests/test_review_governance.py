@@ -55,6 +55,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+import uuid
 
 PASS2 = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PASS2)
@@ -139,6 +140,9 @@ class GovernedShardSession:
         self.last_invocation_log = []
         self.total_invocations = 0
         self.prompts = []
+        # a real CLI session id is unique per invocation; the fake's is
+        # unique per session object, as status requires across records
+        self.nonce = uuid.uuid4().hex[:8]
 
     def command(self):
         return self._real.command()
@@ -158,7 +162,7 @@ class GovernedShardSession:
         self.prompts.append(prompt)
         text = (self.response if self.response is not None
                 else json.dumps(conformant_output(prompt, self.verdict)))
-        out = {"result": text, "session_id": f"fake-session-{self.calls}",
+        out = {"result": text, "session_id": f"fake-session-{self.nonce}-{self.calls}",
                "num_turns": 1}
         usage = REVIEWER_ONLY if self.usage is None else self.usage
         if usage != ABSENT:
@@ -554,7 +558,8 @@ class TwoShardsDone(_ReviewHarness):
             self.assertEqual(rec["cli_invocations"], 1)
             self.assertEqual(rec["model_calls"], 1)
             self.assertEqual(rec["verdict"], "fixed")
-            self.assertEqual(rec["session_id"], "fake-session-1")
+            self.assertEqual(rec["session_id"], f"fake-session-{session.nonce}-1")
+            self.assertEqual(rec["prompt_sha256"], canon.content_digest(session.prompts[0]))
             self.assertTrue(rec["observed_model_usage"][0]["model_usage_reported"])
             self.assertEqual(rec["auxiliary_model_violations"], [])
             self.assertEqual(rec["claim_path"], f"claims/{sid}.json")
