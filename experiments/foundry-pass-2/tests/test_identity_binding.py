@@ -1515,6 +1515,168 @@ class ReviewTimeEnforcement(_BindHarness):
         self.assertIsNone(self.review())
         self.assertEqual(len(self.made), 1)
 
+    # -- gate card v1.0, section 3.2 (authorization 18404868): the identity's
+    # attempt budget, its binding record's, and the observed usage are exact
+    # JSON integers; a boolean or a float that compares equal is refused
+
+    def _record_path(self):
+        identity = canon.load_json(self.identity_path())
+        for name in sorted(os.listdir(self.a)):
+            if name.startswith(run_reviewer_a.BINDING_RECORD_PREFIX):
+                path = os.path.join(self.a, name)
+                if canon.load_json(path).get("attempt_id") == identity["binding_attempt_id"]:
+                    return path
+        self.fail("no binding record for the identity's attempt")
+
+    def test_identity_attempt_budget_lookalike_is_refused(self):
+        original = canon.load_json(self.identity_path())["binding_attempts_allowed"]
+        for bad in (True, 1.0):
+            with self.subTest(value=bad):
+                self.rewrite_identity(binding_attempts_allowed=bad)
+                err = self.review()
+                # the identity-to-record comparison (canonical bytes) names
+                # it first; the exact-integer check stands behind it
+                self.assertTrue("attempt budget is not the exact integer" in err
+                                or "binding_attempts_allowed does not match the binding "
+                                   "attempt record" in err, err)
+                self.assertEqual(self.made, [])
+                self.rewrite_identity(binding_attempts_allowed=original)
+        self.assertIsNone(self.review())
+
+    def test_record_attempt_budget_lookalike_is_refused(self):
+        path = self._record_path()
+        original = canon.read_regular_bytes(path)
+        for bad in (True, 1.0):
+            with self.subTest(value=bad):
+                record = canon.load_json(path)
+                record["attempts_allowed"] = bad
+                data = canon.canonical_bytes(record)
+                os.unlink(path)
+                forged = os.path.join(self.a, f"{run_reviewer_a.BINDING_RECORD_PREFIX}"
+                                              f"{canon.bytes_digest(data)}.json")
+                with open(forged, "wb") as f:
+                    f.write(data)
+                try:
+                    err = self.review()
+                    # the identity's copy and the record's differ as canonical
+                    # bytes, which names it first; the exact-integer check on
+                    # the record stands behind it
+                    self.assertTrue("attempt budget is not the exact integer" in err
+                                    or "attempts_allowed does not match the binding "
+                                       "attempt record" in err, err)
+                    self.assertEqual(self.made, [])
+                finally:
+                    os.unlink(forged)
+                    with open(path, "wb") as f:
+                        f.write(original)
+        self.assertIsNone(self.review())
+
+    def test_record_observed_usage_lookalike_is_refused(self):
+        """Isolated pass 8, finding 2: the record's copy of the observed
+        usage was held to the identity's by value equality; a float that
+        equals the integer is now a mismatch as canonical bytes."""
+        path = self._record_path()
+        original = canon.read_regular_bytes(path)
+        record = canon.load_json(path)
+        usage = json.loads(json.dumps(record["observed_model_usage"]))
+
+        def replace_first_int(node):
+            if isinstance(node, dict):
+                for key, value in node.items():
+                    if isinstance(value, int) and not isinstance(value, bool):
+                        node[key] = float(value)
+                        return True
+                    if replace_first_int(value):
+                        return True
+            elif isinstance(node, list):
+                for item in node:
+                    if replace_first_int(item):
+                        return True
+            return False
+        self.assertTrue(replace_first_int(usage), usage)
+        self.assertEqual(usage, record["observed_model_usage"])
+        record["observed_model_usage"] = usage
+        data = canon.canonical_bytes(record)
+        os.unlink(path)
+        forged = os.path.join(self.a, f"{run_reviewer_a.BINDING_RECORD_PREFIX}"
+                                      f"{canon.bytes_digest(data)}.json")
+        with open(forged, "wb") as f:
+            f.write(data)
+        try:
+            err = self.review()
+            self.assertIn("observed_model_usage does not match the binding attempt record",
+                          err)
+            self.assertEqual(self.made, [])
+        finally:
+            os.unlink(forged)
+            with open(path, "wb") as f:
+                f.write(original)
+        self.assertIsNone(self.review())
+
+    def test_matching_lookalike_budget_on_both_sides_is_refused(self):
+        """Mutant N101 of the final matrix: with the identity and its record
+        carrying the same lookalike, the canonical-bytes loop agrees, and
+        only the exact-integer check on the identity's budget refuses."""
+        path = self._record_path()
+        original_record = canon.read_regular_bytes(path)
+        original_budget = canon.load_json(self.identity_path())["binding_attempts_allowed"]
+        for bad in (True, 1.0):
+            with self.subTest(value=bad):
+                self.rewrite_identity(binding_attempts_allowed=bad)
+                # the record carries the same lookalike and re-attests the
+                # edited identity, so the field loop agrees on both
+                record = canon.load_json(self._record_path())
+                record["attempts_allowed"] = bad
+                record["identity_sha256"] = canon.file_sha256(self.identity_path())
+                data = canon.canonical_bytes(record)
+                os.unlink(self._record_path())
+                forged = os.path.join(self.a, f"{run_reviewer_a.BINDING_RECORD_PREFIX}"
+                                              f"{canon.bytes_digest(data)}.json")
+                with open(forged, "wb") as f:
+                    f.write(data)
+                try:
+                    err = self.review()
+                    self.assertIn("attempt budget is not the exact integer", err)
+                    self.assertEqual(self.made, [])
+                finally:
+                    os.unlink(forged)
+                    with open(path, "wb") as f:
+                        f.write(original_record)
+                    self.rewrite_identity(reattest=False, binding_attempts_allowed=original_budget)
+        self.assertIsNone(self.review())
+
+    def test_observed_usage_lookalike_is_refused(self):
+        identity = canon.load_json(self.identity_path())
+        usage = json.loads(json.dumps(identity["observed_model_usage"]))
+
+        def replace_first_int(node):
+            # the first integer count becomes the float that equals it (a
+            # boolean equals only 0 or 1, and the fixture's counts are larger)
+            if isinstance(node, dict):
+                for key, value in node.items():
+                    if isinstance(value, int) and not isinstance(value, bool):
+                        node[key] = float(value)
+                        return True
+                    if replace_first_int(value):
+                        return True
+            elif isinstance(node, list):
+                for item in node:
+                    if replace_first_int(item):
+                        return True
+            return False
+        self.assertTrue(replace_first_int(usage), usage)
+        # equal in Python, unequal as canonical bytes: the check compares bytes
+        self.assertEqual(usage, identity["observed_model_usage"])
+        self.assertNotEqual(canon.canonical_bytes(usage),
+                            canon.canonical_bytes(identity["observed_model_usage"]))
+        self.rewrite_identity(observed_model_usage=usage)
+        err = self.review()
+        self.assertIn("observed_model_usage does not match the verified probe evidence",
+                      err)
+        self.assertEqual(self.made, [])
+        self.rewrite_identity(observed_model_usage=identity["observed_model_usage"])
+        self.assertIsNone(self.review())
+
     def test_symlinked_identity_is_refused_and_never_followed(self):
         # adversary finding 12
         elsewhere = os.path.join(self.a, "elsewhere.json")

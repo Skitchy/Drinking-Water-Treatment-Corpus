@@ -1803,7 +1803,7 @@ def review(shard_ids, session_factory=None, out_root=None, a_out=None):
                 # invocations than the shard record attests (isolated
                 # adversary on this head, finding 4)
                 outcome["model_calls"] += entry["model_calls"]
-                if isinstance(entry["cli_invocations"], int):
+                if _exact_int(entry["cli_invocations"]):
                     outcome["cli_invocations"] += entry["cli_invocations"]
             if entry["result"] != "DONE":
                 outcome["result"] = "FAIL"
@@ -2746,7 +2746,10 @@ def enforce_bound_identity(identity, a_out, system_prompt, identity_sha):
         raise SystemExit("review refused: the identity's auxiliary model policy "
                          "is malformed; rebind")
     recomputed_usage = observed_model_usage(transcript)
-    if recomputed_usage != identity["observed_model_usage"]:
+    # compared as canonical bytes, never by Python equality, so a boolean
+    # or a float where the transcript yields an integer is a mismatch
+    if canon.canonical_bytes(recomputed_usage) != \
+            canon.canonical_bytes(identity["observed_model_usage"]):
         raise SystemExit("review refused: the identity's observed_model_usage "
                          "does not match the verified probe evidence")
     if aux_policy_violations(recomputed_usage, identity["model_id"],
@@ -2764,7 +2767,11 @@ def enforce_bound_identity(identity, a_out, system_prompt, identity_sha):
                          f"identity on disk hashes to {identity_sha}; the "
                          "identity has been edited or replaced; rebind")
     for identity_field, record_field in IDENTITY_RECORD_FIELDS:
-        if identity.get(identity_field) != record.get(record_field):
+        # as canonical bytes: a count that merely compares equal (a float
+        # or a boolean for an integer) on either side is a mismatch
+        # (isolated pass 8, finding 2)
+        if canon.canonical_bytes(identity.get(identity_field)) != \
+                canon.canonical_bytes(record.get(record_field)):
             raise SystemExit(f"review refused: identity {identity_field} does "
                              "not match the binding attempt record; the "
                              "identity has been edited; rebind")
@@ -2790,10 +2797,12 @@ def enforce_bound_identity(identity, a_out, system_prompt, identity_sha):
     if canon.content_digest(identity["leak_probes"]) != identity["leak_probes_sha256"]:
         raise SystemExit("review refused: the identity's published leak probe "
                          "records do not hash to its leak_probes_sha256; rebind")
-    if identity["binding_attempts_allowed"] != BINDING_ATTEMPTS or \
+    if not _exact_int(identity["binding_attempts_allowed"], BINDING_ATTEMPTS) or \
+            not _exact_int(record.get("attempts_allowed"), BINDING_ATTEMPTS) or \
             identity["reviewer_role"] != "reviewer_a":
-        raise SystemExit("review refused: the identity's attempt budget or "
-                         "role is not the one this harness binds; rebind")
+        raise SystemExit("review refused: the identity's or its binding record's "
+                         "attempt budget is not the exact integer this harness "
+                         "binds, or the role is not reviewer_a; rebind")
     # the reservation the identity names must still be on disk, unchanged
     # (isolated adversary on this head, finding 2)
     reservation = os.path.join(a_out, os.path.basename(os.path.dirname(
@@ -4256,10 +4265,10 @@ def _reservation_problems(a_out, res, res_sha, identity, identity_sha, label):
     if identity_sha is not None and res.get("identity_sha256") != identity_sha:
         problems.append(f"{label}: reservation identity digest differs from "
                         "the identity on disk")
-    if res.get("call_ceiling") != len(res.get("shards", [])) or \
-            res.get("attempts_allowed") != REVIEW_ATTEMPTS:
+    if not _exact_int(res.get("call_ceiling"), len(res.get("shards", []))) or \
+            not _exact_int(res.get("attempts_allowed"), REVIEW_ATTEMPTS):
         problems.append(f"{label}: reservation ceiling or attempts are not "
-                        "the ones this harness reserves")
+                        "the exact integers this harness reserves")
     return problems
 
 
@@ -4293,7 +4302,11 @@ def _record_relationship_problems(a_out, rec, rec_sha, claim, sid, identity=None
             problems.append(f"reservation unreadable ({type(err).__name__})")
         if res is not None:
             for field in RESERVATION_RECORD_FIELDS:
-                if res.get(field) != rec.get(field):
+                # as canonical bytes: a lookalike for the attempt limit (a
+                # boolean or a float) on a record no field table holds is a
+                # disagreement (isolated pass 9, finding 1)
+                if canon.canonical_bytes(res.get(field)) != \
+                        canon.canonical_bytes(rec.get(field)):
                     problems.append(f"reservation and record disagree on {field}")
             named = {s.get("shard_id"): s.get("input_sha256")
                      for s in res.get("shards", []) if isinstance(s, dict)}
@@ -4349,10 +4362,19 @@ def _record_relationship_problems(a_out, rec, rec_sha, claim, sid, identity=None
             problems.append("the terminal command record does not list this shard")
         elif listed[sid].get("record_sha256") != rec_sha or any(
                 listed[sid].get(f) != rec.get(f) for f in
-                ("result", "phase", "error", "output_sha256", "cli_invocations",
-                 "model_calls", "input_sha256")):
+                ("result", "phase", "error", "output_sha256", "input_sha256")) \
+                or not _same_count(listed[sid].get("cli_invocations"),
+                                   rec.get("cli_invocations")) \
+                or not _same_count(listed[sid].get("model_calls"), rec.get("model_calls")):
             problems.append("the terminal command record disagrees with the "
                             "shard record")
+        if rec.get("result") == "FAIL" and (
+                not _exact_int(rec.get("model_calls"), 0, 1)
+                or not _exact_int_or_none(rec.get("cli_invocations"), 0, 1)):
+            # a failed shard made at most one call, held on the record
+            # itself as exact integers (isolated pass 8, finding 1)
+            problems.append("a FAIL record carries counts that are not exact "
+                            "integers of at most one call")
         for field in ("ruling_id", "head", "model_id", "identity_sha256",
                       "model_version_or_build", "configuration_sha256",
                       "auxiliary_model_policy"):
@@ -4373,6 +4395,32 @@ def _hex64(value):
 
 def _positive_int(value):
     return isinstance(value, int) and not isinstance(value, bool) and value > 0
+
+
+def _exact_int(value, *allowed):
+    """A count, ceiling, or attempt limit read from evidence must be a JSON
+    integer: a boolean or a non-integer number is never one, whatever it
+    compares equal to in Python (`True == 1`, `1.0 == 1`). With `allowed`
+    given, the value must also be one of them (Ari, review of 3c84363: a
+    terminal record readdressed with `true` and `1.0` in its counts read
+    PASS and hosted the next command; gate card v1.0, section 3.2)."""
+    if not isinstance(value, int) or isinstance(value, bool):
+        return False
+    return not allowed or value in allowed
+
+
+def _exact_int_or_none(value, *allowed):
+    return value is None or _exact_int(value, *allowed)
+
+
+def _same_count(a, b):
+    """Two copies of a count agree only as exact integers (or both null):
+    a boolean or a float on either side is a disagreement, whatever Python
+    says (isolated pass 8, finding 1: a FAIL record's counts were held to
+    the listing's by value equality alone)."""
+    if a is None or b is None:
+        return a is None and b is None
+    return _exact_int(a) and _exact_int(b) and a == b
 
 
 # every field a DONE shard record carries on the harness's success path,
@@ -4396,9 +4444,9 @@ DONE_RECORD_FIELDS = (
     ("started_utc", lambda v, rec, sid: isinstance(v, str) and v != ""),
     ("phase", lambda v, rec, sid: v == "finalized"),
     ("error", lambda v, rec, sid: v is None),
-    ("live_invocations_started", lambda v, rec, sid: v == REVIEW_ATTEMPTS),
-    ("cli_invocations", lambda v, rec, sid: v == REVIEW_ATTEMPTS),
-    ("model_calls", lambda v, rec, sid: v == 1),
+    ("live_invocations_started", lambda v, rec, sid: _exact_int(v, REVIEW_ATTEMPTS)),
+    ("cli_invocations", lambda v, rec, sid: _exact_int(v, REVIEW_ATTEMPTS)),
+    ("model_calls", lambda v, rec, sid: _exact_int(v, 1)),
     ("invocation_accounting", lambda v, rec, sid: isinstance(v, str)
         and v.startswith("session-reported")),
     ("cli_invocation_log", lambda v, rec, sid: isinstance(v, list)
@@ -4409,7 +4457,7 @@ DONE_RECORD_FIELDS = (
     ("schema_report", lambda v, rec, sid: isinstance(v, dict)),
     ("problems", lambda v, rec, sid: v == []),
     ("verdict", lambda v, rec, sid: v == "fixed"),
-    ("attempts_allowed", lambda v, rec, sid: v == REVIEW_ATTEMPTS),
+    ("attempts_allowed", lambda v, rec, sid: _exact_int(v, REVIEW_ATTEMPTS)),
     ("auxiliary_model_violations", lambda v, rec, sid: v == []),
     ("observed_model_usage", lambda v, rec, sid: isinstance(v, list) and len(v) == 1
         and isinstance(v[0], dict) and v[0].get("probe_id") == sid
@@ -4436,10 +4484,10 @@ def _done_record_problems(rec, sid, identity):
     model = identity.get("model_id") if identity else rec.get("model_id")
     policy = (identity.get("auxiliary_model_policy") if identity
               else rec.get("auxiliary_model_policy")) or {}
-    if (rec.get("cli_invocations") != REVIEW_ATTEMPTS
-            or rec.get("model_calls") != 1
+    if (not _exact_int(rec.get("cli_invocations"), REVIEW_ATTEMPTS)
+            or not _exact_int(rec.get("model_calls"), 1)
             or rec.get("verdict") != "fixed"
-            or rec.get("attempts_allowed") != REVIEW_ATTEMPTS
+            or not _exact_int(rec.get("attempts_allowed"), REVIEW_ATTEMPTS)
             or not usage or not isinstance(usage[0], dict)
             or not usage[0].get("model_usage_reported")
             or aux_policy_violations(usage, model, policy)
@@ -4563,12 +4611,12 @@ def _terminal_record_problems(a_out, cmd, res, ruling):
     if cmd.get("reservation_path") != expected_path:
         problems.append("terminal record names a reservation path that is not "
                         "its ruling's")
-    if cmd.get("call_ceiling") != len(shards):
-        problems.append("terminal record call_ceiling is not the number of shards "
-                        "it lists")
-    if cmd.get("attempts_allowed") != REVIEW_ATTEMPTS:
-        problems.append("terminal record attempts_allowed is not the one this "
-                        "harness reserves")
+    if not _exact_int(cmd.get("call_ceiling"), len(shards)):
+        problems.append(f"terminal record call_ceiling {cmd.get('call_ceiling')!r} is "
+                        "not the exact number of shards it lists")
+    if not _exact_int(cmd.get("attempts_allowed"), REVIEW_ATTEMPTS):
+        problems.append(f"terminal record attempts_allowed {cmd.get('attempts_allowed')!r} "
+                        "is not the exact integer this harness reserves")
     reserved = [s for s in res.get("shards", []) if isinstance(s, dict)] \
         if "shards" in res else None
     if reserved is not None:
@@ -4614,10 +4662,19 @@ def _terminal_record_problems(a_out, cmd, res, ruling):
                     problems.append(f"the shard record of {sid} does not hash to its name")
                 if entry.get("record_sha256") != rec_sha or any(
                         entry.get(f) != rec.get(f) for f in
-                        ("result", "phase", "error", "output_sha256",
-                         "cli_invocations", "model_calls", "input_sha256")):
+                        ("result", "phase", "error", "output_sha256", "input_sha256")) \
+                        or not _same_count(entry.get("cli_invocations"),
+                                           rec.get("cli_invocations")) \
+                        or not _same_count(entry.get("model_calls"), rec.get("model_calls")):
                     problems.append(f"terminal record disagrees with the shard record "
                                     f"of {sid}")
+                if state == "FAIL" and (not _exact_int(rec.get("model_calls"), 0, 1) or
+                                        not _exact_int_or_none(rec.get("cli_invocations"),
+                                                               0, 1)):
+                    # a failed shard made at most one call, as an exact
+                    # integer on the record itself (isolated pass 8, finding 1)
+                    problems.append(f"the shard record of {sid} carries counts that are "
+                                    "not exact integers of at most one call")
                 if entry.get("record_path") != f"{RUN_RECORDS_DIR}/{name}":
                     problems.append(f"terminal record names a record path for {sid} "
                                     "that is not the record on disk")
@@ -4680,34 +4737,36 @@ def _terminal_record_problems(a_out, cmd, res, ruling):
             # lost made at most the one call a shard may make (Ari, review of
             # 7caff55, finding C: NOT_RUN entries carried any count and the
             # total was never held under the ceiling)
-            if state == "NOT_RUN" and (entry.get("model_calls") != 0
-                                       or entry.get("cli_invocations") not in (None, 0)):
+            if state == "NOT_RUN" and (not _exact_int(entry.get("model_calls"), 0)
+                                       or not _exact_int_or_none(
+                                           entry.get("cli_invocations"), 0)):
                 problems.append(f"terminal record lists {sid} as NOT_RUN with calls or "
                                 "invocations")
-            if state == "UNATTESTED" and (entry.get("model_calls") not in (0, 1) or
-                                          entry.get("cli_invocations") not in (None, 0, 1)):
+            if state == "UNATTESTED" and (not _exact_int(entry.get("model_calls"), 0, 1) or
+                                          not _exact_int_or_none(
+                                              entry.get("cli_invocations"), 0, 1)):
                 problems.append(f"terminal record lists {sid} as UNATTESTED with more "
                                 "than the one call a shard may make")
-        if state == "FAIL" and (entry.get("model_calls") not in (0, 1) or
-                                entry.get("cli_invocations") not in (None, 0, 1)):
+        if state == "FAIL" and (not _exact_int(entry.get("model_calls"), 0, 1) or
+                                not _exact_int_or_none(entry.get("cli_invocations"), 0, 1)):
             # a failed shard made at most the one call too (fifth isolated
             # pass, finding 4: one FAIL entry could absorb the whole ceiling)
             problems.append(f"terminal record lists {sid} as FAIL with more than the "
                             "one call a shard may make")
         mc = entry.get("model_calls")
         ci = entry.get("cli_invocations")
-        if isinstance(mc, int) and not isinstance(mc, bool):
+        if _exact_int(mc):
             calls += mc
         else:
             problems.append(f"terminal record lists {sid} with model_calls {mc!r}")
-        if isinstance(ci, int) and not isinstance(ci, bool):
+        if _exact_int(ci):
             invocations += ci
         elif ci is not None:
             problems.append(f"terminal record lists {sid} with cli_invocations {ci!r}")
-    if cmd.get("model_calls") != calls:
+    if not _exact_int(cmd.get("model_calls"), calls):
         problems.append(f"terminal record model_calls {cmd.get('model_calls')!r} does "
                         f"not rederive from the shards ({calls})")
-    if cmd.get("cli_invocations") != invocations:
+    if not _exact_int(cmd.get("cli_invocations"), invocations):
         problems.append(f"terminal record cli_invocations {cmd.get('cli_invocations')!r} "
                         f"does not rederive from the shards ({invocations})")
     if calls > len(shards):

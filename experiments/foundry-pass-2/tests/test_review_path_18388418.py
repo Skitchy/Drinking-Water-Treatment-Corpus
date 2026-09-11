@@ -55,6 +55,11 @@ except ImportError:
         _ReviewHarness, GovernedShardSession, RaisingSession, RULING)
 
 NEW_RULING = "18388418"
+REVIEW_ATTEMPTS = run_reviewer_a.REVIEW_ATTEMPTS
+
+
+def RECORD_SHA_OF(path):
+    return canon.bytes_digest(canon.read_regular_bytes(path))
 
 
 class _Root(_ReviewHarness):
@@ -1815,6 +1820,269 @@ class AriFindingsOn7caff55(_Root):
         problems = run_reviewer_a.command_states(self.a)[0]["problems"]
         self.assertIn(f"terminal record lists {self.ids[0]} as UNATTESTED with more "
                       "than the one call a shard may make", problems)
+
+
+class StrictIntegerAtEverySite(_Root):
+    """Gate card v1.0, section 3.2 (authorization 18404868; Ari, review of
+    3c84363): every count, ceiling, or attempt limit read from evidence is
+    an exact JSON integer. A boolean or a non-integer number compares
+    equal to an integer in Python (`True == 1`, `1.0 == 1`), so each site
+    that once compared by value is pinned here with a lookalike: the site
+    refuses in its own words, and the next governed command refuses before
+    any session. The identity, its binding record, and the observed usage
+    are pinned in tests/test_identity_binding.py (ReviewTimeEnforcement)."""
+
+    LOOKALIKES = (True, 1.0)
+
+    def test_the_helper_rejects_every_lookalike(self):
+        for bad in (True, False, 1.0, 0.0, 1e0, -0.0, "1", None, [1], {"n": 1}):
+            with self.subTest(value=bad):
+                self.assertFalse(run_reviewer_a._exact_int(bad))
+                self.assertFalse(run_reviewer_a._exact_int(bad, 0, 1))
+        for good in (0, 1, 2, -1):
+            self.assertTrue(run_reviewer_a._exact_int(good))
+        self.assertTrue(run_reviewer_a._exact_int(1, 1))
+        self.assertTrue(run_reviewer_a._exact_int(1, 0, 1))
+        self.assertFalse(run_reviewer_a._exact_int(2, 0, 1))
+        self.assertTrue(run_reviewer_a._exact_int_or_none(None, 0))
+        self.assertTrue(run_reviewer_a._exact_int_or_none(0, 0))
+        self.assertFalse(run_reviewer_a._exact_int_or_none(False, 0))
+        self.assertFalse(run_reviewer_a._exact_int_or_none(0.0, 0))
+
+    def _next_refuses(self, needle):
+        self.next_ruling()
+        self.assert_refused_before_reservation(needle, ids=[self.members[2]["shard_id"]])
+        os.environ[run_reviewer_a.REVIEW_RULING_VAR] = RULING
+
+    def test_site_reservation_ceiling_and_attempts(self):
+        self.assertEqual(self.review(ids=[self.ids[0]]), 0, self.stdout)
+        path = self.path(run_reviewer_a.RESERVATIONS_DIR,
+                         f"{run_reviewer_a.REVIEW_RESERVATION_PREFIX}{RULING}.json")
+        original = canon.read_regular_bytes(path)
+        needle = "reservation ceiling or attempts are not the exact integers"
+        for field, bad in (("call_ceiling", 1.0), ("call_ceiling", True),
+                           ("attempts_allowed", 1.0), ("attempts_allowed", True)):
+            with self.subTest(field=field, value=bad):
+                res = canon.load_json(path)
+                res[field] = bad
+                os.unlink(path)
+                canon.write_canonical(path, res)
+                # the reservation is judged where it is used: by every record
+                # and every command record that names it
+                st = self.states()[self.ids[0]]
+                self.assertEqual(st["state"], "CORRUPT", st)
+                self.assertTrue(any(needle in p for p in st["problems"]), st)
+                cmds = run_reviewer_a.command_states(self.a)
+                self.assertTrue(any(needle in p for p in cmds[0]["problems"]), cmds)
+                # the claim's digest pin names the rewritten reservation first;
+                # the next command refuses before any session either way
+                self._next_refuses("review refused")
+                os.unlink(path)
+                with open(path, "wb") as f:
+                    f.write(original)
+        self.next_ruling()
+        self.assertEqual(self.review(ids=[self.members[2]["shard_id"]]), 0, self.stdout)
+
+    def test_site_done_record_counts(self):
+        sid = self.ids[0]
+        self.assertEqual(self.review(ids=[sid]), 0, self.stdout)
+        for field in ("live_invocations_started", "cli_invocations", "model_calls",
+                      "attempts_allowed"):
+            for bad in self.LOOKALIKES:
+                with self.subTest(field=field, value=bad):
+                    good = canon.load_json(self.record_file(sid))[field]
+                    self.rewrite_record(sid, lambda rec: rec.update({field: bad}))
+                    st = self.states()[sid]
+                    self.assertEqual(st["state"], "CORRUPT", st)
+                    self.assertIn(f"a DONE record lacks a valid {field}", st["problems"])
+                    if field != "live_invocations_started":
+                        # the ruling's sentence on the accounting names it too
+                        self.assertIn("accounting, verdict, or model usage",
+                                      " ".join(st["problems"]))
+                    self._next_refuses(f"lacks a valid {field}")
+                    self.rewrite_record(sid, lambda rec: rec.update({field: good}))
+                    self.assertEqual(self.states()[sid]["state"], "DONE")
+        self.next_ruling()
+        self.assertEqual(self.review(ids=[self.members[2]["shard_id"]]), 0, self.stdout)
+
+    def test_site_terminal_command_fields(self):
+        # Ari's four reproductions on 3c84363, each now refused in words
+        self.assertEqual(self.review(ids=[self.ids[0]]), 0, self.stdout)
+        cases = (("model_calls", True, "model_calls True does not rederive"),
+                 ("model_calls", 1.0, "model_calls 1.0 does not rederive"),
+                 ("cli_invocations", True, "cli_invocations True does not rederive"),
+                 ("cli_invocations", 1.0, "cli_invocations 1.0 does not rederive"),
+                 ("call_ceiling", 1.0, "call_ceiling 1.0 is not the exact number"),
+                 ("call_ceiling", True, "call_ceiling True is not the exact number"),
+                 ("attempts_allowed", 1.0, "attempts_allowed 1.0 is not the exact integer"),
+                 ("attempts_allowed", True, "attempts_allowed True is not the exact integer"))
+        for field, bad, needle in cases:
+            with self.subTest(field=field, value=bad):
+                good = canon.load_json(self.terminal_file())[field]
+                self.rewrite_terminal(lambda cmd: cmd.update({field: bad}))
+                cmds = run_reviewer_a.command_states(self.a)
+                self.assertTrue(any(needle in p for p in cmds[0]["problems"]), cmds)
+                self._next_refuses(needle)
+                self.rewrite_terminal(lambda cmd: cmd.update({field: good}))
+                self.assertEqual(run_reviewer_a.command_states(self.a)[0]["problems"], [])
+        self.next_ruling()
+        self.assertEqual(self.review(ids=[self.members[2]["shard_id"]]), 0, self.stdout)
+
+    def _entry(self, index, mutate):
+        def edit(cmd):
+            mutate(cmd["shards"][index])
+        self.rewrite_terminal(edit)
+
+    def test_site_not_run_and_fail_entries(self):
+        self.queue.append(GovernedShardSession(response="{}"))
+        self.assertEqual(self.review(), 1)
+        cmd = canon.load_json(self.terminal_file())
+        self.assertEqual([s["result"] for s in cmd["shards"]], ["FAIL", "NOT_RUN"])
+        fail_sid, not_run_sid = cmd["shards"][0]["shard_id"], cmd["shards"][1]["shard_id"]
+        for field, bad in (("model_calls", 0.0), ("model_calls", False),
+                           ("cli_invocations", 0.0), ("cli_invocations", False)):
+            with self.subTest(entry="NOT_RUN", field=field, value=bad):
+                good = canon.load_json(self.terminal_file())["shards"][1][field]
+                self._entry(1, lambda e: e.update({field: bad}))
+                needle = f"lists {not_run_sid} as NOT_RUN with calls or invocations"
+                cmds = run_reviewer_a.command_states(self.a)
+                self.assertTrue(any(needle in p for p in cmds[0]["problems"]), cmds)
+                self._next_refuses(needle)
+                self._entry(1, lambda e: e.update({field: good}))
+        for field, bad in (("model_calls", True), ("model_calls", 1.0),
+                           ("cli_invocations", True), ("cli_invocations", 1.0)):
+            with self.subTest(entry="FAIL", field=field, value=bad):
+                good = canon.load_json(self.terminal_file())["shards"][0][field]
+                # the shard record stays as the harness wrote it: the entry
+                # alone is edited, so the disagreement and the type are both named
+                self._entry(0, lambda e: e.update({field: bad}))
+                needle = f"lists {fail_sid} as FAIL with more than the one call"
+                cmds = run_reviewer_a.command_states(self.a)
+                self.assertTrue(any(needle in p for p in cmds[0]["problems"]), cmds)
+                self.assertTrue(any(f"with {field} {bad!r}" in p
+                                    for p in cmds[0]["problems"]), cmds)
+                # the shard side names the disagreement first (the record's
+                # exact count against the entry's lookalike); either way the
+                # next command refuses before any session
+                self.assertEqual(self.states()[fail_sid]["state"], "CORRUPT")
+                self._next_refuses("review refused")
+                self._entry(0, lambda e: e.update({field: good}))
+        self.assertEqual(run_reviewer_a.command_states(self.a)[0]["problems"], [])
+
+    def test_site_fail_record_counts(self):
+        """Isolated pass 8, finding 1: a FAIL record's counts were held to
+        the listing by value equality alone. The record's lookalike against
+        the listing's integer is a disagreement on both sides, the FAIL
+        record's own counts are bound to exact integers of at most one
+        call, and the next command refuses before any session."""
+        self.queue.append(GovernedShardSession(response="{}"))
+        self.assertEqual(self.review(), 1)
+        cmd = canon.load_json(self.terminal_file())
+        self.assertEqual([s["result"] for s in cmd["shards"]], ["FAIL", "NOT_RUN"])
+        sid = cmd["shards"][0]["shard_id"]
+        original_path = cmd["shards"][0]["record_path"]
+        for field, bad in (("model_calls", True), ("model_calls", 1.0),
+                           ("cli_invocations", True), ("cli_invocations", 1.0)):
+            with self.subTest(field=field, value=bad):
+                good = canon.load_json(self.record_file(sid))[field]
+                listing = canon.load_json(self.terminal_file())["shards"][0][field]
+                # the record carries the lookalike; the listing keeps the
+                # integer the harness wrote (fix_terminal would copy it over)
+                new_sha = self.rewrite_record(sid, lambda rec: rec.update({field: bad}),
+                                              fix_terminal=False)
+                name = os.path.basename(self.record_file(sid))
+
+                def point(c):
+                    c["shards"][0]["record_sha256"] = new_sha
+                    c["shards"][0]["record_path"] = f"{run_reviewer_a.RUN_RECORDS_DIR}/{name}"
+                    c["shards"][0][field] = listing
+                self.rewrite_terminal(point)
+                st = self.states()[sid]
+                self.assertEqual(st["state"], "CORRUPT", st)
+                self.assertIn("the terminal command record disagrees with the shard record",
+                              st["problems"])
+                self.assertIn("a FAIL record carries counts that are not exact integers "
+                              "of at most one call", st["problems"])
+                cmds = run_reviewer_a.command_states(self.a)
+                self.assertTrue(any("disagrees with the shard record" in p
+                                    for p in cmds[0]["problems"]), cmds)
+                self.assertTrue(any("not exact integers of at most one call" in p
+                                    for p in cmds[0]["problems"]), cmds)
+                self._next_refuses("review refused")
+                # restoring the value restores the original bytes and name;
+                # the listing's record_path is restored with it
+                self.rewrite_record(sid, lambda rec: rec.update({field: good}))
+                self.rewrite_terminal(lambda c: c["shards"][0].update(
+                    record_path=original_path))
+                self.assertEqual(self.states()[sid]["state"], "FAIL", self.states()[sid])
+        self.assertEqual(run_reviewer_a.command_states(self.a)[0]["problems"], [])
+        # the same lookalike on both sides is named by the listing's own check
+        self.rewrite_record(sid, lambda rec: rec.update({"model_calls": True}))
+        st = self.states()[sid]
+        self.assertEqual(st["state"], "CORRUPT", st)
+        cmds = run_reviewer_a.command_states(self.a)
+        self.assertTrue(any(f"lists {sid} with model_calls True" in p
+                            for p in cmds[0]["problems"]), cmds)
+        self._next_refuses("review refused")
+
+    def test_site_non_done_record_attempt_limit(self):
+        """Isolated pass 9, finding 1: a non-DONE record's attempts_allowed
+        is held only by the record-versus-reservation loop, which compared
+        by value; as canonical bytes the lookalike is a disagreement, on the
+        shard side and the command side, and the next command refuses."""
+        self.queue.append(GovernedShardSession(response="{}"))
+        self.assertEqual(self.review(), 1)
+        cmd = canon.load_json(self.terminal_file())
+        self.assertEqual([s["result"] for s in cmd["shards"]], ["FAIL", "NOT_RUN"])
+        sid = cmd["shards"][0]["shard_id"]
+        original_path = cmd["shards"][0]["record_path"]
+        for bad in (True, 1.0):
+            with self.subTest(value=bad):
+                new_sha = self.rewrite_record(sid, lambda rec: rec.update(attempts_allowed=bad),
+                                              fix_terminal=False)
+                name = os.path.basename(self.record_file(sid))
+                self.rewrite_terminal(lambda c: c["shards"][0].update(
+                    record_sha256=new_sha, record_path=f"{run_reviewer_a.RUN_RECORDS_DIR}/{name}"))
+                st = self.states()[sid]
+                self.assertEqual(st["state"], "CORRUPT", st)
+                self.assertIn("reservation and record disagree on attempts_allowed",
+                              st["problems"])
+                # the loop is a shard-side check; the next command refuses on
+                # the shard side before any session
+                self._next_refuses("disagree on attempts_allowed")
+                self.rewrite_record(sid, lambda rec: rec.update(attempts_allowed=REVIEW_ATTEMPTS),
+                                    fix_terminal=False)
+                self.rewrite_terminal(lambda c: c["shards"][0].update(
+                    record_sha256=RECORD_SHA_OF(self.record_file(sid)),
+                    record_path=original_path))
+                self.assertEqual(self.states()[sid]["state"], "FAIL", self.states()[sid])
+        self.assertEqual(run_reviewer_a.command_states(self.a)[0]["problems"], [])
+
+    def test_site_unattested_entry(self):
+        real = self.saved["write_review_record"]
+
+        def writer(directory, prefix, record):
+            if directory.endswith(run_reviewer_a.RUN_RECORDS_DIR):
+                raise OSError("record store down")
+            return real(directory, prefix, record)
+        run_reviewer_a.write_review_record = writer
+        self.queue.append(RaisingSession(RuntimeError("cli died")))
+        self.review_raises(OSError, ids=[self.ids[0]])
+        run_reviewer_a.write_review_record = real
+        sid = self.ids[0]
+        self.assertEqual(self.command_record()["shards"][0]["result"], "UNATTESTED")
+        self.assertEqual(run_reviewer_a.command_states(self.a)[0]["problems"], [])
+        for field, bad in (("model_calls", True), ("model_calls", 1.0),
+                           ("cli_invocations", True), ("cli_invocations", 1.0)):
+            with self.subTest(field=field, value=bad):
+                good = canon.load_json(self.terminal_file())["shards"][0][field]
+                self._entry(0, lambda e: e.update({field: bad}))
+                needle = f"lists {sid} as UNATTESTED with more than the one call"
+                cmds = run_reviewer_a.command_states(self.a)
+                self.assertTrue(any(needle in p for p in cmds[0]["problems"]), cmds)
+                self._next_refuses(needle)
+                self._entry(0, lambda e: e.update({field: good}))
+        self.assertEqual(run_reviewer_a.command_states(self.a)[0]["problems"], [])
 
 
 class OutputsDirectoryFsyncFailure(_Root):
