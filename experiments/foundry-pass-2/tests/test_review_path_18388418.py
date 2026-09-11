@@ -1402,6 +1402,421 @@ class PassFourClosures(_Shapes):
             shutil.rmtree(tmp, ignore_errors=True)
 
 
+class AriFindingsOn7caff55(_Root):
+    """Ari's three blocking findings on 7caff55 (room 40; authorization
+    18391672), each reproduced with Ari's mechanics and now refused, with
+    the legitimate root beside each as the control."""
+
+    def store(self):
+        return run_reviewer_a.review_store_problems(
+            self.a, run_reviewer_a.bound_manifest(self.out, self.a))
+
+    def root_problems(self):
+        return run_reviewer_a._root_artifact_problems(self.a)
+
+    def test_A_a_shaped_transcript_must_hash_to_its_name_and_be_named(self):
+        self.assertEqual(self.root_problems(), [])
+        # Ari's probe: the right shape over the bytes "{}"
+        name = "leak-probe-transcript-PASSED-" + "0" * 64 + ".json"
+        with open(self.path(name), "wb") as f:
+            f.write(b"{}\n")
+        self.assertEqual(self.root_problems(), [f"{name}: does not hash to its name"])
+        self.assert_refused_before_reservation(f"{name}: does not hash to its name",
+                                               ids=[self.ids[0]])
+        os.unlink(self.path(name))
+        # a transcript that hashes to its name and that nothing names
+        data = canon.canonical_bytes({"forged": "transcript"})
+        name = f"leak-probe-transcript-FAILED-{canon.bytes_digest(data)}.json"
+        with open(self.path(name), "wb") as f:
+            f.write(data)
+        self.assertEqual(self.root_problems(),
+                         [f"{name}: no identity, trusted binding attempt record, or "
+                          "preflight manifest member names it"])
+        self.assert_refused_before_reservation("names it", ids=[self.ids[0]])
+        os.unlink(self.path(name))
+        # the genuine PASSED transcript, rewritten under its own name
+        identity = canon.load_json(self.path("reviewer-identity.json"))
+        genuine = self.path(identity["leak_probe_evidence_path"])
+        original = canon.read_regular_bytes(genuine)
+        os.unlink(genuine)
+        with open(genuine, "wb") as f:
+            f.write(original + b"\n")
+        self.assertIn(f"{os.path.basename(genuine)}: does not hash to its name",
+                      self.root_problems())
+        os.unlink(genuine)
+        with open(genuine, "wb") as f:
+            f.write(original)
+        # the legitimate root, before and after a governed command
+        self.assertEqual(self.root_problems(), [])
+        self.assertEqual(self.review(ids=[self.ids[0]]), 0, self.stdout)
+        self.assertEqual(self.store(), [])
+
+    def _ledger(self):
+        return canon.load_json(self.path(run_reviewer_a.BINDING_LEDGER))
+
+    def _write_ledger(self, ledger):
+        path = self.path(run_reviewer_a.BINDING_LEDGER)
+        os.unlink(path)
+        canon.write_canonical(path, ledger)
+
+    def _write_record(self, rec):
+        data = canon.canonical_bytes(rec)
+        name = f"{run_reviewer_a.BINDING_RECORD_PREFIX}{canon.bytes_digest(data)}.json"
+        with open(self.path(name), "wb") as f:
+            f.write(data)
+        return name, canon.bytes_digest(data)
+
+    def _forged_transcript(self, label="FAILED"):
+        data = canon.canonical_bytes({"forged": "transcript", "label": label})
+        name = f"leak-probe-transcript-{label}-{canon.bytes_digest(data)}.json"
+        with open(self.path(name), "wb") as f:
+            f.write(data)
+        return name, canon.bytes_digest(data)
+
+    def test_A_a_binding_record_must_hash_to_its_name_and_be_ledgered_to_vouch(self):
+        records = [n for n in os.listdir(self.a)
+                   if n.startswith(run_reviewer_a.BINDING_RECORD_PREFIX)]
+        self.assertEqual(len(records), 1, records)
+        rec_path = self.path(records[0])
+        original = canon.read_regular_bytes(rec_path)
+        os.unlink(rec_path)
+        with open(rec_path, "wb") as f:
+            f.write(original + b"\n")
+        problems = self.root_problems()
+        self.assertIn(f"{records[0]}: does not hash to its name", problems)
+        # the ledger names a record that is no longer on disk
+        self.assertTrue(any("names record" in p and "not on disk" in p for p in problems),
+                        problems)
+        self.assertIn(f"STORE PROBLEM: {records[0]}: does not hash to its name",
+                      self.status_output())
+        os.unlink(rec_path)
+        with open(rec_path, "wb") as f:
+            f.write(original)
+        self.assertEqual(self.root_problems(), [])
+        # the fifth pass's finding 1: a second record, hashing to its name and
+        # naming a planted transcript and a stray reservation, vouches for
+        # nothing because no ledger line names it
+        tname, tsha = self._forged_transcript()
+        stray = os.path.join(self.path(run_reviewer_a.RESERVATIONS_DIR), "c" * 40 + ".json")
+        with open(stray, "wb") as f:
+            f.write(b"{}\n")
+        rec = dict(canon.load_json(rec_path), attempt_id=str(uuid.uuid4()), result="FAIL",
+                   evidence_path=tname, evidence_sha256=tsha,
+                   reservation_path=f"{run_reviewer_a.RESERVATIONS_DIR}/{'c' * 40}.json",
+                   reservation_sha256=canon.bytes_digest(b"{}\n"))
+        rname, rsha = self._write_record(rec)
+        problems = self.root_problems()
+        self.assertIn(f"{rname}: not in the binding ledger; it vouches for nothing", problems)
+        self.assertTrue(any(p.startswith(tname) and "names it" in p for p in problems), problems)
+        self.assertTrue(any("names this head reservation" in p for p in problems), problems)
+        self.assert_refused_before_reservation("vouches for nothing", ids=[self.ids[0]])
+        # ledgered, the same record vouches for both: the stated limit, a
+        # prior attempt forged whole
+        ledger = self._ledger()
+        line = dict(ledger["attempts"][0], attempt_id=rec["attempt_id"], result="FAIL",
+                    head=rec["head"], evidence_path=tname, evidence_sha256=tsha,
+                    reservation_path=rec["reservation_path"], record_sha256=rsha,
+                    identity_sha256=None)
+        self._write_ledger(dict(ledger, attempts=ledger["attempts"] + [line]))
+        self.assertEqual(self.root_problems(), [])
+        # a ledger line that disagrees with the record on any bound field
+        # withdraws the vouch
+        bad = dict(line, evidence_sha256="f" * 64)
+        self._write_ledger(dict(ledger, attempts=ledger["attempts"] + [bad]))
+        problems = self.root_problems()
+        self.assertIn(f"{rname}: disagrees with its binding ledger line; it vouches for "
+                      "nothing", problems)
+        os.unlink(self.path(rname))
+        os.unlink(self.path(tname))
+        os.unlink(stray)
+        self._write_ledger(ledger)
+        self.assertEqual(self.root_problems(), [])
+
+    def test_A_a_record_under_the_wrong_name_vouches_for_nothing_even_when_ledgered(self):
+        """Mutant N72 of the final matrix: with the refusal's `continue`
+        removed, a record under the wrong name was still refused but its
+        bytes entered the on-disk set and, with a ledger line naming those
+        bytes, it vouched for a transcript. The refusal must also withdraw
+        the vouch: the transcript stays unnamed and the ledger line names a
+        record that is not on disk."""
+        rec_path = self.path([n for n in os.listdir(self.a)
+                              if n.startswith(run_reviewer_a.BINDING_RECORD_PREFIX)][0])
+        tname, tsha = self._forged_transcript()
+        rec = dict(canon.load_json(rec_path), attempt_id=str(uuid.uuid4()), result="FAIL",
+                   evidence_path=tname, evidence_sha256=tsha, identity_sha256=None)
+        rname, rsha = self._write_record(rec)
+        wrong = f"{run_reviewer_a.BINDING_RECORD_PREFIX}{'d' * 64}.json"
+        os.rename(self.path(rname), self.path(wrong))
+        ledger = self._ledger()
+        line = dict(ledger["attempts"][0], attempt_id=rec["attempt_id"], result="FAIL",
+                    head=rec["head"], evidence_path=tname, evidence_sha256=tsha,
+                    reservation_path=rec["reservation_path"], record_sha256=rsha,
+                    identity_sha256=None)
+        self._write_ledger(dict(ledger, attempts=ledger["attempts"] + [line]))
+        problems = self.root_problems()
+        self.assertIn(f"{wrong}: does not hash to its name", problems)
+        self.assertTrue(any(p.startswith(tname) and "names it" in p for p in problems), problems)
+        self.assertTrue(any(f"names record {rsha[:12]}" in p and "not on disk" in p
+                            for p in problems), problems)
+        self.assert_refused_before_reservation("does not hash to its name", ids=[self.ids[0]])
+        os.unlink(self.path(wrong))
+        os.unlink(self.path(tname))
+        self._write_ledger(ledger)
+        self.assertEqual(self.root_problems(), [])
+
+    def test_A_the_identitys_own_record_vouches_without_a_ledger_line(self):
+        """The harness writes the record before the ledger line; a kill in
+        between leaves a root every byte of which is the harness's (sixth
+        isolated pass, finding 1)."""
+        ledger = self._ledger()
+        self.assertEqual(len(ledger["attempts"]), 1)
+        self._write_ledger(dict(ledger, attempts=[]))
+        self.assertEqual(self.root_problems(), [])
+        os.unlink(self.path(run_reviewer_a.BINDING_LEDGER))
+        self.assertEqual(self.root_problems(), [])
+        self.assertEqual(self.review(ids=[self.ids[0]]), 0, self.stdout)
+        # but a prior attempt's record with no line still vouches for nothing
+        tname, tsha = self._forged_transcript()
+        rec_path = self.path([n for n in os.listdir(self.a)
+                              if n.startswith(run_reviewer_a.BINDING_RECORD_PREFIX)][0])
+        rec = dict(canon.load_json(rec_path), attempt_id=str(uuid.uuid4()), result="FAIL",
+                   head="a" * 40, evidence_path=tname, evidence_sha256=tsha)
+        rname, _sha = self._write_record(rec)
+        problems = self.root_problems()
+        self.assertIn(f"{rname}: not in the binding ledger; it vouches for nothing", problems)
+        self.assertTrue(any(p.startswith(tname) for p in problems), problems)
+
+    def test_A_a_copy_of_the_identitys_own_record_is_named_by_the_store_check(self):
+        """Seventh isolated pass, finding 1: a copy of the identity's own
+        record, repointed at foreign artifacts under a new content-addressed
+        name, satisfied the own rule; review() refused it as a second record
+        naming the attempt, but the store check said nothing."""
+        rec_path = self.path([n for n in os.listdir(self.a)
+                              if n.startswith(run_reviewer_a.BINDING_RECORD_PREFIX)][0])
+        tname, tsha = self._forged_transcript("PASSED")
+        rec = dict(canon.load_json(rec_path), evidence_path=tname, evidence_sha256=tsha)
+        self._write_record(rec)
+        problems = self.root_problems()
+        self.assertIn("2 binding attempt records claim the identity's own attempt; exactly "
+                      "one is the identity's", problems)
+        # review() refuses one layer earlier, from the identity's own chain
+        self.assert_refused_before_reservation("exactly one is required", ids=[self.ids[0]])
+
+    def test_A_a_preflight_manifest_vouches_only_for_its_own_kind(self):
+        tname, tsha = self._forged_transcript("PASSED")
+        manifest_path = self.path(run_reviewer_a.reviewer.FAILED_PREFLIGHT_MANIFEST)
+        canon.write_canonical(manifest_path, {"artifact_version": "x", "members": [
+            {"attempt_id": "x", "path": tname, "sha256": tsha}]})
+        self.assertTrue(any(p.startswith(tname) and "names it" in p
+                            for p in self.root_problems()), self.root_problems())
+        os.unlink(manifest_path)
+        manifest_path = self.path(run_reviewer_a.reviewer.PASSED_PREFLIGHT_MANIFEST)
+        passed = canon.load_json(manifest_path)
+        os.unlink(manifest_path)
+        canon.write_canonical(manifest_path, dict(passed, members=passed["members"] + [
+            {"attempt_id": "x", "path": tname, "sha256": tsha}]))
+        self.assertEqual(self.root_problems(), [])
+
+    def test_A_a_second_pass_record_at_the_bound_head_is_refused(self):
+        rec_path = self.path([n for n in os.listdir(self.a)
+                              if n.startswith(run_reviewer_a.BINDING_RECORD_PREFIX)][0])
+        identity = canon.load_json(self.path("reviewer-identity.json"))
+        rec = dict(canon.load_json(rec_path), attempt_id=str(uuid.uuid4()),
+                   identity_sha256="e" * 64)
+        rname, rsha = self._write_record(rec)
+        ledger = self._ledger()
+        line = dict(ledger["attempts"][0], attempt_id=rec["attempt_id"], record_sha256=rsha,
+                    identity_sha256="e" * 64)
+        self._write_ledger(dict(ledger, attempts=ledger["attempts"] + [line]))
+        self.assertEqual(rec["head"], identity["head"])
+        problems = self.root_problems()
+        self.assertIn(f"{rname}: a PASS record at the bound head that is not the identity's "
+                      "own attempt", problems)
+        self.assert_refused_before_reservation("not the identity's own attempt",
+                                               ids=[self.ids[0]])
+
+    def test_A_a_preflight_manifest_member_vouches_only_with_the_bytes_digest(self):
+        tname, tsha = self._forged_transcript("FAILED")
+        manifest_path = self.path(run_reviewer_a.reviewer.FAILED_PREFLIGHT_MANIFEST)
+        self.assertFalse(os.path.lexists(manifest_path))
+        canon.write_canonical(manifest_path, {"artifact_version": "x", "members": [
+            {"attempt_id": "legacy", "path": tname, "sha256": "0" * 64}]})
+        self.assertEqual(self.root_problems(),
+                         [f"{tname}: does not hash to what its referrer attests"])
+        os.unlink(manifest_path)
+        canon.write_canonical(manifest_path, {"artifact_version": "x", "members": [
+            {"attempt_id": "legacy", "path": tname, "sha256": tsha}]})
+        self.assertEqual(self.root_problems(), [])
+        # a member path with directory components attests nothing
+        os.unlink(manifest_path)
+        canon.write_canonical(manifest_path, {"artifact_version": "x", "members": [
+            {"attempt_id": "legacy", "path": "../" + tname, "sha256": tsha}]})
+        self.assertTrue(any(p.startswith(tname) and "names it" in p
+                            for p in self.root_problems()), self.root_problems())
+
+    @unittest.skipUnless(os.path.isdir(os.path.join(run_reviewer_a.OUT, "reviewer-a")),
+                         "the real evidence root is not on this machine")
+    def test_A_the_real_evidence_root_is_accepted_read_only(self):
+        """The real root holds a FAILED transcript from before records were
+        ledgered, named only by the failed-preflight and stale manifests;
+        the close must accept it. Read-only: nothing under the real root
+        is opened for writing."""
+        real = os.path.join(run_reviewer_a.OUT, "reviewer-a")
+        before = sorted((n, os.lstat(os.path.join(real, n)).st_mtime_ns)
+                        for n in os.listdir(real))
+        self.assertEqual(run_reviewer_a._root_artifact_problems(real), [])
+        after = sorted((n, os.lstat(os.path.join(real, n)).st_mtime_ns)
+                       for n in os.listdir(real))
+        self.assertEqual(before, after)
+
+    def test_A_referrers_are_kept_by_kind_and_a_null_digest_attests_nothing(self):
+        rec_path = self.path([n for n in os.listdir(self.a)
+                              if n.startswith(run_reviewer_a.BINDING_RECORD_PREFIX)][0])
+        ledger = self._ledger()
+        res_dir = self.path(run_reviewer_a.RESERVATIONS_DIR)
+        # a ledgered record whose evidence fields name a head reservation
+        # vouches for no reservation, and whose reservation digest is null
+        # attests nothing
+        with open(os.path.join(res_dir, "d" * 40 + ".json"), "wb") as f:
+            f.write(b'{"anything": "not a reservation"}\n')
+        rec = dict(canon.load_json(rec_path), attempt_id=str(uuid.uuid4()), result="FAIL",
+                   evidence_path=f"{run_reviewer_a.RESERVATIONS_DIR}/{'d' * 40}.json",
+                   evidence_sha256=canon.file_sha256(os.path.join(res_dir, "d" * 40 + ".json")),
+                   reservation_path=f"{run_reviewer_a.RESERVATIONS_DIR}/{'d' * 40}.json",
+                   reservation_sha256=None)
+        rname, rsha = self._write_record(rec)
+        line = dict(ledger["attempts"][0], attempt_id=rec["attempt_id"], result="FAIL",
+                    head=rec["head"], evidence_path=rec["evidence_path"],
+                    evidence_sha256=rec["evidence_sha256"],
+                    reservation_path=rec["reservation_path"], record_sha256=rsha,
+                    identity_sha256=None)
+        self._write_ledger(dict(ledger, attempts=ledger["attempts"] + [line]))
+        problems = self.root_problems()
+        self.assertEqual(problems, [f"{run_reviewer_a.RESERVATIONS_DIR}/{'d' * 40}.json: a "
+                                    "referrer attests no digest for it"])
+
+    def test_A_a_stale_transcript_must_be_in_the_manifest(self):
+        data = canon.canonical_bytes({"stale": "transcript"})
+        name = f"leak-probe-transcript-STALE-{canon.bytes_digest(data)}.json"
+        with open(self.path(name), "wb") as f:
+            f.write(data)
+        self.assertEqual(self.root_problems(),
+                         [f"{name}: not a member of {run_reviewer_a.STALE_MANIFEST}"])
+        manifest = self.path(run_reviewer_a.STALE_MANIFEST)
+        # a member with another digest, or a path with directory components,
+        # attests nothing (fifth isolated pass, finding 2)
+        canon.write_canonical(manifest, {
+            "artifact_version": "foundry-pass-2-stale-transcript-manifest/experimental-v0.1",
+            "members": [{"stale_path": name, "sha256": "0" * 64}]})
+        self.assertEqual(self.root_problems(),
+                         [f"{name}: does not hash to what {run_reviewer_a.STALE_MANIFEST} "
+                          "attests"])
+        os.unlink(manifest)
+        canon.write_canonical(manifest, {
+            "artifact_version": "foundry-pass-2-stale-transcript-manifest/experimental-v0.1",
+            "members": [{"stale_path": "../../" + name, "sha256": canon.bytes_digest(data)}]})
+        self.assertEqual(self.root_problems(),
+                         [f"{name}: not a member of {run_reviewer_a.STALE_MANIFEST}"])
+        os.unlink(manifest)
+        canon.write_canonical(manifest, {
+            "artifact_version": "foundry-pass-2-stale-transcript-manifest/experimental-v0.1",
+            "members": [{"stale_path": name, "sha256": canon.bytes_digest(data)}]})
+        self.assertEqual(self.root_problems(), [])
+        os.unlink(self.path(name))
+        with open(self.path(name), "wb") as f:
+            f.write(data + b"\n")
+        self.assertEqual(self.root_problems(), [f"{name}: does not hash to its name"])
+
+    def test_B_a_head_reservation_must_be_named_and_hash_to_its_referrer(self):
+        res_dir = self.path(run_reviewer_a.RESERVATIONS_DIR)
+        # Ari's probe: a stray head reservation over the bytes "{}"
+        stray = os.path.join(res_dir, "c" * 40 + ".json")
+        with open(stray, "wb") as f:
+            f.write(b"{}\n")
+        self.assertEqual(self.root_problems(), [
+            f"{run_reviewer_a.RESERVATIONS_DIR}/{'c' * 40}.json: no identity or trusted "
+            "binding attempt record names this head reservation"])
+        self.assert_refused_before_reservation("names this head reservation",
+                                               ids=[self.ids[0]])
+        os.unlink(stray)
+        # the identity's own reservation, edited in place
+        identity = canon.load_json(self.path("reviewer-identity.json"))
+        genuine = self.path(identity["reservation_path"])
+        original = canon.read_regular_bytes(genuine)
+        os.unlink(genuine)
+        with open(genuine, "wb") as f:
+            f.write(original + b"\n")
+        self.assertEqual(self.root_problems(), [
+            f"{identity['reservation_path']}: does not hash to what its referrer attests"])
+        os.unlink(genuine)
+        with open(genuine, "wb") as f:
+            f.write(original)
+        self.assertEqual(self.root_problems(), [])
+        self.assertEqual(self.review(ids=[self.ids[0]]), 0, self.stdout)
+        self.assertEqual(self.store(), [])
+
+    def test_C_not_run_counts_are_zero_and_totals_under_the_ceiling(self):
+        # Ari's mechanics: shard one fails validation, shard two is NOT_RUN
+        self.queue.append(GovernedShardSession(response="not json"))
+        self.assertEqual(self.review(), 1)
+        cmd = self.command_record()
+        self.assertEqual([s["result"] for s in cmd["shards"]], ["FAIL", "NOT_RUN"])
+        self.assertEqual([c["problems"] for c in run_reviewer_a.command_states(self.a)],
+                         [[]])
+
+        def inflate(c):
+            c["shards"][1]["model_calls"] = 999
+            c["shards"][1]["cli_invocations"] = 999
+            c["model_calls"] += 999
+            c["cli_invocations"] += 999
+        self.rewrite_terminal(inflate)
+        problems = run_reviewer_a.command_states(self.a)[0]["problems"]
+        self.assertIn(f"terminal record lists {self.ids[1]} as NOT_RUN with calls or "
+                      "invocations", problems)
+        self.assertTrue(any(p.startswith("terminal record model_calls 1000 exceed the "
+                                         "call ceiling 2") for p in problems), problems)
+        self.assertTrue(any(p.startswith("terminal record cli_invocations 1000 exceed "
+                                         "the call ceiling 2") for p in problems), problems)
+        self.next_ruling()
+        self.assert_refused_before_reservation("not finalized or not consistent",
+                                               ids=[self.ids[1]])
+
+    def test_C_a_fail_entry_may_carry_one_call_and_no_more(self):
+        self.queue.append(GovernedShardSession(response="not json"))
+        self.assertEqual(self.review(), 1)
+        self.assertEqual([c["problems"] for c in run_reviewer_a.command_states(self.a)],
+                         [[]])
+        # the fifth pass's finding 4: one FAIL entry absorbing the whole
+        # ceiling, the record restated to match, the totals under the ceiling
+        self.rewrite_record(self.ids[0], lambda r: r.update(model_calls=2, cli_invocations=2))
+        self.rewrite_terminal(lambda c: c.update(model_calls=2, cli_invocations=2))
+        problems = run_reviewer_a.command_states(self.a)[0]["problems"]
+        self.assertIn(f"terminal record lists {self.ids[0]} as FAIL with more than the one "
+                      "call a shard may make", problems)
+
+    def test_C_an_unattested_entry_may_carry_one_call_and_no_more(self):
+        real = self.saved["write_review_record"]
+
+        def writer(directory, prefix, record):
+            if directory.endswith(run_reviewer_a.RUN_RECORDS_DIR):
+                raise OSError("record store down")
+            return real(directory, prefix, record)
+        run_reviewer_a.write_review_record = writer
+        self.review_raises(OSError, ids=[self.ids[0]])
+        run_reviewer_a.write_review_record = real
+        cmd = self.command_record()
+        entry = cmd["shards"][0]
+        self.assertEqual(entry["result"], "UNATTESTED")
+        self.assertIn(entry["model_calls"], (0, 1))
+        self.assertEqual([c["problems"] for c in run_reviewer_a.command_states(self.a)],
+                         [[]])
+        self.rewrite_terminal(lambda c: c["shards"][0].update(model_calls=2)
+                              or c.update(model_calls=c["model_calls"] + 1))
+        problems = run_reviewer_a.command_states(self.a)[0]["problems"]
+        self.assertIn(f"terminal record lists {self.ids[0]} as UNATTESTED with more "
+                      "than the one call a shard may make", problems)
+
+
 class OutputsDirectoryFsyncFailure(_Root):
     """Finding 5."""
 

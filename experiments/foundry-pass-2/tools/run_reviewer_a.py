@@ -1067,6 +1067,248 @@ def _records_naming(directory, field, value):
     return found
 
 
+TRANSCRIPT_NAME_RE = re.compile(r"leak-probe-transcript-(PASSED|FAILED)-([0-9a-f]{64})\.json")
+STALE_NAME_RE = re.compile(r"leak-probe-transcript-STALE-([0-9a-f]{64})(-[0-9]+)?\.json")
+BINDING_RECORD_NAME_RE = re.compile(re.escape(BINDING_RECORD_PREFIX) + r"([0-9a-f]{64})\.json")
+HEAD_RESERVATION_RE = re.compile(r"[0-9a-f]{40}\.json")
+
+
+def _root_artifact_problems(a_out):
+    """The content-addressed artifacts at the evidence root and the head
+    reservations, held to their names and to what names them. A name in
+    the shape the harness writes is not an artifact the harness wrote
+    (Ari, review of 7caff55, findings A and B: a PASSED transcript name
+    over the bytes "{}" and a stray head reservation were admitted by
+    shape alone).
+
+    Every PASSED or FAILED transcript and every binding attempt record
+    must hash to the digest in its name. The identity's own record (the
+    attempt the identity names, attesting the identity's digest) vouches
+    on the identity's authority and needs no ledger line, because the
+    harness writes the record before the line and a kill between them is
+    a legitimate root (sixth isolated pass, finding 1). Any other record
+    vouches for nothing unless it also has exactly one binding ledger line
+    naming it and agreeing with it (attempt id, result, head, evidence
+    path and digest, reservation path); every ledger line must name a
+    record on disk; a second PASS record at the bound head that is not
+    the identity's own, and a second record claiming the identity's own
+    attempt, are refused (fifth isolated pass, finding 1: any
+    self-consistent record vouched for anything; seventh pass, finding 1:
+    a copy of the identity's own record was only caught by review()). A
+    trusted record is the identity's own or one with its ledger line. A prior attempt whose ledger append was lost therefore
+    refuses until a maintainer looks, like a quarantine. A PASSED or
+    FAILED transcript must be named by the identity, by such a record, or
+    by a member of the preflight manifest of its own kind whose digest is
+    the file's; a STALE transcript must be a member of the stale-transcript
+    manifest whose digest is the file's and whose path is the bare name.
+    A head reservation must be the identity's or be named by a ledgered
+    record with a 64-hex reservation digest, and must hash to it.
+    Referrers are kept by kind: an evidence path vouches only for a
+    transcript and must be a bare name; a reservation path vouches only
+    for a head reservation and must be exactly reservations/<name>.
+
+    A binding killed between its reservation and its record (an
+    interrupt writes the record) leaves a reservation, and possibly a
+    transcript, nothing names; the next command refuses until a
+    maintainer looks, as with a quarantine.
+
+    Honest limit: every referrer lives in the same root. A prior attempt
+    forged whole (a record that hashes to its name, its ledger line, or a
+    manifest member, with the transcript they name) is self-consistent
+    and indistinguishable offline; the one anchored chain is the
+    maintainer's ruling on the board, to the identity it names, to the
+    identity's own record, transcript, and reservation. The real root
+    holds a FAILED transcript from before records were ledgered, named
+    only by the failed-preflight and stale manifests; that is why the
+    manifests count, and why their members are held to the bytes."""
+    problems = []
+    if not canon.is_real_dir(a_out):
+        return problems
+    names = sorted(n for n in os.listdir(a_out) if not n.startswith("."))
+    transcript_referrers = {}
+    reservation_referrers = {}
+
+    def refer_transcript(path, who, digest):
+        if isinstance(path, str) and path and "/" not in path and "\\" not in path:
+            transcript_referrers.setdefault(path, []).append((who, digest))
+
+    def refer_reservation(path, who, digest):
+        if isinstance(path, str) and path.startswith(RESERVATIONS_DIR + "/") and \
+                "/" not in path[len(RESERVATIONS_DIR) + 1:]:
+            reservation_referrers.setdefault(
+                path[len(RESERVATIONS_DIR) + 1:], []).append((who, digest))
+
+    def load_object(path):
+        try:
+            obj = canon.load_json_regular(path)
+        except Exception:  # noqa: BLE001
+            return None
+        return obj if isinstance(obj, dict) else None
+
+    identity_path = os.path.join(a_out, IDENTITY_FILE)
+    identity = load_object(identity_path) if canon.is_regular(identity_path) else None
+    identity_digest = _digest_or_none(identity_path) if identity is not None else None
+    if identity is not None:
+        refer_transcript(identity.get("leak_probe_evidence_path"), "the identity",
+                         identity.get("leak_probe_transcript_sha256"))
+        refer_reservation(identity.get("reservation_path"), "the identity",
+                          identity.get("reservation_sha256"))
+    # the binding ledger, held both ways: every line names a record on disk
+    # and every record has a line
+    ledger_path = os.path.join(a_out, BINDING_LEDGER)
+    ledger_lines = {}
+    if os.path.lexists(ledger_path):
+        ledger = load_object(ledger_path) if canon.is_regular(ledger_path) else None
+        if ledger is None or not isinstance(ledger.get("attempts"), list):
+            problems.append(f"{BINDING_LEDGER}: could not be read as a ledger")
+        else:
+            for line in ledger["attempts"]:
+                if not isinstance(line, dict) or not _hex64(line.get("record_sha256")):
+                    problems.append(f"{BINDING_LEDGER}: an attempt line names no record")
+                    continue
+                ledger_lines.setdefault(line["record_sha256"], []).append(line)
+    records_on_disk = set()
+    own_records = []
+    for name in names:
+        m = BINDING_RECORD_NAME_RE.fullmatch(name)
+        if not m:
+            continue
+        digest = _digest_or_none(os.path.join(a_out, name))
+        if digest is None:
+            problems.append(f"{name}: could not be read or is not a regular file")
+            continue
+        if digest != m.group(1):
+            problems.append(f"{name}: does not hash to its name")
+            continue
+        records_on_disk.add(digest)
+        rec = load_object(os.path.join(a_out, name))
+        if rec is None:
+            problems.append(f"{name}: is not a JSON object")
+            continue
+        # the identity's own record vouches on the identity's authority: the
+        # identity names it by attempt id and it attests the identity's
+        # digest, both of which review() enforces; it needs no ledger line
+        # (the harness writes the record before the line, so a kill between
+        # them is a legitimate root; sixth isolated pass, finding 1)
+        own = (identity is not None and rec.get("result") == "PASS"
+               and rec.get("head") == identity.get("head")
+               and rec.get("attempt_id") == identity.get("binding_attempt_id")
+               and rec.get("identity_sha256") == identity_digest)
+        lines = ledger_lines.get(digest, [])
+        if len(lines) > 1:
+            problems.append(f"{name}: listed more than once in the binding ledger; it "
+                            "vouches for nothing")
+            continue
+        if not lines and not own:
+            problems.append(f"{name}: not in the binding ledger; it vouches for nothing")
+            continue
+        if own:
+            own_records.append(name)
+        if lines and any(lines[0].get(f) != rec.get(f) for f in
+                         ("attempt_id", "result", "head", "evidence_path",
+                          "evidence_sha256", "reservation_path")):
+            problems.append(f"{name}: disagrees with its binding ledger line; it "
+                            "vouches for nothing")
+            continue
+        if identity is not None and rec.get("result") == "PASS" and \
+                rec.get("head") == identity.get("head") and not own:
+            problems.append(f"{name}: a PASS record at the bound head that is not "
+                            "the identity's own attempt")
+            continue
+        who = f"binding attempt record {m.group(1)[:12]}"
+        refer_transcript(rec.get("evidence_path"), who, rec.get("evidence_sha256"))
+        refer_reservation(rec.get("reservation_path"), who, rec.get("reservation_sha256"))
+    if len(own_records) > 1:
+        problems.append(f"{len(own_records)} binding attempt records claim the identity's "
+                        "own attempt; exactly one is the identity's")
+    for record_sha in ledger_lines:
+        if record_sha not in records_on_disk:
+            problems.append(f"{BINDING_LEDGER}: names record {record_sha[:12]} that is not "
+                            "on disk")
+    # the preflight manifests: a member vouches for the transcript it names
+    # only with the digest of the bytes on disk
+    for manifest_name in (reviewer.PASSED_PREFLIGHT_MANIFEST,
+                          reviewer.FAILED_PREFLIGHT_MANIFEST):
+        manifest_path = os.path.join(a_out, manifest_name)
+        if not os.path.lexists(manifest_path):
+            continue
+        manifest = load_object(manifest_path) if canon.is_regular(manifest_path) else None
+        if manifest is None or not isinstance(manifest.get("members"), list):
+            problems.append(f"{manifest_name}: could not be read as a manifest")
+            continue
+        label = "PASSED" if manifest_name == reviewer.PASSED_PREFLIGHT_MANIFEST else "FAILED"
+        for member in manifest["members"]:
+            # a manifest vouches only for transcripts of its own kind (sixth
+            # isolated pass, finding 2)
+            path = member.get("path") if isinstance(member, dict) else None
+            named = TRANSCRIPT_NAME_RE.fullmatch(path) if isinstance(path, str) else None
+            if named and named.group(1) == label and _hex64(member.get("sha256")):
+                refer_transcript(path, manifest_name, member["sha256"])
+    stale_members = {}
+    stale_manifest = os.path.join(a_out, STALE_MANIFEST)
+    if os.path.lexists(stale_manifest):
+        manifest = load_object(stale_manifest) if canon.is_regular(stale_manifest) else None
+        if manifest is None or not isinstance(manifest.get("members"), list):
+            problems.append(f"{STALE_MANIFEST}: could not be read as a manifest")
+        else:
+            for member in manifest["members"]:
+                if isinstance(member, dict) and isinstance(member.get("stale_path"), str) \
+                        and "/" not in member["stale_path"] and _hex64(member.get("sha256")):
+                    stale_members.setdefault(member["stale_path"], set()).add(member["sha256"])
+
+    def held(label, path, name_digest):
+        digest = _digest_or_none(path)
+        if digest is None:
+            problems.append(f"{label}: could not be read or is not a regular file")
+            return None
+        if name_digest is not None and digest != name_digest:
+            problems.append(f"{label}: does not hash to its name")
+            return None
+        return digest
+
+    for name in names:
+        path = os.path.join(a_out, name)
+        m = TRANSCRIPT_NAME_RE.fullmatch(name)
+        if m:
+            digest = held(name, path, m.group(2))
+            if digest is None:
+                continue
+            if name not in transcript_referrers:
+                problems.append(f"{name}: no identity, trusted binding attempt record, or "
+                                "preflight manifest member names it")
+            elif any(d != digest for _who, d in transcript_referrers[name]):
+                problems.append(f"{name}: does not hash to what its referrer attests")
+            continue
+        m = STALE_NAME_RE.fullmatch(name)
+        if m:
+            digest = held(name, path, m.group(1))
+            if digest is None:
+                continue
+            if name not in stale_members:
+                problems.append(f"{name}: not a member of {STALE_MANIFEST}")
+            elif stale_members[name] != {digest}:
+                problems.append(f"{name}: does not hash to what {STALE_MANIFEST} attests")
+    res_dir = os.path.join(a_out, RESERVATIONS_DIR)
+    if canon.is_real_dir(res_dir):
+        for name in sorted(os.listdir(res_dir)):
+            if not HEAD_RESERVATION_RE.fullmatch(name):
+                continue
+            label = f"{RESERVATIONS_DIR}/{name}"
+            if name not in reservation_referrers:
+                problems.append(f"{label}: no identity or trusted binding attempt record "
+                                "names this head reservation")
+                continue
+            digest = held(label, os.path.join(res_dir, name), None)
+            if digest is None:
+                continue
+            attested = [d for _who, d in reservation_referrers[name]]
+            if any(not _hex64(d) for d in attested):
+                problems.append(f"{label}: a referrer attests no digest for it")
+            elif any(d != digest for d in attested):
+                problems.append(f"{label}: does not hash to what its referrer attests")
+    return problems
+
+
 def review_store_problems(a_out, manifest=None):
     """Anything under the evidence root that the harness did not write in
     the shape it writes, every one reported, and a command refuses on any:
@@ -1125,6 +1367,9 @@ def review_store_problems(a_out, manifest=None):
             elif not any(r.fullmatch(name) for r in RESERVATION_NAME_RES):
                 problems.append(f"{RESERVATIONS_DIR}/{name}: not a reservation "
                                 "the harness writes")
+    # a name in the harness's shape is held to its bytes and to what names
+    # it (Ari, review of 7caff55, findings A and B)
+    problems.extend(_root_artifact_problems(a_out))
     records_dir = os.path.join(a_out, RUN_RECORDS_DIR)
     commands_dir = os.path.join(a_out, COMMAND_RECORDS_DIR)
     claims_dir = os.path.join(a_out, CLAIMS_DIR)
@@ -2812,7 +3057,11 @@ def append_ledger(q_out, entry, ledger_name=QUALIFY_LEDGER, artifact_version=
                   "foundry-pass-2-qualification-ledger/experimental-v0.1"):
     """Ledger projection of the attempt records. Separate seam so a write
     failure here can be injected by tests (18321030 finding 2). The ledger
-    is a convenience view; refusal never depends on it alone."""
+    is a convenience view: refusal of the identity's own attempt never
+    depends on it; for a prior binding attempt on the same root the ledger
+    line is the second naming its record needs before it vouches for the
+    transcript and reservation it names (sixth isolated pass on 18391672,
+    finding 1), so a lost append there refuses until a maintainer looks."""
     ledger = os.path.join(q_out, ledger_name)
     # lstat-gated read, no-follow; then a same-directory temporary regular
     # file, fsync, atomic replace (18321488 finding 2: open(..., 'wb') on a
@@ -4302,8 +4551,9 @@ def _terminal_record_problems(a_out, cmd, res, ruling):
     listing follows the reservation's order and input digests, the
     command's calls and invocations are the sums, the overall result is
     PASS exactly when every shard is DONE and every index refresh held,
-    the ceiling is the listing's length, and the reservation path is the
-    ruling's."""
+    the ceiling is the listing's length and neither total exceeds it, a
+    NOT_RUN entry carries no call, an UNATTESTED entry at most one, and
+    the reservation path is the ruling's."""
     problems = []
     cid = cmd.get("command_attempt_id")
     shards = cmd.get("shards")
@@ -4426,6 +4676,24 @@ def _terminal_record_problems(a_out, cmd, res, ruling):
                 if owner == cid:
                     problems.append(f"terminal record lists {sid} as NOT_RUN but this "
                                     "command claimed it")
+            # a shard that never ran made no call; a shard whose record was
+            # lost made at most the one call a shard may make (Ari, review of
+            # 7caff55, finding C: NOT_RUN entries carried any count and the
+            # total was never held under the ceiling)
+            if state == "NOT_RUN" and (entry.get("model_calls") != 0
+                                       or entry.get("cli_invocations") not in (None, 0)):
+                problems.append(f"terminal record lists {sid} as NOT_RUN with calls or "
+                                "invocations")
+            if state == "UNATTESTED" and (entry.get("model_calls") not in (0, 1) or
+                                          entry.get("cli_invocations") not in (None, 0, 1)):
+                problems.append(f"terminal record lists {sid} as UNATTESTED with more "
+                                "than the one call a shard may make")
+        if state == "FAIL" and (entry.get("model_calls") not in (0, 1) or
+                                entry.get("cli_invocations") not in (None, 0, 1)):
+            # a failed shard made at most the one call too (fifth isolated
+            # pass, finding 4: one FAIL entry could absorb the whole ceiling)
+            problems.append(f"terminal record lists {sid} as FAIL with more than the "
+                            "one call a shard may make")
         mc = entry.get("model_calls")
         ci = entry.get("cli_invocations")
         if isinstance(mc, int) and not isinstance(mc, bool):
@@ -4442,6 +4710,12 @@ def _terminal_record_problems(a_out, cmd, res, ruling):
     if cmd.get("cli_invocations") != invocations:
         problems.append(f"terminal record cli_invocations {cmd.get('cli_invocations')!r} "
                         f"does not rederive from the shards ({invocations})")
+    if calls > len(shards):
+        problems.append(f"terminal record model_calls {calls} exceed the call ceiling "
+                        f"{len(shards)}")
+    if invocations > len(shards):
+        problems.append(f"terminal record cli_invocations {invocations} exceed the call "
+                        f"ceiling {len(shards)}")
     expected = "PASS" if all_done and shards else "FAIL"
     if cmd.get("result") != expected:
         problems.append(f"terminal record result {cmd.get('result')} does not "
