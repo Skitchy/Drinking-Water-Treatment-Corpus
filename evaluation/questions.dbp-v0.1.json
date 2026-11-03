@@ -1,0 +1,723 @@
+{
+  "schema_version": "dbp-question-bank/v0.1-draft",
+  "source": {
+    "path": "docs/EPA_DBP_Challenge_Questions.md",
+    "sha256": "891208ed7f463f4924b1ed16e8ab9dbad35ab1d4f35c298330711ff52f489319"
+  },
+  "labels": {
+    "supported": "answerable from the 17-page DBP list",
+    "out-of-scope": "deliberately outside the DBP pages; a decline is correct",
+    "pending-D1": "guide-only question awaiting Skitch's decision D1"
+  },
+  "notes": [
+    "Draft by CC 2026-11-01 for Skitch's confirmation; question and answer_key text are verbatim from the markdown.",
+    "expected_page_ids use page IDs from proposals/first-proof-dbp-page-list-v0.2.md; expected_claim_ids only name claims that exist in pages/ today.",
+    "safety is null (unassigned) on every question until Skitch assigns true or false; the bar is not scorable while any is null.",
+    "Conversion to the ratified evaluation-manifest/v0.1 schema is a later step."
+  ],
+  "questions": [
+    {
+      "id": "DBP-Q01",
+      "question": "What is the primary purpose of the Stage 1 and Stage 2 DBP Rules?",
+      "answer_key": "To improve public health protection by reducing exposure to disinfection byproducts.",
+      "label": "out-of-scope",
+      "label_reason": "EPA guide only, Skitch D1 2026-11-01",
+      "expected_page_ids": [],
+      "expected_claim_ids": [],
+      "expected_values": [],
+      "safety": null,
+      "flag": "Purpose statement; EPA guide content, not CFR text.",
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q02",
+      "question": "What health effects have DBPs been shown to cause in lab animals, and what effects are suggested in humans?",
+      "answer_key": "Cancer and reproductive effects in lab animals; suggested bladder cancer and reproductive effects in humans.",
+      "label": "out-of-scope",
+      "label_reason": "EPA guide only, Skitch D1 2026-11-01",
+      "expected_page_ids": [],
+      "expected_claim_ids": [],
+      "expected_values": [],
+      "safety": null,
+      "flag": "Health effects; EPA guide content, not CFR text.",
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q03",
+      "question": "Which types of water systems are covered by the DBPRs?",
+      "answer_key": "All sizes of community water systems (CWSs) and nontransient noncommunity water systems (NTNCWSs) that add a disinfectant other than UV light or deliver disinfected water, plus TNCWSs that add chlorine dioxide.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.applicability.stage2"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q04",
+      "question": "What type of disinfection is specifically EXCLUDED from triggering DBPR coverage?",
+      "answer_key": "Ultraviolet (UV) light disinfection.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.applicability.stage2"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "ultraviolet"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q05",
+      "question": "Which systems does the Stage 2 DBPR add to coverage that Stage 1 did not explicitly include?",
+      "answer_key": "Consecutive systems that deliver water treated with a disinfectant other than UV light.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.applicability.stage2"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "consecutive"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q06",
+      "question": "In what year was the Stage 1 DBPR published? What about Stage 2?",
+      "answer_key": "Stage 1: December 16, 1998 (63 FR 69390). Stage 2: January 4, 2006 (71 FR 388).",
+      "label": "out-of-scope",
+      "label_reason": "EPA guide only, Skitch D1 2026-11-01",
+      "expected_page_ids": [],
+      "expected_claim_ids": [],
+      "expected_values": [],
+      "safety": null,
+      "flag": "Federal Register publication dates; history, not operative CFR text.",
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q07",
+      "question": "Under what condition are TNCWSs (transient noncommunity water systems) covered by the DBPRs?",
+      "answer_key": "Only when they add chlorine dioxide.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.applicability.stage2"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "chlorine dioxide"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q08",
+      "question": "What federal regulation should be consulted for full DBPR compliance requirements?",
+      "answer_key": "40 CFR 141 (plus any approved state requirements).",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.applicability.stage2"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "40 CFR 141"
+      ],
+      "safety": null,
+      "flag": "Answer key adds 'plus any approved state requirements', which no federal page can quote. Confirm the federal part alone is a correct answer.",
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q09",
+      "question": "What is the MCL for Total Trihalomethanes (TTHM)?",
+      "answer_key": "0.080 mg/L.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.mcl.tthm"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "0.080"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q10",
+      "question": "What is the MCL for the five Haloacetic Acids (HAA5)?",
+      "answer_key": "0.060 mg/L.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.mcl.haa5"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "0.060"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q11",
+      "question": "What is the MCL for bromate, and which plants does it apply to?",
+      "answer_key": "0.010 mg/L; applies to plants that use ozone.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.mcl.bromate"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "0.010",
+        "ozone"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q12",
+      "question": "What is the MCLG for bromate?",
+      "answer_key": "Zero.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.mclg"
+      ],
+      "expected_claim_ids": [
+        "claim.dbp.mclg.bromate"
+      ],
+      "expected_values": [
+        "zero"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q13",
+      "question": "What is the MCL and MCLG for chlorite, and which plants does it apply to?",
+      "answer_key": "MCL 1.0 mg/L, MCLG 0.8 mg/L; applies to plants that use chlorine dioxide.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.mcl.chlorite",
+        "dbp.mclg"
+      ],
+      "expected_claim_ids": [
+        "claim.dbp.mclg.chlorite"
+      ],
+      "expected_values": [
+        "1.0",
+        "0.8",
+        "chlorine dioxide"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q14",
+      "question": "What is the MRDL for chlorine? For chloramines?",
+      "answer_key": "Chlorine: 4.0 mg/L as Cl2 (MRDLG 4). Chloramines: 4.0 mg/L as Cl2 (MRDLG 4).",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.mrdl.chlorine-chloramine",
+        "dbp.mclg"
+      ],
+      "expected_claim_ids": [
+        "claim.dbp.mclg.mrdlg-chlorine",
+        "claim.dbp.mclg.mrdlg-chloramines"
+      ],
+      "expected_values": [
+        "4.0"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q15",
+      "question": "What is the MRDL for chlorine dioxide?",
+      "answer_key": "0.8 mg/L as ClO2 (MRDLG: 0.8 mg/L as ClO2).",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.mrdl.chlorine-dioxide",
+        "dbp.mclg"
+      ],
+      "expected_claim_ids": [
+        "claim.dbp.mclg.mrdlg-chlorine-dioxide"
+      ],
+      "expected_values": [
+        "0.8"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q16",
+      "question": "Did the Stage 2 DBPR change any of the MCLs or MRDLs established under Stage 1?",
+      "answer_key": "No. Stage 2 left all MCLs and MRDLs unchanged. The main compliance change was RAA to LRAA for TTHM/HAA5, plus a new analytical method for bromate.",
+      "label": "out-of-scope",
+      "label_reason": "EPA guide only, Skitch D1 2026-11-01",
+      "expected_page_ids": [],
+      "expected_claim_ids": [],
+      "expected_values": [],
+      "safety": null,
+      "flag": "Stage 1 vs Stage 2 comparison; history, not operative CFR text.",
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q17",
+      "question": "Name the four individual trihalomethanes regulated as TTHM.",
+      "answer_key": "Chloroform, bromodichloromethane, dibromochloromethane, bromoform.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.definitions"
+      ],
+      "expected_claim_ids": [
+        "claim.dbp.definitions.tthm-composition"
+      ],
+      "expected_values": [
+        "chloroform",
+        "bromodichloromethane",
+        "dibromochloromethane",
+        "bromoform"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q18",
+      "question": "Name the five haloacetic acids regulated as HAA5.",
+      "answer_key": "Monochloroacetic acid, dichloroacetic acid, trichloroacetic acid, monobromoacetic acid, and dibromoacetic acid.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.definitions"
+      ],
+      "expected_claim_ids": [
+        "claim.dbp.definitions.haa5-composition"
+      ],
+      "expected_values": [
+        "monochloroacetic acid",
+        "dichloroacetic acid",
+        "trichloroacetic acid",
+        "monobromoacetic acid",
+        "dibromoacetic acid"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q19",
+      "question": "How is TTHM/HAA5 MCL compliance calculated under Stage 1?",
+      "answer_key": "Running annual average (RAA) of all samples from all monitoring locations across the entire system, compared against the MCL.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.compliance.lraa"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "running annual average"
+      ],
+      "safety": null,
+      "flag": "Stage 1 RAA still operative for subpart L systems at 141.133(b)(1); confirm page placement.",
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q20",
+      "question": "How is TTHM/HAA5 MCL compliance calculated under Stage 2, and how does this differ from Stage 1?",
+      "answer_key": "Locational running annual average (LRAA): each individual monitoring location's running annual average must not exceed the MCL. Stage 1 averaged across the whole system; Stage 2 holds every location to the standard independently.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.compliance.lraa",
+        "dbp.definitions"
+      ],
+      "expected_claim_ids": [
+        "claim.dbp.definitions.lraa-computation"
+      ],
+      "expected_values": [
+        "locational running annual average"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q21",
+      "question": "Why does the switch from RAA to LRAA generally make Stage 2 more stringent for a system?",
+      "answer_key": "Under RAA, a high result at one location could be diluted by low results elsewhere in the system. Under LRAA, no single location can hide behind system-wide averaging; every monitoring point must independently stay at or below the MCL.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.compliance.lraa"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [],
+      "safety": null,
+      "flag": "The 'why' is reasoning, not quotable text; grade the explanation as labeled context.",
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q22",
+      "question": "How is bromate compliance determined, and did Stage 2 change it?",
+      "answer_key": "RAA at the entry point to the distribution system. Compliance determination unchanged under Stage 2 (though a new analytical method was approved).",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.mcl.bromate"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "entry point"
+      ],
+      "safety": null,
+      "flag": "'Did Stage 2 change it' is history; grade the compliance-basis half.",
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q23",
+      "question": "How is chlorite compliance determined?",
+      "answer_key": "Chlorite compliance is based on the arithmetic average of each three-sample distribution-system set, whether collected as routine monthly monitoring or as triggered next-day monitoring. If the average of any three-sample set exceeds the 1.0 mg/L MCL, the system is in violation. A daily entrance sample above the MCL triggers the additional three-sample distribution-system set on the following day.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.mcl.chlorite",
+        "dbp.definitions"
+      ],
+      "expected_claim_ids": [
+        "claim.dbp.definitions.chlorite-three-sample-set"
+      ],
+      "expected_values": [
+        "three-sample",
+        "1.0"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q24",
+      "question": "EPA's Quick Reference Guide describes Stage 1 DBP precursor (TOC sample set) compliance monitoring as monthly and Stage 2 monitoring as every 30 days, while also stating that Stage 2 did not revise the monitoring frequency or location requirements. How should those statements be reconciled?",
+      "answer_key": "Stage 1 described the interval as monthly, while Stage 2 specifies every 30 days for TOC and alkalinity. Read together with the guide's unchanged-frequency statement, this is an interval clarification rather than a substantive change to the monitoring frequency or location requirements.",
+      "label": "out-of-scope",
+      "label_reason": "EPA guide only, Skitch D1 2026-11-01",
+      "expected_page_ids": [],
+      "expected_claim_ids": [],
+      "expected_values": [],
+      "safety": null,
+      "flag": "Reconciles two EPA guide statements; guide content, not CFR text.",
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q25",
+      "question": "Under routine monitoring, at what location must bromate be monitored, and how often?",
+      "answer_key": "At the entry point to the distribution system, monthly. Applies to systems using ozone.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.monitoring.routine",
+        "dbp.mcl.bromate"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "entry point",
+        "monthly"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q26",
+      "question": "Under routine monitoring, describe the chlorite monitoring requirements: locations and frequencies.",
+      "answer_key": "Daily at the entrance to the distribution system, plus monthly at 3 locations in the distribution system. Applies to systems using chlorine dioxide.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.monitoring.routine",
+        "dbp.definitions"
+      ],
+      "expected_claim_ids": [
+        "claim.dbp.definitions.chlorite-three-sample-set"
+      ],
+      "expected_values": [
+        "daily",
+        "monthly"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q27",
+      "question": "Under routine monitoring, how often must chlorine dioxide be monitored, and where?",
+      "answer_key": "Daily, at the entry point to the distribution system.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.monitoring.routine"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "daily"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q28",
+      "question": "How is chlorine/chloramine residual monitoring location and frequency determined?",
+      "answer_key": "Same locations and frequency as Revised Total Coliform Rule (RTCR) sampling.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.monitoring.routine"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [],
+      "safety": null,
+      "flag": "Answer key says RTCR; CFR 141.132(c)(1) text says total coliform sampling. Confirm wording tolerance.",
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q29",
+      "question": "Under Stage 1, where were TTHM/HAA5 samples required to be taken? What determines sample locations under Stage 2?",
+      "answer_key": "Stage 1: at the location of maximum residence time (Subpart H systems serving at least 10,000 needed at least 25% of samples at max residence time, remainder representative of average residence time). Stage 2: locations based on Initial Distribution System Evaluation (IDSE) results.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.monitoring.routine",
+        "dbp.monitoring.idse"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "IDSE"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q30",
+      "question": "What was the deadline for all systems to satisfy their IDSE requirement?",
+      "answer_key": "July 1, 2010.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.monitoring.idse"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "July 1, 2010"
+      ],
+      "safety": null,
+      "flag": "Confirm the date appears in captured 141.600-605 text at page build; if not, this becomes history.",
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q31",
+      "question": "Under Stage 2, what must all systems do regarding the timing of their TTHM/HAA5 monitoring?",
+      "answer_key": "Monitor during the month of highest DBP concentrations. Systems on quarterly monitoring (except Subpart H serving 500–3,300) take dual sample sets every 90 days at each location; annual-monitoring systems and Subpart H 500–3,300 systems take individual TTHM and HAA5 samples at the locations of highest respective concentrations.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.monitoring.routine"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "highest"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q32",
+      "question": "A Subpart H system serving 25,000 people is conducting Stage 2 DBPR monitoring. Its system-wide RAA is 0.035 mg/L for TTHM and 0.025 mg/L for HAA5. At one monitoring location, however, the LRAA is 0.045 mg/L for TTHM and 0.032 mg/L for HAA5. The source-water annual-average TOC is 3.8 mg/L at every treatment plant. EPA’s Comprehensive Quick Reference Guide states that Stage 2 “left eligibility unchanged” and presents the reduced-monitoring thresholds as RAA values. Does this system qualify for reduced TTHM/HAA5 monitoring under Stage 2? Identify the controlling averaging basis and thresholds, reconcile the guide’s statement with the operative requirement, and explain your conclusion.",
+      "answer_key": "No. Under 40 CFR § 141.623(a), Stage 2 qualification requires TTHM LRAA ≤ 0.040 mg/L and HAA5 LRAA ≤ 0.030 mg/L at every monitoring location. The system exceeds both thresholds at one location, so its favorable system-wide RAA and qualifying TOC result do not make it eligible. EPA’s statement that eligibility remained unchanged describes the continuing numerical thresholds and general eligibility concept; it does not make the Stage 1 system-wide RAA the controlling Stage 2 calculation. Where the summary guide is ambiguous, the explicit Stage 2 regulation controls.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.monitoring.reduced-increased"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "0.040",
+        "0.030",
+        "No"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q33",
+      "question": "Under Stage 1, what source-water bromide criterion allowed reduced bromate monitoring? What bromate-based criterion replaced it beginning April 1, 2009?",
+      "answer_key": "Through March 31, 2009, the Stage 1 criterion was a source-water bromide RAA < 0.05 mg/L. Beginning April 1, 2009, that criterion was replaced by a bromate RAA ≤ 0.0025 mg/L at the entrance to the distribution system, based on the most recent four quarters of monthly bromate measurements analyzed using an approved method.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.monitoring.reduced-increased"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "0.0025"
+      ],
+      "safety": null,
+      "flag": "The pre-April-2009 bromide criterion may no longer be in current CFR text; the bromate criterion half should be.",
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q34",
+      "question": "Under Stage 2, what additional TOC requirement do Subpart H systems have to qualify for and remain on reduced TTHM/HAA5 monitoring?",
+      "answer_key": "The source-water annual-average TOC level before treatment must be ≤ 4.0 mg/L at each treatment plant treating surface water or ground water under the direct influence of surface water. TOC samples must be taken every 30 days to qualify; once qualified for reduced TTHM/HAA5 monitoring, a system may reduce source-water TOC monitoring to every 90 days and must continue to meet the annual-average limit.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.monitoring.reduced-increased",
+        "dbp.precursors.toc"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "4.0"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q35",
+      "question": "Write out the OEL formula and define each term.",
+      "answer_key": "OEL = (Q1 + Q2 + 2Q3) / 4, where Q1 and Q2 are the two previous quarters' TTHM or HAA5 results and Q3 is the current quarter's result at that location. Calculated for both TTHM and HAA5 at each monitoring location.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.compliance.oel"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "Q1",
+        "Q2",
+        "2Q3",
+        "4"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q36",
+      "question": "When is an OEL considered exceeded, and what three things must a system do when that happens?",
+      "answer_key": "Exceeded during any quarter in which the OEL is greater than the TTHM or HAA5 MCL. The system must: (1) conduct an operational evaluation examining treatment and distribution practices that may contribute to TTHM/HAA5 formation, plus steps to minimize future exceedances; (2) submit a written report to the state within 90 days of being notified of the results that caused the exceedance; (3) keep a copy of the report and make it publicly available on request.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.compliance.oel"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "90 days"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q37",
+      "question": "What is the purpose of establishing OELs, and which systems do OEL requirements apply to?",
+      "answer_key": "To reduce peaks in DBP levels and exposure to high DBP levels. Applies to all systems subject to Stage 2 DBPR monitoring that conduct compliance monitoring and collect samples quarterly.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.compliance.oel"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "quarterly"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q38",
+      "question": "A Subpart H conventional filtration plant that does not meet an alternative compliance criterion and has no State-approved Step 2 requirement has source-water TOC of 5.2 mg/L and source-water alkalinity of 90 mg/L as CaCO3. Its description does not state whether it practices softening. Can its required Step 1 TOC removal percentage be uniquely determined? Explain.",
+      "answer_key": "No. If the plant is not practicing softening, the required Step 1 removal is 35.0% (the >4.0 to 8.0 mg/L TOC row and >60 to 120 mg/L alkalinity column). If it is practicing softening, the required removal is 25.0%, because softening systems must use the far-right >120 mg/L alkalinity column for the applicable TOC range regardless of measured alkalinity. The treatment mode must therefore be established before selecting the percentage.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.precursors.toc"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "35.0",
+        "25.0",
+        "No"
+      ],
+      "safety": null,
+      "flag": "Table-valued claim; answer depends on cell selection.",
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q39",
+      "question": "What two treatment techniques can be used to achieve required TOC removal?",
+      "answer_key": "Enhanced coagulation or enhanced softening. Systems practicing softening must use the far-right >120 mg/L alkalinity column for the applicable source-water TOC range regardless of their measured source-water alkalinity, unless an applicable alternative compliance criterion governs.",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.precursors.toc"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "enhanced coagulation",
+        "enhanced softening"
+      ],
+      "safety": null,
+      "flag": null,
+      "confirmed_by_skitch": false
+    },
+    {
+      "id": "DBP-Q40",
+      "question": "By what date did the largest systems (serving at least 100,000 people or part of a CDS serving at least 100,000) have to begin LRAA TTHM/HAA5 monitoring?",
+      "answer_key": "April 1, 2012 (Schedule 1).",
+      "label": "supported",
+      "label_reason": null,
+      "expected_page_ids": [
+        "dbp.applicability.stage2"
+      ],
+      "expected_claim_ids": [],
+      "expected_values": [
+        "April 1, 2012"
+      ],
+      "safety": null,
+      "flag": "Schedule table at 141.620(c); confirm which page carries it.",
+      "confirmed_by_skitch": false
+    }
+  ]
+}
