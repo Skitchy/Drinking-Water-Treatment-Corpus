@@ -1,0 +1,357 @@
+{
+  "schema_version": "drinking-water-profile/v0.1",
+  "type": "concept",
+  "page_id": "dbp.mcl.haa5",
+  "title": "HAA5 maximum contaminant level: 0.060 mg/L as a locational running annual average",
+  "status": "draft",
+  "assurance_profile": "drinking-water/v0.1",
+  "use_class": "regulatory-reference",
+  "jurisdiction": "US-federal",
+  "applicability": {
+    "system_types": [
+      "community-water-system",
+      "nontransient-noncommunity-water-system"
+    ],
+    "conditions": [
+      "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+    ],
+    "exclusions": [
+      "Transient noncommunity water systems are not subject to the TTHM and HAA5 MCLs"
+    ]
+  },
+  "generated": {
+    "by": "cc",
+    "at": "2026-11-03T17:15:06Z"
+  },
+  "review_payload": {
+    "canonicalization": "dw-review-payload/v0.1",
+    "sha256": "52c21ef7b3cfe0846afaa1ad9c7d96f0434a9f5e66254399c048349b53cd9328"
+  },
+  "normalization": "dw-quote-normalization/v0.1",
+  "verified": [
+    {
+      "by": "process:quote-tool/v0.1-interim",
+      "actor_type": "process",
+      "at": "2026-11-03T17:15:06Z",
+      "review_payload_sha256": "52c21ef7b3cfe0846afaa1ad9c7d96f0434a9f5e66254399c048349b53cd9328",
+      "scopes": [
+        "source-capture",
+        "quote-fidelity"
+      ]
+    }
+  ],
+  "stale_after": "2027-01-31",
+  "source_watch": {
+    "watch_id": "watch.dbp.mcl.haa5",
+    "last_result": "unchanged",
+    "last_checked_at": "2026-11-02T07:10:07Z",
+    "next_due_at": "2026-12-02T07:10:07Z"
+  },
+  "source_refs": [
+    {
+      "source_id": "source.ecfr.2026-07-01.141-64",
+      "captured_sha256": "4f1e79cb54139f1901e4a7d7efbd31408b349b661eeb65929426e1f5302933e4",
+      "licensing_decision_payload_sha256": "3db5071723e446623cb37d019ac9b0271da6386574c1106aa44784016457f725"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "captured_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "licensing_decision_payload_sha256": "f3b39502bbfbaa850eb4cfeab711de70381c64f8a07e8cf649e719d96f119eb2"
+    }
+  ],
+  "quotes": [
+    {
+      "quote_id": "quote.dbp.mcl.haa5.mcl-subpart-v",
+      "source_id": "source.ecfr.2026-07-01.141-64",
+      "captured_source_sha256": "4f1e79cb54139f1901e4a7d7efbd31408b349b661eeb65929426e1f5302933e4",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:2246-2597"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "453c52d256e63be4da55c5a1cb6bd9ebe8a99b95ffb30c73875f5a36ba12941d",
+      "verified_at": "2026-11-03T17:15:06Z"
+    },
+    {
+      "quote_id": "quote.dbp.mcl.haa5.mcl-subpart-l",
+      "source_id": "source.ecfr.2026-07-01.141-64",
+      "captured_source_sha256": "4f1e79cb54139f1901e4a7d7efbd31408b349b661eeb65929426e1f5302933e4",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:1163-1740"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "1abd8b2004bc016d62d1bb040f6f6e92e83e8e8e5e27847916b4de3329749805",
+      "verified_at": "2026-11-03T17:15:06Z"
+    },
+    {
+      "quote_id": "quote.dbp.mcl.haa5.bat-subpart-v",
+      "source_id": "source.ecfr.2026-07-01.141-64",
+      "captured_source_sha256": "4f1e79cb54139f1901e4a7d7efbd31408b349b661eeb65929426e1f5302933e4",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:2877-3169"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "22cb1c235d0a1c6d2d17a3143b389fcf27d51003db6832c97d5adeb863eede2b",
+      "verified_at": "2026-11-03T17:15:06Z"
+    },
+    {
+      "quote_id": "quote.dbp.mcl.haa5.lraa-quarterly",
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "captured_source_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:3851-4444"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "d5e00a20cf29cb4dab98c3c075b12b3777d8f39977dbbaebd52c47a12ac1ed44",
+      "verified_at": "2026-11-03T17:15:06Z"
+    },
+    {
+      "quote_id": "quote.dbp.mcl.haa5.lraa-less-than-quarterly",
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "captured_source_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:4504-4843"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "f7dba7bef79850ffa493d4b112bad4a641f2c3e8237a3df9060be39dd36ef0fb",
+      "verified_at": "2026-11-03T17:15:06Z"
+    },
+    {
+      "quote_id": "quote.dbp.mcl.haa5.first-compliance-calculation",
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "captured_source_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:2558-2939"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "e2675c81f386656195f8ff3401bd4327b323ad162ae9f319e1d97c0d6b486a38",
+      "verified_at": "2026-11-03T17:15:06Z"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "claim.dbp.mcl.haa5.mcl",
+      "kind": "numeric",
+      "subject": "Maximum contaminant level for haloacetic acids (five) (HAA5)",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "mcl"
+      },
+      "value": 0.06,
+      "conditions": [
+        "The 141.64(b) MCL table lists haloacetic acids (five) (HAA5) at 0.060 mg/L and the other Stage 2 byproduct group (TTHM) beside it; this claim covers HAA5 only",
+        "The same value applies under subpart L (running annual average, 141.64(b)(1)) until the system's subpart V compliance date in 141.620(c), and under subpart V (locational running annual average at each monitoring location, 141.64(b)(2)) from that date"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to the TTHM and HAA5 MCLs"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mcl.haa5.mcl-subpart-v",
+        "quote.dbp.mcl.haa5.mcl-subpart-l"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.mcl.haa5.compliance-basis-lraa",
+      "kind": "qualitative",
+      "subject": "Compliance basis for the HAA5 MCL under subpart V",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Locational running annual average (LRAA) at each monitoring location, beginning the date specified for subpart V compliance in 141.620(c)",
+      "conditions": [
+        "Before the subpart V compliance date the MCL is met as a system-wide running annual average under subpart L (141.64(b)(1))"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to the TTHM and HAA5 MCLs"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mcl.haa5.mcl-subpart-v"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mcl.haa5.compliance-basis-raa-subpart-l",
+      "kind": "qualitative",
+      "subject": "Compliance basis for the HAA5 MCL under subpart L",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "System-wide running annual average (RAA), required until the date specified for subpart V compliance in 141.620(c)",
+      "conditions": [
+        "Subpart L compliance dates: subpart H systems serving 10,000 or more persons from January 1, 2002; subpart H systems serving fewer than 10,000 and ground water systems not under the direct influence of surface water from January 1, 2004"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to the TTHM and HAA5 MCLs"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mcl.haa5.mcl-subpart-l"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mcl.haa5.lraa-computation-quarterly",
+      "kind": "qualitative",
+      "subject": "LRAA computation for HAA5 by systems monitoring quarterly",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Calculate the LRAA from monitoring results collected under subpart V and determine that each LRAA does not exceed the MCL; more than one sample in a quarter at a location is averaged into one quarterly value; if four consecutive quarters are not completed, compliance is based on the average of the available data from the most recent four quarters",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to the TTHM and HAA5 MCLs"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mcl.haa5.lraa-quarterly"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mcl.haa5.lraa-less-than-quarterly",
+      "kind": "qualitative",
+      "subject": "LRAA determination for HAA5 by systems monitoring yearly or less frequently",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Each sample must be less than the MCL; a sample at or above the MCL triggers the increased-monitoring requirements of 141.625; when no sample exceeds the MCL, each location's sample result is its LRAA",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to the TTHM and HAA5 MCLs"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mcl.haa5.lraa-less-than-quarterly"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mcl.haa5.first-compliance-calculation",
+      "kind": "qualitative",
+      "subject": "Timing of the first HAA5 LRAA compliance calculation for quarterly monitors",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "At the end of the fourth calendar quarter following the compliance date and at the end of each subsequent quarter, or earlier if an LRAA from fewer than four quarters would exceed the MCL regardless of later results",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to the TTHM and HAA5 MCLs"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mcl.haa5.first-compliance-calculation"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mcl.haa5.bat-subpart-v",
+      "kind": "qualitative",
+      "subject": "Best available technology for the HAA5 MCL under subpart V (systems that disinfect their source water)",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Enhanced coagulation or enhanced softening, plus GAC10; or nanofiltration with a molecular weight cutoff of 1000 Daltons or less; or GAC20",
+      "conditions": [
+        "141.64(b)(2)(iii) lists a different BAT for consecutive systems (distribution system and storage tank management, plus chloramines for systems serving 10,000 or more); not quoted on this page"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to the TTHM and HAA5 MCLs"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mcl.haa5.bat-subpart-v"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,406 @@
+{
+  "schema_version": "drinking-water-profile/v0.1",
+  "type": "concept",
+  "page_id": "dbp.mcl.bromate",
+  "title": "Bromate maximum contaminant level: 0.010 mg/L for systems using ozone, running annual average",
+  "status": "draft",
+  "assurance_profile": "drinking-water/v0.1",
+  "use_class": "regulatory-reference",
+  "jurisdiction": "US-federal",
+  "applicability": {
+    "system_types": [
+      "community-water-system",
+      "nontransient-noncommunity-water-system"
+    ],
+    "conditions": [
+      "Community and nontransient noncommunity water systems using ozone for disinfection or oxidation (141.132(b)(3))"
+    ],
+    "exclusions": [
+      "Systems that do not use ozone are not required to monitor for bromate"
+    ]
+  },
+  "generated": {
+    "by": "cc",
+    "at": "2026-11-03T17:15:06Z"
+  },
+  "review_payload": {
+    "canonicalization": "dw-review-payload/v0.1",
+    "sha256": "c0a2e33a8f10dd41535113cd7f6bc7090786ba5c452fcf3e0b171594cc6950d4"
+  },
+  "normalization": "dw-quote-normalization/v0.1",
+  "verified": [
+    {
+      "by": "process:quote-tool/v0.1-interim",
+      "actor_type": "process",
+      "at": "2026-11-03T17:15:06Z",
+      "review_payload_sha256": "c0a2e33a8f10dd41535113cd7f6bc7090786ba5c452fcf3e0b171594cc6950d4",
+      "scopes": [
+        "source-capture",
+        "quote-fidelity"
+      ]
+    }
+  ],
+  "stale_after": "2027-01-31",
+  "source_watch": {
+    "watch_id": "watch.dbp.mcl.bromate",
+    "last_result": "unchanged",
+    "last_checked_at": "2026-11-02T07:10:07Z",
+    "next_due_at": "2026-12-02T07:10:07Z"
+  },
+  "source_refs": [
+    {
+      "source_id": "source.ecfr.2026-07-01.141-64",
+      "captured_sha256": "4f1e79cb54139f1901e4a7d7efbd31408b349b661eeb65929426e1f5302933e4",
+      "licensing_decision_payload_sha256": "3db5071723e446623cb37d019ac9b0271da6386574c1106aa44784016457f725"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "licensing_decision_payload_sha256": "a99aef52bd75ce57929c25ea48d0839c5d65d1dd2ef5068159c90da0dbcdd045"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-133",
+      "captured_sha256": "4b773cefc584399af240124de5887ba45088b428f3a242dffe1ad43ed6edba82",
+      "licensing_decision_payload_sha256": "d6ec1d0234a47c5182c72e45fb04196e4e433d2da71315fdca65a5a605d7c1c4"
+    }
+  ],
+  "quotes": [
+    {
+      "quote_id": "quote.dbp.mcl.bromate.mcl-table",
+      "source_id": "source.ecfr.2026-07-01.141-64",
+      "captured_source_sha256": "4f1e79cb54139f1901e4a7d7efbd31408b349b661eeb65929426e1f5302933e4",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:65-230"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "9b53babf170a06a6772c3378f5335549405ad77af71e20c9010efa8444d1a82f",
+      "verified_at": "2026-11-03T17:15:06Z"
+    },
+    {
+      "quote_id": "quote.dbp.mcl.bromate.compliance-dates",
+      "source_id": "source.ecfr.2026-07-01.141-64",
+      "captured_source_sha256": "4f1e79cb54139f1901e4a7d7efbd31408b349b661eeb65929426e1f5302933e4",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:274-584"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "e970fb820e550c043c8b49fcb0e65fb13464cebe5ccb4bcdcf7da0b6b7c69ffe",
+      "verified_at": "2026-11-03T17:15:06Z"
+    },
+    {
+      "quote_id": "quote.dbp.mcl.bromate.bat",
+      "source_id": "source.ecfr.2026-07-01.141-64",
+      "captured_source_sha256": "4f1e79cb54139f1901e4a7d7efbd31408b349b661eeb65929426e1f5302933e4",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:917-991"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "cc26ad77c9eb16b911eb83aa84e5c30eb5c681dc7bbf81f8542a90271d32ea13",
+      "verified_at": "2026-11-03T17:15:06Z"
+    },
+    {
+      "quote_id": "quote.dbp.mcl.bromate.routine-monitoring",
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_source_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:11001-11317"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "17283725e122bdcd87dde38687bba8317e7c5f790e18df66b8be17948ef058f7",
+      "verified_at": "2026-11-03T17:15:06Z"
+    },
+    {
+      "quote_id": "quote.dbp.mcl.bromate.reduced-monitoring",
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_source_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:12030-12526"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "d788567228ef55d41de42a095f526d54fdc065a0113c7e207685f00a08c69482",
+      "verified_at": "2026-11-03T17:15:06Z"
+    },
+    {
+      "quote_id": "quote.dbp.mcl.bromate.resume-routine",
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_source_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:12832-12991"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "2ca757b85de70679b572abb024f434d7056bf025585680f8a5bd4027cbe7cdd8",
+      "verified_at": "2026-11-03T17:15:06Z"
+    },
+    {
+      "quote_id": "quote.dbp.mcl.bromate.compliance",
+      "source_id": "source.ecfr.2026-07-01.141-133",
+      "captured_source_sha256": "4b773cefc584399af240124de5887ba45088b428f3a242dffe1ad43ed6edba82",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:2850-3556"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "b0f330ed20a43318e05ea81e48094199c750cab54c73db785346efbcb208cc19",
+      "verified_at": "2026-11-03T17:15:06Z"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "claim.dbp.mcl.bromate.mcl",
+      "kind": "numeric",
+      "subject": "Maximum contaminant level for bromate",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "mcl"
+      },
+      "value": 0.01,
+      "conditions": [
+        "The 141.64(a) table lists bromate (0.010 mg/L) and chlorite (1.0 mg/L) together; this claim covers bromate only"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Community and nontransient noncommunity water systems using ozone for disinfection or oxidation (141.132(b)(3))"
+        ],
+        "exclusions": [
+          "Systems that do not use ozone are not required to monitor for bromate"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mcl.bromate.mcl-table"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.mcl.bromate.applies-to-ozone-systems",
+      "kind": "qualitative",
+      "subject": "Systems subject to bromate monitoring",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Community and nontransient noncommunity water systems using ozone for disinfection or oxidation",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Community and nontransient noncommunity water systems using ozone for disinfection or oxidation (141.132(b)(3))"
+        ],
+        "exclusions": [
+          "Systems that do not use ozone are not required to monitor for bromate"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mcl.bromate.routine-monitoring"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mcl.bromate.routine-monitoring",
+      "kind": "qualitative",
+      "subject": "Routine bromate monitoring",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "One sample per month for each treatment plant using ozone, taken at the entrance to the distribution system while the ozonation system is operating under normal conditions",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Community and nontransient noncommunity water systems using ozone for disinfection or oxidation (141.132(b)(3))"
+        ],
+        "exclusions": [
+          "Systems that do not use ozone are not required to monitor for bromate"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mcl.bromate.routine-monitoring"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mcl.bromate.compliance-basis-raa",
+      "kind": "qualitative",
+      "subject": "Compliance basis for the bromate MCL",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Running annual arithmetic average, computed quarterly, of monthly samples taken at the entrance to the distribution system (months with more than one sample use the monthly average)",
+      "conditions": [
+        "If a system fails to complete 12 consecutive months of monitoring, compliance for the last four-quarter period is based on an average of the available data",
+        "The captured eCFR text reads 'the average f all samples' (sic); the quote reproduces the capture exactly"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Community and nontransient noncommunity water systems using ozone for disinfection or oxidation (141.132(b)(3))"
+        ],
+        "exclusions": [
+          "Systems that do not use ozone are not required to monitor for bromate"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mcl.bromate.compliance",
+        "quote.dbp.mcl.bromate.routine-monitoring"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mcl.bromate.violation",
+      "kind": "qualitative",
+      "subject": "Bromate MCL violation",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "The running annual average covering any consecutive four-quarter period exceeds the MCL; the system must notify the public under subpart Q and report to the State under 141.134",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Community and nontransient noncommunity water systems using ozone for disinfection or oxidation (141.132(b)(3))"
+        ],
+        "exclusions": [
+          "Systems that do not use ozone are not required to monitor for bromate"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mcl.bromate.compliance"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mcl.bromate.reduced-monitoring-threshold",
+      "kind": "numeric",
+      "subject": "Bromate running annual average threshold for reduced (quarterly) monitoring",
+      "relation": {
+        "operator": "lte",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": 0.0025,
+      "conditions": [
+        "From April 1, 2009: based on monthly bromate measurements for the most recent four quarters, analyzed by Method 317.0 Revision 2.0, 326.0 or 321.8",
+        "If the running annual average bromate concentration exceeds 0.0025 mg/L, routine monthly monitoring must resume",
+        "The earlier source-water bromide route to reduced monitoring (141.132(b)(3)(ii)(A), before April 1, 2009) is not quoted on this page"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Community and nontransient noncommunity water systems using ozone for disinfection or oxidation (141.132(b)(3))"
+        ],
+        "exclusions": [
+          "Systems that do not use ozone are not required to monitor for bromate"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mcl.bromate.reduced-monitoring",
+        "quote.dbp.mcl.bromate.resume-routine"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.mcl.bromate.compliance-dates",
+      "kind": "qualitative",
+      "subject": "Compliance dates for the bromate MCL",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Subpart H systems serving 10,000 or more persons from January 1, 2002; subpart H systems serving fewer than 10,000 persons and systems using only ground water not under the direct influence of surface water from January 1, 2004",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Community and nontransient noncommunity water systems using ozone for disinfection or oxidation (141.132(b)(3))"
+        ],
+        "exclusions": [
+          "Systems that do not use ozone are not required to monitor for bromate"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mcl.bromate.compliance-dates"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mcl.bromate.bat",
+      "kind": "qualitative",
+      "subject": "Best available technology for the bromate MCL",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Control of the ozone treatment process to reduce production of bromate",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Community and nontransient noncommunity water systems using ozone for disinfection or oxidation (141.132(b)(3))"
+        ],
+        "exclusions": [
+          "Systems that do not use ozone are not required to monitor for bromate"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mcl.bromate.bat"
+      ]
+    }
+  ]
+}
