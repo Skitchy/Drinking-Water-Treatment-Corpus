@@ -4,7 +4,8 @@
 Steps (inventory 2026-11-01, section 3):
   1 load      pages/*.json with fail-closed eligibility; every quote span is
               re-resolved from its capture and its hash rechecked at load
-  2 retrieve  lexical scoring over eligible pages, top 3
+  2 retrieve  BM25 over weighted page fields plus a defining-claim bonus
+              (session 6), retrieval floor (session 2), top 3
   3 generate  STUB: disabled; always withholds (SYNTHESIS_WITHHELD)
   4 validate  a candidate selection {claim_ids, quote_ids, answer_sentence,
               conditions_acknowledged} against the retrieved pages: ids
@@ -62,7 +63,25 @@ TOP_K = 3
 # off-topic probes score 0 or 1 matched token.
 MIN_MATCHED = 2
 MIN_RATIO = 1 / 3
-STOP = set("the a an of for to in and or is are what which how does do under at by on it its as be with that this from".split())
+# Scoring (session 6, engine step): BM25 over weighted fields (title 3, page_id 2,
+# claim subject 2, claim value / condition / quote text 1). Length normalization
+# stops a long page that merely mentions a term often from outranking a short
+# page that is about it. A claim whose subject words are mostly in the question
+# AND whose kind matches what the question asks adds DEF_WEIGHT x idf per matched
+# subject word: a numeric claim when the question names its metric (mcl, mclg,
+# mrdl, mrdlg, action level, treatment technique); a monitoring-trigger claim
+# when the question is about monitoring or sampling; a defining claim
+# (qualitative, eq, metric other) when the question names neither. So a page
+# that defines a term outranks pages that use it, and a page that states the
+# asked value for a term outranks the page that defines the term.
+BM25_K1 = 1.2
+BM25_B = 0.75
+DEF_WEIGHT = 3.0
+DEF_COVERAGE = 2 / 3
+STOP = set(("the a an of for to in and or is are what which how does do under at by on it its as be with that this from "
+            "must may can shall should will would could required require requires requirement requirements "
+            "name describe explain list give state there these those they their when where who why about also any all each "
+            "than then into one two three four five six seven eight nine ten").split())
 # subject words that carry no identity (every MCLG claim has them)
 GENERIC_SUBJECT = set("maximum contaminant level goal residual disinfectant mclg mrdlg mcl mrdl routine samples sample".split())
 NEGATION = set("not no never none cannot isn't aren't doesn't don't wasn't except unless".split())
@@ -208,7 +227,8 @@ def load_corpus(today, allow_stale_dev=False, now=None):
 
 def tokens(text):
     text = unicodedata.normalize("NFC", text).lower()
-    return [t for t in re.findall(r"[a-z0-9]+(?:[.\-][a-z0-9]+)*", text) if t not in STOP and len(t) > 1]
+    # a comma between digits is a thousands separator ("10,000" is one token, not "10" and "000")
+    return [t for t in re.findall(r"[a-z0-9]+(?:[.,\-][a-z0-9]+)*", text) if t not in STOP and len(t) > 1]
 
 
 def page_fields(page):
@@ -224,33 +244,75 @@ def page_fields(page):
         yield 1, q["text"]
 
 
+METRIC_TOKENS = {"mcl": "mcl", "mclg": "mclg", "mrdl": "mrdl", "mrdlg": "mrdlg",
+                 "action-level": "action", "treatment-technique": "treatment"}
+MONITORING_TOKENS = {"monitoring", "monitor", "monitored", "sampling", "sample", "samples"}
+
+
+def focal_subjects(page, qset):
+    """Subjects (minus generic words) of claims whose kind matches the question:
+    numeric claims when the question names their metric, monitoring-trigger claims
+    when the question is about monitoring or sampling, defining claims (qualitative,
+    eq, metric other) when the question names neither."""
+    asks_metric = {m for m, tok in METRIC_TOKENS.items() if tok in qset}
+    asks_monitoring = bool(qset & MONITORING_TOKENS)
+    for c in page["claims"]:
+        r = c.get("relation", {})
+        metric = r.get("regulatory_metric")
+        if metric in asks_metric:
+            focal = True
+        elif metric == "monitoring-trigger" and asks_monitoring:
+            focal = True
+        elif c.get("kind") == "qualitative" and r.get("operator") == "eq" and metric == "other" and not asks_metric and not asks_monitoring:
+            focal = True
+        else:
+            focal = False
+        if focal:
+            subj = [t for t in dict.fromkeys(tokens(c["subject"])) if t not in GENERIC_SUBJECT]
+            if subj:
+                yield subj
+
+
 def retrieve(question, pages, k=TOP_K):
     qtok = tokens(question)
     if not qtok or not pages:
         return []
-    df = {}
-    bags = {}
+    df, bags, dl = {}, {}, {}
     for p in pages:
         bag = {}
         for w, text in page_fields(p):
             for t in tokens(text):
                 bag[t] = bag.get(t, 0) + w
         bags[p["page_id"]] = bag
+        dl[p["page_id"]] = sum(bag.values())
         for t in bag:
             df[t] = df.get(t, 0) + 1
     n = len(pages)
+    avgdl = sum(dl.values()) / n
+    def idf(t):
+        return math.log(1 + (n - df.get(t, 0) + 0.5) / (df.get(t, 0) + 0.5))
     distinct = list(dict.fromkeys(qtok))
+    qset = set(distinct)
     scored = []
     for p in pages:
-        bag = bags[p["page_id"]]
+        pid = p["page_id"]
+        bag = bags[pid]
+        norm = BM25_K1 * (1 - BM25_B + BM25_B * dl[pid] / avgdl)
         s = 0.0
         for t in qtok:
             if t in bag:
-                s += (1 + math.log(bag[t])) * (1 + math.log((n + 1) / df[t]))
+                tf = bag[t]
+                s += idf(t) * tf * (BM25_K1 + 1) / (tf + norm)
+        defined = []
+        for subj in focal_subjects(p, qset):
+            hit = [t for t in subj if t in qset]
+            if len(hit) / len(subj) >= DEF_COVERAGE:
+                s += DEF_WEIGHT * sum(idf(t) for t in hit)
+                defined.extend(hit)
         matched = [t for t in distinct if t in bag]
         ratio = len(matched) / len(distinct)
         if len(matched) >= MIN_MATCHED and ratio >= MIN_RATIO:
-            scored.append((round(s, 4), p, {"matched": matched, "ratio": round(ratio, 3)}))
+            scored.append((round(s, 4), p, {"matched": matched, "ratio": round(ratio, 3), "focal": sorted(set(defined))}))
     scored.sort(key=lambda x: (-x[0], x[1]["page_id"]))
     return scored[:k]
 
@@ -549,9 +611,17 @@ def selftest(today):
     if bank_path.exists():
         bank = json.load(open(bank_path, encoding="utf-8"))["questions"]
         have = {p["page_id"] for p in eligible}
-        covered = [q for q in bank if set(q["expected_page_ids"]) & have]
-        hits = sum(1 for q in covered if (r := retrieve(q["question"], eligible)) and r[0][1]["page_id"] in q["expected_page_ids"])
-        results.append((f"bank questions on existing pages rank the expected page first ({hits}/{len(covered)})", hits == len(covered)))
+        # judged: every expected page exists. deferred: an expected page is not built yet (its
+        # absence can hand first place to a neighbor); listed, not judged (session 6, Chief's brief).
+        judged = [q for q in bank if q["expected_page_ids"] and set(q["expected_page_ids"]) <= have]
+        deferred = [q for q in bank if set(q["expected_page_ids"]) & have and not set(q["expected_page_ids"]) <= have]
+        def first_ok(q):
+            r = retrieve(q["question"], eligible)
+            return bool(r) and r[0][1]["page_id"] in q["expected_page_ids"]
+        hits = sum(1 for q in judged if first_ok(q))
+        results.append((f"bank questions whose expected pages all exist rank an expected page first ({hits}/{len(judged)})", hits == len(judged)))
+        for q in deferred:
+            print(f"  deferred (expected page not built): {q['id']} {'first' if first_ok(q) else 'not first'} expected {q['expected_page_ids']}")
     for name, passed in results:
         print(("PASS " if passed else "FAIL ") + name)
     print(f"{sum(1 for _, p in results if p)}/{len(results)} passed")
