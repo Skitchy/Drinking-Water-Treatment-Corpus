@@ -79,7 +79,8 @@ with the verbatim mechanics.
   different rule family; candidate for a later family, not an omission from
   this one.
 - All state-layer content, per the accepted deferral.
-- No within-family sections remain excluded. IDSE and analytical methods
+- WITHDRAWN 2026-11-02 (decision D2; see v1.0): this list said no within-family
+  sections remained excluded, but six captured sections had no page. IDSE and analytical methods
   moved into the list per the owner's J2/J3 principle.
 
 ## Claim-model strain notes (revised)

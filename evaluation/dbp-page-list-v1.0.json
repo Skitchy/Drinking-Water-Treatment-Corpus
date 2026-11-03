@@ -1,0 +1,302 @@
+{
+  "schema_version": "dbp-page-list/v1.0-frozen",
+  "frozen_on": "2026-11-02",
+  "frozen_by": "CC under Charter v1.1 Done item 1 and decision D2 (Skitch 2026-11-01); Skitch's sign-off of each page is separate",
+  "supersedes": "proposals/first-proof-dbp-page-list-v0.2.md (its 'no within-family sections remain excluded' statement is withdrawn)",
+  "rule_family": "Stage 1 and Stage 2 Disinfectants and Disinfection Byproducts Rules, 40 CFR 141 subparts L, U, V; 141.2, 141.53, 141.54, 141.64, 141.65; subpart Q cross-reference",
+  "pages": [
+    {
+      "n": 1,
+      "page_id": "dbp.mcl.tthm",
+      "topic": "TTHM MCL 0.080 mg/L, LRAA basis",
+      "anchors": [
+        "141.64(b)",
+        "141.620"
+      ],
+      "status": "planned"
+    },
+    {
+      "n": 2,
+      "page_id": "dbp.mcl.haa5",
+      "topic": "HAA5 MCL 0.060 mg/L, LRAA basis",
+      "anchors": [
+        "141.64(b)",
+        "141.620"
+      ],
+      "status": "planned"
+    },
+    {
+      "n": 3,
+      "page_id": "dbp.mcl.bromate",
+      "topic": "Bromate MCL 0.010 mg/L, ozone systems, RAA basis",
+      "anchors": [
+        "141.64(a)",
+        "141.132(b)(3)",
+        "141.133(b)(2)"
+      ],
+      "status": "planned"
+    },
+    {
+      "n": 4,
+      "page_id": "dbp.mcl.chlorite",
+      "topic": "Chlorite MCL 1.0 mg/L, chlorine dioxide systems",
+      "anchors": [
+        "141.64(a)",
+        "141.132(b)(2)",
+        "141.133(b)(3)"
+      ],
+      "status": "planned"
+    },
+    {
+      "n": 5,
+      "page_id": "dbp.mrdl.chlorine-chloramine",
+      "topic": "MRDLs 4.0 mg/L as Cl2, RAA basis",
+      "anchors": [
+        "141.65",
+        "141.133(c)(1)"
+      ],
+      "status": "planned"
+    },
+    {
+      "n": 6,
+      "page_id": "dbp.mrdl.chlorine-dioxide",
+      "topic": "MRDL 0.8 mg/L, daily samples, acute violation mechanics",
+      "anchors": [
+        "141.65",
+        "141.132(c)(2)",
+        "141.133(c)(2)"
+      ],
+      "status": "planned"
+    },
+    {
+      "n": 7,
+      "page_id": "dbp.compliance.lraa",
+      "topic": "Locational running annual average: definition and computation",
+      "anchors": [
+        "141.2 (LRAA)",
+        "141.620(c)",
+        "141.625"
+      ],
+      "status": "planned"
+    },
+    {
+      "n": 8,
+      "page_id": "dbp.compliance.oel",
+      "topic": "Operational evaluation levels, TTHM and HAA5 only",
+      "anchors": [
+        "141.626"
+      ],
+      "status": "planned"
+    },
+    {
+      "n": 9,
+      "page_id": "dbp.monitoring.routine",
+      "topic": "Routine monitoring by system size and source type, and the Subpart V monitoring plan",
+      "anchors": [
+        "141.621",
+        "141.622 (D2 fold-in)"
+      ],
+      "status": "planned"
+    },
+    {
+      "n": 10,
+      "page_id": "dbp.monitoring.reduced-increased",
+      "topic": "Reduced monitoring criteria, conditions forcing return, and carry-over from subpart L results",
+      "anchors": [
+        "141.623",
+        "141.625",
+        "141.627 (D2 fold-in)",
+        "141.628 (D2 fold-in)"
+      ],
+      "status": "planned"
+    },
+    {
+      "n": 11,
+      "page_id": "dbp.applicability.stage2",
+      "topic": "Who subparts L and V cover, compliance dates, consecutive systems, residual-increase allowance",
+      "anchors": [
+        "141.620(a)-(b)",
+        "141.624",
+        "141.130 (D2 fold-in)"
+      ],
+      "status": "planned"
+    },
+    {
+      "n": 12,
+      "page_id": "dbp.precursors.toc",
+      "topic": "Treatment technique for DBP precursors, enhanced coagulation, TOC removal, paired-sample monitoring",
+      "anchors": [
+        "141.135",
+        "141.132(d)"
+      ],
+      "status": "planned"
+    },
+    {
+      "n": 13,
+      "page_id": "dbp.monitoring.idse",
+      "topic": "IDSE program: what it was, how Subpart V monitoring locations were derived",
+      "anchors": [
+        "141.600",
+        "141.601",
+        "141.602",
+        "141.603",
+        "141.604",
+        "141.605"
+      ],
+      "status": "planned"
+    },
+    {
+      "n": 14,
+      "page_id": "dbp.analytical-methods",
+      "topic": "Approved analytical methods for DBP and residual monitoring",
+      "anchors": [
+        "141.131"
+      ],
+      "status": "planned"
+    },
+    {
+      "n": 15,
+      "page_id": "dbp.definitions",
+      "topic": "Controlled definitions plus rule-specific sampling terminology",
+      "anchors": [
+        "141.2",
+        "141.132(b)(2)",
+        "141.132(d)"
+      ],
+      "status": "stable"
+    },
+    {
+      "n": 16,
+      "page_id": "dbp.mclg",
+      "topic": "MCLGs for DBPs and MRDLGs for residual disinfectants",
+      "anchors": [
+        "141.53",
+        "141.54"
+      ],
+      "status": "stable"
+    },
+    {
+      "n": 17,
+      "page_id": "dbp.violations.notification",
+      "topic": "Public notification tiers for DBP violations",
+      "anchors": [
+        "subpart Q",
+        "141.133(c)(2)"
+      ],
+      "status": "planned"
+    }
+  ],
+  "d2_fold_in": [
+    {
+      "section": "141.622(a)(1)",
+      "into": "dbp.monitoring.routine",
+      "requirement": "Develop and implement a monitoring plan kept on file for State and public review, complete no later than the initial Subpart V monitoring date, containing monitoring locations, monitoring dates, compliance calculation procedures, and plans for other systems in the combined distribution system where the State reduced requirements under 142.16(m)",
+      "planned_claim_id": "claim.dbp.monitoring.routine.monitoring-plan-required",
+      "claim_kind": "qualitative"
+    },
+    {
+      "section": "141.622(a)(2)",
+      "into": "dbp.monitoring.routine",
+      "requirement": "Systems without an IDSE report and with too few subpart L locations identify additional compliance monitoring locations by alternating selection of high-TTHM and high-HAA5 locations, with rationale; systems with more subpart L locations than needed choose by the same alternation",
+      "planned_claim_id": "claim.dbp.monitoring.routine.monitoring-plan-location-selection",
+      "claim_kind": "qualitative"
+    },
+    {
+      "section": "141.622(b)",
+      "into": "dbp.monitoring.routine",
+      "requirement": "Subpart H systems serving more than 3,300 people submit a copy of the monitoring plan to the State before initial monitoring unless the IDSE report already contains the required information",
+      "planned_claim_id": "claim.dbp.monitoring.routine.monitoring-plan-submittal",
+      "claim_kind": "qualitative"
+    },
+    {
+      "section": "141.622(c)",
+      "into": "dbp.monitoring.routine",
+      "requirement": "Plan revisions for treatment, distribution or layout changes after State consultation; changed locations replace the lowest-LRAA locations with expected high TTHM or HAA5 locations; the State may require modifications; subpart H systems over 3,300 submit the modified plan before complying with it",
+      "planned_claim_id": "claim.dbp.monitoring.routine.monitoring-plan-revision",
+      "claim_kind": "qualitative"
+    },
+    {
+      "section": "141.627",
+      "into": "dbp.monitoring.reduced-increased",
+      "requirement": "Remaining on reduced monitoring after the 141.620(c) dates requires a 40/30 certification under 141.603 or a very small system waiver under 141.604, plus the 141.623(a) criteria, with no change or addition of monitoring locations from subpart L",
+      "planned_claim_id": "claim.dbp.monitoring.reduced-increased.remain-reduced-subpart-l",
+      "claim_kind": "qualitative"
+    },
+    {
+      "section": "141.627 (second sentence)",
+      "into": "dbp.monitoring.reduced-increased",
+      "requirement": "If Subpart V monitoring locations differ from subpart L locations, the system may not remain on reduced monitoring after the 141.620(c) dates",
+      "planned_claim_id": "claim.dbp.monitoring.reduced-increased.remain-reduced-locations-differ",
+      "claim_kind": "qualitative"
+    },
+    {
+      "section": "141.628",
+      "into": "dbp.monitoring.reduced-increased",
+      "requirement": "A system on increased monitoring under 141.132(b)(1) remains on increased monitoring under 141.625 at the 141.622 plan locations from the 141.620(c) date until it qualifies for a return to routine monitoring under 141.625(c)",
+      "planned_claim_id": "claim.dbp.monitoring.reduced-increased.remain-increased-subpart-l",
+      "claim_kind": "qualitative"
+    },
+    {
+      "section": "141.130(a)(1)",
+      "into": "dbp.applicability.stage2",
+      "requirement": "Subpart L applies to CWSs and NTNCWSs that add a chemical disinfectant in any part of treatment: they must meet the MCLs in 141.64, the MRDLs in 141.65 and the precursor treatment technique in 141.135",
+      "planned_claim_id": "claim.dbp.applicability.stage2.subpart-l-scope-cws-ntncws",
+      "claim_kind": "qualitative"
+    },
+    {
+      "section": "141.130(a)(2)",
+      "into": "dbp.applicability.stage2",
+      "requirement": "Transient NCWSs that use chlorine dioxide as a disinfectant or oxidant must meet the chlorine dioxide MRDL in 141.65",
+      "planned_claim_id": "claim.dbp.applicability.stage2.subpart-l-scope-tncws-chlorine-dioxide",
+      "claim_kind": "qualitative"
+    },
+    {
+      "section": "141.130(a)(3)",
+      "into": "dbp.applicability.stage2",
+      "requirement": "Informational statement of purpose naming the regulated byproducts; not a requirement. Compositions are already claims on dbp.definitions",
+      "planned_claim_id": null,
+      "claim_kind": "context only"
+    },
+    {
+      "section": "141.130(b)(1)",
+      "into": "dbp.applicability.stage2",
+      "requirement": "Compliance dates for CWSs and NTNCWSs: subpart H systems serving 10,000 or more from January 1, 2002; subpart H systems under 10,000 and ground water systems not under the direct influence of surface water from January 1, 2004",
+      "planned_claim_id": "claim.dbp.applicability.stage2.subpart-l-compliance-dates-cws-ntncws",
+      "claim_kind": "qualitative"
+    },
+    {
+      "section": "141.130(b)(2)",
+      "into": "dbp.applicability.stage2",
+      "requirement": "Compliance dates for transient NCWSs using chlorine dioxide: the same two dates by the same size and source split",
+      "planned_claim_id": "claim.dbp.applicability.stage2.subpart-l-compliance-dates-tncws",
+      "claim_kind": "qualitative"
+    },
+    {
+      "section": "141.130(c)",
+      "into": "dbp.applicability.stage2",
+      "requirement": "Each regulated CWS and NTNCWS must be operated by qualified personnel meeting State requirements and listed in the State register of qualified operators",
+      "planned_claim_id": "claim.dbp.applicability.stage2.qualified-operators",
+      "claim_kind": "qualitative"
+    },
+    {
+      "section": "141.130(d)",
+      "into": "dbp.applicability.stage2",
+      "requirement": "Notwithstanding the MRDLs, systems may raise chlorine or chloramine residuals (not chlorine dioxide) to the level and for the time needed to protect public health during specified microbiological contamination events",
+      "planned_claim_id": "claim.dbp.applicability.stage2.residual-increase-allowance",
+      "claim_kind": "qualitative"
+    }
+  ],
+  "excluded_sections": [
+    {
+      "section": "141.134",
+      "heading": "Reporting and recordkeeping requirements (subpart L)",
+      "reason": "Reporting rule, excluded from Milestone 1 per D2 (Skitch 2026-11-01, Ari's version). Candidate for a later reporting family."
+    },
+    {
+      "section": "141.629",
+      "heading": "Reporting and recordkeeping requirements (subpart V)",
+      "reason": "Reporting rule, excluded from Milestone 1 per D2 (Skitch 2026-11-01, Ari's version). Candidate for a later reporting family."
+    }
+  ],
+  "coverage_rule": "Every captured section in the family is either anchored by a page above, folded in with a planned claim per requirement, or listed as excluded with its reason."
+}
