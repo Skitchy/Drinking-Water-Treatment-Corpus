@@ -21,19 +21,19 @@
   },
   "generated": {
     "by": "cc",
-    "at": "2026-11-03T17:15:06Z"
+    "at": "2026-11-03T19:18:48Z"
   },
   "review_payload": {
     "canonicalization": "dw-review-payload/v0.1",
-    "sha256": "abc61cd838b8c53cc291669d91020661c90de260264f845d0cf7d423c5a8e269"
+    "sha256": "d4ccb38143b6bfdfd5e32a50738bb51f690e899f481df1c4d986f9e87b135200"
   },
   "normalization": "dw-quote-normalization/v0.1",
   "verified": [
     {
       "by": "process:quote-tool/v0.1-interim",
       "actor_type": "process",
-      "at": "2026-11-03T17:15:06Z",
-      "review_payload_sha256": "abc61cd838b8c53cc291669d91020661c90de260264f845d0cf7d423c5a8e269",
+      "at": "2026-11-03T19:18:48Z",
+      "review_payload_sha256": "d4ccb38143b6bfdfd5e32a50738bb51f690e899f481df1c4d986f9e87b135200",
       "scopes": [
         "source-capture",
         "quote-fidelity"
@@ -77,7 +77,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "9b53babf170a06a6772c3378f5335549405ad77af71e20c9010efa8444d1a82f",
-      "verified_at": "2026-11-03T17:15:06Z"
+      "verified_at": "2026-11-03T19:18:48Z"
     },
     {
       "quote_id": "quote.dbp.mcl.chlorite.compliance-dates",
@@ -91,7 +91,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "e970fb820e550c043c8b49fcb0e65fb13464cebe5ccb4bcdcf7da0b6b7c69ffe",
-      "verified_at": "2026-11-03T17:15:06Z"
+      "verified_at": "2026-11-03T19:18:48Z"
     },
     {
       "quote_id": "quote.dbp.mcl.chlorite.bat",
@@ -105,7 +105,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "404886689b1faa7f9e23fedb12cc9b3ff2650b6e09de21bac22538dbe76bd3ef",
-      "verified_at": "2026-11-03T17:15:06Z"
+      "verified_at": "2026-11-03T19:18:48Z"
     },
     {
       "quote_id": "quote.dbp.mcl.chlorite.scope-and-daily-monitoring",
@@ -119,7 +119,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "2f527a9955cd263de7631388e45b27be53e35ee055c4fb417f21e54530ff2798",
-      "verified_at": "2026-11-03T17:15:06Z"
+      "verified_at": "2026-11-03T19:18:48Z"
     },
     {
       "quote_id": "quote.dbp.mcl.chlorite.monthly-three-sample-set",
@@ -133,7 +133,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "7a9e7d975bc87dfd15eff6ca66468189c3c4625400475ffca43645efb815ff89",
-      "verified_at": "2026-11-03T17:15:06Z"
+      "verified_at": "2026-11-03T19:18:48Z"
     },
     {
       "quote_id": "quote.dbp.mcl.chlorite.additional-monitoring",
@@ -147,7 +147,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "67fe6e704ac544a88c3e5b9a5c748b4c159c458547a74c4ef0b271dde78178d2",
-      "verified_at": "2026-11-03T17:15:06Z"
+      "verified_at": "2026-11-03T19:18:48Z"
     },
     {
       "quote_id": "quote.dbp.mcl.chlorite.reduced-monitoring",
@@ -156,12 +156,12 @@
       "anchor": {
         "selector_type": "text-position",
         "selector_version": "v0.1",
-        "value": "normalized:9992-10584"
+        "value": "normalized:9992-10964"
       },
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
-      "span_sha256": "82e2f3937b027aa0ef528f2008b9903f7ec0c26d2fa4d28aa7d7b020cc7db5d7",
-      "verified_at": "2026-11-03T17:15:06Z"
+      "span_sha256": "741901050b89375b1c3a14e3c7008610cd914f3170f2bbe96ece04870f5412e1",
+      "verified_at": "2026-11-03T19:18:48Z"
     },
     {
       "quote_id": "quote.dbp.mcl.chlorite.compliance",
@@ -175,7 +175,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "95d58289b87f39250f15b6a34f124b5dcaf4ea87d6595dbf8d7d5f9220242bcb",
-      "verified_at": "2026-11-03T17:15:06Z"
+      "verified_at": "2026-11-03T19:18:48Z"
     }
   ],
   "claims": [
@@ -190,7 +190,7 @@
       "value": 1.0,
       "conditions": [
         "The 141.64(a) table lists bromate (0.010 mg/L) and chlorite (1.0 mg/L) together; this claim covers chlorite only",
-        "The chlorite MCLG is 0.8 mg/L (141.53), recorded as claim.dbp.mclg.chlorite on page dbp.mclg"
+        "The MCLG for chlorite is a separate value recorded on page dbp.mclg (claim.dbp.mclg.chlorite); it is not asserted here"
       ],
       "exceptions": [],
       "jurisdiction": "US-federal",
@@ -335,7 +335,7 @@
       },
       "value": "Entrance monitoring may not be reduced; distribution system monitoring may be reduced to one three-sample set per quarter after one year with no individual distribution system sample above the MCL and no triggered additional monitoring",
       "conditions": [
-        "The system must revert to routine monitoring if any of the three quarterly distribution system samples exceeds the MCL or additional monitoring is triggered (141.132(b)(2)(iii)(B), second sentence, not quoted)"
+        "The system must revert to routine monitoring if any of the three quarterly distribution system samples exceeds the MCL or additional monitoring is triggered (141.132(b)(2)(iii)(B), second sentence)"
       ],
       "exceptions": [],
       "jurisdiction": "US-federal",

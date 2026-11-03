@@ -21,19 +21,19 @@
   },
   "generated": {
     "by": "cc",
-    "at": "2026-11-03T17:15:06Z"
+    "at": "2026-11-03T19:18:48Z"
   },
   "review_payload": {
     "canonicalization": "dw-review-payload/v0.1",
-    "sha256": "1460471eac41cc96d7a36594d34b6d3585ea4515d67a3a51b6a23e142399ca01"
+    "sha256": "e33f5b15508f59d1bace1f8da37e524a6f6b69f520feab42e3081f64ace18c06"
   },
   "normalization": "dw-quote-normalization/v0.1",
   "verified": [
     {
       "by": "process:quote-tool/v0.1-interim",
       "actor_type": "process",
-      "at": "2026-11-03T17:15:06Z",
-      "review_payload_sha256": "1460471eac41cc96d7a36594d34b6d3585ea4515d67a3a51b6a23e142399ca01",
+      "at": "2026-11-03T19:18:48Z",
+      "review_payload_sha256": "e33f5b15508f59d1bace1f8da37e524a6f6b69f520feab42e3081f64ace18c06",
       "scopes": [
         "source-capture",
         "quote-fidelity"
@@ -72,7 +72,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "453c52d256e63be4da55c5a1cb6bd9ebe8a99b95ffb30c73875f5a36ba12941d",
-      "verified_at": "2026-11-03T17:15:06Z"
+      "verified_at": "2026-11-03T19:18:48Z"
     },
     {
       "quote_id": "quote.dbp.mcl.tthm.mcl-subpart-l",
@@ -86,7 +86,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "1abd8b2004bc016d62d1bb040f6f6e92e83e8e8e5e27847916b4de3329749805",
-      "verified_at": "2026-11-03T17:15:06Z"
+      "verified_at": "2026-11-03T19:18:48Z"
     },
     {
       "quote_id": "quote.dbp.mcl.tthm.bat-subpart-v",
@@ -100,7 +100,21 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "22cb1c235d0a1c6d2d17a3143b389fcf27d51003db6832c97d5adeb863eede2b",
-      "verified_at": "2026-11-03T17:15:06Z"
+      "verified_at": "2026-11-03T19:18:48Z"
+    },
+    {
+      "quote_id": "quote.dbp.mcl.tthm.bat-subpart-v-consecutive",
+      "source_id": "source.ecfr.2026-07-01.141-64",
+      "captured_source_sha256": "4f1e79cb54139f1901e4a7d7efbd31408b349b661eeb65929426e1f5302933e4",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:3450-3960"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "85c1249967628203951f39c3e45e40eb4f1e2cf841896508e6ce2587db96ccb2",
+      "verified_at": "2026-11-03T19:18:48Z"
     },
     {
       "quote_id": "quote.dbp.mcl.tthm.lraa-quarterly",
@@ -114,7 +128,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "d5e00a20cf29cb4dab98c3c075b12b3777d8f39977dbbaebd52c47a12ac1ed44",
-      "verified_at": "2026-11-03T17:15:06Z"
+      "verified_at": "2026-11-03T19:18:48Z"
     },
     {
       "quote_id": "quote.dbp.mcl.tthm.lraa-less-than-quarterly",
@@ -128,7 +142,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "f7dba7bef79850ffa493d4b112bad4a641f2c3e8237a3df9060be39dd36ef0fb",
-      "verified_at": "2026-11-03T17:15:06Z"
+      "verified_at": "2026-11-03T19:18:48Z"
     },
     {
       "quote_id": "quote.dbp.mcl.tthm.first-compliance-calculation",
@@ -142,7 +156,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "e2675c81f386656195f8ff3401bd4327b323ad162ae9f319e1d97c0d6b486a38",
-      "verified_at": "2026-11-03T17:15:06Z"
+      "verified_at": "2026-11-03T19:18:48Z"
     }
   ],
   "claims": [
@@ -206,7 +220,8 @@
         ]
       },
       "supporting_quote_ids": [
-        "quote.dbp.mcl.tthm.mcl-subpart-v"
+        "quote.dbp.mcl.tthm.mcl-subpart-v",
+        "quote.dbp.mcl.tthm.mcl-subpart-l"
       ]
     },
     {
@@ -333,7 +348,7 @@
       },
       "value": "Enhanced coagulation or enhanced softening, plus GAC10; or nanofiltration with a molecular weight cutoff of 1000 Daltons or less; or GAC20",
       "conditions": [
-        "141.64(b)(2)(iii) lists a different BAT for consecutive systems (distribution system and storage tank management, plus chloramines for systems serving 10,000 or more); not quoted on this page"
+        "Consecutive systems have a separate BAT for the disinfected water they buy or receive; see claim.dbp.mcl.tthm.bat-subpart-v-consecutive on this page"
       ],
       "exceptions": [],
       "jurisdiction": "US-federal",
@@ -351,6 +366,36 @@
       },
       "supporting_quote_ids": [
         "quote.dbp.mcl.tthm.bat-subpart-v"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mcl.tthm.bat-subpart-v-consecutive",
+      "kind": "qualitative",
+      "subject": "Best available technology for the TTHM MCL under subpart V (consecutive systems, disinfected water bought or received)",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Improved distribution system and storage tank management to reduce residence time; systems serving 10,000 or more also use chloramines for disinfectant residual maintenance",
+      "conditions": [
+        "Applies only to the disinfected water that consecutive systems buy or otherwise receive (141.64(b)(2)(iii))"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to the TTHM and HAA5 MCLs"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mcl.tthm.bat-subpart-v-consecutive"
       ]
     }
   ]
