@@ -1,0 +1,300 @@
+{
+  "mode": "drift-report-only",
+  "checked_at": "2026-11-02T07:10:07Z",
+  "ecfr_current_date": "2026-10-28",
+  "capture_point_in_time": "2026-07-01",
+  "registry_id": "source-registry.dbp-first-proof",
+  "counts": {
+    "unchanged": 27,
+    "unchanged-text": 1,
+    "not-watched": 1
+  },
+  "sources": [
+    {
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.130.xml",
+      "captured_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.130",
+      "current_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "captured_normalized_sha256": "70fe4e227c300aca2a643e207eb898c43f87949eddf95e69013b219b8fe245d8",
+      "current_normalized_sha256": "70fe4e227c300aca2a643e207eb898c43f87949eddf95e69013b219b8fe245d8",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-131",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.131.xml",
+      "captured_sha256": "b01ad4a7ad578a9fabd3cc886964a0351f1a741286de22e314b400d3e30f4fd9",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.131",
+      "current_sha256": "b01ad4a7ad578a9fabd3cc886964a0351f1a741286de22e314b400d3e30f4fd9",
+      "captured_normalized_sha256": "51c5e21b19f658dd334175fc4be9ef4538f4339b03c2151bce59508a668ca03f",
+      "current_normalized_sha256": "51c5e21b19f658dd334175fc4be9ef4538f4339b03c2151bce59508a668ca03f",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.132.xml",
+      "captured_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.132",
+      "current_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "captured_normalized_sha256": "6280e5b75eaa858203b6473bec2a409303dd24628c61f9d14cab6581e765883a",
+      "current_normalized_sha256": "6280e5b75eaa858203b6473bec2a409303dd24628c61f9d14cab6581e765883a",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-133",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.133.xml",
+      "captured_sha256": "4b773cefc584399af240124de5887ba45088b428f3a242dffe1ad43ed6edba82",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.133",
+      "current_sha256": "4b773cefc584399af240124de5887ba45088b428f3a242dffe1ad43ed6edba82",
+      "captured_normalized_sha256": "c9c3df8c5001fbfb2588526234ff25eef291e2489af80ba89b9faa1c4e55732d",
+      "current_normalized_sha256": "c9c3df8c5001fbfb2588526234ff25eef291e2489af80ba89b9faa1c4e55732d",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-134",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.134.xml",
+      "captured_sha256": "40693c44be7ed5dbd238e9f169df104a9291185ad3c0604086cb06fe2da57d4b",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.134",
+      "current_sha256": "40693c44be7ed5dbd238e9f169df104a9291185ad3c0604086cb06fe2da57d4b",
+      "captured_normalized_sha256": "2ac8467024826a699b3d7b59da3cf5036c5ae2e9d71ddfcbebecfce8eab33029",
+      "current_normalized_sha256": "2ac8467024826a699b3d7b59da3cf5036c5ae2e9d71ddfcbebecfce8eab33029",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-135",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.135.xml",
+      "captured_sha256": "b6344112bef59ef28267c25414f33f5356ff512e1ce2a7339e9fc9ce91240c48",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.135",
+      "current_sha256": "b6344112bef59ef28267c25414f33f5356ff512e1ce2a7339e9fc9ce91240c48",
+      "captured_normalized_sha256": "ba87c1301f834a9b11e9de4eceeafafbeda7b496ea0714f3d745eda57c84d82e",
+      "current_normalized_sha256": "ba87c1301f834a9b11e9de4eceeafafbeda7b496ea0714f3d745eda57c84d82e",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-2",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.2.xml",
+      "captured_sha256": "d2d9daa22334d43c6acd38c094e281a5ed23142cab14578d7be0fe968e9d37f1",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.2",
+      "current_sha256": "d2d9daa22334d43c6acd38c094e281a5ed23142cab14578d7be0fe968e9d37f1",
+      "captured_normalized_sha256": "b96c41a6092a32f523d39d7c42da46ce271608898994314c76619f5e7d8f9075",
+      "current_normalized_sha256": "b96c41a6092a32f523d39d7c42da46ce271608898994314c76619f5e7d8f9075",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-53",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.53.xml",
+      "captured_sha256": "c0b51975a3bb64b989dde8c0f77b8124eea622a96f963a7e33df94b5c2f74c15",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.53",
+      "current_sha256": "c0b51975a3bb64b989dde8c0f77b8124eea622a96f963a7e33df94b5c2f74c15",
+      "captured_normalized_sha256": "e8061ccae49539019a9fcd4beea1826d199d7e187cc17a6affdfa1671b25553f",
+      "current_normalized_sha256": "e8061ccae49539019a9fcd4beea1826d199d7e187cc17a6affdfa1671b25553f",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-54",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.54.xml",
+      "captured_sha256": "43b0f7a95c737daaac27d1b23e626f8d38140f60e6db66da2edc8c010678d2d1",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.54",
+      "current_sha256": "43b0f7a95c737daaac27d1b23e626f8d38140f60e6db66da2edc8c010678d2d1",
+      "captured_normalized_sha256": "04710a94aaecbb3550eeb00d7bee1dfc7fa6b20e2e99a58e5d912f3e9f020f7a",
+      "current_normalized_sha256": "04710a94aaecbb3550eeb00d7bee1dfc7fa6b20e2e99a58e5d912f3e9f020f7a",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-600",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.600.xml",
+      "captured_sha256": "ddd9a1a2e0a8fc0436952cb15ac7b571f19afcf09ed1bf7f0bc775c8a43e1037",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.600",
+      "current_sha256": "ddd9a1a2e0a8fc0436952cb15ac7b571f19afcf09ed1bf7f0bc775c8a43e1037",
+      "captured_normalized_sha256": "e89e8bf0c14f2837f9c3469c3bca1fe308c16ae8100407c0e2f39caae4b119aa",
+      "current_normalized_sha256": "e89e8bf0c14f2837f9c3469c3bca1fe308c16ae8100407c0e2f39caae4b119aa",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-601",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.601.xml",
+      "captured_sha256": "e7245a70216896c265e9de9f9d5680c4f1224aacea5cc4ae695975a2ac6f325e",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.601",
+      "current_sha256": "e7245a70216896c265e9de9f9d5680c4f1224aacea5cc4ae695975a2ac6f325e",
+      "captured_normalized_sha256": "96da17d3d52a46e1866e213d0500c47fd5699f865d2e72800900643b473f7f69",
+      "current_normalized_sha256": "96da17d3d52a46e1866e213d0500c47fd5699f865d2e72800900643b473f7f69",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-602",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.602.xml",
+      "captured_sha256": "cf20907431607eb4010f58f14ebff0efcc65a4ff3d10be8f6dd6316a6a88ba3a",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.602",
+      "current_sha256": "cf20907431607eb4010f58f14ebff0efcc65a4ff3d10be8f6dd6316a6a88ba3a",
+      "captured_normalized_sha256": "c03acc136afae25f75a1271c2417c49d3d2796280bca7af6ae081adc00c293b6",
+      "current_normalized_sha256": "c03acc136afae25f75a1271c2417c49d3d2796280bca7af6ae081adc00c293b6",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-603",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.603.xml",
+      "captured_sha256": "e218cb4d127b654a4a663755e3a102aa7b7be743e5c8d97a0ad04eeee9547816",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.603",
+      "current_sha256": "e218cb4d127b654a4a663755e3a102aa7b7be743e5c8d97a0ad04eeee9547816",
+      "captured_normalized_sha256": "bde946a3ca3a16e8d38d0b83cababd4e394fc2e6f31ae5f8fc9dd4fd78659b31",
+      "current_normalized_sha256": "bde946a3ca3a16e8d38d0b83cababd4e394fc2e6f31ae5f8fc9dd4fd78659b31",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-604",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.604.xml",
+      "captured_sha256": "fe918e9df3367fca138ebdc895a955a18cd198dc8e236832b6ba22f3ece6c482",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.604",
+      "current_sha256": "fe918e9df3367fca138ebdc895a955a18cd198dc8e236832b6ba22f3ece6c482",
+      "captured_normalized_sha256": "14fdb67abeff83f5b6ae913a1f558bf2bfeb90e9c3c003520c32aee92d40a536",
+      "current_normalized_sha256": "14fdb67abeff83f5b6ae913a1f558bf2bfeb90e9c3c003520c32aee92d40a536",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-605",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.605.xml",
+      "captured_sha256": "64518842399a5a2f70d40ed322d3a35b881f0bf486a2d9b8e3b71f5d45f000d4",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.605",
+      "current_sha256": "64518842399a5a2f70d40ed322d3a35b881f0bf486a2d9b8e3b71f5d45f000d4",
+      "captured_normalized_sha256": "8bac1c9842e3ea8d843080bd42b84fb091f375a118a3b2ff148f8b500635373b",
+      "current_normalized_sha256": "8bac1c9842e3ea8d843080bd42b84fb091f375a118a3b2ff148f8b500635373b",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.620.xml",
+      "captured_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.620",
+      "current_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "captured_normalized_sha256": "518ef7bf515950980ea231954346cce70bf23593f44e5dc8ed198b96b20346f2",
+      "current_normalized_sha256": "518ef7bf515950980ea231954346cce70bf23593f44e5dc8ed198b96b20346f2",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-621",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.621.xml",
+      "captured_sha256": "dc4006382d5ef57e3c300410dd3aa3b0947bd75342b7609d872d3e5a2e579fba",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.621",
+      "current_sha256": "dc4006382d5ef57e3c300410dd3aa3b0947bd75342b7609d872d3e5a2e579fba",
+      "captured_normalized_sha256": "45573e0e593eb3c4ca6942d29cd25f208b9bf9ab41674e363a70c825b30114ae",
+      "current_normalized_sha256": "45573e0e593eb3c4ca6942d29cd25f208b9bf9ab41674e363a70c825b30114ae",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-622",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.622.xml",
+      "captured_sha256": "757abcae4d11290d5d791c79d20923fe0c3167882aa20c19cd2084ab444f36c3",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.622",
+      "current_sha256": "757abcae4d11290d5d791c79d20923fe0c3167882aa20c19cd2084ab444f36c3",
+      "captured_normalized_sha256": "b015e40b6905c878bd837c1a2a1ed604c73a1e65486f78979133244e190b84a1",
+      "current_normalized_sha256": "b015e40b6905c878bd837c1a2a1ed604c73a1e65486f78979133244e190b84a1",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-623",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.623.xml",
+      "captured_sha256": "e92fe16208d0a5c5646b69458c57a704000fe98445ca84c95995b7e261db1387",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.623",
+      "current_sha256": "e92fe16208d0a5c5646b69458c57a704000fe98445ca84c95995b7e261db1387",
+      "captured_normalized_sha256": "b5a845b25530e4c559ac95df882129a5e091cd3255bbcddf94b9f75b08484135",
+      "current_normalized_sha256": "b5a845b25530e4c559ac95df882129a5e091cd3255bbcddf94b9f75b08484135",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-624",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.624.xml",
+      "captured_sha256": "1d1dc31f75464c5bbed4e8d8b691ddc657dd5ec2d7a18a540786cdb998c6cd9c",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.624",
+      "current_sha256": "1d1dc31f75464c5bbed4e8d8b691ddc657dd5ec2d7a18a540786cdb998c6cd9c",
+      "captured_normalized_sha256": "e21f864bda7e05afa13a3dc3427f8f416bc6d2857b7973fbfe9997966c8d5038",
+      "current_normalized_sha256": "e21f864bda7e05afa13a3dc3427f8f416bc6d2857b7973fbfe9997966c8d5038",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-625",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.625.xml",
+      "captured_sha256": "b733ecb787db890bedaff88bf36716600ec0dd1e2f7d76998a2a4f07debbd146",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.625",
+      "current_sha256": "b733ecb787db890bedaff88bf36716600ec0dd1e2f7d76998a2a4f07debbd146",
+      "captured_normalized_sha256": "d1210a289075bd3469993f8a42a5563ca448e61e01ccb857f6e8b3f4a1c00627",
+      "current_normalized_sha256": "d1210a289075bd3469993f8a42a5563ca448e61e01ccb857f6e8b3f4a1c00627",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-626",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.626.xml",
+      "captured_sha256": "1e0236a178040706011ba181be05d7a6405a1c272341702d7ad903ec391c0767",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.626",
+      "current_sha256": "1e0236a178040706011ba181be05d7a6405a1c272341702d7ad903ec391c0767",
+      "captured_normalized_sha256": "ffb0391e58b175a390282b609553d12dc3819b1fd6bce754cd0d085a6caaf943",
+      "current_normalized_sha256": "ffb0391e58b175a390282b609553d12dc3819b1fd6bce754cd0d085a6caaf943",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-627",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.627.xml",
+      "captured_sha256": "26604b70b948031febdc1f4f4e62fcfc49cedee5892d99203fabc07f75e04eb8",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.627",
+      "current_sha256": "26604b70b948031febdc1f4f4e62fcfc49cedee5892d99203fabc07f75e04eb8",
+      "captured_normalized_sha256": "3c5d72f9c2fbdf36130fd9571198324bf8649864cb9a236b68cab969af20d4e0",
+      "current_normalized_sha256": "3c5d72f9c2fbdf36130fd9571198324bf8649864cb9a236b68cab969af20d4e0",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-628",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.628.xml",
+      "captured_sha256": "13785466eb176b2b13232ae6d25d438dbd49d0dee96f1f7e8f713594742d585e",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.628",
+      "current_sha256": "13785466eb176b2b13232ae6d25d438dbd49d0dee96f1f7e8f713594742d585e",
+      "captured_normalized_sha256": "26933459c0b9499f318914e7c8f0dfe2ff3170a27e3a413fee8c778716f95350",
+      "current_normalized_sha256": "26933459c0b9499f318914e7c8f0dfe2ff3170a27e3a413fee8c778716f95350",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-629",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.629.xml",
+      "captured_sha256": "9cef5d05e5d60a318859b5c340d034b3136f52e0741f9a68d6702c271fbad63e",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.629",
+      "current_sha256": "9cef5d05e5d60a318859b5c340d034b3136f52e0741f9a68d6702c271fbad63e",
+      "captured_normalized_sha256": "faaf54543702a700217152b303835fae2158747d743caf7d1fe5cfff2cd0d564",
+      "current_normalized_sha256": "faaf54543702a700217152b303835fae2158747d743caf7d1fe5cfff2cd0d564",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-64",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.64.xml",
+      "captured_sha256": "4f1e79cb54139f1901e4a7d7efbd31408b349b661eeb65929426e1f5302933e4",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.64",
+      "current_sha256": "4f1e79cb54139f1901e4a7d7efbd31408b349b661eeb65929426e1f5302933e4",
+      "captured_normalized_sha256": "cc8625b291eaa858ba889339447ef2f5177f049e7d4337b1186e53346090db31",
+      "current_normalized_sha256": "cc8625b291eaa858ba889339447ef2f5177f049e7d4337b1186e53346090db31",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-65",
+      "capture_file": "sources/captures/ecfr-2026-07-01/section-141.65.xml",
+      "captured_sha256": "694ca7a525b44bf26d901f0724e878a552881b9d938d7c546bef64177bd9bcc5",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.65",
+      "current_sha256": "694ca7a525b44bf26d901f0724e878a552881b9d938d7c546bef64177bd9bcc5",
+      "captured_normalized_sha256": "57c48e9069a377b2b4de97dd2b74c6ea15b08c3860d63a54c110903f0f29c68c",
+      "current_normalized_sha256": "57c48e9069a377b2b4de97dd2b74c6ea15b08c3860d63a54c110903f0f29c68c",
+      "status": "unchanged"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.subpart-q",
+      "capture_file": "sources/captures/ecfr-2026-07-01/subpart-Q.xml",
+      "captured_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&subpart=Q",
+      "current_sha256": "58cf8e9668b75a054e74fc5e1f8dfbd87185a2df51c480ff08680368451b0a13",
+      "captured_normalized_sha256": "b7df5da6bcaa8e12443b6535632848185d1c8b9cbbe8d6ba5436b7b6ae1e7eb0",
+      "current_normalized_sha256": "b7df5da6bcaa8e12443b6535632848185d1c8b9cbbe8d6ba5436b7b6ae1e7eb0",
+      "status": "unchanged-text",
+      "note": "bytes differ, normalized text identical"
+    },
+    {
+      "source_id": "source.epa.qrg.816-f-10-080",
+      "status": "not-watched",
+      "note": "non-eCFR source; not compared"
+    }
+  ]
+}

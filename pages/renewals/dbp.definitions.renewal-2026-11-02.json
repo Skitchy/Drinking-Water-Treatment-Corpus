@@ -1,0 +1,58 @@
+{
+  "schema_version": "page-renewal/v0.1-interim",
+  "renewal_id": "renewal.dbp.definitions.2026-11-02",
+  "page_id": "dbp.definitions",
+  "page_file": "pages/dbp.definitions.json",
+  "page_file_sha256": "0bab336bfc910d52e80ce5fabe8ee52c8817087e44ec4454f5e1074352ac4b16",
+  "bound_review_payload_sha256": "c6f7ddfbd166c695956d2b5201d6cf8b3e2eb193f8c4c0de3812cee40ee506ef",
+  "bound_human_review": [
+    {
+      "by": "human.skitch",
+      "actor_type": "human",
+      "at": "2026-07-31T10:10:27Z",
+      "review_payload_sha256": "c6f7ddfbd166c695956d2b5201d6cf8b3e2eb193f8c4c0de3812cee40ee506ef",
+      "scopes": [
+        "editorial-accuracy",
+        "applicability",
+        "context-completeness"
+      ]
+    }
+  ],
+  "source_check": {
+    "drift_report": "sources/watch/drift-2026-10-28.json",
+    "drift_report_sha256": "15ce6a162152cb2012cec031901c9a48af894c03a06b9645a40c6c57df47044a",
+    "checked_at": "2026-11-02T07:10:07Z",
+    "ecfr_current_date": "2026-10-28",
+    "comparison": "normalized text (dw-quote-normalization/v0.1); raw digests recorded for provenance",
+    "sources": [
+      {
+        "source_id": "source.ecfr.2026-07-01.141-2",
+        "status": "unchanged",
+        "captured_sha256": "d2d9daa22334d43c6acd38c094e281a5ed23142cab14578d7be0fe968e9d37f1",
+        "current_sha256": "d2d9daa22334d43c6acd38c094e281a5ed23142cab14578d7be0fe968e9d37f1",
+        "captured_normalized_sha256": "b96c41a6092a32f523d39d7c42da46ce271608898994314c76619f5e7d8f9075",
+        "current_normalized_sha256": "b96c41a6092a32f523d39d7c42da46ce271608898994314c76619f5e7d8f9075",
+        "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.2"
+      },
+      {
+        "source_id": "source.ecfr.2026-07-01.141-132",
+        "status": "unchanged",
+        "captured_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+        "current_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+        "captured_normalized_sha256": "6280e5b75eaa858203b6473bec2a409303dd24628c61f9d14cab6581e765883a",
+        "current_normalized_sha256": "6280e5b75eaa858203b6473bec2a409303dd24628c61f9d14cab6581e765883a",
+        "current_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-28/title-40.xml?part=141&section=141.132"
+      }
+    ]
+  },
+  "result": "unchanged",
+  "problems": [],
+  "checked_by": "process:source_watch/v0.2",
+  "renewed_by": "process:renew_page/v0.1",
+  "renewed_at": "2026-11-02",
+  "previous_stale_after": "2026-10-29",
+  "new_stale_after": "2027-01-31",
+  "requires_resign": false,
+  "note": "Decision D3 (Skitch, 2026-11-01): unchanged content needs no re-sign; changed content does. This record never alters the signed page payload.",
+  "renewal_payload_sha256": "a41ebf27855ee8defa8a19239a260749b5ee39f8235c6eb6284f21cb653e3e9a"
+}
