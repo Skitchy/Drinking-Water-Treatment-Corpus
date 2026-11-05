@@ -1,0 +1,582 @@
+{
+  "schema_version": "drinking-water-profile/v0.1",
+  "type": "concept",
+  "page_id": "dbp.violations.notification",
+  "title": "Public notification of DBP violations: who notifies, the tier of each DBP violation, timing by tier, and the mandatory health effects language",
+  "status": "draft",
+  "assurance_profile": "drinking-water/v0.1",
+  "use_class": "regulatory-reference",
+  "jurisdiction": "US-federal",
+  "applicability": {
+    "system_types": [
+      "community-water-system",
+      "nontransient-noncommunity-water-system",
+      "transient-noncommunity-water-system"
+    ],
+    "conditions": [
+      "Every public water system gives notice for violations of national primary drinking water regulations, including MCL, MRDL, treatment technique, monitoring and testing procedure violations (141.201(a)); the DBP violations are those of subparts L, U and V as appendix A assigns them"
+    ],
+    "exclusions": []
+  },
+  "generated": {
+    "by": "cc",
+    "at": "2026-11-05T18:14:20Z"
+  },
+  "review_payload": {
+    "canonicalization": "dw-review-payload/v0.1",
+    "sha256": "47b48416db6f5983fd6d544b6d81d9b8a2d6c07b6184f3cf323652e1d36757fd"
+  },
+  "normalization": "dw-quote-normalization/v0.1",
+  "verified": [
+    {
+      "by": "process:quote-tool/v0.1-interim",
+      "actor_type": "process",
+      "at": "2026-11-05T18:14:20Z",
+      "review_payload_sha256": "47b48416db6f5983fd6d544b6d81d9b8a2d6c07b6184f3cf323652e1d36757fd",
+      "scopes": [
+        "source-capture",
+        "quote-fidelity"
+      ]
+    }
+  ],
+  "stale_after": "2027-01-31",
+  "source_watch": {
+    "watch_id": "watch.dbp.violations.notification",
+    "last_result": "unchanged",
+    "last_checked_at": "2026-11-02T07:10:07Z",
+    "next_due_at": "2026-12-02T07:10:07Z"
+  },
+  "source_refs": [
+    {
+      "source_id": "source.ecfr.2026-07-01.subpart-q",
+      "captured_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "licensing_decision_payload_sha256": "d2579196d10373f2a13229a2d41ed0149534e0c19067778c6d621a94986c75f4"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-133",
+      "captured_sha256": "4b773cefc584399af240124de5887ba45088b428f3a242dffe1ad43ed6edba82",
+      "licensing_decision_payload_sha256": "d6ec1d0234a47c5182c72e45fb04196e4e433d2da71315fdca65a5a605d7c1c4"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "licensing_decision_payload_sha256": "e40a6d648819e123a5fee502351324de387c8c363e13a373a99d6a21e7d2a7e0"
+    }
+  ],
+  "quotes": [
+    {
+      "quote_id": "quote.dbp.violations.notification.who-must-notify",
+      "source_id": "source.ecfr.2026-07-01.subpart-q",
+      "captured_source_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:914-1621"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "2b6a6f48ab3b6524ef670c1a0a3dfc4ed42daf7560da14a1aa887c70314c7b38",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.violations.notification.tier1-chlorine-dioxide",
+      "source_id": "source.ecfr.2026-07-01.subpart-q",
+      "captured_source_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:6409-6769"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "40e83ca52c0eb8bbfc6eb49d059da5462865df69f71a43a9377ba4b8e0ab0bda",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.violations.notification.tier1-timing",
+      "source_id": "source.ecfr.2026-07-01.subpart-q",
+      "captured_source_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:8370-8866"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "9cab44508db113426f254e208cb53fcbf0065d3bf1705e15ac1cc9a431f5b2af",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.violations.notification.tier2-categories",
+      "source_id": "source.ecfr.2026-07-01.subpart-q",
+      "captured_source_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:10589-11138"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "f472e4026e6beb2915a2f1c85603d114129e0281e22e52bb41902fa10e70ce67",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.violations.notification.tier2-timing",
+      "source_id": "source.ecfr.2026-07-01.subpart-q",
+      "captured_source_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:11486-11889"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "07f7a6066ba0054764e9108f36aa7eaa3581c413b7a58ecbdaba28f736b99377",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.violations.notification.tier3-categories",
+      "source_id": "source.ecfr.2026-07-01.subpart-q",
+      "captured_source_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:16996-17486"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "712836f96ff1968cca6809420548e53c1e85816ce4f780ccf11a25becdc6e44a",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.violations.notification.tier3-timing",
+      "source_id": "source.ecfr.2026-07-01.subpart-q",
+      "captured_source_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:17900-18316"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "37b99c01f905faa3455a14bfc7d4b456383c0a913bb87127caba5fc624771d21",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.violations.notification.appendix-a-dbp-rows",
+      "source_id": "source.ecfr.2026-07-01.subpart-q",
+      "captured_source_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:43939-44731"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "a68f4acf66fc131d155546de6d87683d4faa9c88d401d47a852aa8f040806a24",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.violations.notification.appendix-a-notes-15-16",
+      "source_id": "source.ecfr.2026-07-01.subpart-q",
+      "captured_source_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:50269-50685"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "053cf08c7ae2b8b304f17eacb50d0444421f706cf06b169f806473d63fe7f82f",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.violations.notification.appendix-a-note-19",
+      "source_id": "source.ecfr.2026-07-01.subpart-q",
+      "captured_source_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:87163-87403"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "8f4bfa446c859daaa8e0bdc07650d37b0930348ab80824fd23769c87df09b24e",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.violations.notification.health-effects-byproducts",
+      "source_id": "source.ecfr.2026-07-01.subpart-q",
+      "captured_source_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:78232-79133"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "bce5441d9f0217483a1269383addef4566bc9620419008fc14427b752ecdd294",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.violations.notification.health-effects-residuals",
+      "source_id": "source.ecfr.2026-07-01.subpart-q",
+      "captured_source_sha256": "a28416cb4c715ffbb11da3473a3f471179fb9772b57c611c20c474dfd9cb82c1",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:79134-80163"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "aa93d9be11997659798fe88bf61c44f3bd6818c100f8ae4dab5d83172226e681",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.violations.notification.acute-violation",
+      "source_id": "source.ecfr.2026-07-01.141-133",
+      "captured_source_sha256": "4b773cefc584399af240124de5887ba45088b428f3a242dffe1ad43ed6edba82",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:4792-5803"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "e33ca6adc2136d09c3ee85d601cae62f92c8560f2935144539d5359509d2c482",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.violations.notification.nonacute-violation",
+      "source_id": "source.ecfr.2026-07-01.141-133",
+      "captured_source_sha256": "4b773cefc584399af240124de5887ba45088b428f3a242dffe1ad43ed6edba82",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:5804-6398"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "c28c22a0049c31f17b1e945e20b82ab0032eb4ddb6de535d463bd2abf4cd1534",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.violations.notification.subpart-l-scope",
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_source_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:127-571"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "5c625225f1c040697f42072df193282d638401bd9a16f02fa6a60dc4600c524c",
+      "verified_at": "2026-11-05T18:14:20Z"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "claim.dbp.violations.notification.who-must-notify",
+      "kind": "qualitative",
+      "subject": "Who gives public notice of DBP violations",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Each owner or operator of a public water system (community, nontransient noncommunity and transient noncommunity) gives notice for all violations of national primary drinking water regulations, which include MCL, MRDL, treatment technique, monitoring and testing procedure violations; appendix A to subpart Q assigns the tier for each violation",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every public water system gives notice for violations of national primary drinking water regulations, including MCL, MRDL, treatment technique, monitoring and testing procedure violations (141.201(a)); the DBP violations are those of subparts L, U and V as appendix A assigns them"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.violations.notification.who-must-notify",
+        "quote.dbp.violations.notification.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.violations.notification.tier-assignments-dbp",
+      "kind": "qualitative",
+      "subject": "Public notice tiers for DBP rule violations (appendix A to subpart Q)",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "MCL violations for TTHM, HAA5, bromate and chlorite, MRDL violations for chlorine and chloramine, chlorine dioxide MRDL violations where only two consecutive daily entrance samples are above the MRDL, and treatment technique violations for control of DBP precursors (TOC) are Tier 2; the chlorine dioxide MRDL violation where distribution system samples the next day are also above the MRDL is Tier 1; the monitoring and testing procedure violations under 141.132, 141.600 through 141.605 and 141.620 through 141.629 are Tier 3, except that failing to monitor for chlorine dioxide at the entrance the day after an entrance exceedance is Tier 2",
+      "conditions": [
+        "The primacy agency may determine that a Tier 1 notice is required for an MCL, MRDL or treatment technique violation, or a Tier 2 rather than Tier 3 notice for a monitoring or testing violation, taking into account potential health impacts and persistence (141.203(a), 141.204(a))"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every public water system gives notice for violations of national primary drinking water regulations, including MCL, MRDL, treatment technique, monitoring and testing procedure violations (141.201(a)); the DBP violations are those of subparts L, U and V as appendix A assigns them"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.violations.notification.appendix-a-dbp-rows",
+        "quote.dbp.violations.notification.appendix-a-notes-15-16",
+        "quote.dbp.violations.notification.tier2-categories",
+        "quote.dbp.violations.notification.tier3-categories",
+        "quote.dbp.violations.notification.who-must-notify",
+        "quote.dbp.violations.notification.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.violations.notification.tier1-chlorine-dioxide",
+      "kind": "qualitative",
+      "subject": "The one DBP violation that requires a Tier 1 public notice",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Violation of the chlorine dioxide MRDL when one or more samples taken in the distribution system the day after an exceedance at the entrance exceed the MRDL, or when the system does not take the required distribution system samples (141.133(c)(2)(i)); the system must also take immediate corrective action to lower chlorine dioxide below the MRDL",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every public water system gives notice for violations of national primary drinking water regulations, including MCL, MRDL, treatment technique, monitoring and testing procedure violations (141.201(a)); the DBP violations are those of subparts L, U and V as appendix A assigns them"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.violations.notification.tier1-chlorine-dioxide",
+        "quote.dbp.violations.notification.acute-violation",
+        "quote.dbp.violations.notification.appendix-a-notes-15-16",
+        "quote.dbp.violations.notification.who-must-notify",
+        "quote.dbp.violations.notification.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.violations.notification.tier1-timing",
+      "kind": "qualitative",
+      "subject": "When and how a Tier 1 notice is given",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "As soon as practical but no later than 24 hours after the system learns of the violation, with consultation of the primacy agency initiated within the same 24 hours to determine additional notice requirements",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every public water system gives notice for violations of national primary drinking water regulations, including MCL, MRDL, treatment technique, monitoring and testing procedure violations (141.201(a)); the DBP violations are those of subparts L, U and V as appendix A assigns them"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.violations.notification.tier1-timing",
+        "quote.dbp.violations.notification.who-must-notify",
+        "quote.dbp.violations.notification.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.violations.notification.nonacute-chlorine-dioxide-tier2",
+      "kind": "qualitative",
+      "subject": "Public notice for a nonacute chlorine dioxide MRDL violation",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Two consecutive daily entrance samples above the MRDL with all distribution system samples below it is a nonacute violation noticed under the subpart Q procedures for nonacute health risks, a Tier 2 notice; failing to monitor at the entrance the day after an entrance exceedance is also a Tier 2 violation",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every public water system gives notice for violations of national primary drinking water regulations, including MCL, MRDL, treatment technique, monitoring and testing procedure violations (141.201(a)); the DBP violations are those of subparts L, U and V as appendix A assigns them"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.violations.notification.nonacute-violation",
+        "quote.dbp.violations.notification.appendix-a-dbp-rows",
+        "quote.dbp.violations.notification.appendix-a-notes-15-16",
+        "quote.dbp.violations.notification.who-must-notify",
+        "quote.dbp.violations.notification.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.violations.notification.tier2-timing",
+      "kind": "qualitative",
+      "subject": "When a Tier 2 notice is given",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "As soon as practical but no later than 30 days after the system learns of the violation; a posted notice stays in place as long as the violation persists and in no case less than seven days",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every public water system gives notice for violations of national primary drinking water regulations, including MCL, MRDL, treatment technique, monitoring and testing procedure violations (141.201(a)); the DBP violations are those of subparts L, U and V as appendix A assigns them"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.violations.notification.tier2-timing",
+        "quote.dbp.violations.notification.who-must-notify",
+        "quote.dbp.violations.notification.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.violations.notification.tier3-timing",
+      "kind": "qualitative",
+      "subject": "When a Tier 3 notice is given",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Not later than one year after the system learns of the violation, repeated annually for as long as the violation persists",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every public water system gives notice for violations of national primary drinking water regulations, including MCL, MRDL, treatment technique, monitoring and testing procedure violations (141.201(a)); the DBP violations are those of subparts L, U and V as appendix A assigns them"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.violations.notification.tier3-timing",
+        "quote.dbp.violations.notification.who-must-notify",
+        "quote.dbp.violations.notification.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.violations.notification.subpart-v-mcls-in-notice-rules",
+      "kind": "qualitative",
+      "subject": "How appendix A states the subpart V TTHM and HAA5 MCLs",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Community and nontransient noncommunity systems comply with subpart V TTHM and HAA5 MCLs of 0.080 mg/L and 0.060 mg/L, with compliance calculated as a locational running annual average, on the 141.620 schedule",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every public water system gives notice for violations of national primary drinking water regulations, including MCL, MRDL, treatment technique, monitoring and testing procedure violations (141.201(a)); the DBP violations are those of subparts L, U and V as appendix A assigns them"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.violations.notification.appendix-a-note-19",
+        "quote.dbp.violations.notification.who-must-notify",
+        "quote.dbp.violations.notification.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.violations.notification.health-effects-language-byproducts",
+      "kind": "qualitative",
+      "subject": "Mandatory health effects language for TTHM, HAA5, bromate and chlorite notices (appendix B to subpart Q)",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "TTHM: some people who drink water containing trihalomethanes in excess of the MCL over many years may experience problems with their liver, kidneys, or central nervous system, and may have an increased risk of getting cancer; HAA5 and bromate: an increased risk of getting cancer over many years; chlorite: some infants and young children could experience nervous system effects, similar effects may occur in fetuses of pregnant women, and some people may experience anemia",
+      "conditions": [
+        "Appendix B lists the MCLG and MCL beside each entry: TTHM N/A and 0.080, HAA5 N/A and 0.060, bromate zero and 0.010, chlorite 0.08 and 1.0, in mg/L"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every public water system gives notice for violations of national primary drinking water regulations, including MCL, MRDL, treatment technique, monitoring and testing procedure violations (141.201(a)); the DBP violations are those of subparts L, U and V as appendix A assigns them"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.violations.notification.health-effects-byproducts",
+        "quote.dbp.violations.notification.who-must-notify",
+        "quote.dbp.violations.notification.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.violations.notification.health-effects-language-residuals",
+      "kind": "qualitative",
+      "subject": "Mandatory health effects language for chlorine, chloramine and chlorine dioxide notices (appendix B to subpart Q)",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Chlorine and chloramines: some people who use water containing them well in excess of the MRDL could experience irritating effects to their eyes and nose, and some who drink it could experience stomach discomfort (or anemia, for chloramines); chlorine dioxide, where two consecutive daily entrance samples are above the MRDL: some infants and young children could experience nervous system effects, similar effects may occur in fetuses of pregnant women, and some people may experience anemia",
+      "conditions": [
+        "Appendix B lists the MRDLG and MRDL beside each entry: chlorine and chloramines 4 and 4.0, chlorine dioxide 0.8 and 0.8, in mg/L; the separate appendix B chlorine dioxide entry for distribution system exceedances adds language about short-term exposure and is not quoted on this page"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every public water system gives notice for violations of national primary drinking water regulations, including MCL, MRDL, treatment technique, monitoring and testing procedure violations (141.201(a)); the DBP violations are those of subparts L, U and V as appendix A assigns them"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.violations.notification.health-effects-residuals",
+        "quote.dbp.violations.notification.who-must-notify",
+        "quote.dbp.violations.notification.subpart-l-scope"
+      ]
+    }
+  ]
+}

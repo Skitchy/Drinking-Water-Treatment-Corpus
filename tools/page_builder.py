@@ -18,9 +18,10 @@ NEXT_DUE = "2026-12-02T07:10:07Z"
 STALE_AFTER = "2027-01-31"               # aligned with the two renewed pages and Batch 1
 _texts = {}
 
-def text(sec):
+def text(sec, file=None):
+    """Normalized capture text for a section; `file` names the capture when it is not section-<sec>.xml (subpart Q)."""
     if sec not in _texts:
-        _texts[sec] = quote_tool.normalized_text(str(CAP / f"section-{sec}.xml"))
+        _texts[sec] = quote_tool.normalized_text(str(CAP / (file or f"section-{sec}.xml")))
     return _texts[sec]
 
 def src_id(sec):
@@ -31,8 +32,8 @@ def source_ref(sec):
     return {"source_id": s["source_id"], "captured_sha256": s["captured_sha256"],
             "licensing_decision_payload_sha256": s["reproduction_decision"]["decision_payload_sha256"]}
 
-def quote(page_id, name, sec, needle):
-    t = text(sec)
+def quote(page_id, name, sec, needle, file=None):
+    t = text(sec, file)
     i = t.find(needle)
     if i < 0:
         sys.exit(f"NOT FOUND in {sec}: {needle[:80]!r}")

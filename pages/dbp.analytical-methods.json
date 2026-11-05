@@ -1,0 +1,579 @@
+{
+  "schema_version": "drinking-water-profile/v0.1",
+  "type": "concept",
+  "page_id": "dbp.analytical-methods",
+  "title": "Approved analytical methods for DBP, disinfectant residual and precursor monitoring, laboratory certification and minimum reporting levels",
+  "status": "draft",
+  "assurance_profile": "drinking-water/v0.1",
+  "use_class": "regulatory-reference",
+  "jurisdiction": "US-federal",
+  "applicability": {
+    "system_types": [
+      "community-water-system",
+      "nontransient-noncommunity-water-system",
+      "transient-noncommunity-water-system"
+    ],
+    "conditions": [
+      "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+    ],
+    "exclusions": []
+  },
+  "generated": {
+    "by": "cc",
+    "at": "2026-11-05T18:14:20Z"
+  },
+  "review_payload": {
+    "canonicalization": "dw-review-payload/v0.1",
+    "sha256": "c35bac867d6bb6ef8a193a37849710d197489128412a92a64d5f4c124d9877a1"
+  },
+  "normalization": "dw-quote-normalization/v0.1",
+  "verified": [
+    {
+      "by": "process:quote-tool/v0.1-interim",
+      "actor_type": "process",
+      "at": "2026-11-05T18:14:20Z",
+      "review_payload_sha256": "c35bac867d6bb6ef8a193a37849710d197489128412a92a64d5f4c124d9877a1",
+      "scopes": [
+        "source-capture",
+        "quote-fidelity"
+      ]
+    }
+  ],
+  "stale_after": "2027-01-31",
+  "source_watch": {
+    "watch_id": "watch.dbp.analytical-methods",
+    "last_result": "unchanged",
+    "last_checked_at": "2026-11-02T07:10:07Z",
+    "next_due_at": "2026-12-02T07:10:07Z"
+  },
+  "source_refs": [
+    {
+      "source_id": "source.ecfr.2026-07-01.141-131",
+      "captured_sha256": "b01ad4a7ad578a9fabd3cc886964a0351f1a741286de22e314b400d3e30f4fd9",
+      "licensing_decision_payload_sha256": "d2ed11017ec81f9e2d43f6e9e41011bda999c8dd0ffb38e84fa934806a740da5"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "licensing_decision_payload_sha256": "e40a6d648819e123a5fee502351324de387c8c363e13a373a99d6a21e7d2a7e0"
+    }
+  ],
+  "quotes": [
+    {
+      "quote_id": "quote.dbp.analytical-methods.general",
+      "source_id": "source.ecfr.2026-07-01.141-131",
+      "captured_source_sha256": "b01ad4a7ad578a9fabd3cc886964a0351f1a741286de22e314b400d3e30f4fd9",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:35-287"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "1593667c7f6d9a40a80058f71af231346415762e5e0ee12d940cd5dc234c3945",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.analytical-methods.dbp-methods-table",
+      "source_id": "source.ecfr.2026-07-01.141-131",
+      "captured_source_sha256": "b01ad4a7ad578a9fabd3cc886964a0351f1a741286de22e314b400d3e30f4fd9",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:5469-6339"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "6068b1a1ca8f80d98a003dfbada0e534489d71ce064a4a48863a2523e447779d",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.analytical-methods.dbp-methods-notes",
+      "source_id": "source.ecfr.2026-07-01.141-131",
+      "captured_source_sha256": "b01ad4a7ad578a9fabd3cc886964a0351f1a741286de22e314b400d3e30f4fd9",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:6961-7832"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "c7c8310dfab3174c80f76336cc0767994900abd80a2e6a27846e67db9a188ecf",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.analytical-methods.laboratory-certification",
+      "source_id": "source.ecfr.2026-07-01.141-131",
+      "captured_source_sha256": "b01ad4a7ad578a9fabd3cc886964a0351f1a741286de22e314b400d3e30f4fd9",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:8082-8643"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "f1c01b34e1788b4dd376a0dae9ebf68086c4f73b710e91ab46b867c7dd5aad84",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.analytical-methods.minimum-reporting-levels",
+      "source_id": "source.ecfr.2026-07-01.141-131",
+      "captured_source_sha256": "b01ad4a7ad578a9fabd3cc886964a0351f1a741286de22e314b400d3e30f4fd9",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:9723-10477"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "92c35f4d1cc8c9dbeee5c5bb2a1e3773f6f93c3b427f62d8ff825d63cbb71d3c",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.analytical-methods.residual-methods-table",
+      "source_id": "source.ecfr.2026-07-01.141-131",
+      "captured_source_sha256": "b01ad4a7ad578a9fabd3cc886964a0351f1a741286de22e314b400d3e30f4fd9",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:11758-12900"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "78e94222086d06ad023afc6f71afe26c1d6a41827a2157c83f2b7ef8a8ea1895",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.analytical-methods.residual-kits-and-party",
+      "source_id": "source.ecfr.2026-07-01.141-131",
+      "captured_source_sha256": "b01ad4a7ad578a9fabd3cc886964a0351f1a741286de22e314b400d3e30f4fd9",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:13150-13417"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "b5577ec1ae2f741711a7ec03b5d3b45e9f73efcbaa02bc36298d0103373624ae",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.analytical-methods.additional-methods",
+      "source_id": "source.ecfr.2026-07-01.141-131",
+      "captured_source_sha256": "b01ad4a7ad578a9fabd3cc886964a0351f1a741286de22e314b400d3e30f4fd9",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:13418-14561"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "2b993c85380c573adc150ed63579452ad08e46fbb85d463c5ec93aeb1d68c7f1",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.analytical-methods.suva",
+      "source_id": "source.ecfr.2026-07-01.141-131",
+      "captured_source_sha256": "b01ad4a7ad578a9fabd3cc886964a0351f1a741286de22e314b400d3e30f4fd9",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:14562-15243"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "780cee6a1e029acbf72e2a9ae51f71bb6ecb8fa818cc33e3ad09516d3d0cda71",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.analytical-methods.ph-and-magnesium",
+      "source_id": "source.ecfr.2026-07-01.141-131",
+      "captured_source_sha256": "b01ad4a7ad578a9fabd3cc886964a0351f1a741286de22e314b400d3e30f4fd9",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:16710-16851"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "6ac564b3b732f61222d65d947beec4b65c45ff99e6cbc9c14aeec7990f979595",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.analytical-methods.subpart-l-scope",
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_source_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:127-571"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "5c625225f1c040697f42072df193282d638401bd9a16f02fa6a60dc4600c524c",
+      "verified_at": "2026-11-05T18:14:20Z"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "claim.dbp.analytical-methods.only-approved-methods",
+      "kind": "qualitative",
+      "subject": "Analytical methods systems may use for DBP, residual and precursor compliance monitoring",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Only the methods specified in 141.131, or their equivalent as approved by EPA, to demonstrate compliance with subpart L and with subparts U and V",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.analytical-methods.general",
+        "quote.dbp.analytical-methods.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.analytical-methods.tthm-methods",
+      "kind": "qualitative",
+      "subject": "Approved methods for TTHM compliance monitoring",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "EPA Method 502.2 (purge and trap, gas chromatography with electrolytic conductivity and photoionization detectors; the photoionization detector is not required when TTHMs are the only analytes), EPA Method 524.2 (purge and trap, GC/MS), and EPA Method 551.1 (liquid-liquid extraction, GC/ECD), or an alternative method listed in appendix A to subpart C",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.analytical-methods.dbp-methods-table",
+        "quote.dbp.analytical-methods.dbp-methods-notes",
+        "quote.dbp.analytical-methods.general",
+        "quote.dbp.analytical-methods.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.analytical-methods.haa5-methods",
+      "kind": "qualitative",
+      "subject": "Approved methods for HAA5 compliance monitoring",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Standard Method 6251 B (liquid-liquid extraction with diazomethane, GC/ECD; also 6251 B-94 online), EPA Method 552.1 (solid phase extraction with acidic methanol, GC/ECD), and EPA Methods 552.2 and 552.3 (liquid-liquid extraction with acidic methanol, GC/ECD), or an alternative method listed in appendix A to subpart C",
+      "conditions": [
+        "Samples for the 6251 B and 552.1 methods must be extracted within 14 days of collection (table note 5)"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.analytical-methods.dbp-methods-table",
+        "quote.dbp.analytical-methods.dbp-methods-notes",
+        "quote.dbp.analytical-methods.general",
+        "quote.dbp.analytical-methods.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.analytical-methods.bromate-methods",
+      "kind": "qualitative",
+      "subject": "Approved methods for bromate compliance monitoring",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Ion chromatography by EPA Method 300.1 or ASTM D 6581-00; ion chromatography with post-column reaction by EPA Methods 317.0 Revision 2.0 and 326.0; and IC/ICP-MS by EPA Method 321.8 (samples preserved with 50 mg ethylenediamine per liter and analyzed within 28 days), or an alternative method listed in appendix A to subpart C",
+      "conditions": [
+        "Ion chromatography with post-column reaction or IC/ICP-MS must be used for bromate monitoring that demonstrates eligibility for reduced monitoring under 141.132(b)(3)(ii) (table note 6)"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.analytical-methods.dbp-methods-table",
+        "quote.dbp.analytical-methods.dbp-methods-notes",
+        "quote.dbp.analytical-methods.general",
+        "quote.dbp.analytical-methods.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.analytical-methods.chlorite-methods",
+      "kind": "qualitative",
+      "subject": "Approved methods for chlorite compliance monitoring",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Amperometric titration (Standard Method 4500-ClO2 E or 4500-ClO2 E-00), spectrophotometry (EPA Method 327.0 Revision 1.1), and ion chromatography (EPA Methods 300.0, 300.1, 317.0 Revision 2.0, 326.0, or ASTM D 6581-00), or an alternative method listed in appendix A to subpart C",
+      "conditions": [
+        "Amperometric titration or spectrophotometry may be used for the routine daily chlorite sample at the entrance to the distribution system; ion chromatography must be used for the routine monthly and additional distribution system chlorite monitoring (table note 8)"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.analytical-methods.dbp-methods-table",
+        "quote.dbp.analytical-methods.dbp-methods-notes",
+        "quote.dbp.analytical-methods.general",
+        "quote.dbp.analytical-methods.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.analytical-methods.laboratory-certification",
+      "kind": "qualitative",
+      "subject": "Who may analyze disinfection byproduct samples",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Laboratories certified by EPA or the State, except as 141.131(b)(3) provides; certification for the DBP contaminants of 141.64, 141.135 and subparts U and V requires analyzing acceptable Performance Evaluation samples at least once in each consecutive 12-month period for each method",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.analytical-methods.laboratory-certification",
+        "quote.dbp.analytical-methods.general",
+        "quote.dbp.analytical-methods.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.analytical-methods.minimum-reporting-levels",
+      "kind": "qualitative",
+      "subject": "Minimum reporting levels for DBP compliance data",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Since April 1, 2007, laboratories report quantitative data at least as low as: each of the four trihalomethanes 0.0010 mg/L; monochloroacetic acid 0.0020 mg/L and the other four haloacetic acids 0.0010 mg/L; chlorite 0.020 mg/L for the distribution system monitoring of 141.132(b)(2); bromate 0.0050 mg/L, or 0.0010 mg/L for laboratories using EPA Methods 317.0 Revision 2.0, 326.0 or 321.8",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.analytical-methods.minimum-reporting-levels",
+        "quote.dbp.analytical-methods.general",
+        "quote.dbp.analytical-methods.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.analytical-methods.residual-methods",
+      "kind": "qualitative",
+      "subject": "Approved methods for chlorine, chloramine and chlorine dioxide residual measurement",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Amperometric titration (SM 4500-Cl D, ASTM D 1253), low level amperometric titration (4500-Cl E), DPD ferrous titrimetric (4500-Cl F), DPD colorimetric (4500-Cl G), syringaldazine FACTS (4500-Cl H) and iodometric electrode (4500-Cl I) for free, combined or total chlorine as the table marks; DPD (4500-ClO2 D), amperometric method II (4500-ClO2 E) and lissamine green spectrophotometric (EPA 327.0 Revision 1.1) for chlorine dioxide, or an alternative method listed in appendix A to subpart C",
+      "conditions": [
+        "Free chlorine or total chlorine may be measured to demonstrate compliance with the chlorine MRDL; combined chlorine or total chlorine for the chloramine MRDL (table note 1)",
+        "The table marks which residual each method is approved for; this claim names the methods and defers to the table for the marks"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.analytical-methods.residual-methods-table",
+        "quote.dbp.analytical-methods.general",
+        "quote.dbp.analytical-methods.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.analytical-methods.residual-kits-and-party",
+      "kind": "qualitative",
+      "subject": "DPD colorimetric test kits and who may measure residuals",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "If the State approves, systems may measure chlorine, chloramine and chlorine dioxide residuals with DPD colorimetric test kits; a party approved by EPA or the State must measure residual disinfectant concentration",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.analytical-methods.residual-kits-and-party",
+        "quote.dbp.analytical-methods.general",
+        "quote.dbp.analytical-methods.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.analytical-methods.additional-parameters",
+      "kind": "qualitative",
+      "subject": "Approved methods for alkalinity, bromide and total organic carbon",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Alkalinity by any method allowed in 141.89(a); bromide by EPA Methods 300.0, 300.1, 317.0 Revision 2.0, 326.0 or ASTM D 6581-00; TOC by Standard Methods 5310 B, 5310 C or 5310 D (and their online versions) or EPA Method 415.3 Revision 1.1, with inorganic carbon removed, no filtration, acidification at collection to pH 2 or below, and analysis within 28 days; measured by a party approved by EPA or the State",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.analytical-methods.additional-methods",
+        "quote.dbp.analytical-methods.general",
+        "quote.dbp.analytical-methods.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.analytical-methods.suva",
+      "kind": "qualitative",
+      "subject": "How specific ultraviolet absorbance (SUVA) is determined",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "SUVA is the UV absorption at 254 nm (in inverse meters) divided by the dissolved organic carbon concentration (in mg/L), from UV254 and DOC measured separately by the methods in 141.131(d)(4)(i)-(ii) on water before the system adds any disinfectant or oxidant, with the DOC and UV254 samples taken at the same time and location",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.analytical-methods.suva",
+        "quote.dbp.analytical-methods.general",
+        "quote.dbp.analytical-methods.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.analytical-methods.ph-and-magnesium",
+      "kind": "qualitative",
+      "subject": "Approved methods for pH and magnesium",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Any method allowed in 141.23(k)(1) for pH and for magnesium",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+        ],
+        "exclusions": []
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.analytical-methods.ph-and-magnesium",
+        "quote.dbp.analytical-methods.general",
+        "quote.dbp.analytical-methods.subpart-l-scope"
+      ]
+    }
+  ]
+}

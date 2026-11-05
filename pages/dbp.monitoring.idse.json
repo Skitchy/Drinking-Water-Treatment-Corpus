@@ -1,0 +1,826 @@
+{
+  "schema_version": "drinking-water-profile/v0.1",
+  "type": "concept",
+  "page_id": "dbp.monitoring.idse",
+  "title": "Initial Distribution System Evaluation (IDSE): purpose, applicability, the four routes, the schedule, and how subpart V monitoring locations were derived",
+  "status": "draft",
+  "assurance_profile": "drinking-water/v0.1",
+  "use_class": "regulatory-reference",
+  "jurisdiction": "US-federal",
+  "applicability": {
+    "system_types": [
+      "community-water-system",
+      "nontransient-noncommunity-water-system"
+    ],
+    "conditions": [
+      "Subpart U applies to community water systems of any size, and to nontransient noncommunity water systems serving at least 10,000 people, that use a primary or residual disinfectant other than ultraviolet light or deliver water treated with one (141.600(b))"
+    ],
+    "exclusions": [
+      "Nontransient noncommunity systems serving fewer than 10,000 people and transient noncommunity systems are outside subpart U; a system serving fewer than 500 people that has taken TTHM and HAA5 samples under subpart L is not required to comply unless the State says so (141.604(a))"
+    ]
+  },
+  "generated": {
+    "by": "cc",
+    "at": "2026-11-05T18:14:20Z"
+  },
+  "review_payload": {
+    "canonicalization": "dw-review-payload/v0.1",
+    "sha256": "273ec69fbdb7712481b1f256c533bc73b686814e6d3e4ae1bf978701cfcb4a5d"
+  },
+  "normalization": "dw-quote-normalization/v0.1",
+  "verified": [
+    {
+      "by": "process:quote-tool/v0.1-interim",
+      "actor_type": "process",
+      "at": "2026-11-05T18:14:20Z",
+      "review_payload_sha256": "273ec69fbdb7712481b1f256c533bc73b686814e6d3e4ae1bf978701cfcb4a5d",
+      "scopes": [
+        "source-capture",
+        "quote-fidelity"
+      ]
+    }
+  ],
+  "stale_after": "2027-01-31",
+  "source_watch": {
+    "watch_id": "watch.dbp.monitoring.idse",
+    "last_result": "unchanged",
+    "last_checked_at": "2026-11-02T07:10:07Z",
+    "next_due_at": "2026-12-02T07:10:07Z"
+  },
+  "source_refs": [
+    {
+      "source_id": "source.ecfr.2026-07-01.141-600",
+      "captured_sha256": "ddd9a1a2e0a8fc0436952cb15ac7b571f19afcf09ed1bf7f0bc775c8a43e1037",
+      "licensing_decision_payload_sha256": "832794c9c5801341f34629b4bbdfca8e82d72e8e41110dd81b884120281924ed"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-601",
+      "captured_sha256": "e7245a70216896c265e9de9f9d5680c4f1224aacea5cc4ae695975a2ac6f325e",
+      "licensing_decision_payload_sha256": "6ad3adb71e927c009c873c7f594947c29ec323a7c8c4da594d436792775f3fc0"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-602",
+      "captured_sha256": "cf20907431607eb4010f58f14ebff0efcc65a4ff3d10be8f6dd6316a6a88ba3a",
+      "licensing_decision_payload_sha256": "c7ef892fdec514e8b3155b67611055f2bea759dc334a6c80435e5ee1f3e965ae"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-603",
+      "captured_sha256": "e218cb4d127b654a4a663755e3a102aa7b7be743e5c8d97a0ad04eeee9547816",
+      "licensing_decision_payload_sha256": "3dabc5b56d5058e2ae3664c069540368920c6a7313a8f26e1eae2d29985c719d"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-604",
+      "captured_sha256": "fe918e9df3367fca138ebdc895a955a18cd198dc8e236832b6ba22f3ece6c482",
+      "licensing_decision_payload_sha256": "f82bbadd8ddf94d12c6e03287c5feae68311843f4ba7175e80e6833b12c42331"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-605",
+      "captured_sha256": "64518842399a5a2f70d40ed322d3a35b881f0bf486a2d9b8e3b71f5d45f000d4",
+      "licensing_decision_payload_sha256": "49d148145eb0056b58c9f679b49dddb0f3b46e42de7d68dc60c24ebdbd4fcfd0"
+    }
+  ],
+  "quotes": [
+    {
+      "quote_id": "quote.dbp.monitoring.idse.general",
+      "source_id": "source.ecfr.2026-07-01.141-600",
+      "captured_source_sha256": "ddd9a1a2e0a8fc0436952cb15ac7b571f19afcf09ed1bf7f0bc775c8a43e1037",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:32-725"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "c6588ce0c5e17f83fc9f17c37098a236da81f414ecd7741bb71b2dc48a0e0f2c",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.applicability",
+      "source_id": "source.ecfr.2026-07-01.141-600",
+      "captured_source_sha256": "ddd9a1a2e0a8fc0436952cb15ac7b571f19afcf09ed1bf7f0bc775c8a43e1037",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:726-1289"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "62ac64a33f5d82d6888d28f0a6e3e9605dad1b2da1ccfa5025a275302f670376",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.schedule",
+      "source_id": "source.ecfr.2026-07-01.141-600",
+      "captured_source_sha256": "ddd9a1a2e0a8fc0436952cb15ac7b571f19afcf09ed1bf7f0bc775c8a43e1037",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:1290-2553"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "933e2f33e22b4e0c00a8a143b7101e54c1211f2af5a3e780305787b936420ccd",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.four-routes",
+      "source_id": "source.ecfr.2026-07-01.141-600",
+      "captured_source_sha256": "ddd9a1a2e0a8fc0436952cb15ac7b571f19afcf09ed1bf7f0bc775c8a43e1037",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:4088-5219"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "70db919d8c0a3ebde26e4639bd42096938426e28c4b906b52e4cfac698f6d9af",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.analytical-methods",
+      "source_id": "source.ecfr.2026-07-01.141-600",
+      "captured_source_sha256": "ddd9a1a2e0a8fc0436952cb15ac7b571f19afcf09ed1bf7f0bc775c8a43e1037",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:5220-5417"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "182dfb85c6cf14d9dd9e37281fd7284b38bb004c117a75e0c11ee4cd3898377c",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.not-for-mcl-compliance",
+      "source_id": "source.ecfr.2026-07-01.141-600",
+      "captured_source_sha256": "ddd9a1a2e0a8fc0436952cb15ac7b571f19afcf09ed1bf7f0bc775c8a43e1037",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:5418-5516"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "e13ccd68fadc0b1d5a46f0753c52a8b0e3f8b43270b4101fd323539f514345a5",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.standard-monitoring-plan",
+      "source_id": "source.ecfr.2026-07-01.141-601",
+      "captured_source_sha256": "e7245a70216896c265e9de9f9d5680c4f1224aacea5cc4ae695975a2ac6f325e",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:31-881"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "0087d599c485c7d2371f9989362b3eb6cbe7f4bc7d93287aacebd026054fb2a8",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.standard-monitoring",
+      "source_id": "source.ecfr.2026-07-01.141-601",
+      "captured_source_sha256": "e7245a70216896c265e9de9f9d5680c4f1224aacea5cc4ae695975a2ac6f325e",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:1153-1745"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "11364a7c7a02e17bcdd268aa4743afa02c91cf1ee7410bde633b33323fe99cbd",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.standard-monitoring-locations",
+      "source_id": "source.ecfr.2026-07-01.141-601",
+      "captured_source_sha256": "e7245a70216896c265e9de9f9d5680c4f1224aacea5cc4ae695975a2ac6f325e",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:2825-2996"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "9f1d9d12c83f23e40854c8e3d283ec9fda502c0833c7b2f98a948643adc9f7e3",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.idse-report",
+      "source_id": "source.ecfr.2026-07-01.141-601",
+      "captured_source_sha256": "e7245a70216896c265e9de9f9d5680c4f1224aacea5cc4ae695975a2ac6f325e",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:3716-4215"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "734f726c29ec7255712647903a47734fce6dd1f561d72faeb716bf3bb4216872",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.idse-report-recommendations",
+      "source_id": "source.ecfr.2026-07-01.141-601",
+      "captured_source_sha256": "e7245a70216896c265e9de9f9d5680c4f1224aacea5cc4ae695975a2ac6f325e",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:4560-4828"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "8e956e13c7cdbf2a7c9e29644a70834c7bf9cf4ddfb952a782cd8806776c3c19",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.system-specific-study",
+      "source_id": "source.ecfr.2026-07-01.141-602",
+      "captured_source_sha256": "cf20907431607eb4010f58f14ebff0efcc65a4ff3d10be8f6dd6316a6a88ba3a",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:35-381"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "fe57faf3d7a1cfd89aaf97ac3d3375c97d503c44a08b1d63ccc3af286bb17fb2",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.existing-results",
+      "source_id": "source.ecfr.2026-07-01.141-602",
+      "captured_source_sha256": "cf20907431607eb4010f58f14ebff0efcc65a4ff3d10be8f6dd6316a6a88ba3a",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:382-875"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "f2087d18bd0f1fa3b18b552ce6856dd51750a69d931966b6611a3ea9a708587e",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.modeling",
+      "source_id": "source.ecfr.2026-07-01.141-602",
+      "captured_source_sha256": "cf20907431607eb4010f58f14ebff0efcc65a4ff3d10be8f6dd6316a6a88ba3a",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:3318-3673"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "52c3e30e4708bb4f6b5bf496ea672f56678817b4ae363530c8fee5f2bd70705b",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.40-30-eligibility",
+      "source_id": "source.ecfr.2026-07-01.141-603",
+      "captured_source_sha256": "e218cb4d127b654a4a663755e3a102aa7b7be743e5c8d97a0ad04eeee9547816",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:31-363"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "4308a2579106f2ed37f17ea6b74cb092a40e389ef348bf7d27d51b790bc4c62a",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.40-30-certification",
+      "source_id": "source.ecfr.2026-07-01.141-603",
+      "captured_source_sha256": "e218cb4d127b654a4a663755e3a102aa7b7be743e5c8d97a0ad04eeee9547816",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:990-1890"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "c8cf1bd90911c27daed30aa8febe181b5fb2f58098f93a7eea99c327c5c8584a",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.very-small-system-waiver",
+      "source_id": "source.ecfr.2026-07-01.141-604",
+      "captured_source_sha256": "fe918e9df3367fca138ebdc895a955a18cd198dc8e236832b6ba22f3ece6c482",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:37-570"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "6ab6df766083440af3ce56b2a22c49bff8a3c2ef4589de761d0069d2a9d8e129",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.location-recommendations",
+      "source_id": "source.ecfr.2026-07-01.141-605",
+      "captured_source_sha256": "64518842399a5a2f70d40ed322d3a35b881f0bf486a2d9b8e3b71f5d45f000d4",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:68-690"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "0ae9efd8f41284da49cd4d20ea6952d87628553f83d855af812ba27eeba9d889",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.selection-protocol",
+      "source_id": "source.ecfr.2026-07-01.141-605",
+      "captured_source_sha256": "64518842399a5a2f70d40ed322d3a35b881f0bf486a2d9b8e3b71f5d45f000d4",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:2118-3904"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "6e06feda4e46ac35bd638494c30704a593f0f5bc9d32f51cefb0439727d8e782",
+      "verified_at": "2026-11-05T18:14:20Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.idse.alternate-locations-and-schedule",
+      "source_id": "source.ecfr.2026-07-01.141-605",
+      "captured_source_sha256": "64518842399a5a2f70d40ed322d3a35b881f0bf486a2d9b8e3b71f5d45f000d4",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:3905-4588"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "209017a7d9988cbf42cc5cedaafa08d0ca18ff10e182f78dad33909e79521611",
+      "verified_at": "2026-11-05T18:14:20Z"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "claim.dbp.monitoring.idse.purpose",
+      "kind": "qualitative",
+      "subject": "What the Initial Distribution System Evaluation (IDSE) is for",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "An IDSE identifies locations with representative high TTHM and HAA5 concentrations throughout the distribution system, to identify and select subpart V compliance monitoring locations; it is used in conjunction with, but separate from, subpart L compliance monitoring",
+      "conditions": [
+        "IDSE results are not used to determine compliance with the MCLs in 141.64 (141.600(f))"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart U applies to community water systems of any size, and to nontransient noncommunity water systems serving at least 10,000 people, that use a primary or residual disinfectant other than ultraviolet light or deliver water treated with one (141.600(b))"
+        ],
+        "exclusions": [
+          "Nontransient noncommunity systems serving fewer than 10,000 people and transient noncommunity systems are outside subpart U; a system serving fewer than 500 people that has taken TTHM and HAA5 samples under subpart L is not required to comply unless the State says so (141.604(a))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.idse.general",
+        "quote.dbp.monitoring.idse.not-for-mcl-compliance",
+        "quote.dbp.monitoring.idse.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.idse.applies-to",
+      "kind": "qualitative",
+      "subject": "Systems subject to the IDSE requirements (subpart U)",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Community water systems that use, or deliver water treated with, a primary or residual disinfectant other than ultraviolet light, and nontransient noncommunity water systems serving at least 10,000 people that do the same",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart U applies to community water systems of any size, and to nontransient noncommunity water systems serving at least 10,000 people, that use a primary or residual disinfectant other than ultraviolet light or deliver water treated with one (141.600(b))"
+        ],
+        "exclusions": [
+          "Nontransient noncommunity systems serving fewer than 10,000 people and transient noncommunity systems are outside subpart U; a system serving fewer than 500 people that has taken TTHM and HAA5 samples under subpart L is not required to comply unless the State says so (141.604(a))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.idse.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.idse.four-routes",
+      "kind": "qualitative",
+      "subject": "The four ways a system satisfied the IDSE requirement",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Standard monitoring under 141.601, a system specific study under 141.602, a 40/30 certification under 141.603, or a very small system waiver under 141.604; the 40/30 route requires the full complement of routine (or qualifying reduced) subpart L TTHM and HAA5 compliance samples for the 141.603(a) period, the waiver requires TTHM and HAA5 samples taken under 141.131 and 141.132, and a system without the required samples conducts standard monitoring or a system specific study",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart U applies to community water systems of any size, and to nontransient noncommunity water systems serving at least 10,000 people, that use a primary or residual disinfectant other than ultraviolet light or deliver water treated with one (141.600(b))"
+        ],
+        "exclusions": [
+          "Nontransient noncommunity systems serving fewer than 10,000 people and transient noncommunity systems are outside subpart U; a system serving fewer than 500 people that has taken TTHM and HAA5 samples under subpart L is not required to comply unless the State says so (141.604(a))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.idse.four-routes",
+        "quote.dbp.monitoring.idse.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.idse.schedule",
+      "kind": "qualitative",
+      "subject": "IDSE schedule by population served: plan or certification due, monitoring or study complete, IDSE report due",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Systems serving 100,000 or more: October 1, 2006, September 30, 2008, January 1, 2009; 50,000 to 99,999: April 1, 2007, March 31, 2009, July 1, 2009; 10,000 to 49,999: October 1, 2007, September 30, 2009, January 1, 2010; fewer than 10,000 (community water systems only): April 1, 2008, March 31, 2010, July 1, 2010; wholesale and consecutive systems in a combined distribution system: at the same time as the system with the earliest compliance date in that combined distribution system",
+      "conditions": [
+        "The dates apply to systems not in a combined distribution system and to the system serving the largest population in one",
+        "The last IDSE report date in the table, July 1, 2010, is the fewer-than-10,000 community water system row; the deadline for every system is its own row"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart U applies to community water systems of any size, and to nontransient noncommunity water systems serving at least 10,000 people, that use a primary or residual disinfectant other than ultraviolet light or deliver water treated with one (141.600(b))"
+        ],
+        "exclusions": [
+          "Nontransient noncommunity systems serving fewer than 10,000 people and transient noncommunity systems are outside subpart U; a system serving fewer than 500 people that has taken TTHM and HAA5 samples under subpart L is not required to comply unless the State says so (141.604(a))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.idse.schedule",
+        "quote.dbp.monitoring.idse.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.idse.not-for-mcl-compliance",
+      "kind": "qualitative",
+      "subject": "Use of IDSE results for MCL compliance",
+      "relation": {
+        "operator": "prohibited",
+        "regulatory_metric": "other"
+      },
+      "value": "IDSE results are not used for the purpose of determining compliance with the MCLs in 141.64",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart U applies to community water systems of any size, and to nontransient noncommunity water systems serving at least 10,000 people, that use a primary or residual disinfectant other than ultraviolet light or deliver water treated with one (141.600(b))"
+        ],
+        "exclusions": [
+          "Nontransient noncommunity systems serving fewer than 10,000 people and transient noncommunity systems are outside subpart U; a system serving fewer than 500 people that has taken TTHM and HAA5 samples under subpart L is not required to comply unless the State says so (141.604(a))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.idse.not-for-mcl-compliance",
+        "quote.dbp.monitoring.idse.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.idse.analytical-methods",
+      "kind": "qualitative",
+      "subject": "Analytical methods for IDSE monitoring",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Only the analytical methods specified in 141.131, or otherwise approved by EPA for monitoring under subpart U",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart U applies to community water systems of any size, and to nontransient noncommunity water systems serving at least 10,000 people, that use a primary or residual disinfectant other than ultraviolet light or deliver water treated with one (141.600(b))"
+        ],
+        "exclusions": [
+          "Nontransient noncommunity systems serving fewer than 10,000 people and transient noncommunity systems are outside subpart U; a system serving fewer than 500 people that has taken TTHM and HAA5 samples under subpart L is not required to comply unless the State says so (141.604(a))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.idse.analytical-methods",
+        "quote.dbp.monitoring.idse.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.idse.standard-monitoring",
+      "kind": "qualitative",
+      "subject": "Standard monitoring under the IDSE",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Dual sample sets at each monitoring location (one sample analyzed for TTHM, the other for HAA5), with one monitoring period during the peak historical month for TTHM or HAA5 levels or the month of warmest water temperature, determined from available compliance, study or operational data; samples at locations other than the existing subpart L monitoring locations, distributed throughout the distribution system",
+      "conditions": [
+        "The number of monitoring periods and locations by source water type and population is the table in 141.601(b)(1), not quoted on this page"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart U applies to community water systems of any size, and to nontransient noncommunity water systems serving at least 10,000 people, that use a primary or residual disinfectant other than ultraviolet light or deliver water treated with one (141.600(b))"
+        ],
+        "exclusions": [
+          "Nontransient noncommunity systems serving fewer than 10,000 people and transient noncommunity systems are outside subpart U; a system serving fewer than 500 people that has taken TTHM and HAA5 samples under subpart L is not required to comply unless the State says so (141.604(a))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.idse.standard-monitoring",
+        "quote.dbp.monitoring.idse.standard-monitoring-locations",
+        "quote.dbp.monitoring.idse.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.idse.standard-monitoring-plan",
+      "kind": "qualitative",
+      "subject": "Contents of the standard monitoring plan",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "A schematic of the distribution system (entry points and their sources, storage facilities) with the locations and dates of all projected standard monitoring and projected subpart L compliance monitoring, the justification of the location selection with a summary of the data relied on, and the population served and system type (subpart H or ground water), submitted to the State on the 141.600(c) schedule",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart U applies to community water systems of any size, and to nontransient noncommunity water systems serving at least 10,000 people, that use a primary or residual disinfectant other than ultraviolet light or deliver water treated with one (141.600(b))"
+        ],
+        "exclusions": [
+          "Nontransient noncommunity systems serving fewer than 10,000 people and transient noncommunity systems are outside subpart U; a system serving fewer than 500 people that has taken TTHM and HAA5 samples under subpart L is not required to comply unless the State says so (141.604(a))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.idse.standard-monitoring-plan",
+        "quote.dbp.monitoring.idse.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.idse.system-specific-study",
+      "kind": "qualitative",
+      "subject": "System specific study as an alternative to standard monitoring",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "A study plan based on either existing monitoring results (TTHM and HAA5 samples collected and analyzed under 141.131, no earlier than five years before the plan submission) or an extended period simulation hydraulic model (simulating 24-hour variation in demand with a consistently repeating 24-hour pattern of residence time), submitted to the State on the 141.600(c) schedule",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart U applies to community water systems of any size, and to nontransient noncommunity water systems serving at least 10,000 people, that use a primary or residual disinfectant other than ultraviolet light or deliver water treated with one (141.600(b))"
+        ],
+        "exclusions": [
+          "Nontransient noncommunity systems serving fewer than 10,000 people and transient noncommunity systems are outside subpart U; a system serving fewer than 500 people that has taken TTHM and HAA5 samples under subpart L is not required to comply unless the State says so (141.604(a))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.idse.system-specific-study",
+        "quote.dbp.monitoring.idse.existing-results",
+        "quote.dbp.monitoring.idse.modeling",
+        "quote.dbp.monitoring.idse.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.idse.idse-report",
+      "kind": "qualitative",
+      "subject": "Contents of the IDSE report",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "All TTHM and HAA5 analytical results from subpart L compliance monitoring and from the standard monitoring conducted during the IDSE, as individual results and LRAAs in a tabular or spreadsheet format acceptable to the State; the recommended and justified subpart V compliance monitoring locations and timing under the 141.605 protocol; a complete copy retained for 10 years after submission",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart U applies to community water systems of any size, and to nontransient noncommunity water systems serving at least 10,000 people, that use a primary or residual disinfectant other than ultraviolet light or deliver water treated with one (141.600(b))"
+        ],
+        "exclusions": [
+          "Nontransient noncommunity systems serving fewer than 10,000 people and transient noncommunity systems are outside subpart U; a system serving fewer than 500 people that has taken TTHM and HAA5 samples under subpart L is not required to comply unless the State says so (141.604(a))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.idse.idse-report",
+        "quote.dbp.monitoring.idse.idse-report-recommendations",
+        "quote.dbp.monitoring.idse.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.idse.40-30-tthm",
+      "kind": "numeric",
+      "subject": "Highest individual TTHM sample over eight consecutive calendar quarters that allows a 40/30 certification",
+      "relation": {
+        "operator": "lte",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": 0.04,
+      "conditions": [
+        "Together with no individual HAA5 sample above 0.030 mg/L (claim.dbp.monitoring.idse.40-30-haa5) and no TTHM or HAA5 monitoring violations under subpart L during the eight consecutive calendar quarters beginning no earlier than the date 141.603(a) specifies",
+        "The State may require compliance results, schematics or recommended locations with the certification, and may still require standard monitoring or a system specific study (141.603(b)(2)-(3))"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart U applies to community water systems of any size, and to nontransient noncommunity water systems serving at least 10,000 people, that use a primary or residual disinfectant other than ultraviolet light or deliver water treated with one (141.600(b))"
+        ],
+        "exclusions": [
+          "Nontransient noncommunity systems serving fewer than 10,000 people and transient noncommunity systems are outside subpart U; a system serving fewer than 500 people that has taken TTHM and HAA5 samples under subpart L is not required to comply unless the State says so (141.604(a))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.idse.40-30-eligibility",
+        "quote.dbp.monitoring.idse.40-30-certification",
+        "quote.dbp.monitoring.idse.applicability"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.idse.40-30-haa5",
+      "kind": "numeric",
+      "subject": "Highest individual HAA5 sample over eight consecutive calendar quarters that allows a 40/30 certification",
+      "relation": {
+        "operator": "lte",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": 0.03,
+      "conditions": [
+        "Together with no individual TTHM sample above 0.040 mg/L (claim.dbp.monitoring.idse.40-30-tthm) and no TTHM or HAA5 monitoring violations under subpart L during the eight consecutive calendar quarters beginning no earlier than the date 141.603(a) specifies",
+        "The State may require compliance results, schematics or recommended locations with the certification, and may still require standard monitoring or a system specific study (141.603(b)(2)-(3))"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart U applies to community water systems of any size, and to nontransient noncommunity water systems serving at least 10,000 people, that use a primary or residual disinfectant other than ultraviolet light or deliver water treated with one (141.600(b))"
+        ],
+        "exclusions": [
+          "Nontransient noncommunity systems serving fewer than 10,000 people and transient noncommunity systems are outside subpart U; a system serving fewer than 500 people that has taken TTHM and HAA5 samples under subpart L is not required to comply unless the State says so (141.604(a))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.idse.40-30-eligibility",
+        "quote.dbp.monitoring.idse.40-30-certification",
+        "quote.dbp.monitoring.idse.applicability"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.idse.very-small-system-waiver",
+      "kind": "qualitative",
+      "subject": "Very small system waiver from the IDSE",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "A system serving fewer than 500 people that has taken TTHM and HAA5 samples under subpart L is not required to comply with subpart U unless the State notifies it to conduct standard monitoring or a system specific study; a system without such samples, or so notified, conducts standard monitoring or a system specific study",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart U applies to community water systems of any size, and to nontransient noncommunity water systems serving at least 10,000 people, that use a primary or residual disinfectant other than ultraviolet light or deliver water treated with one (141.600(b))"
+        ],
+        "exclusions": [
+          "Nontransient noncommunity systems serving fewer than 10,000 people and transient noncommunity systems are outside subpart U; a system serving fewer than 500 people that has taken TTHM and HAA5 samples under subpart L is not required to comply unless the State says so (141.604(a))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.idse.very-small-system-waiver",
+        "quote.dbp.monitoring.idse.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.idse.location-recommendations",
+      "kind": "qualitative",
+      "subject": "How subpart V compliance monitoring locations were recommended from the IDSE",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "The IDSE report recommends and justifies where and in what months subpart V TTHM and HAA5 monitoring should be conducted, selecting the number of locations in the 141.605(b) table (used as the subpart V routine locations unless the State requires others) by a protocol that alternates the locations with the highest TTHM LRAA and the highest HAA5 LRAA not yet selected, with existing subpart L average residence time locations (maximum residence time for ground water systems) taken at steps three and seven, repeated as needed; other locations may be recommended with a rationale, and monitored if the State approves them",
+      "conditions": [
+        "The location counts by source water type and population in the 141.605(b) table are not quoted on this page; the counts a system must monitor under subpart V are on page dbp.monitoring.routine"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart U applies to community water systems of any size, and to nontransient noncommunity water systems serving at least 10,000 people, that use a primary or residual disinfectant other than ultraviolet light or deliver water treated with one (141.600(b))"
+        ],
+        "exclusions": [
+          "Nontransient noncommunity systems serving fewer than 10,000 people and transient noncommunity systems are outside subpart U; a system serving fewer than 500 people that has taken TTHM and HAA5 samples under subpart L is not required to comply unless the State says so (141.604(a))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.idse.location-recommendations",
+        "quote.dbp.monitoring.idse.selection-protocol",
+        "quote.dbp.monitoring.idse.alternate-locations-and-schedule",
+        "quote.dbp.monitoring.idse.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.idse.peak-month-schedule",
+      "kind": "qualitative",
+      "subject": "Timing in the recommended subpart V schedule",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Subpart V monitoring during the peak historical month for TTHM and HAA5 concentration, unless the State approves another month; a system monitoring at least quarterly schedules compliance monitoring at a regular frequency of every 90 days or fewer once the peak month is identified",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart U applies to community water systems of any size, and to nontransient noncommunity water systems serving at least 10,000 people, that use a primary or residual disinfectant other than ultraviolet light or deliver water treated with one (141.600(b))"
+        ],
+        "exclusions": [
+          "Nontransient noncommunity systems serving fewer than 10,000 people and transient noncommunity systems are outside subpart U; a system serving fewer than 500 people that has taken TTHM and HAA5 samples under subpart L is not required to comply unless the State says so (141.604(a))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.idse.alternate-locations-and-schedule",
+        "quote.dbp.monitoring.idse.applicability"
+      ]
+    }
+  ]
+}
