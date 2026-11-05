@@ -10,30 +10,31 @@
   "applicability": {
     "system_types": [
       "community-water-system",
-      "nontransient-noncommunity-water-system"
+      "nontransient-noncommunity-water-system",
+      "transient-noncommunity-water-system"
     ],
     "conditions": [
       "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
     ],
     "exclusions": [
-      "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+      "Transient noncommunity water systems are not subject to subpart V (141.620(b)); on this page only the chlorine dioxide monitoring claim reaches them (141.132(c)(2)(i))"
     ]
   },
   "generated": {
     "by": "cc",
-    "at": "2026-11-05T17:54:04Z"
+    "at": "2026-11-05T18:16:57Z"
   },
   "review_payload": {
     "canonicalization": "dw-review-payload/v0.1",
-    "sha256": "cc2e02d4d412c3a63d0cf72ac302c78d9550bccf48291c3f6af50057a236660e"
+    "sha256": "f0d6ec4b74dfdc238072a117ff3cc0aeb3a4c88fcfc468261e03ec295fe52f44"
   },
   "normalization": "dw-quote-normalization/v0.1",
   "verified": [
     {
       "by": "process:quote-tool/v0.1-interim",
       "actor_type": "process",
-      "at": "2026-11-05T17:54:04Z",
-      "review_payload_sha256": "cc2e02d4d412c3a63d0cf72ac302c78d9550bccf48291c3f6af50057a236660e",
+      "at": "2026-11-05T18:16:57Z",
+      "review_payload_sha256": "f0d6ec4b74dfdc238072a117ff3cc0aeb3a4c88fcfc468261e03ec295fe52f44",
       "scopes": [
         "source-capture",
         "quote-fidelity"
@@ -82,7 +83,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "b4547ef8236f43f059cf8e5a3df041aeed9e19461fed9c433c26a3eba26a5926",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.routine.locations-and-months",
@@ -96,7 +97,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "17952eb456bffe8eb9bcfdcd15b69834e7946be9934158a314ea37422da372ae",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.routine.minimum-locations-table",
@@ -110,7 +111,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "bda42dd1a3271fecde518d942c0314fd1989db4776b34ec87c13fc0ade149df1",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.routine.table-notes",
@@ -124,7 +125,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "40478d6b58c406a756d35288dba0806d4521bc23bd2c70e9808f2c741691cd86",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.routine.undisinfected-system",
@@ -138,7 +139,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "5859b3790dcd74f35ad4a70868432c2d93d862e1745fc8467d180a54f2591a87",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.routine.analytical-methods",
@@ -152,7 +153,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "368b39d23983ff0d7a7afe09edde95c9eb8e14810a5ec57f09e6031ea9d5a19f",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.routine.plan-required",
@@ -166,7 +167,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "a4f286a704b219042c0a030ffa32aeec9bdd6cf33c949a6c3dc985e3d45ddaa1",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.routine.plan-location-selection",
@@ -180,7 +181,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "58a8ae2283086628d832320246fcd7367f3d35db97ad3ebefbfbe517b757f354",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.routine.plan-submittal",
@@ -194,7 +195,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "c7d8e3655386c2bc4e362d0929feccf3fa0aded76ca0d8e35d0c18e10848cabf",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.routine.plan-revision",
@@ -208,7 +209,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "f83b55e56445a3c5bbfe42bf8ec8ad1094e884add3a16083b778a36797f93fc6",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.routine.subpart-l-tthm-haa5-routine",
@@ -222,7 +223,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "a6a6baebd70b57246828bba723301b759915f30047c17bb6cf3d762ae017e9ee",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.routine.bromate-routine",
@@ -236,7 +237,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "17283725e122bdcd87dde38687bba8317e7c5f790e18df66b8be17948ef058f7",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.routine.chlorite-routine",
@@ -250,7 +251,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "7da84269b2dbf83fa3fdfe8bf7a5c8737d17ffec58fbb7b399bc8cf209892c51",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.routine.chlorine-chloramine-routine",
@@ -264,7 +265,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "d7663110253edf14249246b90e5706c766cccaf582b63f81cc21dd972fda130d",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.routine.chlorine-dioxide-routine",
@@ -278,7 +279,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "63413299f253ed10244838fe8428203ba1541eae64c53b442a9e900ce1c9f774",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     }
   ],
   "claims": [
@@ -784,14 +785,13 @@
       "applicability": {
         "system_types": [
           "community-water-system",
-          "nontransient-noncommunity-water-system"
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
         ],
         "conditions": [
-          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+          "Community, nontransient noncommunity and transient noncommunity water systems that use chlorine dioxide for disinfection or oxidation (141.132(c)(2)(i))"
         ],
-        "exclusions": [
-          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
-        ]
+        "exclusions": []
       },
       "supporting_quote_ids": [
         "quote.dbp.monitoring.routine.chlorine-dioxide-routine",

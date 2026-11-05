@@ -25,19 +25,19 @@
   },
   "generated": {
     "by": "cc",
-    "at": "2026-11-05T17:54:04Z"
+    "at": "2026-11-05T18:16:57Z"
   },
   "review_payload": {
     "canonicalization": "dw-review-payload/v0.1",
-    "sha256": "a92cc63032db70aa325129bb9a1f13b1fd76349f356095f46f4536ad32f90b94"
+    "sha256": "d0b0a46a37a82de5dbf04b1e4e06664de14adaa01a7ca75de093dbeb0e8cdb5d"
   },
   "normalization": "dw-quote-normalization/v0.1",
   "verified": [
     {
       "by": "process:quote-tool/v0.1-interim",
       "actor_type": "process",
-      "at": "2026-11-05T17:54:04Z",
-      "review_payload_sha256": "a92cc63032db70aa325129bb9a1f13b1fd76349f356095f46f4536ad32f90b94",
+      "at": "2026-11-05T18:16:57Z",
+      "review_payload_sha256": "d0b0a46a37a82de5dbf04b1e4e06664de14adaa01a7ca75de093dbeb0e8cdb5d",
       "scopes": [
         "source-capture",
         "quote-fidelity"
@@ -81,7 +81,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "3222bd286263b0ced2b3c3bf44bd2ac3f817c37c5ef16c1d82a65a6e7d54be72",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.precursors.toc.alternative-criteria",
@@ -95,7 +95,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "adf8852a4564a874f4c9cf3a42bd8f7c2009250778bcf223364a0dbc0dbc3c8c",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.precursors.toc.alternative-criteria-iv-vi",
@@ -109,7 +109,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "bc7c7283aeda2e0b62fe22233de8ec09e174524bb7a62cd76be05f78f44b2d5e",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.precursors.toc.softening-alternatives",
@@ -123,7 +123,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "fb5ee04dd225051a9dffa127f08b7d7408f2436e9376fcfa8c5b6cb661f2b07b",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.precursors.toc.performance-requirement",
@@ -137,7 +137,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "55e75bea7a57af6e5c2970913a4794928f9ee1e5471a1be8550559160964f38a",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.precursors.toc.step1-table",
@@ -151,7 +151,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "bae7a998f3cc76cc23866f4ca855cd43e4912700330fbb0200a03dae9bf00775",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.precursors.toc.step2-application",
@@ -165,7 +165,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "1bd19e5d9bb65a71fc7ada5133322f38a9635d1f12dd77ca63371fb1a09f4f09",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.precursors.toc.alternate-enhanced-coagulation-level",
@@ -179,7 +179,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "b9da7806a234835afb15b27cfff4145dd8db6a20ac9f8139ac69eed8eea97485",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.precursors.toc.compliance-calculation",
@@ -193,7 +193,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "b173c2c2b71bf98b0e2338481afed0e7437d1a8eb19509016f896165d0e29a97",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.precursors.toc.compliance-credits",
@@ -207,7 +207,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "824b75a1820b537d8a652aa7230612c6538c1449c235dc7e8ab11aca07fccb77",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.precursors.toc.treatment-technique",
@@ -221,7 +221,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "c8d2194f5932f9c427d7bd06bcea104b24d93f41eef7d299444578cec91539d8",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.precursors.toc.paired-samples",
@@ -235,7 +235,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "f6d72cf9e4f62d476b394607e6bac2678e95dbcdd7d957ffdc27829ca6e3763a",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.precursors.toc.reduced-toc-monitoring",
@@ -249,7 +249,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "a4ab38ad4265df00f3bfce0ce4ce7498ddb4aa560f385193f21033b27feee847",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.precursors.toc.subpart-l-scope",
@@ -263,7 +263,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "5c625225f1c040697f42072df193282d638401bd9a16f02fa6a60dc4600c524c",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     }
   ],
   "claims": [
@@ -533,7 +533,7 @@
         "operator": "eq",
         "regulatory_metric": "treatment-technique"
       },
-      "value": "Any one of: source water TOC below 2.0 mg/L (quarterly running annual average); treated water TOC below 2.0 mg/L; source water TOC below 4.0 mg/L with source water alkalinity above 60 mg/L as CaCO3 and either TTHM and HAA5 running annual averages no greater than 0.040 and 0.030 mg/L or a pre-compliance-date irrevocable financial commitment to technologies limiting them to those levels; TTHM and HAA5 running annual averages no greater than 0.040 and 0.030 mg/L with chlorine as the only primary and residual disinfectant; source water SUVA at or below 2.0 L/mg-m; or finished water SUVA at or below 2.0 L/mg-m, each calculated quarterly as a running annual average",
+      "value": "Any one of: source water TOC below 2.0 mg/L (quarterly running annual average); treated water TOC below 2.0 mg/L; source water TOC below 4.0 mg/L with source water alkalinity above 60 mg/L as CaCO3 and either TTHM and HAA5 running annual averages no greater than 0.040 and 0.030 mg/L or a pre-compliance-date irrevocable financial commitment to technologies limiting them to those levels; TTHM and HAA5 running annual averages no greater than 0.040 and 0.030 mg/L with chlorine as the only primary and residual disinfectant; source water SUVA, prior to any treatment and measured monthly according to 141.131(d)(4), at or below 2.0 L/mg-m; or finished water SUVA, measured monthly according to 141.131(d)(4), at or below 2.0 L/mg-m, each calculated quarterly as a running annual average",
       "conditions": [
         "A system using a criterion still monitors under 141.132(d); the measurements are made according to 141.131(d)"
       ],
@@ -640,8 +640,10 @@
         "operator": "eq",
         "regulatory_metric": "treatment-technique"
       },
-      "value": "Coagulation at the coagulant dose and pH at which an incremental addition of 10 mg/L of alum, or the equivalent ferric salt, removes 0.3 mg/L of TOC or less; the percent TOC removal at that point on the TOC-removal-versus-coagulant-dose curve becomes the system's minimum required TOC removal once the State approves it, superseding the Step 1 table",
-      "conditions": [],
+      "value": "Coagulation at the coagulant dose and pH determined by the bench- or pilot-scale testing method described in 141.135(b)(4)(i) through (v), at which an incremental addition of 10 mg/L of alum, or the equivalent ferric salt, removes 0.3 mg/L of TOC or less; the percent TOC removal at that point on the TOC-removal-versus-coagulant-dose curve becomes the system's minimum required TOC removal once the State approves it, superseding the Step 1 table",
+      "conditions": [
+        "The dose and pH are those the prescribed 141.135(b)(4)(i)-(v) testing method yields; the 0.3 mg/L increment threshold is a point read off that method's curve, not a free-standing substitute for the method, whose steps this page does not reproduce"
+      ],
       "exceptions": [],
       "jurisdiction": "US-federal",
       "applicability": {

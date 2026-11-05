@@ -21,19 +21,19 @@
   },
   "generated": {
     "by": "cc",
-    "at": "2026-11-05T17:54:04Z"
+    "at": "2026-11-05T18:16:57Z"
   },
   "review_payload": {
     "canonicalization": "dw-review-payload/v0.1",
-    "sha256": "8c124f3d716c678090d95bc9c67b47a0602a737ae2b045e1e54ff5b7325e4882"
+    "sha256": "8fa782239b5ea853e7bcf8d94acd47c8590fc08428878adfe4fd891de84af70a"
   },
   "normalization": "dw-quote-normalization/v0.1",
   "verified": [
     {
       "by": "process:quote-tool/v0.1-interim",
       "actor_type": "process",
-      "at": "2026-11-05T17:54:04Z",
-      "review_payload_sha256": "8c124f3d716c678090d95bc9c67b47a0602a737ae2b045e1e54ff5b7325e4882",
+      "at": "2026-11-05T18:16:57Z",
+      "review_payload_sha256": "8fa782239b5ea853e7bcf8d94acd47c8590fc08428878adfe4fd891de84af70a",
       "scopes": [
         "source-capture",
         "quote-fidelity"
@@ -87,7 +87,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "b4547ef8236f43f059cf8e5a3df041aeed9e19461fed9c433c26a3eba26a5926",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.reduced-increased.reduced-criteria",
@@ -101,7 +101,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "b4a48835df499e455bfa375aa29eb0ca6f049cc3b0308346569c6a2145fcb818",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.reduced-increased.reduced-schedule-table",
@@ -115,7 +115,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "cc4a72dbeea4a7a3a6ff8b37b10f88cdc4f9eb03696b2dd6b8853d5082ed9804",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.reduced-increased.remain-reduced",
@@ -129,7 +129,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "4f0898379552dae11e55c6d84ba608f92d489fdc5c8ff454a59142255fa77fdd",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.reduced-increased.resume-routine",
@@ -143,7 +143,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "fe3ff70ea02fea1f746ce5e9b0e01569a61d69a949177c1c7c564649f0c57acb",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.reduced-increased.state-discretion",
@@ -157,7 +157,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "8ee28e81b8029c64e6ff8e21a5765badb1fecb1937b0db78f26a0cd794421763",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.reduced-increased.increased-monitoring-trigger",
@@ -171,7 +171,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "d9fd8247c29a6d7343c108af10760c0076a0804c08f1bee806640708a9a0449f",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.reduced-increased.violation",
@@ -185,7 +185,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "8d9f7efdc6d5bae50e12ba933cb1254d9461e90d7050d285eae5b016b2446251",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.reduced-increased.return-to-routine",
@@ -199,7 +199,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "14194ace1900711e6f78c0b00c2727d3db0f31b0432e9ec572c6c41f1a645f9d",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.reduced-increased.remain-reduced-subpart-l",
@@ -213,7 +213,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "67a0844c722c546fab0c073f2e24ef51977fc8dab35494ee718019ab5769d784",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.reduced-increased.remain-increased-subpart-l",
@@ -227,7 +227,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "d7810ff3fe45393dd0eb70a7d3f356700684a75c45337705ab97b0697d0788ce",
-      "verified_at": "2026-11-05T17:54:04Z"
+      "verified_at": "2026-11-05T18:16:57Z"
     }
   ],
   "claims": [
@@ -329,6 +329,7 @@
       "supporting_quote_ids": [
         "quote.dbp.monitoring.reduced-increased.reduced-criteria",
         "quote.dbp.monitoring.reduced-increased.remain-reduced",
+        "quote.dbp.monitoring.reduced-increased.resume-routine",
         "quote.dbp.monitoring.reduced-increased.applicability"
       ],
       "unit": "mg/L"
@@ -372,9 +373,10 @@
         "operator": "eq",
         "regulatory_metric": "monitoring-trigger"
       },
-      "value": "Fewer than 500: every third year, 1 TTHM and 1 HAA5 sample at the location and quarter of the highest single measurements, or 1 dual sample set if both occurred at the same location and quarter; 500 to 9,999: the same per year; 10,000 to 99,999: per year, 2 dual sample sets at those locations and quarters; 100,000 to 499,999: per quarter, 2 dual sample sets at the locations with the highest TTHM and highest HAA5 LRAAs; 500,000 or more: per quarter, 4 dual sample sets at the two highest of each",
+      "value": "Fewer than 500: every third year, 1 TTHM and 1 HAA5 sample at the location and quarter of the highest single TTHM and HAA5 measurements, and, in the table's words, 1 dual sample set per year if both occurred at the same location and quarter; 500 to 9,999: per year, 1 TTHM and 1 HAA5 sample at those locations and quarters, or 1 dual sample set per year if both coincided; 10,000 to 99,999: per year, 2 dual sample sets at those locations and quarters; 100,000 to 499,999: per quarter, 2 dual sample sets at the locations with the highest TTHM and highest HAA5 LRAAs; 500,000 or more: per quarter, 4 dual sample sets at the two highest of each",
       "conditions": [
-        "Systems on quarterly monitoring take dual sample sets every 90 days (table note 1)"
+        "Systems on quarterly monitoring take dual sample sets every 90 days (table note 1)",
+        "The table's fewer-than-500 ground water row reads 'every third year' for the two single samples but '1 dual sample set per year' for the coincident case; the page reproduces that source wording as written and does not resolve it"
       ],
       "exceptions": [],
       "jurisdiction": "US-federal",
