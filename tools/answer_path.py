@@ -84,7 +84,7 @@ STOP = set(("the a an of for to in and or is are what which how does do under at
             "than then into one two three four five six seven eight nine ten").split())
 # subject words that carry no identity (every MCLG claim has them)
 GENERIC_SUBJECT = set("maximum contaminant level goal residual disinfectant mclg mrdlg mcl mrdl routine samples sample".split())
-NEGATION = set("not no never none cannot isn't aren't doesn't don't wasn't except unless".split())
+NEGATION = set("not no never none cannot isn't aren't doesn't don't wasn't except unless non nonzero".split())  # "non-zero" tokenizes to non + zero (Ari 601)
 
 
 def sha256(b):
@@ -247,6 +247,22 @@ def page_fields(page):
 METRIC_TOKENS = {"mcl": "mcl", "mclg": "mclg", "mrdl": "mrdl", "mrdlg": "mrdlg",
                  "action-level": "action", "treatment-technique": "treatment"}
 MONITORING_TOKENS = {"monitoring", "monitor", "monitored", "sampling", "sample", "samples"}
+# The regulatory metrics a question can name, by full name (longest first within a family, so "goal" is read before
+# the bare level) and by abbreviation (Ari 603: the abbreviations alone let "maximum residual disinfectant level for
+# bromate" through as a question about nothing in particular).
+METRIC_PHRASES = [("mrdlg", "maximum residual disinfectant level goal"), ("mrdl", "maximum residual disinfectant level"),
+                  ("mclg", "maximum contaminant level goal"), ("mcl", "maximum contaminant level"),
+                  ("action-level", "action level"), ("treatment-technique", "treatment technique")]
+
+
+def asked_metrics(question):
+    text = " ".join(unicodedata.normalize("NFC", question).lower().split())
+    asked = set()
+    for metric, phrase in METRIC_PHRASES:
+        if phrase in text:
+            asked.add(metric); text = text.replace(phrase, " ")
+    qset = set(tokens(question))
+    return asked | {m for m, tok in METRIC_TOKENS.items() if tok in qset}
 
 
 def focal_subjects(page, qset):
@@ -315,9 +331,9 @@ def retrieve(question, pages, k=TOP_K):
         # not answered by a page that carries no claim in that metric unless the page matches two further terms
         # beyond the metric words and the generic words. Added 2026-11-05 (Batch 2): the chlorine dioxide MRDL page
         # says "corrective action" and "level" in its quotes, which was enough for "lead action level" to retrieve it.
-        asks = {m for m, tok in METRIC_TOKENS.items() if tok in qset}
+        asks = asked_metrics(question)
         if asks and not any(c.get("relation", {}).get("regulatory_metric") in asks for c in p["claims"]):
-            metric_words = {tok for m, tok in METRIC_TOKENS.items() if m in asks}
+            metric_words = {tok for m, tok in METRIC_TOKENS.items() if m in asks} | {w for m, phrase in METRIC_PHRASES if m in asks for w in phrase.split()}
             if len([t for t in matched if t not in metric_words and t not in GENERIC_SUBJECT]) < MIN_MATCHED:
                 continue
         if len(matched) >= MIN_MATCHED and ratio >= MIN_RATIO:
@@ -374,13 +390,19 @@ def candidate_claims(question, retrieved):
     own subject words that the question uses, then the page's rank."""
     qn = [t for t in dict.fromkeys(tokens(question)) if t not in GENERIC_SUBJECT]
     qset = set(tokens(question))
-    asks_metric = {m for m, tok in METRIC_TOKENS.items() if tok in qset}
+    asks_metric = asked_metrics(question)
     value_question = not (qset & HOW_TOKENS)
     if not qn:
         return [], asks_metric
     out = []
     for rank, (_, page, _) in enumerate(retrieved):
+        if page.get("status") != "stable":
+            continue   # generation reads signed pages only (Skitch 571; Ari 602), whatever retrieval was allowed to inspect
         for c in page["claims"]:
+            # A value question that names a metric is answered by that metric's claims or not at all (Ari 603): no
+            # fall-through to the nearest claim in another metric or in monitoring.
+            if value_question and asks_metric and c.get("relation", {}).get("regulatory_metric") not in asks_metric:
+                continue
             ctext = c["subject"] + " " + (c["value"] if isinstance(c.get("value"), str) else "")
             ctok = set(tokens(ctext))
             covered = [t for t in qn if t in ctok]
@@ -389,6 +411,8 @@ def candidate_claims(question, retrieved):
             metric = c.get("relation", {}).get("regulatory_metric")
             metric_match = 1 if (value_question and metric in asks_metric) else 0
             subj = [t for t in dict.fromkeys(tokens(c["subject"])) if t not in GENERIC_SUBJECT]
+            if subj and not any(t in qset for t in subj):
+                continue   # the claim must be about something the question names; words in its value alone do not make it an answer (the turbidity probe)
             precision = (sum(1 for t in subj if t in qset) / len(subj)) if subj else 0.0
             coverage = len(covered) / len(qn)
             if coverage < GEN_MIN_COVERAGE and not (metric_match and coverage >= GEN_METRIC_COVERAGE and precision >= GEN_METRIC_PRECISION):
@@ -437,7 +461,7 @@ def generate(question, retrieved, enabled=False):
     cands, asks_metric = candidate_claims(question, retrieved)
     if not cands:
         return None
-    pages = [p for _, p, _ in retrieved]
+    pages = [p for _, p, _ in retrieved if p.get("status") == "stable"]
     best = cands[0]
     selected, covered, metrics = [best], set(best["covered"]), {best["metric"]}
     for item in cands[1:]:
@@ -461,8 +485,12 @@ def generate(question, retrieved, enabled=False):
 
 def numbers_in(text):
     out = set()
-    if re.search(r"\bzero\b", text, re.IGNORECASE):
-        out.add(Decimal(0))   # the MCLG table spells the value "zero"; the word counts as the number for every check
+    # The MCLG table spells the value "zero", so the standalone word counts as the number 0: not "non-zero" or
+    # "nonzero" (with any hyphen or dash, Unicode ones included), not "zero point eight", not "zero" glued to a digit
+    # (Ari 601 and 606). Every other spoken form of a number is no number at all, which fails a numeric claim.
+    plain = re.sub(r"[\u2010-\u2015\u2212\u00ad-]", "-", unicodedata.normalize("NFKC", text)).lower()
+    if re.search(r"(?<![a-z-])(?<!non-)(?<!non )zero(?![a-z-])(?!\s*point\b)(?!\s*\d)", plain):
+        out.add(Decimal(0))
     for m in re.findall(r"(?<![A-Za-z0-9.])\d+(?:\.\d+)?(?![A-Za-z0-9])", text):
         try:
             out.add(Decimal(m))
@@ -596,8 +624,11 @@ def answer(question, today, allow_stale_dev=False, generate_enabled=False, answe
     else:
         checks.append({"check_id": "coverage", "version": "v0.1", "verdict": "pass", "subjects": [env_subject]})
         selection = generate(question, retrieved, generate_enabled)
-        if selection is None:
+        if selection is None and not generate_enabled:
             reasons.append({"code": "SYNTHESIS_WITHHELD", "source_kind": "policy-gate", "source_id": "generation-disabled", "subjects": [env_subject]})
+        elif selection is None:
+            # the generator ran and found no selection it could stand behind (Ari 604: not the disabled gate)
+            reasons.append({"code": "INSUFFICIENT_EVIDENCE", "source_kind": "policy-gate", "source_id": "quote-or-decline", "subjects": [env_subject]})
         else:
             ok, failures, (claim_refs, quote_refs) = validate(selection, [p for _, p, _ in retrieved])
             if ok:
@@ -651,7 +682,7 @@ def answer(question, today, allow_stale_dev=False, generate_enabled=False, answe
     del env_for_digest["integrity"]["artifact_sha256"]
     envelope["integrity"]["artifact_sha256"] = sha256(canonical(env_for_digest))
     if selection is None:
-        disposition = "ineligible" if not eligible else ("retrieval-miss" if not retrieved else "withheld")
+        disposition = "ineligible" if not eligible else ("retrieval-miss" if not retrieved else ("declined" if generate_enabled else "withheld"))
     else:
         disposition = "validated" if outcome in ("evidence-backed", "evidence-only") else "validation-rejected"
     return {
@@ -751,6 +782,9 @@ def selftest(today):
               "How many days of vacation do operators get?"]
     misses = sum(1 for q in probes if not retrieve(q, eligible))
     results.append((f"out-of-scope probes miss ({misses}/{len(probes)})", misses == len(probes)))
+    # the gate that answers: with generation on, every off-topic probe declines end to end, retrieved or not
+    declines = sum(1 for q in probes if generate(q, retrieve(q, eligible), True) is None)
+    results.append((f"generate: out-of-scope probes decline end to end ({declines}/{len(probes)})", declines == len(probes)))
     control = retrieve("What is the maximum residual disinfectant level goal for chlorine?", eligible)
     results.append(("in-scope control still retrieves dbp.mclg", bool(control) and control[0][1]["page_id"] == "dbp.mclg"))
     bank_path = ROOT / "evaluation" / "questions.dbp-v0.1.json"
@@ -787,6 +821,23 @@ def selftest(today):
     sel, _ = gen("What is the MRDL for chlorine? For chloramines?")
     results.append(("generate: a two-part question quotes both MRDL claims", sel is not None and {"claim.dbp.mrdl.chlorine-chloramine.mrdl-chlorine", "claim.dbp.mrdl.chlorine-chloramine.mrdl-chloramines"} <= set(sel["claim_ids"])))
     results.append(("generate: disabled returns None", generate("What is the MCLG for chlorite?", retrieve("What is the MCLG for chlorite?", eligible), False) is None))
+    # Ari's D4 review (601-604)
+    bromate_good = {"claim_ids": ["claim.dbp.mclg.bromate"], "quote_ids": ["quote.dbp.mclg.table"], "answer_sentence": "The MCLG for bromate is zero mg/L.",
+                    "conditions_acknowledged": list(next(c for c in pages[0]["claims"] if c["claim_id"] == "claim.dbp.mclg.bromate")["conditions"])}
+    expect("the word zero is the number 0 (bromate MCLG)", bromate_good)
+    expect("non-zero is not zero: rejected", dict(bromate_good, answer_sentence="The MCLG for bromate is non-zero mg/L."), "numeric-claim-tuple")
+    expect("not zero: rejected", dict(bromate_good, answer_sentence="The MCLG for bromate is not zero mg/L."), "numeric-claim-tuple")
+    expect("non\u2011zero (non-breaking hyphen) is not zero: rejected", dict(bromate_good, answer_sentence="The MCLG for bromate is non\u2011zero mg/L."), "numeric-claim-tuple")
+    expect("nonzero is not zero: rejected", dict(bromate_good, answer_sentence="The MCLG for bromate is nonzero mg/L."), "numeric-claim-tuple")
+    expect("zero point eight is not zero: rejected", dict(bromate_good, answer_sentence="The MCLG for bromate is zero point eight mg/L."), "numeric-claim-tuple")
+    expect("zero glued to a digit is not zero: rejected", dict(bromate_good, answer_sentence="The MCLG for bromate is zero 8 mg/L."), "numeric-claim-tuple")
+    for q in ["What is the maximum residual disinfectant level for bromate?", "What is the maximum contaminant level for chlorine?", "What is the MCL for chlorine?", "What is the MRDL for bromate?"]:
+        results.append((f"generate: a value question in a metric no page answers declines: {q}", gen(q)[0] is None))
+    results.append(("asked_metrics reads full names and abbreviations", asked_metrics("What is the maximum contaminant level goal for bromate?") == {"mclg"} and asked_metrics("maximum residual disinfectant level for chlorine") == {"mrdl"} and asked_metrics("What is the MCL and MCLG for chlorite?") == {"mcl", "mclg"}))
+    draft = json.loads(json.dumps({k: v for k, v in pages[0].items() if k != "_quotes"})); draft["_quotes"] = pages[0]["_quotes"]; draft["status"] = "draft"
+    results.append(("generate: never selects from an unsigned page, even when retrieval saw it", generate("What is the MCLG for chlorite?", [(9.0, draft, {})], True) is None and generate("What is the MCLG for chlorite?", [(9.0, pages[0], {})], True) is not None))
+    res_decl = answer("What is the MCL for chlorine?", today, True, True)
+    results.append(("an enabled generator's decline is INSUFFICIENT_EVIDENCE from quote-or-decline, not the disabled gate", res_decl["selection"] is None and res_decl["disposition"] in ("declined", "retrieval-miss") and not any(r["source_id"] == "generation-disabled" for r in res_decl["envelope"]["outcome_reasons"]) and (res_decl["disposition"] != "declined" or any(r["code"] == "INSUFFICIENT_EVIDENCE" and r["source_id"] == "quote-or-decline" for r in res_decl["envelope"]["outcome_reasons"]))))
     results.append(("generate: nothing retrieved declines", generate("How many days of vacation do operators get?", [], True) is None))
     for name, passed in results:
         print(("PASS " if passed else "FAIL ") + name)
