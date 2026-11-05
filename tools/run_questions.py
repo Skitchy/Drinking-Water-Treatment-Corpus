@@ -45,7 +45,7 @@ def grade(q, res):
     if kinds:
         return "rejected"
     env = res["envelope"]
-    if env["outcome"] != "evidence-backed":
+    if env["outcome"] not in ("evidence-backed", "evidence-only"):   # evidence-only: a dev-waived gate on a cited page; never in a scored run
         return "rejected"
     cited = {r["claim_id"] for r in env["claim_refs"]}
     sentence = (res["selection"] or {}).get("answer_sentence", "") or ""

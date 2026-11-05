@@ -326,19 +326,143 @@ def retrieve(question, pages, k=TOP_K):
     return scored[:k]
 
 
-# ---------- step 3: generate (stub) ----------
+# ---------- step 3: generate (quote or decline) ----------
+# D4 (Skitch 571 and 581, 2026-11-05): the generation step quotes or declines. This generator is a template over
+# the retrieved pages' own fields and no model: it picks the claims whose subject and value cover the question,
+# writes one clause per claim from the claim's subject, value and unit (the number spelled as the supporting quote
+# spells it), acknowledges every condition and exception verbatim, cites every supporting quote, and hands the
+# selection to validate(). A selection that validate() rejects is never returned: the generator drops the weakest
+# claim and tries again, and declines (None) when nothing validates. So by construction nothing it returns is
+# fabricated, rejected or a failed quote; coverage is what the measured run shows. D4's swap rule applies: a
+# different generator (a model, another template) is a different GENERATOR id and needs a fresh scored run.
+GENERATOR = "quote-or-decline/v0.1"
+GEN_MAX_CLAIMS = 3
+GEN_MIN_COVERAGE = 1 / 2   # of the question's non-generic tokens, covered by the claim's subject and value
+# A value question ("What is the MCL for bromate, and which plants does it apply to?") is answered by the named
+# metric's own claim when that claim's subject is at least half about the question, even if the question's other
+# words (plants, apply) are not on the claim: the value is the answer the question asks for.
+GEN_METRIC_COVERAGE = 1 / 3
+GEN_METRIC_PRECISION = 1 / 2
+# A question that asks how something is calculated or determined wants the claim that covers it, not the value claim
+# in the metric it happens to name; a plain value question ("What is the MRDL for chlorine?") wants the metric's claim
+# before any claim that merely mentions the same words.
+HOW_TOKENS = {"calculated", "calculate", "computed", "compute", "determined", "determine", "basis"}
+
+
+def display_value(value, quote_texts):
+    """The value as the source spells it (the page stores 0.080 as the JSON number 0.08); the JSON spelling when
+    no supporting quote spells that number."""
+    try:
+        v = Decimal(str(value))
+    except InvalidOperation:
+        return str(value)
+    if v == 0 and any(re.search(r"\bzero\b", t, re.IGNORECASE) for t in quote_texts):
+        return "zero"
+    for text in quote_texts:
+        for m in re.findall(r"(?<![A-Za-z0-9.])\d+(?:\.\d+)?(?![A-Za-z0-9])", text):
+            try:
+                if Decimal(m) == v:
+                    return m
+            except InvalidOperation:
+                pass
+    return str(value)
+
+
+def candidate_claims(question, retrieved):
+    """Claims on the retrieved pages ranked by: whether the claim's metric is one a value question names, then the
+    share of the question's non-generic tokens found in the claim's subject and value, then the share of the claim's
+    own subject words that the question uses, then the page's rank."""
+    qn = [t for t in dict.fromkeys(tokens(question)) if t not in GENERIC_SUBJECT]
+    qset = set(tokens(question))
+    asks_metric = {m for m, tok in METRIC_TOKENS.items() if tok in qset}
+    value_question = not (qset & HOW_TOKENS)
+    if not qn:
+        return [], asks_metric
+    out = []
+    for rank, (_, page, _) in enumerate(retrieved):
+        for c in page["claims"]:
+            ctext = c["subject"] + " " + (c["value"] if isinstance(c.get("value"), str) else "")
+            ctok = set(tokens(ctext))
+            covered = [t for t in qn if t in ctok]
+            if not covered:
+                continue
+            metric = c.get("relation", {}).get("regulatory_metric")
+            metric_match = 1 if (value_question and metric in asks_metric) else 0
+            subj = [t for t in dict.fromkeys(tokens(c["subject"])) if t not in GENERIC_SUBJECT]
+            precision = (sum(1 for t in subj if t in qset) / len(subj)) if subj else 0.0
+            coverage = len(covered) / len(qn)
+            if coverage < GEN_MIN_COVERAGE and not (metric_match and coverage >= GEN_METRIC_COVERAGE and precision >= GEN_METRIC_PRECISION):
+                continue
+            out.append({"page": page, "claim": c, "covered": set(covered), "metric": metric,
+                        "key": (metric_match, len(covered) / len(qn), precision, -rank, 1 if c["kind"] == "numeric" else 0)})
+    out.sort(key=lambda x: (x["key"], x["claim"]["claim_id"]), reverse=True)
+    return out, asks_metric
+
+
+def compose(selected):
+    """One clause per claim from the claim's own words; numbers only from numeric claims' values."""
+    numeric_values = set()
+    for item in selected:
+        c = item["claim"]
+        if c["kind"] == "numeric":
+            try:
+                numeric_values.add(Decimal(str(c["value"])))
+            except InvalidOperation:
+                pass
+    clauses, quote_ids, acknowledged = [], [], []
+    for item in selected:
+        c, page = item["claim"], item["page"]
+        quotes = [page["_quotes"][q]["text"] for q in c["supporting_quote_ids"] if q in page["_quotes"]]
+        if c["kind"] == "numeric":
+            clause = f"{c['subject']}: {display_value(c['value'], quotes)}" + (f" {c['unit']}" if c.get("unit") else "")
+        elif isinstance(c.get("value"), str) and numbers_in(c["value"]) <= numeric_values:
+            clause = f"{c['subject']}: {c['value']}"
+        else:
+            clause = f"{c['subject']} (the quoted text states it)"
+        clauses.append(clause.rstrip(".") + ".")
+        for q in c["supporting_quote_ids"]:
+            if q not in quote_ids:
+                quote_ids.append(q)
+        for cond in list(c.get("conditions", [])) + list(c.get("exceptions", [])):
+            if cond not in acknowledged:
+                acknowledged.append(cond)
+    return {"claim_ids": [i["claim"]["claim_id"] for i in selected], "quote_ids": quote_ids,
+            "answer_sentence": " ".join(clauses), "conditions_acknowledged": acknowledged, "generator": GENERATOR}
+
 
 def generate(question, retrieved, enabled=False):
-    """Returns a selection dict or None. Disabled this session by design."""
-    if not enabled:
+    """Returns a selection dict that validate() accepts, or None (decline)."""
+    if not enabled or not retrieved:
         return None
-    raise NotImplementedError("generation is off until Skitch's decision D4")
+    cands, asks_metric = candidate_claims(question, retrieved)
+    if not cands:
+        return None
+    pages = [p for _, p, _ in retrieved]
+    best = cands[0]
+    selected, covered, metrics = [best], set(best["covered"]), {best["metric"]}
+    for item in cands[1:]:
+        if len(selected) >= GEN_MAX_CLAIMS:
+            break
+        same_strength = item["key"][:2] == best["key"][:2]
+        new_token = bool(item["covered"] - covered)
+        new_asked_metric = item["metric"] in asks_metric and item["metric"] not in metrics
+        if same_strength and (new_token or new_asked_metric):
+            selected.append(item); covered |= item["covered"]; metrics.add(item["metric"])
+    while selected:
+        selection = compose(selected)
+        ok, _, _ = validate(selection, pages)
+        if ok:
+            return selection
+        selected = selected[:-1]
+    return None
 
 
 # ---------- step 4: validate ----------
 
 def numbers_in(text):
     out = set()
+    if re.search(r"\bzero\b", text, re.IGNORECASE):
+        out.add(Decimal(0))   # the MCLG table spells the value "zero"; the word counts as the number for every check
     for m in re.findall(r"(?<![A-Za-z0-9.])\d+(?:\.\d+)?(?![A-Za-z0-9])", text):
         try:
             out.add(Decimal(m))
@@ -477,7 +601,20 @@ def answer(question, today, allow_stale_dev=False, generate_enabled=False, answe
         else:
             ok, failures, (claim_refs, quote_refs) = validate(selection, [p for _, p, _ in retrieved])
             if ok:
-                outcome = "evidence-backed"
+                # The envelope describes this answer (found by the first generated answers, 2026-11-05): it carries the
+                # envelope-level checks and the cited pages' checks; another page's failed eligibility is the run's
+                # business, not this answer's, and the schema makes every check in an evidence-backed envelope pass.
+                # A cited page whose gate was waived by the dev override makes the answer evidence-only, with the
+                # waived gate named as the reason; a scored run never waives, so it never produces this outcome.
+                cited = {r["page_id"] for r in claim_refs} | {r["page_id"] for r in quote_refs}
+                by_id = {p["page_id"]: p for p in eligible}
+                checks = [c for c in checks if c["subjects"][0]["kind"] != "page" or c["subjects"][0]["id"] in cited]
+                reasons = []
+                waived_cited = {pid: by_id[pid]["_dev_waived"] for pid in sorted(cited) if by_id[pid]["_dev_waived"]}
+                outcome = "evidence-only" if waived_cited else "evidence-backed"
+                for pid, codes in waived_cited.items():
+                    for code in codes:
+                        reasons.append({"code": code, "source_kind": "policy-gate", "source_id": "dev-override", "subjects": [{"kind": "page", "id": pid}]})
                 for r in claim_refs:
                     checks.append({"check_id": "claim-resolution", "version": "v0.1", "verdict": "pass", "subjects": [{"kind": "claim", "id": r["claim_id"]}]})
                 for r in quote_refs:
@@ -501,7 +638,7 @@ def answer(question, today, allow_stale_dev=False, generate_enabled=False, answe
         "outcome": outcome,
         "query": {"canonicalization_id": QUERY_CANON, "sha256": query_digest(question)},
         "corpus": {"release_id": release_id, "manifest_sha256": release_sha},
-        "runtime": {"manifest_id": RUNTIME_ID, "manifest_sha256": sha256(canonical({"id": RUNTIME_ID, "generation": generate_enabled, "allow_stale_dev": allow_stale_dev}))},
+        "runtime": {"manifest_id": RUNTIME_ID, "manifest_sha256": sha256(canonical({"id": RUNTIME_ID, "generation": generate_enabled, "generator": GENERATOR if generate_enabled else None, "allow_stale_dev": allow_stale_dev}))},
         "applicability": {"jurisdiction": "US-federal", "use_class": "regulatory-reference"},
         "claim_refs": claim_refs,
         "quote_refs": quote_refs,
@@ -516,7 +653,7 @@ def answer(question, today, allow_stale_dev=False, generate_enabled=False, answe
     if selection is None:
         disposition = "ineligible" if not eligible else ("retrieval-miss" if not retrieved else "withheld")
     else:
-        disposition = "validated" if outcome == "evidence-backed" else "validation-rejected"
+        disposition = "validated" if outcome in ("evidence-backed", "evidence-only") else "validation-rejected"
     return {
         "question": question,
         "today": today.isoformat(),
@@ -544,7 +681,7 @@ def render(envelope, retrieved, selection, pages, dev):
         lines.append("Retrieved (retrieval only, no answer unless quotes follow):")
         for s, p, d in retrieved:
             lines.append(f"  {p['page_id']}  score {s}  matched {len(d['matched'])} ({d['ratio']})")
-    if envelope["outcome"] == "evidence-backed":
+    if envelope["outcome"] in ("evidence-backed", "evidence-only"):
         qmap = {qid: q for p in pages for qid, q in p["_quotes"].items()}
         for ref in envelope["quote_refs"]:
             q = qmap[ref["quote_id"]]
@@ -631,6 +768,26 @@ def selftest(today):
         results.append((f"bank questions whose expected pages all exist rank an expected page first ({hits}/{len(judged)})", hits == len(judged)))
         for q in deferred:
             print(f"  deferred (expected page not built): {q['id']} {'first' if first_ok(q) else 'not first'} expected {q['expected_page_ids']}")
+        # D4 property over the whole bank: whatever the generator returns, validate() accepts; a decline is None
+        bad = []
+        for q in bank:
+            r = retrieve(q["question"], eligible)
+            sel = generate(q["question"], r, True)
+            if sel is not None and not validate(sel, [p for _, p, _ in r])[0]:
+                bad.append(q["id"])
+        results.append((f"generate: every bank selection validates or is a decline ({len(bank) - len(bad)}/{len(bank)})", not bad))
+    # D4 generation (quote or decline): named cases
+    def gen(q):
+        r = retrieve(q, eligible)
+        return generate(q, r, True), [p for _, p, _ in r]
+    sel, pages_ = gen("What is the MCLG for chlorite?")
+    results.append(("generate: MCLG for chlorite quotes claim.dbp.mclg.chlorite and validates", sel is not None and sel["claim_ids"] == ["claim.dbp.mclg.chlorite"] and validate(sel, pages_)[0]))
+    sel, _ = gen("What is the MCL for Total Trihalomethanes (TTHM)?")
+    results.append(("generate: the TTHM MCL is spelled as the source spells it (0.080 mg/L)", sel is not None and "0.080 mg/L" in sel["answer_sentence"] and "claim.dbp.mcl.tthm.mcl" in sel["claim_ids"]))
+    sel, _ = gen("What is the MRDL for chlorine? For chloramines?")
+    results.append(("generate: a two-part question quotes both MRDL claims", sel is not None and {"claim.dbp.mrdl.chlorine-chloramine.mrdl-chlorine", "claim.dbp.mrdl.chlorine-chloramine.mrdl-chloramines"} <= set(sel["claim_ids"])))
+    results.append(("generate: disabled returns None", generate("What is the MCLG for chlorite?", retrieve("What is the MCLG for chlorite?", eligible), False) is None))
+    results.append(("generate: nothing retrieved declines", generate("How many days of vacation do operators get?", [], True) is None))
     for name, passed in results:
         print(("PASS " if passed else "FAIL ") + name)
     print(f"{sum(1 for _, p in results if p)}/{len(results)} passed")
