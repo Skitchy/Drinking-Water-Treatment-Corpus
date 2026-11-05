@@ -22,19 +22,19 @@
   },
   "generated": {
     "by": "cc",
-    "at": "2026-11-05T17:21:16Z"
+    "at": "2026-11-05T17:30:35Z"
   },
   "review_payload": {
     "canonicalization": "dw-review-payload/v0.1",
-    "sha256": "321cfbe44daccdbe5e0f2323de3c955749994b52f1af919aa7cdb8ac31edcc28"
+    "sha256": "ba0e3eb342afd99ef895999e7dda010bee21f6d210b37c28830ae69c244de693"
   },
   "normalization": "dw-quote-normalization/v0.1",
   "verified": [
     {
       "by": "process:quote-tool/v0.1-interim",
       "actor_type": "process",
-      "at": "2026-11-05T17:21:16Z",
-      "review_payload_sha256": "321cfbe44daccdbe5e0f2323de3c955749994b52f1af919aa7cdb8ac31edcc28",
+      "at": "2026-11-05T17:30:35Z",
+      "review_payload_sha256": "ba0e3eb342afd99ef895999e7dda010bee21f6d210b37c28830ae69c244de693",
       "scopes": [
         "source-capture",
         "quote-fidelity"
@@ -83,7 +83,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "7ce05becc0b0f8c5a266776dc0b04d8d259011becac39f52b253b703c48ff7b7",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.mrdl.chlorine-dioxide.compliance-dates",
@@ -97,7 +97,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "66063d4f5cb81f0147346762077c3a3ab3103094f4f1f070135fd2c28c0e1e95",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.mrdl.chlorine-dioxide.compliance-dates-transient",
@@ -111,7 +111,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "698753dc0411368f7459c21fe78dfe1830fc88300be52d7a67bb9451b0d0732b",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.mrdl.chlorine-dioxide.bat",
@@ -125,7 +125,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "257f6be584a139f8fbfc4c19812fc76fc05faba084e2204321f4b4a0c9f92d14",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.mrdl.chlorine-dioxide.routine-monitoring",
@@ -139,7 +139,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "63413299f253ed10244838fe8428203ba1541eae64c53b442a9e900ce1c9f774",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.mrdl.chlorine-dioxide.additional-monitoring",
@@ -153,7 +153,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "d02bcc8ca6ee1fb5e78a780c91f42ec224030fbed22810156825f125ff2c27b8",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.mrdl.chlorine-dioxide.no-reduced-monitoring",
@@ -167,7 +167,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "7915bdef5b7be9235e48272baabe1feb72f4387d31266b1a9adbd4a8138e9fd1",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.mrdl.chlorine-dioxide.acute-violation",
@@ -181,7 +181,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "e33ca6adc2136d09c3ee85d601cae62f92c8560f2935144539d5359509d2c482",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.mrdl.chlorine-dioxide.nonacute-violation",
@@ -195,7 +195,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "58699f9f5378b889e0c17b9d9f69175e55b7de4081155e31a4487c506cf1b851",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.mrdl.chlorine-dioxide.subpart-l-scope",
@@ -209,7 +209,21 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "785c6d8db78847643350da721d92b0dd73833f31684eb2ae3e4cc5520397cb64",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
+    },
+    {
+      "quote_id": "quote.dbp.mrdl.chlorine-dioxide.no-residual-increase-allowance",
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_source_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:2397-2890"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "036479509497842775b39b6035bcbf7b06a328dbccfa7b0f399df1754ad8105f",
+      "verified_at": "2026-11-05T17:30:35Z"
     }
   ],
   "claims": [
@@ -224,7 +238,8 @@
       "value": 0.8,
       "conditions": [
         "The 141.65(a) table lists chlorine, chloramines and chlorine dioxide together; this claim covers chlorine dioxide only, and the value is expressed as ClO2",
-        "The MRDLG for chlorine dioxide is a separate value recorded on page dbp.mclg; it is not asserted here"
+        "The MRDLG for chlorine dioxide is a separate value recorded on page dbp.mclg; it is not asserted here",
+        "The residual-increase allowance of 141.130(d) names chlorine or chloramines and expressly excludes chlorine dioxide; no such allowance applies to this MRDL"
       ],
       "exceptions": [],
       "jurisdiction": "US-federal",
@@ -243,6 +258,7 @@
       },
       "supporting_quote_ids": [
         "quote.dbp.mrdl.chlorine-dioxide.mrdl-table",
+        "quote.dbp.mrdl.chlorine-dioxide.no-residual-increase-allowance",
         "quote.dbp.mrdl.chlorine-dioxide.routine-monitoring",
         "quote.dbp.mrdl.chlorine-dioxide.subpart-l-scope"
       ],
@@ -258,7 +274,7 @@
       },
       "value": "Community, nontransient noncommunity, and transient noncommunity water systems that use chlorine dioxide for disinfection or oxidation",
       "conditions": [
-        "Transient noncommunity systems are the one system type subpart L reaches for an MRDL (141.130(a)(2))"
+        "For transient noncommunity systems, subpart L applies only the chlorine dioxide MRDL (141.130(a)(2)); community and nontransient noncommunity systems are subject to all three MRDLs in 141.65 (141.130(a)(1))"
       ],
       "exceptions": [],
       "jurisdiction": "US-federal",

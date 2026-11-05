@@ -21,19 +21,19 @@
   },
   "generated": {
     "by": "cc",
-    "at": "2026-11-05T17:21:16Z"
+    "at": "2026-11-05T17:30:35Z"
   },
   "review_payload": {
     "canonicalization": "dw-review-payload/v0.1",
-    "sha256": "47928a061fb8c7e241c60aeff8b2d126fd65cbff8d680716c9ee0b70eaa963ca"
+    "sha256": "6d0a80a38e72e16a993075c62aca60d6da67c76c9f0fab3d45c0e2b82771995b"
   },
   "normalization": "dw-quote-normalization/v0.1",
   "verified": [
     {
       "by": "process:quote-tool/v0.1-interim",
       "actor_type": "process",
-      "at": "2026-11-05T17:21:16Z",
-      "review_payload_sha256": "47928a061fb8c7e241c60aeff8b2d126fd65cbff8d680716c9ee0b70eaa963ca",
+      "at": "2026-11-05T17:30:35Z",
+      "review_payload_sha256": "6d0a80a38e72e16a993075c62aca60d6da67c76c9f0fab3d45c0e2b82771995b",
       "scopes": [
         "source-capture",
         "quote-fidelity"
@@ -82,7 +82,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "4b3a8c5be9f3c0e79ea06ee73fe961c867dbcfda9553142e01d8d788c6e2821d",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.compliance.lraa.dual-sample-set",
@@ -96,7 +96,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "d8819a3fb06a4fca842c8fc1b7e9b7fcd15a56c56de7ff0c3143acc8cf0c75ee",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.compliance.lraa.subpart-v-general",
@@ -110,7 +110,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "4cf9aa1113a1e81696124b80f17200ff8c2c33d76b210c898e2c752afe29ec76",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.compliance.lraa.applicability",
@@ -124,7 +124,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "b4547ef8236f43f059cf8e5a3df041aeed9e19461fed9c433c26a3eba26a5926",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.compliance.lraa.schedule",
@@ -138,7 +138,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "53c9c5461563b59a866b8aab6e85b34529ae714c46ab2c53d83aa9cde7eb5f49",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.compliance.lraa.monitoring-start",
@@ -152,7 +152,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "e4e305f8d9940e27e1ca2b125da16f3ab91d6d65989a650e60f2f1abf3d344d8",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.compliance.lraa.first-compliance-calculation",
@@ -166,7 +166,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "2c9a529e54647487bcff5fedab96c178475f52f33a8edd1847995f5fdc4d40f2",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.compliance.lraa.lraa-quarterly",
@@ -180,7 +180,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "d5e00a20cf29cb4dab98c3c075b12b3777d8f39977dbbaebd52c47a12ac1ed44",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.compliance.lraa.lraa-less-than-quarterly",
@@ -194,7 +194,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "f7dba7bef79850ffa493d4b112bad4a641f2c3e8237a3df9060be39dd36ef0fb",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.compliance.lraa.increased-monitoring-trigger",
@@ -208,7 +208,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "d9fd8247c29a6d7343c108af10760c0076a0804c08f1bee806640708a9a0449f",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.compliance.lraa.violation",
@@ -222,7 +222,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "8d9f7efdc6d5bae50e12ba933cb1254d9461e90d7050d285eae5b016b2446251",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.compliance.lraa.return-to-routine",
@@ -236,7 +236,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "14194ace1900711e6f78c0b00c2727d3db0f31b0432e9ec572c6c41f1a645f9d",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.compliance.lraa.raa-subpart-l",
@@ -250,7 +250,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "3b41dda198eaa568f5e5a6f36610e0e21afbb1ec68e9637c1a086da8a6e426ab",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     }
   ],
   "claims": [

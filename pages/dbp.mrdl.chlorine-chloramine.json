@@ -21,19 +21,19 @@
   },
   "generated": {
     "by": "cc",
-    "at": "2026-11-05T17:21:16Z"
+    "at": "2026-11-05T17:30:35Z"
   },
   "review_payload": {
     "canonicalization": "dw-review-payload/v0.1",
-    "sha256": "b3b3d7001930908c5e5d739a8a2779b4ef2dd5e576f6196f939cdc6730505a14"
+    "sha256": "01853fd271c948ad872a1522aefc4140e13862c9b19b2a7ccd37c6a04550ab1d"
   },
   "normalization": "dw-quote-normalization/v0.1",
   "verified": [
     {
       "by": "process:quote-tool/v0.1-interim",
       "actor_type": "process",
-      "at": "2026-11-05T17:21:16Z",
-      "review_payload_sha256": "b3b3d7001930908c5e5d739a8a2779b4ef2dd5e576f6196f939cdc6730505a14",
+      "at": "2026-11-05T17:30:35Z",
+      "review_payload_sha256": "01853fd271c948ad872a1522aefc4140e13862c9b19b2a7ccd37c6a04550ab1d",
       "scopes": [
         "source-capture",
         "quote-fidelity"
@@ -82,7 +82,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "7ce05becc0b0f8c5a266776dc0b04d8d259011becac39f52b253b703c48ff7b7",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.mrdl.chlorine-chloramine.compliance-dates",
@@ -96,7 +96,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "66063d4f5cb81f0147346762077c3a3ab3103094f4f1f070135fd2c28c0e1e95",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.mrdl.chlorine-chloramine.bat",
@@ -110,7 +110,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "257f6be584a139f8fbfc4c19812fc76fc05faba084e2204321f4b4a0c9f92d14",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.mrdl.chlorine-chloramine.compliance-raa",
@@ -124,7 +124,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "8ac1a9d8ddb5af318f2327b361386a18652c798fcde5d3f360930b13dc6615e8",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.mrdl.chlorine-chloramine.switching-disinfectants",
@@ -138,7 +138,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "67c5ba2b155a6f46c4b568fb70f888cd75e5a46f663e03df6ee9101873560a39",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.mrdl.chlorine-chloramine.routine-monitoring",
@@ -152,7 +152,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "d7663110253edf14249246b90e5706c766cccaf582b63f81cc21dd972fda130d",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
     },
     {
       "quote_id": "quote.dbp.mrdl.chlorine-chloramine.subpart-l-scope",
@@ -166,7 +166,21 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "785c6d8db78847643350da721d92b0dd73833f31684eb2ae3e4cc5520397cb64",
-      "verified_at": "2026-11-05T17:21:16Z"
+      "verified_at": "2026-11-05T17:30:35Z"
+    },
+    {
+      "quote_id": "quote.dbp.mrdl.chlorine-chloramine.residual-increase-allowance",
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_source_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:2397-2890"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "036479509497842775b39b6035bcbf7b06a328dbccfa7b0f399df1754ad8105f",
+      "verified_at": "2026-11-05T17:30:35Z"
     }
   ],
   "claims": [
@@ -183,7 +197,9 @@
         "The 141.65(a) table lists chlorine, chloramines and chlorine dioxide together; this claim covers the named disinfectant only, and the value is expressed as Cl2",
         "The MRDLG for the same disinfectant is a separate value recorded on page dbp.mclg; it is not asserted here"
       ],
-      "exceptions": [],
+      "exceptions": [
+        "Notwithstanding the MRDLs, a system may increase chlorine or chloramine residual levels in the distribution system to a level and for a time necessary to protect public health, to address specific microbiological contamination problems such as distribution line breaks, storm run-off events, source water contamination events, or cross-connection events (141.130(d)); the allowance is not a general waiver and does not extend to chlorine dioxide"
+      ],
       "jurisdiction": "US-federal",
       "applicability": {
         "system_types": [
@@ -199,6 +215,7 @@
       },
       "supporting_quote_ids": [
         "quote.dbp.mrdl.chlorine-chloramine.mrdl-table",
+        "quote.dbp.mrdl.chlorine-chloramine.residual-increase-allowance",
         "quote.dbp.mrdl.chlorine-chloramine.routine-monitoring",
         "quote.dbp.mrdl.chlorine-chloramine.subpart-l-scope"
       ],
@@ -217,7 +234,9 @@
         "The 141.65(a) table lists chlorine, chloramines and chlorine dioxide together; this claim covers the named disinfectant only, and the value is expressed as Cl2",
         "The MRDLG for the same disinfectant is a separate value recorded on page dbp.mclg; it is not asserted here"
       ],
-      "exceptions": [],
+      "exceptions": [
+        "Notwithstanding the MRDLs, a system may increase chlorine or chloramine residual levels in the distribution system to a level and for a time necessary to protect public health, to address specific microbiological contamination problems such as distribution line breaks, storm run-off events, source water contamination events, or cross-connection events (141.130(d)); the allowance is not a general waiver and does not extend to chlorine dioxide"
+      ],
       "jurisdiction": "US-federal",
       "applicability": {
         "system_types": [
@@ -233,6 +252,7 @@
       },
       "supporting_quote_ids": [
         "quote.dbp.mrdl.chlorine-chloramine.mrdl-table",
+        "quote.dbp.mrdl.chlorine-chloramine.residual-increase-allowance",
         "quote.dbp.mrdl.chlorine-chloramine.routine-monitoring",
         "quote.dbp.mrdl.chlorine-chloramine.subpart-l-scope"
       ],
@@ -278,7 +298,9 @@
       },
       "value": "The running annual average covering any consecutive four-quarter period exceeds the MRDL; the system must notify the public under subpart Q and report to the State under 141.134",
       "conditions": [],
-      "exceptions": [],
+      "exceptions": [
+        "Notwithstanding the MRDLs, a system may increase chlorine or chloramine residual levels in the distribution system to a level and for a time necessary to protect public health, to address specific microbiological contamination problems such as distribution line breaks, storm run-off events, source water contamination events, or cross-connection events (141.130(d)); the allowance is not a general waiver and does not extend to chlorine dioxide"
+      ],
       "jurisdiction": "US-federal",
       "applicability": {
         "system_types": [
@@ -294,6 +316,39 @@
       },
       "supporting_quote_ids": [
         "quote.dbp.mrdl.chlorine-chloramine.compliance-raa",
+        "quote.dbp.mrdl.chlorine-chloramine.residual-increase-allowance",
+        "quote.dbp.mrdl.chlorine-chloramine.routine-monitoring",
+        "quote.dbp.mrdl.chlorine-chloramine.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mrdl.chlorine-chloramine.residual-increase-allowance",
+      "kind": "qualitative",
+      "subject": "Residual increase allowed notwithstanding the chlorine and chloramine MRDLs",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Systems may increase chlorine or chloramine residual levels in the distribution system to a level and for a time necessary to protect public health, to address specific microbiological contamination problems caused by circumstances such as, but not limited to, distribution line breaks, storm run-off events, source water contamination events, or cross-connection events",
+      "conditions": [
+        "The allowance names chlorine or chloramines and expressly excludes chlorine dioxide (141.130(d)); it is bounded by the level and time necessary to protect public health against the specific problem"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Community and nontransient noncommunity water systems that use chlorine or chloramines (141.132(c)(1)); subpart L reaches CWSs and NTNCWSs that add a chemical disinfectant in any part of treatment (141.130(a)(1))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are reached by subpart L only for the chlorine dioxide MRDL (141.130(a)(2)); the chlorine and chloramine MRDLs are set for community and nontransient noncommunity systems"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mrdl.chlorine-chloramine.residual-increase-allowance",
         "quote.dbp.mrdl.chlorine-chloramine.routine-monitoring",
         "quote.dbp.mrdl.chlorine-chloramine.subpart-l-scope"
       ]
