@@ -311,6 +311,15 @@ def retrieve(question, pages, k=TOP_K):
                 defined.extend(hit)
         matched = [t for t in distinct if t in bag]
         ratio = len(matched) / len(distinct)
+        # A question that names a regulatory metric (MCL, MCLG, MRDL, MRDLG, action level, treatment technique) is
+        # not answered by a page that carries no claim in that metric unless the page matches two further terms
+        # beyond the metric words and the generic words. Added 2026-11-05 (Batch 2): the chlorine dioxide MRDL page
+        # says "corrective action" and "level" in its quotes, which was enough for "lead action level" to retrieve it.
+        asks = {m for m, tok in METRIC_TOKENS.items() if tok in qset}
+        if asks and not any(c.get("relation", {}).get("regulatory_metric") in asks for c in p["claims"]):
+            metric_words = {tok for m, tok in METRIC_TOKENS.items() if m in asks}
+            if len([t for t in matched if t not in metric_words and t not in GENERIC_SUBJECT]) < MIN_MATCHED:
+                continue
         if len(matched) >= MIN_MATCHED and ratio >= MIN_RATIO:
             scored.append((round(s, 4), p, {"matched": matched, "ratio": round(ratio, 3), "focal": sorted(set(defined))}))
     scored.sort(key=lambda x: (-x[0], x[1]["page_id"]))

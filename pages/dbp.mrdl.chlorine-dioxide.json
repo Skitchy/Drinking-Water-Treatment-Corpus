@@ -1,0 +1,508 @@
+{
+  "schema_version": "drinking-water-profile/v0.1",
+  "type": "concept",
+  "page_id": "dbp.mrdl.chlorine-dioxide",
+  "title": "Chlorine dioxide maximum residual disinfectant level: 0.8 mg/L as ClO2, daily samples, acute and nonacute violations",
+  "status": "draft",
+  "assurance_profile": "drinking-water/v0.1",
+  "use_class": "regulatory-reference",
+  "jurisdiction": "US-federal",
+  "applicability": {
+    "system_types": [
+      "community-water-system",
+      "nontransient-noncommunity-water-system",
+      "transient-noncommunity-water-system"
+    ],
+    "conditions": [
+      "Community, nontransient noncommunity, and transient noncommunity water systems that use chlorine dioxide for disinfection or oxidation (141.132(c)(2)(i), 141.130(a)(1)-(2))"
+    ],
+    "exclusions": [
+      "Systems that do not use chlorine dioxide are not required to monitor for the chlorine dioxide residual"
+    ]
+  },
+  "generated": {
+    "by": "cc",
+    "at": "2026-11-05T17:21:16Z"
+  },
+  "review_payload": {
+    "canonicalization": "dw-review-payload/v0.1",
+    "sha256": "321cfbe44daccdbe5e0f2323de3c955749994b52f1af919aa7cdb8ac31edcc28"
+  },
+  "normalization": "dw-quote-normalization/v0.1",
+  "verified": [
+    {
+      "by": "process:quote-tool/v0.1-interim",
+      "actor_type": "process",
+      "at": "2026-11-05T17:21:16Z",
+      "review_payload_sha256": "321cfbe44daccdbe5e0f2323de3c955749994b52f1af919aa7cdb8ac31edcc28",
+      "scopes": [
+        "source-capture",
+        "quote-fidelity"
+      ]
+    }
+  ],
+  "stale_after": "2027-01-31",
+  "source_watch": {
+    "watch_id": "watch.dbp.mrdl.chlorine-dioxide",
+    "last_result": "unchanged",
+    "last_checked_at": "2026-11-02T07:10:07Z",
+    "next_due_at": "2026-12-02T07:10:07Z"
+  },
+  "source_refs": [
+    {
+      "source_id": "source.ecfr.2026-07-01.141-65",
+      "captured_sha256": "694ca7a525b44bf26d901f0724e878a552881b9d938d7c546bef64177bd9bcc5",
+      "licensing_decision_payload_sha256": "4b7bf73fc47c476a17bc283678074c5cc9dcd4dd6c7123e2d2ec105b3af1aed2"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "licensing_decision_payload_sha256": "a99aef52bd75ce57929c25ea48d0839c5d65d1dd2ef5068159c90da0dbcdd045"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-133",
+      "captured_sha256": "4b773cefc584399af240124de5887ba45088b428f3a242dffe1ad43ed6edba82",
+      "licensing_decision_payload_sha256": "d6ec1d0234a47c5182c72e45fb04196e4e433d2da71315fdca65a5a605d7c1c4"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "licensing_decision_payload_sha256": "e40a6d648819e123a5fee502351324de387c8c363e13a373a99d6a21e7d2a7e0"
+    }
+  ],
+  "quotes": [
+    {
+      "quote_id": "quote.dbp.mrdl.chlorine-dioxide.mrdl-table",
+      "source_id": "source.ecfr.2026-07-01.141-65",
+      "captured_source_sha256": "694ca7a525b44bf26d901f0724e878a552881b9d938d7c546bef64177bd9bcc5",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:47-226"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "7ce05becc0b0f8c5a266776dc0b04d8d259011becac39f52b253b703c48ff7b7",
+      "verified_at": "2026-11-05T17:21:16Z"
+    },
+    {
+      "quote_id": "quote.dbp.mrdl.chlorine-dioxide.compliance-dates",
+      "source_id": "source.ecfr.2026-07-01.141-65",
+      "captured_source_sha256": "694ca7a525b44bf26d901f0724e878a552881b9d938d7c546bef64177bd9bcc5",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:227-568"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "66063d4f5cb81f0147346762077c3a3ab3103094f4f1f070135fd2c28c0e1e95",
+      "verified_at": "2026-11-05T17:21:16Z"
+    },
+    {
+      "quote_id": "quote.dbp.mrdl.chlorine-dioxide.compliance-dates-transient",
+      "source_id": "source.ecfr.2026-07-01.141-65",
+      "captured_source_sha256": "694ca7a525b44bf26d901f0724e878a552881b9d938d7c546bef64177bd9bcc5",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:569-1082"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "698753dc0411368f7459c21fe78dfe1830fc88300be52d7a67bb9451b0d0732b",
+      "verified_at": "2026-11-05T17:21:16Z"
+    },
+    {
+      "quote_id": "quote.dbp.mrdl.chlorine-dioxide.bat",
+      "source_id": "source.ecfr.2026-07-01.141-65",
+      "captured_source_sha256": "694ca7a525b44bf26d901f0724e878a552881b9d938d7c546bef64177bd9bcc5",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:1362-1500"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "257f6be584a139f8fbfc4c19812fc76fc05faba084e2204321f4b4a0c9f92d14",
+      "verified_at": "2026-11-05T17:21:16Z"
+    },
+    {
+      "quote_id": "quote.dbp.mrdl.chlorine-dioxide.routine-monitoring",
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_source_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:14030-14541"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "63413299f253ed10244838fe8428203ba1541eae64c53b442a9e900ce1c9f774",
+      "verified_at": "2026-11-05T17:21:16Z"
+    },
+    {
+      "quote_id": "quote.dbp.mrdl.chlorine-dioxide.additional-monitoring",
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_source_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:14542-15675"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "d02bcc8ca6ee1fb5e78a780c91f42ec224030fbed22810156825f125ff2c27b8",
+      "verified_at": "2026-11-05T17:21:16Z"
+    },
+    {
+      "quote_id": "quote.dbp.mrdl.chlorine-dioxide.no-reduced-monitoring",
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_source_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:15676-15749"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "7915bdef5b7be9235e48272baabe1feb72f4387d31266b1a9adbd4a8138e9fd1",
+      "verified_at": "2026-11-05T17:21:16Z"
+    },
+    {
+      "quote_id": "quote.dbp.mrdl.chlorine-dioxide.acute-violation",
+      "source_id": "source.ecfr.2026-07-01.141-133",
+      "captured_source_sha256": "4b773cefc584399af240124de5887ba45088b428f3a242dffe1ad43ed6edba82",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:4792-5803"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "e33ca6adc2136d09c3ee85d601cae62f92c8560f2935144539d5359509d2c482",
+      "verified_at": "2026-11-05T17:21:16Z"
+    },
+    {
+      "quote_id": "quote.dbp.mrdl.chlorine-dioxide.nonacute-violation",
+      "source_id": "source.ecfr.2026-07-01.141-133",
+      "captured_source_sha256": "4b773cefc584399af240124de5887ba45088b428f3a242dffe1ad43ed6edba82",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:5804-6786"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "58699f9f5378b889e0c17b9d9f69175e55b7de4081155e31a4487c506cf1b851",
+      "verified_at": "2026-11-05T17:21:16Z"
+    },
+    {
+      "quote_id": "quote.dbp.mrdl.chlorine-dioxide.subpart-l-scope",
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_source_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:127-788"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "785c6d8db78847643350da721d92b0dd73833f31684eb2ae3e4cc5520397cb64",
+      "verified_at": "2026-11-05T17:21:16Z"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "claim.dbp.mrdl.chlorine-dioxide.mrdl",
+      "kind": "numeric",
+      "subject": "Maximum residual disinfectant level for chlorine dioxide",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "mrdl"
+      },
+      "value": 0.8,
+      "conditions": [
+        "The 141.65(a) table lists chlorine, chloramines and chlorine dioxide together; this claim covers chlorine dioxide only, and the value is expressed as ClO2",
+        "The MRDLG for chlorine dioxide is a separate value recorded on page dbp.mclg; it is not asserted here"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Community, nontransient noncommunity, and transient noncommunity water systems that use chlorine dioxide for disinfection or oxidation (141.132(c)(2)(i), 141.130(a)(1)-(2))"
+        ],
+        "exclusions": [
+          "Systems that do not use chlorine dioxide are not required to monitor for the chlorine dioxide residual"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mrdl.chlorine-dioxide.mrdl-table",
+        "quote.dbp.mrdl.chlorine-dioxide.routine-monitoring",
+        "quote.dbp.mrdl.chlorine-dioxide.subpart-l-scope"
+      ],
+      "unit": "mg/L as ClO2"
+    },
+    {
+      "claim_id": "claim.dbp.mrdl.chlorine-dioxide.applies-to-chlorine-dioxide-systems",
+      "kind": "qualitative",
+      "subject": "Systems subject to chlorine dioxide residual monitoring and the chlorine dioxide MRDL",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Community, nontransient noncommunity, and transient noncommunity water systems that use chlorine dioxide for disinfection or oxidation",
+      "conditions": [
+        "Transient noncommunity systems are the one system type subpart L reaches for an MRDL (141.130(a)(2))"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Community, nontransient noncommunity, and transient noncommunity water systems that use chlorine dioxide for disinfection or oxidation (141.132(c)(2)(i), 141.130(a)(1)-(2))"
+        ],
+        "exclusions": [
+          "Systems that do not use chlorine dioxide are not required to monitor for the chlorine dioxide residual"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mrdl.chlorine-dioxide.routine-monitoring",
+        "quote.dbp.mrdl.chlorine-dioxide.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mrdl.chlorine-dioxide.routine-daily-monitoring",
+      "kind": "qualitative",
+      "subject": "Routine chlorine dioxide monitoring",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Daily samples at the entrance to the distribution system; any daily sample exceeding the MRDL requires distribution system samples the following day in addition to the entrance sample",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Community, nontransient noncommunity, and transient noncommunity water systems that use chlorine dioxide for disinfection or oxidation (141.132(c)(2)(i), 141.130(a)(1)-(2))"
+        ],
+        "exclusions": [
+          "Systems that do not use chlorine dioxide are not required to monitor for the chlorine dioxide residual"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mrdl.chlorine-dioxide.routine-monitoring",
+        "quote.dbp.mrdl.chlorine-dioxide.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mrdl.chlorine-dioxide.additional-monitoring-after-exceedance",
+      "kind": "qualitative",
+      "subject": "Additional chlorine dioxide monitoring the day after an entrance exceedance",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Three chlorine dioxide distribution system samples: where chlorine dioxide or chloramines maintain the residual, or chlorine does with no booster chlorination, three samples as close to the first customer as possible at intervals of at least six hours; where chlorine maintains the residual with booster chlorination, one sample each as close to the first customer as possible, at average residence time, and as close to the end of the distribution system as possible",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Community, nontransient noncommunity, and transient noncommunity water systems that use chlorine dioxide for disinfection or oxidation (141.132(c)(2)(i), 141.130(a)(1)-(2))"
+        ],
+        "exclusions": [
+          "Systems that do not use chlorine dioxide are not required to monitor for the chlorine dioxide residual"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mrdl.chlorine-dioxide.additional-monitoring",
+        "quote.dbp.mrdl.chlorine-dioxide.routine-monitoring",
+        "quote.dbp.mrdl.chlorine-dioxide.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mrdl.chlorine-dioxide.no-reduced-monitoring",
+      "kind": "qualitative",
+      "subject": "Reduced monitoring for the chlorine dioxide residual",
+      "relation": {
+        "operator": "prohibited",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Chlorine dioxide monitoring may not be reduced",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Community, nontransient noncommunity, and transient noncommunity water systems that use chlorine dioxide for disinfection or oxidation (141.132(c)(2)(i), 141.130(a)(1)-(2))"
+        ],
+        "exclusions": [
+          "Systems that do not use chlorine dioxide are not required to monitor for the chlorine dioxide residual"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mrdl.chlorine-dioxide.no-reduced-monitoring",
+        "quote.dbp.mrdl.chlorine-dioxide.routine-monitoring",
+        "quote.dbp.mrdl.chlorine-dioxide.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mrdl.chlorine-dioxide.acute-violation",
+      "kind": "qualitative",
+      "subject": "Acute chlorine dioxide MRDL violation",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "A daily entrance sample exceeds the MRDL and on the following day one or more of the three distribution system samples exceed the MRDL; the system must take immediate corrective action to lower chlorine dioxide below the MRDL and notify the public under the subpart Q procedures for acute health risks, in addition to reporting to the State under 141.134",
+      "conditions": [
+        "Compliance is based on consecutive daily samples collected under 141.132(c)(2)",
+        "Failing to take the distribution system samples the day after an entrance exceedance is also an MRDL violation, noticed as an acute violation under subpart Q (141.133(c)(2)(i), second sentence)"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Community, nontransient noncommunity, and transient noncommunity water systems that use chlorine dioxide for disinfection or oxidation (141.132(c)(2)(i), 141.130(a)(1)-(2))"
+        ],
+        "exclusions": [
+          "Systems that do not use chlorine dioxide are not required to monitor for the chlorine dioxide residual"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mrdl.chlorine-dioxide.acute-violation",
+        "quote.dbp.mrdl.chlorine-dioxide.routine-monitoring",
+        "quote.dbp.mrdl.chlorine-dioxide.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mrdl.chlorine-dioxide.nonacute-violation",
+      "kind": "qualitative",
+      "subject": "Nonacute chlorine dioxide MRDL violation",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Two consecutive daily entrance samples exceed the MRDL while all distribution system samples taken are below the MRDL; the system must take corrective action to lower chlorine dioxide below the MRDL at the point of sampling and notify the public under the subpart Q procedures for nonacute health risks, in addition to reporting to the State under 141.134",
+      "conditions": [
+        "Failing to monitor at the entrance the day after an entrance exceedance is also an MRDL violation, noticed as a nonacute violation; the capture cites 141.32(e)(78) for that notice (141.133(c)(2)(ii), second sentence)"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Community, nontransient noncommunity, and transient noncommunity water systems that use chlorine dioxide for disinfection or oxidation (141.132(c)(2)(i), 141.130(a)(1)-(2))"
+        ],
+        "exclusions": [
+          "Systems that do not use chlorine dioxide are not required to monitor for the chlorine dioxide residual"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mrdl.chlorine-dioxide.nonacute-violation",
+        "quote.dbp.mrdl.chlorine-dioxide.routine-monitoring",
+        "quote.dbp.mrdl.chlorine-dioxide.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mrdl.chlorine-dioxide.compliance-dates",
+      "kind": "qualitative",
+      "subject": "Compliance dates for the chlorine dioxide MRDL",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Community and nontransient noncommunity systems: subpart H systems serving 10,000 or more persons from January 1, 2002, subpart H systems serving fewer than 10,000 persons and ground water systems not under the direct influence of surface water from January 1, 2004; transient noncommunity systems using chlorine dioxide follow the same two dates by the same size and source classes",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Community, nontransient noncommunity, and transient noncommunity water systems that use chlorine dioxide for disinfection or oxidation (141.132(c)(2)(i), 141.130(a)(1)-(2))"
+        ],
+        "exclusions": [
+          "Systems that do not use chlorine dioxide are not required to monitor for the chlorine dioxide residual"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mrdl.chlorine-dioxide.compliance-dates",
+        "quote.dbp.mrdl.chlorine-dioxide.compliance-dates-transient",
+        "quote.dbp.mrdl.chlorine-dioxide.routine-monitoring",
+        "quote.dbp.mrdl.chlorine-dioxide.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.mrdl.chlorine-dioxide.bat",
+      "kind": "qualitative",
+      "subject": "Best available technology for the chlorine dioxide MRDL",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Control of treatment processes to reduce disinfectant demand and control of disinfection treatment processes to reduce disinfectant levels",
+      "conditions": [
+        "141.65(c) names this technology for all three MRDLs in 141.65(a)"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Community, nontransient noncommunity, and transient noncommunity water systems that use chlorine dioxide for disinfection or oxidation (141.132(c)(2)(i), 141.130(a)(1)-(2))"
+        ],
+        "exclusions": [
+          "Systems that do not use chlorine dioxide are not required to monitor for the chlorine dioxide residual"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.mrdl.chlorine-dioxide.bat",
+        "quote.dbp.mrdl.chlorine-dioxide.routine-monitoring",
+        "quote.dbp.mrdl.chlorine-dioxide.subpart-l-scope"
+      ]
+    }
+  ]
+}

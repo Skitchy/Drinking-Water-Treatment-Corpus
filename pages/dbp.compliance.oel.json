@@ -1,0 +1,429 @@
+{
+  "schema_version": "drinking-water-profile/v0.1",
+  "type": "concept",
+  "page_id": "dbp.compliance.oel",
+  "title": "Operational evaluation levels (OEL) for TTHM and HAA5: the OEL formula, exceedance, operational evaluation and written report",
+  "status": "draft",
+  "assurance_profile": "drinking-water/v0.1",
+  "use_class": "regulatory-reference",
+  "jurisdiction": "US-federal",
+  "applicability": {
+    "system_types": [
+      "community-water-system",
+      "nontransient-noncommunity-water-system"
+    ],
+    "conditions": [
+      "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+    ],
+    "exclusions": [
+      "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+    ]
+  },
+  "generated": {
+    "by": "cc",
+    "at": "2026-11-05T17:21:16Z"
+  },
+  "review_payload": {
+    "canonicalization": "dw-review-payload/v0.1",
+    "sha256": "ca18c140ac7449da234af2d10f26f801c8cff2df6060d32a013ea8d391bfee59"
+  },
+  "normalization": "dw-quote-normalization/v0.1",
+  "verified": [
+    {
+      "by": "process:quote-tool/v0.1-interim",
+      "actor_type": "process",
+      "at": "2026-11-05T17:21:16Z",
+      "review_payload_sha256": "ca18c140ac7449da234af2d10f26f801c8cff2df6060d32a013ea8d391bfee59",
+      "scopes": [
+        "source-capture",
+        "quote-fidelity"
+      ]
+    }
+  ],
+  "stale_after": "2027-01-31",
+  "source_watch": {
+    "watch_id": "watch.dbp.compliance.oel",
+    "last_result": "unchanged",
+    "last_checked_at": "2026-11-02T07:10:07Z",
+    "next_due_at": "2026-12-02T07:10:07Z"
+  },
+  "source_refs": [
+    {
+      "source_id": "source.ecfr.2026-07-01.141-626",
+      "captured_sha256": "1e0236a178040706011ba181be05d7a6405a1c272341702d7ad903ec391c0767",
+      "licensing_decision_payload_sha256": "dac2471d08dbe25b1e9a41b2f52ee76f21e4adbb2fd82095044205e32334582a"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "captured_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "licensing_decision_payload_sha256": "f3b39502bbfbaa850eb4cfeab711de70381c64f8a07e8cf649e719d96f119eb2"
+    }
+  ],
+  "quotes": [
+    {
+      "quote_id": "quote.dbp.compliance.oel.oel-exceedance",
+      "source_id": "source.ecfr.2026-07-01.141-626",
+      "captured_source_sha256": "1e0236a178040706011ba181be05d7a6405a1c272341702d7ad903ec391c0767",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:41-447"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "9a1f94e5870159f0215d2ba99d2c85ffdd0c8f1a4f044c526d84f76d7e6596a1",
+      "verified_at": "2026-11-05T17:21:16Z"
+    },
+    {
+      "quote_id": "quote.dbp.compliance.oel.evaluation-and-report",
+      "source_id": "source.ecfr.2026-07-01.141-626",
+      "captured_source_sha256": "1e0236a178040706011ba181be05d7a6405a1c272341702d7ad903ec391c0767",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:448-802"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "fe730a9e4fc7680b4e1d9e3fbf46837c6a4da9d6b6589c25e05efc279e73b791",
+      "verified_at": "2026-11-05T17:21:16Z"
+    },
+    {
+      "quote_id": "quote.dbp.compliance.oel.evaluation-content",
+      "source_id": "source.ecfr.2026-07-01.141-626",
+      "captured_source_sha256": "1e0236a178040706011ba181be05d7a6405a1c272341702d7ad903ec391c0767",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:803-1204"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "d170d6df0d6fd7f95a1793406210b5e7391b32c645fcde86a248ecf0288c1959",
+      "verified_at": "2026-11-05T17:21:16Z"
+    },
+    {
+      "quote_id": "quote.dbp.compliance.oel.limited-scope",
+      "source_id": "source.ecfr.2026-07-01.141-626",
+      "captured_source_sha256": "1e0236a178040706011ba181be05d7a6405a1c272341702d7ad903ec391c0767",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:1205-1657"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "91b7ebb07b25a420672d50dc9a9d54b0cb3d2110bae8365699a8d618bcfab659",
+      "verified_at": "2026-11-05T17:21:16Z"
+    },
+    {
+      "quote_id": "quote.dbp.compliance.oel.applicability",
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "captured_source_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:531-858"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "b4547ef8236f43f059cf8e5a3df041aeed9e19461fed9c433c26a3eba26a5926",
+      "verified_at": "2026-11-05T17:21:16Z"
+    },
+    {
+      "quote_id": "quote.dbp.compliance.oel.schedule-extension",
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "captured_source_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:1768-1937"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "788508a342fd89e25759cb3f5825f38607ddc0a6f4ca795bf099804114e33ece",
+      "verified_at": "2026-11-05T17:21:16Z"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "claim.dbp.compliance.oel.oel-tthm",
+      "kind": "numeric",
+      "subject": "Operational evaluation level (OEL) for TTHM at a monitoring location",
+      "relation": {
+        "operator": "gt",
+        "regulatory_metric": "other"
+      },
+      "value": 0.08,
+      "conditions": [
+        "Computed at each monitoring location as the sum of the two previous quarters' results plus twice the current quarter's result, divided by 4 (in symbols, (Q1 + Q2 + 2 Q3) / 4 with Q3 the current quarter); the computation uses that location's quarterly results",
+        "TTHM and HAA5 are evaluated separately; exceeding either level is an operational evaluation level exceedance"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.compliance.oel.oel-exceedance",
+        "quote.dbp.compliance.oel.applicability"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.compliance.oel.oel-haa5",
+      "kind": "numeric",
+      "subject": "Operational evaluation level (OEL) for HAA5 at a monitoring location",
+      "relation": {
+        "operator": "gt",
+        "regulatory_metric": "other"
+      },
+      "value": 0.06,
+      "conditions": [
+        "Computed at each monitoring location as the sum of the two previous quarters' results plus twice the current quarter's result, divided by 4 (in symbols, (Q1 + Q2 + 2 Q3) / 4 with Q3 the current quarter); the computation uses that location's quarterly results",
+        "TTHM and HAA5 are evaluated separately; exceeding either level is an operational evaluation level exceedance"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.compliance.oel.oel-exceedance",
+        "quote.dbp.compliance.oel.applicability"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.compliance.oel.oel-computation",
+      "kind": "qualitative",
+      "subject": "Operational evaluation level (OEL) formula and computation",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "At any monitoring location: the two previous quarters' results plus twice the current quarter's result, divided by 4 to determine an average, for TTHM and for HAA5; the level is exceeded where that average exceeds 0.080 mg/L for TTHM or 0.060 mg/L for HAA5",
+      "conditions": [
+        "The terms, in the source's words: the two previous quarters' results, the current quarter's result (counted twice), and the divisor 4; 141.626 names no symbols, and OEL is the editorial abbreviation for operational evaluation level"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.compliance.oel.oel-exceedance",
+        "quote.dbp.compliance.oel.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.compliance.oel.applies-to",
+      "kind": "qualitative",
+      "subject": "Systems and locations to which operational evaluation level (OEL) requirements apply",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Systems subject to subpart V (community and nontransient noncommunity water systems that use, or deliver water treated with, a primary or residual disinfectant other than ultraviolet light), at any monitoring location, computed from that location's two previous quarters' results and the current quarter's result",
+      "conditions": [
+        "141.626 states no purpose for operational evaluation levels; a purpose is not asserted by this page"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.compliance.oel.applicability",
+        "quote.dbp.compliance.oel.oel-exceedance"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.compliance.oel.evaluation-required",
+      "kind": "qualitative",
+      "subject": "Operational evaluation after an exceedance",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Conduct an operational evaluation and submit a written report of it to the State no later than 90 days after being notified of the analytical result that caused the exceedance; the written report must be made available to the public upon request",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.compliance.oel.evaluation-and-report",
+        "quote.dbp.compliance.oel.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.compliance.oel.report-deadline-days",
+      "kind": "numeric",
+      "subject": "Deadline for the written operational evaluation report to the State",
+      "relation": {
+        "operator": "lte",
+        "regulatory_metric": "other"
+      },
+      "value": 90,
+      "conditions": [
+        "Counted from being notified of the analytical result that causes the exceedance; a request to limit the evaluation's scope does not extend this schedule (141.626(b)(2)(ii))"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.compliance.oel.evaluation-and-report",
+        "quote.dbp.compliance.oel.applicability"
+      ],
+      "unit": "days"
+    },
+    {
+      "claim_id": "claim.dbp.compliance.oel.evaluation-content",
+      "kind": "qualitative",
+      "subject": "Required content of the operational evaluation",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "An examination of system treatment and distribution operational practices, including storage tank operations, excess storage capacity, distribution system flushing, changes in sources or source water quality, and treatment changes or problems that may contribute to TTHM and HAA5 formation, and what steps could be considered to minimize future exceedances",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.compliance.oel.evaluation-content",
+        "quote.dbp.compliance.oel.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.compliance.oel.limited-scope",
+      "kind": "qualitative",
+      "subject": "Limiting the scope of the operational evaluation",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "A system may request, and the State may allow, a limited-scope evaluation when the system can identify the cause of the exceedance; the State's approval must be in writing and kept with the completed report, and the request does not extend the 90-day report schedule",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.compliance.oel.limited-scope",
+        "quote.dbp.compliance.oel.evaluation-and-report",
+        "quote.dbp.compliance.oel.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.compliance.oel.schedule-extension",
+      "kind": "qualitative",
+      "subject": "State extension of the subpart V schedule for operational evaluation levels",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "The State may grant up to an additional 24 months for compliance with MCLs and operational evaluation levels where capital improvements are required to comply with an MCL",
+      "conditions": [
+        "Footnote 1 to the compliance schedule table in 141.620(c)"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.compliance.oel.schedule-extension",
+        "quote.dbp.compliance.oel.applicability"
+      ]
+    }
+  ]
+}
