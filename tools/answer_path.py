@@ -262,7 +262,7 @@ def asked_metrics(question):
         if phrase in text:
             asked.add(metric); text = text.replace(phrase, " ")
     qset = set(tokens(question))
-    return asked | {m for m, tok in METRIC_TOKENS.items() if tok in qset}
+    return asked | {m for m, tok in METRIC_TOKENS.items() if tok in qset and m in ("mcl", "mclg", "mrdl", "mrdlg")}
 
 
 def focal_subjects(page, qset):
@@ -362,7 +362,8 @@ GEN_METRIC_PRECISION = 1 / 2
 # A question that asks how something is calculated or determined wants the claim that covers it, not the value claim
 # in the metric it happens to name; a plain value question ("What is the MRDL for chlorine?") wants the metric's claim
 # before any claim that merely mentions the same words.
-HOW_TOKENS = {"calculated", "calculate", "computed", "compute", "determined", "determine", "basis"}
+HOW_TOKENS = {"calculated", "calculate", "computed", "compute", "determined", "determine", "basis",
+              "violation", "violations", "exceedance", "exceeded", "exceeds", "corrective"}   # a question about a violation or what follows one is not a value question (Ari 614)
 
 
 def display_value(value, quote_texts):
@@ -489,7 +490,7 @@ def numbers_in(text):
     # "nonzero" (with any hyphen or dash, Unicode ones included), not "zero point eight", not "zero" glued to a digit
     # (Ari 601 and 606). Every other spoken form of a number is no number at all, which fails a numeric claim.
     plain = re.sub(r"[\u2010-\u2015\u2212\u00ad-]", "-", unicodedata.normalize("NFKC", text)).lower()
-    if re.search(r"(?<![a-z-])(?<!non-)(?<!non )zero(?![a-z-])(?!\s*point\b)(?!\s*\d)", plain):
+    if re.search(r"(?<![a-z0-9-])(?<!non-)(?<!non )zero(?![a-z0-9-])(?!\s*point\b)(?!\s*\d)", plain):   # digits bound it too (Ari 614: "1zero")
         out.add(Decimal(0))
     for m in re.findall(r"(?<![A-Za-z0-9.])\d+(?:\.\d+)?(?![A-Za-z0-9])", text):
         try:
@@ -831,6 +832,10 @@ def selftest(today):
     expect("nonzero is not zero: rejected", dict(bromate_good, answer_sentence="The MCLG for bromate is nonzero mg/L."), "numeric-claim-tuple")
     expect("zero point eight is not zero: rejected", dict(bromate_good, answer_sentence="The MCLG for bromate is zero point eight mg/L."), "numeric-claim-tuple")
     expect("zero glued to a digit is not zero: rejected", dict(bromate_good, answer_sentence="The MCLG for bromate is zero 8 mg/L."), "numeric-claim-tuple")
+    expect("a digit glued to zero is not zero: rejected", dict(bromate_good, answer_sentence="The MCLG for bromate is 1zero mg/L."), "numeric-claim-tuple")
+    sel_cor, _ = gen("What corrective action is required after an acute chlorine dioxide MRDL violation?")
+    results.append(("generate: a violation question names a metric without being a value question (acute chlorine dioxide violation answered)", sel_cor is not None and "claim.dbp.mrdl.chlorine-dioxide.acute-violation" in sel_cor["claim_ids"]))
+    results.append(("asked_metrics: bare 'action' and 'treatment' are not metrics; the phrases are", asked_metrics("What corrective action is required?") == set() and asked_metrics("What is the lead action level?") == {"action-level"} and asked_metrics("Which treatment technique applies?") == {"treatment-technique"}))
     for q in ["What is the maximum residual disinfectant level for bromate?", "What is the maximum contaminant level for chlorine?", "What is the MCL for chlorine?", "What is the MRDL for bromate?"]:
         results.append((f"generate: a value question in a metric no page answers declines: {q}", gen(q)[0] is None))
     results.append(("asked_metrics reads full names and abbreviations", asked_metrics("What is the maximum contaminant level goal for bromate?") == {"mclg"} and asked_metrics("maximum residual disinfectant level for chlorine") == {"mrdl"} and asked_metrics("What is the MCL and MCLG for chlorite?") == {"mcl", "mclg"}))
