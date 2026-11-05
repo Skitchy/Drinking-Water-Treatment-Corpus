@@ -21,19 +21,19 @@
   },
   "generated": {
     "by": "cc",
-    "at": "2026-11-05T18:14:20Z"
+    "at": "2026-11-05T18:26:48Z"
   },
   "review_payload": {
     "canonicalization": "dw-review-payload/v0.1",
-    "sha256": "273ec69fbdb7712481b1f256c533bc73b686814e6d3e4ae1bf978701cfcb4a5d"
+    "sha256": "9769154f0f56f240e7bbf6ae089b7a8c5d54b7061d6bfeab2e89c7b483dd5380"
   },
   "normalization": "dw-quote-normalization/v0.1",
   "verified": [
     {
       "by": "process:quote-tool/v0.1-interim",
       "actor_type": "process",
-      "at": "2026-11-05T18:14:20Z",
-      "review_payload_sha256": "273ec69fbdb7712481b1f256c533bc73b686814e6d3e4ae1bf978701cfcb4a5d",
+      "at": "2026-11-05T18:26:48Z",
+      "review_payload_sha256": "9769154f0f56f240e7bbf6ae089b7a8c5d54b7061d6bfeab2e89c7b483dd5380",
       "scopes": [
         "source-capture",
         "quote-fidelity"
@@ -92,7 +92,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "c6588ce0c5e17f83fc9f17c37098a236da81f414ecd7741bb71b2dc48a0e0f2c",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.applicability",
@@ -106,7 +106,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "62ac64a33f5d82d6888d28f0a6e3e9605dad1b2da1ccfa5025a275302f670376",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.schedule",
@@ -120,7 +120,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "933e2f33e22b4e0c00a8a143b7101e54c1211f2af5a3e780305787b936420ccd",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.four-routes",
@@ -134,7 +134,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "70db919d8c0a3ebde26e4639bd42096938426e28c4b906b52e4cfac698f6d9af",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.analytical-methods",
@@ -148,7 +148,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "182dfb85c6cf14d9dd9e37281fd7284b38bb004c117a75e0c11ee4cd3898377c",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.not-for-mcl-compliance",
@@ -162,7 +162,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "e13ccd68fadc0b1d5a46f0753c52a8b0e3f8b43270b4101fd323539f514345a5",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.standard-monitoring-plan",
@@ -176,7 +176,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "0087d599c485c7d2371f9989362b3eb6cbe7f4bc7d93287aacebd026054fb2a8",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.standard-monitoring",
@@ -190,7 +190,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "11364a7c7a02e17bcdd268aa4743afa02c91cf1ee7410bde633b33323fe99cbd",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.standard-monitoring-locations",
@@ -204,7 +204,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "9f1d9d12c83f23e40854c8e3d283ec9fda502c0833c7b2f98a948643adc9f7e3",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.idse-report",
@@ -218,7 +218,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "734f726c29ec7255712647903a47734fce6dd1f561d72faeb716bf3bb4216872",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.idse-report-recommendations",
@@ -232,7 +232,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "8e956e13c7cdbf2a7c9e29644a70834c7bf9cf4ddfb952a782cd8806776c3c19",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.system-specific-study",
@@ -246,7 +246,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "fe57faf3d7a1cfd89aaf97ac3d3375c97d503c44a08b1d63ccc3af286bb17fb2",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.existing-results",
@@ -260,7 +260,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "f2087d18bd0f1fa3b18b552ce6856dd51750a69d931966b6611a3ea9a708587e",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.modeling",
@@ -274,7 +274,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "52c3e30e4708bb4f6b5bf496ea672f56678817b4ae363530c8fee5f2bd70705b",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.40-30-eligibility",
@@ -288,7 +288,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "4308a2579106f2ed37f17ea6b74cb092a40e389ef348bf7d27d51b790bc4c62a",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.40-30-certification",
@@ -302,7 +302,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "c8cf1bd90911c27daed30aa8febe181b5fb2f58098f93a7eea99c327c5c8584a",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.very-small-system-waiver",
@@ -316,7 +316,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "6ab6df766083440af3ce56b2a22c49bff8a3c2ef4589de761d0069d2a9d8e129",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.location-recommendations",
@@ -330,7 +330,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "0ae9efd8f41284da49cd4d20ea6952d87628553f83d855af812ba27eeba9d889",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.selection-protocol",
@@ -344,7 +344,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "6e06feda4e46ac35bd638494c30704a593f0f5bc9d32f51cefb0439727d8e782",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.monitoring.idse.alternate-locations-and-schedule",
@@ -358,7 +358,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "209017a7d9988cbf42cc5cedaafa08d0ca18ff10e182f78dad33909e79521611",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     }
   ],
   "claims": [
@@ -636,13 +636,15 @@
     {
       "claim_id": "claim.dbp.monitoring.idse.idse-report",
       "kind": "qualitative",
-      "subject": "Contents of the IDSE report",
+      "subject": "Selected IDSE report requirements for the standard monitoring route (141.601(c))",
       "relation": {
         "operator": "required",
         "regulatory_metric": "other"
       },
       "value": "All TTHM and HAA5 analytical results from subpart L compliance monitoring and from the standard monitoring conducted during the IDSE, as individual results and LRAAs in a tabular or spreadsheet format acceptable to the State; the recommended and justified subpart V compliance monitoring locations and timing under the 141.605 protocol; a complete copy retained for 10 years after submission",
-      "conditions": [],
+      "conditions": [
+        "This claim reads parts of 141.601(c)(1), (3) and (4) only; the changed schematic, population and system type statement in (c)(1), the explanation of deviations in (c)(2), the retention of State notifications in (c)(4), and the separate IDSE report for the system specific study route in 141.602(b) are not quoted on this page"
+      ],
       "exceptions": [],
       "jurisdiction": "US-federal",
       "applicability": {
@@ -768,7 +770,7 @@
         "operator": "required",
         "regulatory_metric": "other"
       },
-      "value": "The IDSE report recommends and justifies where and in what months subpart V TTHM and HAA5 monitoring should be conducted, selecting the number of locations in the 141.605(b) table (used as the subpart V routine locations unless the State requires others) by a protocol that alternates the locations with the highest TTHM LRAA and the highest HAA5 LRAA not yet selected, with existing subpart L average residence time locations (maximum residence time for ground water systems) taken at steps three and seven, repeated as needed; other locations may be recommended with a rationale, and monitored if the State approves them",
+      "value": "The IDSE report recommends and justifies where and in what months subpart V TTHM and HAA5 monitoring should be conducted, selecting the number of locations in the 141.605(b) table (used as the subpart V routine locations unless the State requires others) by the eight-step protocol of 141.605(c), each step taking a location not previously selected: (1) highest TTHM LRAA, (2) highest HAA5 LRAA, (3) the existing subpart L average residence time location (maximum residence time for ground water systems) with the highest HAA5 LRAA, (4) highest TTHM LRAA, (5) highest TTHM LRAA, (6) highest HAA5 LRAA, (7) the existing subpart L average residence time location (maximum residence time for ground water systems) with the highest TTHM LRAA, (8) highest HAA5 LRAA; repeated as necessary when more than eight locations are required, and repeated skipping steps (3) and (7) when existing subpart L results are missing or insufficient; other locations may be recommended with a rationale, and monitored if the State approves them",
       "conditions": [
         "The location counts by source water type and population in the 141.605(b) table are not quoted on this page; the counts a system must monitor under subpart V are on page dbp.monitoring.routine"
       ],

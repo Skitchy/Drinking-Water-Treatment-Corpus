@@ -14,25 +14,25 @@
       "transient-noncommunity-water-system"
     ],
     "conditions": [
-      "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+      "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL (141.130(a)(2))"
     ],
     "exclusions": []
   },
   "generated": {
     "by": "cc",
-    "at": "2026-11-05T18:14:20Z"
+    "at": "2026-11-05T18:26:48Z"
   },
   "review_payload": {
     "canonicalization": "dw-review-payload/v0.1",
-    "sha256": "c35bac867d6bb6ef8a193a37849710d197489128412a92a64d5f4c124d9877a1"
+    "sha256": "fc3ae7a6e5a5bccbe06c84dcd96ade9df4308961bf4215f0688b18258ce927d1"
   },
   "normalization": "dw-quote-normalization/v0.1",
   "verified": [
     {
       "by": "process:quote-tool/v0.1-interim",
       "actor_type": "process",
-      "at": "2026-11-05T18:14:20Z",
-      "review_payload_sha256": "c35bac867d6bb6ef8a193a37849710d197489128412a92a64d5f4c124d9877a1",
+      "at": "2026-11-05T18:26:48Z",
+      "review_payload_sha256": "fc3ae7a6e5a5bccbe06c84dcd96ade9df4308961bf4215f0688b18258ce927d1",
       "scopes": [
         "source-capture",
         "quote-fidelity"
@@ -71,7 +71,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "1593667c7f6d9a40a80058f71af231346415762e5e0ee12d940cd5dc234c3945",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.analytical-methods.dbp-methods-table",
@@ -85,7 +85,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "6068b1a1ca8f80d98a003dfbada0e534489d71ce064a4a48863a2523e447779d",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.analytical-methods.dbp-methods-notes",
@@ -99,7 +99,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "c7c8310dfab3174c80f76336cc0767994900abd80a2e6a27846e67db9a188ecf",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.analytical-methods.laboratory-certification",
@@ -113,7 +113,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "f1c01b34e1788b4dd376a0dae9ebf68086c4f73b710e91ab46b867c7dd5aad84",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.analytical-methods.minimum-reporting-levels",
@@ -127,7 +127,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "92c35f4d1cc8c9dbeee5c5bb2a1e3773f6f93c3b427f62d8ff825d63cbb71d3c",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.analytical-methods.residual-methods-table",
@@ -141,7 +141,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "78e94222086d06ad023afc6f71afe26c1d6a41827a2157c83f2b7ef8a8ea1895",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.analytical-methods.residual-kits-and-party",
@@ -155,7 +155,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "b5577ec1ae2f741711a7ec03b5d3b45e9f73efcbaa02bc36298d0103373624ae",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.analytical-methods.additional-methods",
@@ -169,7 +169,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "2b993c85380c573adc150ed63579452ad08e46fbb85d463c5ec93aeb1d68c7f1",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.analytical-methods.suva",
@@ -183,7 +183,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "780cee6a1e029acbf72e2a9ae51f71bb6ecb8fa818cc33e3ad09516d3d0cda71",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.analytical-methods.ph-and-magnesium",
@@ -197,7 +197,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "6ac564b3b732f61222d65d947beec4b65c45ff99e6cbc9c14aeec7990f979595",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
     },
     {
       "quote_id": "quote.dbp.analytical-methods.subpart-l-scope",
@@ -211,7 +211,21 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "5c625225f1c040697f42072df193282d638401bd9a16f02fa6a60dc4600c524c",
-      "verified_at": "2026-11-05T18:14:20Z"
+      "verified_at": "2026-11-05T18:26:48Z"
+    },
+    {
+      "quote_id": "quote.dbp.analytical-methods.subpart-l-scope-tncws",
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_source_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:572-788"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "f201e81015157395127256f22f8e35e30429bbe7dd158e8d5752224e05d50513",
+      "verified_at": "2026-11-05T18:26:48Z"
     }
   ],
   "claims": [
@@ -234,13 +248,14 @@
           "transient-noncommunity-water-system"
         ],
         "conditions": [
-          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL (141.130(a)(2))"
         ],
         "exclusions": []
       },
       "supporting_quote_ids": [
         "quote.dbp.analytical-methods.general",
-        "quote.dbp.analytical-methods.subpart-l-scope"
+        "quote.dbp.analytical-methods.subpart-l-scope",
+        "quote.dbp.analytical-methods.subpart-l-scope-tncws"
       ]
     },
     {
@@ -262,7 +277,7 @@
           "transient-noncommunity-water-system"
         ],
         "conditions": [
-          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL (141.130(a)(2))"
         ],
         "exclusions": []
       },
@@ -270,7 +285,8 @@
         "quote.dbp.analytical-methods.dbp-methods-table",
         "quote.dbp.analytical-methods.dbp-methods-notes",
         "quote.dbp.analytical-methods.general",
-        "quote.dbp.analytical-methods.subpart-l-scope"
+        "quote.dbp.analytical-methods.subpart-l-scope",
+        "quote.dbp.analytical-methods.subpart-l-scope-tncws"
       ]
     },
     {
@@ -294,7 +310,7 @@
           "transient-noncommunity-water-system"
         ],
         "conditions": [
-          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL (141.130(a)(2))"
         ],
         "exclusions": []
       },
@@ -302,7 +318,8 @@
         "quote.dbp.analytical-methods.dbp-methods-table",
         "quote.dbp.analytical-methods.dbp-methods-notes",
         "quote.dbp.analytical-methods.general",
-        "quote.dbp.analytical-methods.subpart-l-scope"
+        "quote.dbp.analytical-methods.subpart-l-scope",
+        "quote.dbp.analytical-methods.subpart-l-scope-tncws"
       ]
     },
     {
@@ -326,7 +343,7 @@
           "transient-noncommunity-water-system"
         ],
         "conditions": [
-          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL (141.130(a)(2))"
         ],
         "exclusions": []
       },
@@ -334,7 +351,8 @@
         "quote.dbp.analytical-methods.dbp-methods-table",
         "quote.dbp.analytical-methods.dbp-methods-notes",
         "quote.dbp.analytical-methods.general",
-        "quote.dbp.analytical-methods.subpart-l-scope"
+        "quote.dbp.analytical-methods.subpart-l-scope",
+        "quote.dbp.analytical-methods.subpart-l-scope-tncws"
       ]
     },
     {
@@ -358,7 +376,7 @@
           "transient-noncommunity-water-system"
         ],
         "conditions": [
-          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL (141.130(a)(2))"
         ],
         "exclusions": []
       },
@@ -366,7 +384,8 @@
         "quote.dbp.analytical-methods.dbp-methods-table",
         "quote.dbp.analytical-methods.dbp-methods-notes",
         "quote.dbp.analytical-methods.general",
-        "quote.dbp.analytical-methods.subpart-l-scope"
+        "quote.dbp.analytical-methods.subpart-l-scope",
+        "quote.dbp.analytical-methods.subpart-l-scope-tncws"
       ]
     },
     {
@@ -388,14 +407,15 @@
           "transient-noncommunity-water-system"
         ],
         "conditions": [
-          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL (141.130(a)(2))"
         ],
         "exclusions": []
       },
       "supporting_quote_ids": [
         "quote.dbp.analytical-methods.laboratory-certification",
         "quote.dbp.analytical-methods.general",
-        "quote.dbp.analytical-methods.subpart-l-scope"
+        "quote.dbp.analytical-methods.subpart-l-scope",
+        "quote.dbp.analytical-methods.subpart-l-scope-tncws"
       ]
     },
     {
@@ -417,14 +437,15 @@
           "transient-noncommunity-water-system"
         ],
         "conditions": [
-          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL (141.130(a)(2))"
         ],
         "exclusions": []
       },
       "supporting_quote_ids": [
         "quote.dbp.analytical-methods.minimum-reporting-levels",
         "quote.dbp.analytical-methods.general",
-        "quote.dbp.analytical-methods.subpart-l-scope"
+        "quote.dbp.analytical-methods.subpart-l-scope",
+        "quote.dbp.analytical-methods.subpart-l-scope-tncws"
       ]
     },
     {
@@ -449,14 +470,15 @@
           "transient-noncommunity-water-system"
         ],
         "conditions": [
-          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL (141.130(a)(2))"
         ],
         "exclusions": []
       },
       "supporting_quote_ids": [
         "quote.dbp.analytical-methods.residual-methods-table",
         "quote.dbp.analytical-methods.general",
-        "quote.dbp.analytical-methods.subpart-l-scope"
+        "quote.dbp.analytical-methods.subpart-l-scope",
+        "quote.dbp.analytical-methods.subpart-l-scope-tncws"
       ]
     },
     {
@@ -478,14 +500,15 @@
           "transient-noncommunity-water-system"
         ],
         "conditions": [
-          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL (141.130(a)(2))"
         ],
         "exclusions": []
       },
       "supporting_quote_ids": [
         "quote.dbp.analytical-methods.residual-kits-and-party",
         "quote.dbp.analytical-methods.general",
-        "quote.dbp.analytical-methods.subpart-l-scope"
+        "quote.dbp.analytical-methods.subpart-l-scope",
+        "quote.dbp.analytical-methods.subpart-l-scope-tncws"
       ]
     },
     {
@@ -507,14 +530,15 @@
           "transient-noncommunity-water-system"
         ],
         "conditions": [
-          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL (141.130(a)(2))"
         ],
         "exclusions": []
       },
       "supporting_quote_ids": [
         "quote.dbp.analytical-methods.additional-methods",
         "quote.dbp.analytical-methods.general",
-        "quote.dbp.analytical-methods.subpart-l-scope"
+        "quote.dbp.analytical-methods.subpart-l-scope",
+        "quote.dbp.analytical-methods.subpart-l-scope-tncws"
       ]
     },
     {
@@ -536,14 +560,15 @@
           "transient-noncommunity-water-system"
         ],
         "conditions": [
-          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL (141.130(a)(2))"
         ],
         "exclusions": []
       },
       "supporting_quote_ids": [
         "quote.dbp.analytical-methods.suva",
         "quote.dbp.analytical-methods.general",
-        "quote.dbp.analytical-methods.subpart-l-scope"
+        "quote.dbp.analytical-methods.subpart-l-scope",
+        "quote.dbp.analytical-methods.subpart-l-scope-tncws"
       ]
     },
     {
@@ -565,14 +590,15 @@
           "transient-noncommunity-water-system"
         ],
         "conditions": [
-          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide (141.130(a))"
+          "Every system monitoring under subpart L, subpart U or subpart V (141.131(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant, and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL (141.130(a)(2))"
         ],
         "exclusions": []
       },
       "supporting_quote_ids": [
         "quote.dbp.analytical-methods.ph-and-magnesium",
         "quote.dbp.analytical-methods.general",
-        "quote.dbp.analytical-methods.subpart-l-scope"
+        "quote.dbp.analytical-methods.subpart-l-scope",
+        "quote.dbp.analytical-methods.subpart-l-scope-tncws"
       ]
     }
   ]
