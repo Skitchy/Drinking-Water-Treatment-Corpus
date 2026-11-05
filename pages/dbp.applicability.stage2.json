@@ -3,7 +3,7 @@
   "type": "concept",
   "page_id": "dbp.applicability.stage2",
   "title": "Who the DBP rules cover: subpart V (Stage 2) and subpart L applicability, compliance dates, consecutive systems, qualified operators and the residual-increase allowance",
-  "status": "draft",
+  "status": "stable",
   "assurance_profile": "drinking-water/v0.1",
   "use_class": "regulatory-reference",
   "jurisdiction": "US-federal",
@@ -38,6 +38,17 @@
       "scopes": [
         "source-capture",
         "quote-fidelity"
+      ]
+    },
+    {
+      "by": "human.skitch",
+      "actor_type": "human",
+      "at": "2026-11-05T18:26:00Z",
+      "review_payload_sha256": "0f26f6e979435bfa53ff440ad81e5255bf1830672464ebf8fd3546468ad0a224",
+      "scopes": [
+        "editorial-accuracy",
+        "applicability",
+        "context-completeness"
       ]
     }
   ],

@@ -3,7 +3,7 @@
   "type": "concept",
   "page_id": "dbp.monitoring.routine",
   "title": "Routine DBP monitoring: subpart V TTHM and HAA5 locations by system size and source type, the monitoring plan, and the residual and byproduct monitoring of subpart L",
-  "status": "draft",
+  "status": "stable",
   "assurance_profile": "drinking-water/v0.1",
   "use_class": "regulatory-reference",
   "jurisdiction": "US-federal",
@@ -38,6 +38,17 @@
       "scopes": [
         "source-capture",
         "quote-fidelity"
+      ]
+    },
+    {
+      "by": "human.skitch",
+      "actor_type": "human",
+      "at": "2026-11-05T18:26:00Z",
+      "review_payload_sha256": "f0d6ec4b74dfdc238072a117ff3cc0aeb3a4c88fcfc468261e03ec295fe52f44",
+      "scopes": [
+        "editorial-accuracy",
+        "applicability",
+        "context-completeness"
       ]
     }
   ],

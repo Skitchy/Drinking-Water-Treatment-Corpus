@@ -3,7 +3,7 @@
   "type": "concept",
   "page_id": "dbp.precursors.toc",
   "title": "Treatment technique for DBP precursors: enhanced coagulation or enhanced softening, the Step 1 TOC removal table, alternative compliance criteria, Step 2, compliance calculation and paired-sample monitoring",
-  "status": "draft",
+  "status": "stable",
   "assurance_profile": "drinking-water/v0.1",
   "use_class": "regulatory-reference",
   "jurisdiction": "US-federal",
@@ -41,6 +41,17 @@
       "scopes": [
         "source-capture",
         "quote-fidelity"
+      ]
+    },
+    {
+      "by": "human.skitch",
+      "actor_type": "human",
+      "at": "2026-11-05T18:26:00Z",
+      "review_payload_sha256": "d0b0a46a37a82de5dbf04b1e4e06664de14adaa01a7ca75de093dbeb0e8cdb5d",
+      "scopes": [
+        "editorial-accuracy",
+        "applicability",
+        "context-completeness"
       ]
     }
   ],

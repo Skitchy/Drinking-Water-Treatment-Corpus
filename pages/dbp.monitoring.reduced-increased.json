@@ -3,7 +3,7 @@
   "type": "concept",
   "page_id": "dbp.monitoring.reduced-increased",
   "title": "Reduced and increased TTHM and HAA5 monitoring under subpart V: qualifying criteria, reduced schedules, conditions forcing a return, and carry-over from subpart L",
-  "status": "draft",
+  "status": "stable",
   "assurance_profile": "drinking-water/v0.1",
   "use_class": "regulatory-reference",
   "jurisdiction": "US-federal",
@@ -37,6 +37,17 @@
       "scopes": [
         "source-capture",
         "quote-fidelity"
+      ]
+    },
+    {
+      "by": "human.skitch",
+      "actor_type": "human",
+      "at": "2026-11-05T18:26:00Z",
+      "review_payload_sha256": "8fa782239b5ea853e7bcf8d94acd47c8590fc08428878adfe4fd891de84af70a",
+      "scopes": [
+        "editorial-accuracy",
+        "applicability",
+        "context-completeness"
       ]
     }
   ],
