@@ -3,7 +3,7 @@
   "type": "concept",
   "page_id": "dbp.compliance.lraa",
   "title": "TTHM and HAA5 MCL compliance calculation: locational running annual average (LRAA) under subpart V, running annual average (RAA) under subpart L, and increased monitoring",
-  "status": "draft",
+  "status": "stable",
   "assurance_profile": "drinking-water/v0.1",
   "use_class": "regulatory-reference",
   "jurisdiction": "US-federal",
@@ -37,6 +37,17 @@
       "scopes": [
         "source-capture",
         "quote-fidelity"
+      ]
+    },
+    {
+      "by": "human.skitch",
+      "actor_type": "human",
+      "at": "2026-11-05T17:38:43Z",
+      "review_payload_sha256": "6d0a80a38e72e16a993075c62aca60d6da67c76c9f0fab3d45c0e2b82771995b",
+      "scopes": [
+        "editorial-accuracy",
+        "applicability",
+        "context-completeness"
       ]
     }
   ],

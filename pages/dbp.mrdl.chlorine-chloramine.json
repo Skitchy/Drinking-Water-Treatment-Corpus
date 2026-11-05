@@ -3,7 +3,7 @@
   "type": "concept",
   "page_id": "dbp.mrdl.chlorine-chloramine",
   "title": "Chlorine and chloramine maximum residual disinfectant levels: 4.0 mg/L as Cl2, running annual average",
-  "status": "draft",
+  "status": "stable",
   "assurance_profile": "drinking-water/v0.1",
   "use_class": "regulatory-reference",
   "jurisdiction": "US-federal",
@@ -37,6 +37,17 @@
       "scopes": [
         "source-capture",
         "quote-fidelity"
+      ]
+    },
+    {
+      "by": "human.skitch",
+      "actor_type": "human",
+      "at": "2026-11-05T17:38:43Z",
+      "review_payload_sha256": "01853fd271c948ad872a1522aefc4140e13862c9b19b2a7ccd37c6a04550ab1d",
+      "scopes": [
+        "editorial-accuracy",
+        "applicability",
+        "context-completeness"
       ]
     }
   ],
