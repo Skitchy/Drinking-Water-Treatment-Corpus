@@ -1,0 +1,831 @@
+{
+  "schema_version": "drinking-water-profile/v0.1",
+  "type": "concept",
+  "page_id": "dbp.monitoring.reduced-increased",
+  "title": "Reduced and increased TTHM and HAA5 monitoring under subpart V: qualifying criteria, reduced schedules, conditions forcing a return, and carry-over from subpart L",
+  "status": "draft",
+  "assurance_profile": "drinking-water/v0.1",
+  "use_class": "regulatory-reference",
+  "jurisdiction": "US-federal",
+  "applicability": {
+    "system_types": [
+      "community-water-system",
+      "nontransient-noncommunity-water-system"
+    ],
+    "conditions": [
+      "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+    ],
+    "exclusions": [
+      "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+    ]
+  },
+  "generated": {
+    "by": "cc",
+    "at": "2026-11-05T17:54:04Z"
+  },
+  "review_payload": {
+    "canonicalization": "dw-review-payload/v0.1",
+    "sha256": "8c124f3d716c678090d95bc9c67b47a0602a737ae2b045e1e54ff5b7325e4882"
+  },
+  "normalization": "dw-quote-normalization/v0.1",
+  "verified": [
+    {
+      "by": "process:quote-tool/v0.1-interim",
+      "actor_type": "process",
+      "at": "2026-11-05T17:54:04Z",
+      "review_payload_sha256": "8c124f3d716c678090d95bc9c67b47a0602a737ae2b045e1e54ff5b7325e4882",
+      "scopes": [
+        "source-capture",
+        "quote-fidelity"
+      ]
+    }
+  ],
+  "stale_after": "2027-01-31",
+  "source_watch": {
+    "watch_id": "watch.dbp.monitoring.reduced-increased",
+    "last_result": "unchanged",
+    "last_checked_at": "2026-11-02T07:10:07Z",
+    "next_due_at": "2026-12-02T07:10:07Z"
+  },
+  "source_refs": [
+    {
+      "source_id": "source.ecfr.2026-07-01.141-623",
+      "captured_sha256": "e92fe16208d0a5c5646b69458c57a704000fe98445ca84c95995b7e261db1387",
+      "licensing_decision_payload_sha256": "eb415878af370b480ee1f951562dcc213cc6c9c7e04e214d903085c8622b92cb"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-625",
+      "captured_sha256": "b733ecb787db890bedaff88bf36716600ec0dd1e2f7d76998a2a4f07debbd146",
+      "licensing_decision_payload_sha256": "728eb69afd4d9cc2ed8b46d7e9f304d47fab94d57bb5e4e61427f96fe05fa189"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-627",
+      "captured_sha256": "26604b70b948031febdc1f4f4e62fcfc49cedee5892d99203fabc07f75e04eb8",
+      "licensing_decision_payload_sha256": "3364d2b355a40f2d58a91666f9f4949822bf858918a552ea78026455713a8d9f"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-628",
+      "captured_sha256": "13785466eb176b2b13232ae6d25d438dbd49d0dee96f1f7e8f713594742d585e",
+      "licensing_decision_payload_sha256": "5480cde27ffcee2559fafaaf7c938f82daa31d574891252de7bae002f8f10c29"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "captured_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "licensing_decision_payload_sha256": "f3b39502bbfbaa850eb4cfeab711de70381c64f8a07e8cf649e719d96f119eb2"
+    }
+  ],
+  "quotes": [
+    {
+      "quote_id": "quote.dbp.monitoring.reduced-increased.applicability",
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "captured_source_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:531-858"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "b4547ef8236f43f059cf8e5a3df041aeed9e19461fed9c433c26a3eba26a5926",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.reduced-increased.reduced-criteria",
+      "source_id": "source.ecfr.2026-07-01.141-623",
+      "captured_source_sha256": "e92fe16208d0a5c5646b69458c57a704000fe98445ca84c95995b7e261db1387",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:30-628"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "b4a48835df499e455bfa375aa29eb0ca6f049cc3b0308346569c6a2145fcb818",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.reduced-increased.reduced-schedule-table",
+      "source_id": "source.ecfr.2026-07-01.141-623",
+      "captured_source_sha256": "e92fe16208d0a5c5646b69458c57a704000fe98445ca84c95995b7e261db1387",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:629-3109"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "cc4a72dbeea4a7a3a6ff8b37b10f88cdc4f9eb03696b2dd6b8853d5082ed9804",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.reduced-increased.remain-reduced",
+      "source_id": "source.ecfr.2026-07-01.141-623",
+      "captured_source_sha256": "e92fe16208d0a5c5646b69458c57a704000fe98445ca84c95995b7e261db1387",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:3110-3698"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "4f0898379552dae11e55c6d84ba608f92d489fdc5c8ff454a59142255fa77fdd",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.reduced-increased.resume-routine",
+      "source_id": "source.ecfr.2026-07-01.141-623",
+      "captured_source_sha256": "e92fe16208d0a5c5646b69458c57a704000fe98445ca84c95995b7e261db1387",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:3699-4238"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "fe3ff70ea02fea1f746ce5e9b0e01569a61d69a949177c1c7c564649f0c57acb",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.reduced-increased.state-discretion",
+      "source_id": "source.ecfr.2026-07-01.141-623",
+      "captured_source_sha256": "e92fe16208d0a5c5646b69458c57a704000fe98445ca84c95995b7e261db1387",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:4239-4324"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "8ee28e81b8029c64e6ff8e21a5765badb1fecb1937b0db78f26a0cd794421763",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.reduced-increased.increased-monitoring-trigger",
+      "source_id": "source.ecfr.2026-07-01.141-625",
+      "captured_source_sha256": "b733ecb787db890bedaff88bf36716600ec0dd1e2f7d76998a2a4f07debbd146",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:53-370"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "d9fd8247c29a6d7343c108af10760c0076a0804c08f1bee806640708a9a0449f",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.reduced-increased.violation",
+      "source_id": "source.ecfr.2026-07-01.141-625",
+      "captured_source_sha256": "b733ecb787db890bedaff88bf36716600ec0dd1e2f7d76998a2a4f07debbd146",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:371-838"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "8d9f7efdc6d5bae50e12ba933cb1254d9461e90d7050d285eae5b016b2446251",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.reduced-increased.return-to-routine",
+      "source_id": "source.ecfr.2026-07-01.141-625",
+      "captured_source_sha256": "b733ecb787db890bedaff88bf36716600ec0dd1e2f7d76998a2a4f07debbd146",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:839-1056"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "14194ace1900711e6f78c0b00c2727d3db0f31b0432e9ec572c6c41f1a645f9d",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.reduced-increased.remain-reduced-subpart-l",
+      "source_id": "source.ecfr.2026-07-01.141-627",
+      "captured_source_sha256": "26604b70b948031febdc1f4f4e62fcfc49cedee5892d99203fabc07f75e04eb8",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:101-755"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "67a0844c722c546fab0c073f2e24ef51977fc8dab35494ee718019ab5769d784",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.reduced-increased.remain-increased-subpart-l",
+      "source_id": "source.ecfr.2026-07-01.141-628",
+      "captured_source_sha256": "13785466eb176b2b13232ae6d25d438dbd49d0dee96f1f7e8f713594742d585e",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:103-595"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "d7810ff3fe45393dd0eb70a7d3f356700684a75c45337705ab97b0697d0788ce",
+      "verified_at": "2026-11-05T17:54:04Z"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.reduced-criterion-tthm",
+      "kind": "numeric",
+      "subject": "TTHM LRAA at all monitoring locations that qualifies a system for reduced monitoring",
+      "relation": {
+        "operator": "lte",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": 0.04,
+      "conditions": [
+        "The source water annual average TOC level, before any treatment, must also be at or below 4.0 mg/L at each treatment plant treating surface water or ground water under the direct influence of surface water, based on monitoring under 141.132(b)(1)(iii) or 141.132(d) (claim.dbp.monitoring.reduced-increased.reduced-criterion-toc)",
+        "Only data collected under subpart V or subpart L may be used to qualify for reduced monitoring",
+        "The HAA5 criterion applies at the same time (claim.dbp.monitoring.reduced-increased.reduced-criterion-haa5)"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.reduced-criteria",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.reduced-criterion-haa5",
+      "kind": "numeric",
+      "subject": "HAA5 LRAA at all monitoring locations that qualifies a system for reduced monitoring",
+      "relation": {
+        "operator": "lte",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": 0.03,
+      "conditions": [
+        "The source water annual average TOC level, before any treatment, must also be at or below 4.0 mg/L at each treatment plant treating surface water or ground water under the direct influence of surface water, based on monitoring under 141.132(b)(1)(iii) or 141.132(d) (claim.dbp.monitoring.reduced-increased.reduced-criterion-toc)",
+        "Only data collected under subpart V or subpart L may be used to qualify for reduced monitoring",
+        "The TTHM criterion applies at the same time (claim.dbp.monitoring.reduced-increased.reduced-criterion-tthm)"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.reduced-criteria",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.reduced-criterion-toc",
+      "kind": "numeric",
+      "subject": "Source water annual average TOC, before any treatment, that qualifies a system for and keeps it on reduced TTHM and HAA5 monitoring",
+      "relation": {
+        "operator": "lte",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": 4.0,
+      "conditions": [
+        "At each treatment plant treating surface water or ground water under the direct influence of surface water, based on monitoring conducted under 141.132(b)(1)(iii) or 141.132(d)",
+        "Required together with the TTHM and HAA5 criteria to qualify (141.623(a)) and to remain (141.623(b)); a value above 4.0 mg/L at any such plant ends reduced monitoring (141.623(c))"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.reduced-criteria",
+        "quote.dbp.monitoring.reduced-increased.remain-reduced",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.reduced-schedule-subpart-h",
+      "kind": "qualitative",
+      "subject": "Reduced TTHM and HAA5 monitoring schedule for subpart H systems, by population served",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Fewer than 500: monitoring may not be reduced; 500 to 3,300: per year, 1 TTHM and 1 HAA5 sample at the location and quarter of the highest single TTHM and HAA5 measurements, or 1 dual sample set if both occurred at the same location and quarter; 3,301 to 9,999: per year, 2 dual sample sets at those locations and quarters; 10,000 to 49,999: per quarter, 2 dual sample sets at the locations with the highest TTHM and highest HAA5 LRAAs; 50,000 to 249,999: per quarter, 4 dual sample sets at the two highest of each; 250,000 to 999,999: per quarter, 6 at the three highest of each; 1,000,000 to 4,999,999: per quarter, 8 at the four highest of each; 5,000,000 or more: per quarter, 10 at the five highest of each",
+      "conditions": [
+        "Systems on quarterly monitoring take dual sample sets every 90 days (table note 1)"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.reduced-schedule-table",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.reduced-schedule-ground-water",
+      "kind": "qualitative",
+      "subject": "Reduced TTHM and HAA5 monitoring schedule for ground water systems, by population served",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Fewer than 500: every third year, 1 TTHM and 1 HAA5 sample at the location and quarter of the highest single measurements, or 1 dual sample set if both occurred at the same location and quarter; 500 to 9,999: the same per year; 10,000 to 99,999: per year, 2 dual sample sets at those locations and quarters; 100,000 to 499,999: per quarter, 2 dual sample sets at the locations with the highest TTHM and highest HAA5 LRAAs; 500,000 or more: per quarter, 4 dual sample sets at the two highest of each",
+      "conditions": [
+        "Systems on quarterly monitoring take dual sample sets every 90 days (table note 1)"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.reduced-schedule-table",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.remain-reduced-quarterly-tthm",
+      "kind": "numeric",
+      "subject": "TTHM LRAA at each monitoring location that keeps a system with quarterly reduced monitoring on reduced monitoring",
+      "relation": {
+        "operator": "lte",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": 0.04,
+      "conditions": [
+        "Together with the HAA5 LRAA at or below 0.030 mg/L at each location and the source water TOC condition (claim.dbp.monitoring.reduced-increased.reduced-criterion-toc)"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.remain-reduced",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.remain-reduced-quarterly-haa5",
+      "kind": "numeric",
+      "subject": "HAA5 LRAA at each monitoring location that keeps a system with quarterly reduced monitoring on reduced monitoring",
+      "relation": {
+        "operator": "lte",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": 0.03,
+      "conditions": [
+        "Together with the TTHM LRAA at or below 0.040 mg/L at each location and the source water TOC condition (claim.dbp.monitoring.reduced-increased.reduced-criterion-toc)"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.remain-reduced",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.remain-reduced-annual-tthm",
+      "kind": "numeric",
+      "subject": "TTHM result of each sample that keeps a system with annual or less frequent reduced monitoring on reduced monitoring",
+      "relation": {
+        "operator": "lte",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": 0.06,
+      "conditions": [
+        "Together with each HAA5 sample at or below 0.045 mg/L and the source water TOC condition (claim.dbp.monitoring.reduced-increased.reduced-criterion-toc)"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.remain-reduced",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.remain-reduced-annual-haa5",
+      "kind": "numeric",
+      "subject": "HAA5 result of each sample that keeps a system with annual or less frequent reduced monitoring on reduced monitoring",
+      "relation": {
+        "operator": "lte",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": 0.045,
+      "conditions": [
+        "Together with each TTHM sample at or below 0.060 mg/L and the source water TOC condition (claim.dbp.monitoring.reduced-increased.reduced-criterion-toc)"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.remain-reduced",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.resume-routine-or-increased",
+      "kind": "qualitative",
+      "subject": "What ends reduced TTHM and HAA5 monitoring",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "An LRAA from quarterly monitoring at any location above 0.040 mg/L for TTHM or 0.030 mg/L for HAA5, an annual or less frequent sample at any location above 0.060 mg/L for TTHM or 0.045 mg/L for HAA5, or a source water annual average TOC above 4.0 mg/L at any plant treating surface water or ground water under the direct influence of surface water: the system resumes routine monitoring under 141.621, or begins increased monitoring if 141.625 applies",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.resume-routine",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.state-discretion",
+      "kind": "qualitative",
+      "subject": "State return of a system to routine monitoring",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "The State may return a system to routine monitoring at the State's discretion",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.state-discretion",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.increased-monitoring-trigger-tthm",
+      "kind": "numeric",
+      "subject": "TTHM sample result that requires increased monitoring for annual or less-frequent monitors",
+      "relation": {
+        "operator": "gt",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": 0.08,
+      "conditions": [
+        "Applies to systems required to monitor at a particular location annually or less frequently under 141.621 or 141.623; the increase is to dual sample sets once per quarter, taken every 90 days, at all locations",
+        "The same quote sets the HAA5 trigger at >0.060 mg/L (claim.dbp.monitoring.reduced-increased.increased-monitoring-trigger-haa5); the same mechanics are recorded on page dbp.compliance.lraa"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.increased-monitoring-trigger",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.increased-monitoring-trigger-haa5",
+      "kind": "numeric",
+      "subject": "HAA5 sample result that requires increased monitoring for annual or less-frequent monitors",
+      "relation": {
+        "operator": "gt",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": 0.06,
+      "conditions": [
+        "Applies to systems required to monitor at a particular location annually or less frequently under 141.621 or 141.623; the increase is to dual sample sets once per quarter, taken every 90 days, at all locations",
+        "The same quote sets the TTHM trigger at >0.080 mg/L (claim.dbp.monitoring.reduced-increased.increased-monitoring-trigger-tthm); the same mechanics are recorded on page dbp.compliance.lraa"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.increased-monitoring-trigger",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.violation-under-increased-monitoring",
+      "kind": "qualitative",
+      "subject": "MCL violation and monitoring violation while on increased monitoring",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "The LRAA exceeds the subpart V MCL in 141.64(b)(2), calculated on four consecutive quarters, or on fewer if the MCL would be exceeded regardless of later results; failing to monitor is a monitoring violation for each quarter whose result would be used in an LRAA",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.violation",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.return-to-routine-tthm",
+      "kind": "numeric",
+      "subject": "LRAA at every monitoring location that allows a return from increased to routine monitoring, TTHM",
+      "relation": {
+        "operator": "lte",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": 0.06,
+      "conditions": [
+        "After at least four consecutive quarters of increased monitoring, and only together with the HAA5 condition in claim.dbp.monitoring.reduced-increased.return-to-routine-haa5"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.return-to-routine",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.return-to-routine-haa5",
+      "kind": "numeric",
+      "subject": "LRAA at every monitoring location that allows a return from increased to routine monitoring, HAA5",
+      "relation": {
+        "operator": "lte",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": 0.045,
+      "conditions": [
+        "After at least four consecutive quarters of increased monitoring, and only together with the TTHM condition in claim.dbp.monitoring.reduced-increased.return-to-routine-tthm"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.return-to-routine",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ],
+      "unit": "mg/L"
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.remain-reduced-subpart-l",
+      "kind": "qualitative",
+      "subject": "Remaining on reduced TTHM and HAA5 monitoring after the subpart V compliance date on the strength of subpart L results",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Only a system that qualifies for a 40/30 certification under 141.603 or has received a very small system waiver under 141.604, meets the reduced monitoring criteria of 141.623(a), and does not change or add monitoring locations from those used for subpart L compliance monitoring may remain on reduced monitoring after the dates in 141.620(c)",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.remain-reduced-subpart-l",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.remain-reduced-locations-differ",
+      "kind": "qualitative",
+      "subject": "Subpart V monitoring locations that differ from the subpart L locations",
+      "relation": {
+        "operator": "prohibited",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "A system whose subpart V monitoring locations differ from its subpart L monitoring locations may not remain on reduced monitoring after the dates in 141.620(c)",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.remain-reduced-subpart-l",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.reduced-increased.remain-increased-subpart-l",
+      "kind": "qualitative",
+      "subject": "Remaining on increased monitoring carried over from subpart L",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "A system on increased monitoring under 141.132(b)(1) remains on increased monitoring, conducted under 141.625 at the monitoring locations in its 141.622 plan from the date in 141.620(c), until it qualifies for a return to routine monitoring under 141.625(c)",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.reduced-increased.remain-increased-subpart-l",
+        "quote.dbp.monitoring.reduced-increased.applicability"
+      ]
+    }
+  ]
+}

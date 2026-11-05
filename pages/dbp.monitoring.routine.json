@@ -1,0 +1,802 @@
+{
+  "schema_version": "drinking-water-profile/v0.1",
+  "type": "concept",
+  "page_id": "dbp.monitoring.routine",
+  "title": "Routine DBP monitoring: subpart V TTHM and HAA5 locations by system size and source type, the monitoring plan, and the residual and byproduct monitoring of subpart L",
+  "status": "draft",
+  "assurance_profile": "drinking-water/v0.1",
+  "use_class": "regulatory-reference",
+  "jurisdiction": "US-federal",
+  "applicability": {
+    "system_types": [
+      "community-water-system",
+      "nontransient-noncommunity-water-system"
+    ],
+    "conditions": [
+      "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+    ],
+    "exclusions": [
+      "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+    ]
+  },
+  "generated": {
+    "by": "cc",
+    "at": "2026-11-05T17:54:04Z"
+  },
+  "review_payload": {
+    "canonicalization": "dw-review-payload/v0.1",
+    "sha256": "cc2e02d4d412c3a63d0cf72ac302c78d9550bccf48291c3f6af50057a236660e"
+  },
+  "normalization": "dw-quote-normalization/v0.1",
+  "verified": [
+    {
+      "by": "process:quote-tool/v0.1-interim",
+      "actor_type": "process",
+      "at": "2026-11-05T17:54:04Z",
+      "review_payload_sha256": "cc2e02d4d412c3a63d0cf72ac302c78d9550bccf48291c3f6af50057a236660e",
+      "scopes": [
+        "source-capture",
+        "quote-fidelity"
+      ]
+    }
+  ],
+  "stale_after": "2027-01-31",
+  "source_watch": {
+    "watch_id": "watch.dbp.monitoring.routine",
+    "last_result": "unchanged",
+    "last_checked_at": "2026-11-02T07:10:07Z",
+    "next_due_at": "2026-12-02T07:10:07Z"
+  },
+  "source_refs": [
+    {
+      "source_id": "source.ecfr.2026-07-01.141-621",
+      "captured_sha256": "dc4006382d5ef57e3c300410dd3aa3b0947bd75342b7609d872d3e5a2e579fba",
+      "licensing_decision_payload_sha256": "74d2a21e998c0ed5d2254948caf2a1f457da074845821a34e9d2e312258201a0"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-622",
+      "captured_sha256": "757abcae4d11290d5d791c79d20923fe0c3167882aa20c19cd2084ab444f36c3",
+      "licensing_decision_payload_sha256": "c39ac43a0d3598c8ab8d397466f563b964c5eaa5ddf4a3cd83fd890d623ab1a1"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "captured_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "licensing_decision_payload_sha256": "f3b39502bbfbaa850eb4cfeab711de70381c64f8a07e8cf649e719d96f119eb2"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "licensing_decision_payload_sha256": "a99aef52bd75ce57929c25ea48d0839c5d65d1dd2ef5068159c90da0dbcdd045"
+    }
+  ],
+  "quotes": [
+    {
+      "quote_id": "quote.dbp.monitoring.routine.applicability",
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "captured_source_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:531-858"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "b4547ef8236f43f059cf8e5a3df041aeed9e19461fed9c433c26a3eba26a5926",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.routine.locations-and-months",
+      "source_id": "source.ecfr.2026-07-01.141-621",
+      "captured_source_sha256": "dc4006382d5ef57e3c300410dd3aa3b0947bd75342b7609d872d3e5a2e579fba",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:30-647"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "17952eb456bffe8eb9bcfdcd15b69834e7946be9934158a314ea37422da372ae",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.routine.minimum-locations-table",
+      "source_id": "source.ecfr.2026-07-01.141-621",
+      "captured_source_sha256": "dc4006382d5ef57e3c300410dd3aa3b0947bd75342b7609d872d3e5a2e579fba",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:648-1240"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "bda42dd1a3271fecde518d942c0314fd1989db4776b34ec87c13fc0ade149df1",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.routine.table-notes",
+      "source_id": "source.ecfr.2026-07-01.141-621",
+      "captured_source_sha256": "dc4006382d5ef57e3c300410dd3aa3b0947bd75342b7609d872d3e5a2e579fba",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:1241-2019"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "40478d6b58c406a756d35288dba0806d4521bc23bd2c70e9808f2c741691cd86",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.routine.undisinfected-system",
+      "source_id": "source.ecfr.2026-07-01.141-621",
+      "captured_source_sha256": "dc4006382d5ef57e3c300410dd3aa3b0947bd75342b7609d872d3e5a2e579fba",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:2020-2421"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "5859b3790dcd74f35ad4a70868432c2d93d862e1745fc8467d180a54f2591a87",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.routine.analytical-methods",
+      "source_id": "source.ecfr.2026-07-01.141-621",
+      "captured_source_sha256": "dc4006382d5ef57e3c300410dd3aa3b0947bd75342b7609d872d3e5a2e579fba",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:2422-2664"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "368b39d23983ff0d7a7afe09edde95c9eb8e14810a5ec57f09e6031ea9d5a19f",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.routine.plan-required",
+      "source_id": "source.ecfr.2026-07-01.141-622",
+      "captured_source_sha256": "757abcae4d11290d5d791c79d20923fe0c3167882aa20c19cd2084ab444f36c3",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:37-605"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "a4f286a704b219042c0a030ffa32aeec9bdd6cf33c949a6c3dc985e3d45ddaa1",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.routine.plan-location-selection",
+      "source_id": "source.ecfr.2026-07-01.141-622",
+      "captured_source_sha256": "757abcae4d11290d5d791c79d20923fe0c3167882aa20c19cd2084ab444f36c3",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:606-1558"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "58a8ae2283086628d832320246fcd7367f3d35db97ad3ebefbfbe517b757f354",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.routine.plan-submittal",
+      "source_id": "source.ecfr.2026-07-01.141-622",
+      "captured_source_sha256": "757abcae4d11290d5d791c79d20923fe0c3167882aa20c19cd2084ab444f36c3",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:1559-1867"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "c7d8e3655386c2bc4e362d0929feccf3fa0aded76ca0d8e35d0c18e10848cabf",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.routine.plan-revision",
+      "source_id": "source.ecfr.2026-07-01.141-622",
+      "captured_source_sha256": "757abcae4d11290d5d791c79d20923fe0c3167882aa20c19cd2084ab444f36c3",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:1868-2698"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "f83b55e56445a3c5bbfe42bf8ec8ad1094e884add3a16083b778a36797f93fc6",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.routine.subpart-l-tthm-haa5-routine",
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_source_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:946-2057"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "a6a6baebd70b57246828bba723301b759915f30047c17bb6cf3d762ae017e9ee",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.routine.bromate-routine",
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_source_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:11001-11317"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "17283725e122bdcd87dde38687bba8317e7c5f790e18df66b8be17948ef058f7",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.routine.chlorite-routine",
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_source_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:8322-9336"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "7da84269b2dbf83fa3fdfe8bf7a5c8737d17ffec58fbb7b399bc8cf209892c51",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.routine.chlorine-chloramine-routine",
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_source_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:13047-14029"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "d7663110253edf14249246b90e5706c766cccaf582b63f81cc21dd972fda130d",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.monitoring.routine.chlorine-dioxide-routine",
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_source_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:14030-14541"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "63413299f253ed10244838fe8428203ba1541eae64c53b442a9e900ce1c9f774",
+      "verified_at": "2026-11-05T17:54:04Z"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "claim.dbp.monitoring.routine.monitoring-locations-and-months",
+      "kind": "qualitative",
+      "subject": "Where and when subpart V TTHM and HAA5 monitoring takes place",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Systems that submitted an IDSE report monitor at the locations and months recommended in that report, on the 141.620(c) schedule, unless the State requires other or additional locations; systems with a 40/30 certification under 141.603, a very small system waiver under 141.604, or nontransient noncommunity systems serving fewer than 10,000 monitor at the locations and dates in their 141.132(f) monitoring plan as updated under 141.622",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.routine.locations-and-months",
+        "quote.dbp.monitoring.routine.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.routine.minimum-locations-subpart-h",
+      "kind": "qualitative",
+      "subject": "Minimum TTHM and HAA5 monitoring locations and frequency for subpart H systems under subpart V, by population served",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Fewer than 500: 2 locations per year; 500 to 3,300: 2 per quarter; 3,301 to 9,999: 2 per quarter; 10,000 to 49,999: 4 per quarter; 50,000 to 249,999: 8 per quarter; 250,000 to 999,999: 12 per quarter; 1,000,000 to 4,999,999: 16 per quarter; 5,000,000 or more: 20 per quarter",
+      "conditions": [
+        "The table gives the distribution system monitoring location total per monitoring period; a system must monitor at no fewer than that number of locations",
+        "All systems monitor during the month of highest DBP concentrations (table note 1); the dual-sample-set rules of note 2 are recorded in claim.dbp.monitoring.routine.dual-sample-sets"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.routine.minimum-locations-table",
+        "quote.dbp.monitoring.routine.table-notes",
+        "quote.dbp.monitoring.routine.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.routine.minimum-locations-ground-water",
+      "kind": "qualitative",
+      "subject": "Minimum TTHM and HAA5 monitoring locations and frequency for ground water systems under subpart V, by population served",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Fewer than 500: 2 locations per year; 500 to 9,999: 2 per year; 10,000 to 99,999: 4 per quarter; 100,000 to 499,999: 6 per quarter; 500,000 or more: 8 per quarter",
+      "conditions": [
+        "The table gives the distribution system monitoring location total per monitoring period; a system must monitor at no fewer than that number of locations",
+        "All systems monitor during the month of highest DBP concentrations (table note 1); the dual-sample-set rules of note 2 are recorded in claim.dbp.monitoring.routine.dual-sample-sets"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.routine.minimum-locations-table",
+        "quote.dbp.monitoring.routine.table-notes",
+        "quote.dbp.monitoring.routine.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.routine.month-of-highest",
+      "kind": "qualitative",
+      "subject": "Timing of subpart V TTHM and HAA5 monitoring within the year",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "All systems must monitor during the month of highest DBP concentrations",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.routine.table-notes",
+        "quote.dbp.monitoring.routine.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.routine.dual-sample-sets",
+      "kind": "qualitative",
+      "subject": "Dual sample sets versus individual TTHM and HAA5 samples under subpart V routine monitoring",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Systems on quarterly monitoring take dual sample sets every 90 days at each monitoring location, except subpart H systems serving 500 to 3,300; ground water systems serving 500 to 9,999 on annual monitoring take dual sample sets at each location; all other systems on annual monitoring and subpart H systems serving 500 to 3,300 take individual TTHM and HAA5 samples instead, at the locations with the highest TTHM and highest HAA5 concentrations respectively",
+      "conditions": [
+        "A dual sample set is defined on page dbp.compliance.lraa (claim.dbp.compliance.lraa.dual-sample-set): two samples at the same time and location, one analyzed for TTHM and one for HAA5"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.routine.table-notes",
+        "quote.dbp.monitoring.routine.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.routine.small-system-single-location",
+      "kind": "qualitative",
+      "subject": "Monitoring locations for systems serving fewer than 500 people under subpart V",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Only one location with a dual sample set per monitoring period is needed if the highest TTHM and HAA5 concentrations occur at the same location and month",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.routine.table-notes",
+        "quote.dbp.monitoring.routine.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.routine.undisinfected-system-starting-disinfection",
+      "kind": "qualitative",
+      "subject": "Subpart V monitoring locations for a previously undisinfected system that begins disinfecting after the subpart U dates",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Consult with the State to identify compliance monitoring locations, then develop a monitoring plan under 141.622 that includes those locations",
+      "conditions": [
+        "Applies to an undisinfected system that begins using a disinfectant other than UV light after the dates in subpart U for complying with the Initial Distribution System Evaluation requirements"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.routine.undisinfected-system",
+        "quote.dbp.monitoring.routine.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.routine.analytical-methods",
+      "kind": "qualitative",
+      "subject": "Analytical methods and laboratories for subpart V TTHM and HAA5 analyses",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "An approved method listed in 141.131, analyzed by laboratories certified by EPA or the State as specified in 141.131",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.routine.analytical-methods",
+        "quote.dbp.monitoring.routine.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.routine.monitoring-plan-required",
+      "kind": "qualitative",
+      "subject": "Subpart V monitoring plan",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Develop and implement a monitoring plan kept on file for State and public review, complete no later than the date of the initial subpart V monitoring, containing the monitoring locations, the monitoring dates, the compliance calculation procedures, and the monitoring plans for any other systems in the combined distribution system where the State has reduced monitoring requirements under 142.16(m)",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.routine.plan-required",
+        "quote.dbp.monitoring.routine.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.routine.monitoring-plan-location-selection",
+      "kind": "qualitative",
+      "subject": "Selecting subpart V compliance monitoring locations without an IDSE report",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "A system not required to submit an IDSE report under 141.601 or 141.602 with too few subpart L monitoring locations identifies additional locations by alternating selection of locations representing high TTHM levels and high HAA5 levels until the number required by 141.605(b) is reached, with the rationale for each; a system with more subpart L locations than required chooses its subpart V locations by the same alternation",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.routine.plan-location-selection",
+        "quote.dbp.monitoring.routine.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.routine.monitoring-plan-submittal",
+      "kind": "qualitative",
+      "subject": "Submitting the subpart V monitoring plan to the State",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "A subpart H system serving more than 3,300 people submits a copy of its monitoring plan to the State before its initial subpart V monitoring, unless its IDSE report under subpart U already contains all the information 141.622 requires",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.routine.plan-submittal",
+        "quote.dbp.monitoring.routine.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.routine.monitoring-plan-revision",
+      "kind": "qualitative",
+      "subject": "Revising the subpart V monitoring plan",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "A system may revise its plan for changes in treatment, distribution system operations and layout (including new service areas), other factors that may affect TTHM or HAA5 formation, or State-approved reasons, after consulting the State on the need for and appropriateness of the changes; changed monitoring locations replace the existing compliance locations with the lowest LRAA with locations of expected high TTHM or HAA5 levels; the State may require modifications; a subpart H system serving more than 3,300 people submits the modified plan to the State before it must comply with it",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.routine.plan-revision",
+        "quote.dbp.monitoring.routine.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.routine.subpart-l-tthm-haa5-routine-locations",
+      "kind": "qualitative",
+      "subject": "Subpart L (Stage 1) routine TTHM and HAA5 sample locations and frequency",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Subpart H systems serving at least 10,000 persons: four samples per quarter per treatment plant, at least 25 percent of each quarter's samples at locations representing maximum residence time and the remainder at locations representative of at least average residence time across the entire distribution system; subpart H systems serving 500 to 9,999: one sample per quarter per treatment plant at locations representing maximum residence time; subpart H systems serving fewer than 500: one sample per year per treatment plant during the month of warmest water temperature, at locations representing maximum residence time",
+      "conditions": [
+        "141.132(b)(1)(i) governs subpart L monitoring; subpart V monitoring locations and dates come from the IDSE report or the subpart V monitoring plan (claim.dbp.monitoring.routine.monitoring-locations-and-months)",
+        "The quoted rows are the subpart H rows of the 141.132(b)(1)(i) table; the ground water rows follow in the same table and are not quoted on this page"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.routine.subpart-l-tthm-haa5-routine",
+        "quote.dbp.monitoring.routine.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.routine.bromate-routine-monitoring",
+      "kind": "qualitative",
+      "subject": "Routine bromate monitoring location and frequency",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "One sample per month for each treatment plant using ozone, taken at the entrance to the distribution system while the ozonation system is operating under normal conditions; applies to community and nontransient noncommunity systems using ozone for disinfection or oxidation",
+      "conditions": [
+        "The bromate MCL, its compliance basis and reduced monitoring are on page dbp.mcl.bromate"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.routine.bromate-routine",
+        "quote.dbp.monitoring.routine.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.routine.chlorite-routine-monitoring",
+      "kind": "qualitative",
+      "subject": "Routine chlorite monitoring locations and frequencies",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Daily samples at the entrance to the distribution system, and a three-sample set each month in the distribution system (near the first customer, at a location representative of average residence time, and at a location reflecting maximum residence time); applies to community and nontransient noncommunity systems using chlorine dioxide for disinfection or oxidation",
+      "conditions": [
+        "Additional and reduced chlorite monitoring and the chlorite MCL are on page dbp.mcl.chlorite"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.routine.chlorite-routine",
+        "quote.dbp.monitoring.routine.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.routine.chlorine-chloramine-residual-monitoring",
+      "kind": "qualitative",
+      "subject": "Routine chlorine and chloramine residual monitoring location and frequency",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "At the same point in the distribution system and at the same time as total coliforms are sampled (since April 1, 2016 under 141.854 through 141.858); subpart H systems may use their residual results under 141.74(b)(6)(i) or 141.74(c)(3)(i) instead of separate samples; monitoring may not be reduced",
+      "conditions": [
+        "The chlorine and chloramine MRDLs and their compliance basis are on page dbp.mrdl.chlorine-chloramine"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.routine.chlorine-chloramine-routine",
+        "quote.dbp.monitoring.routine.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.monitoring.routine.chlorine-dioxide-daily-monitoring",
+      "kind": "qualitative",
+      "subject": "Routine chlorine dioxide monitoring location and frequency",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "Daily samples at the entrance to the distribution system; a daily sample exceeding the MRDL requires distribution system samples the following day; applies to community, nontransient noncommunity, and transient noncommunity systems using chlorine dioxide",
+      "conditions": [
+        "The chlorine dioxide MRDL, additional monitoring and violations are on page dbp.mrdl.chlorine-dioxide"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are not subject to subpart V (141.620(b))"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.monitoring.routine.chlorine-dioxide-routine",
+        "quote.dbp.monitoring.routine.applicability"
+      ]
+    }
+  ]
+}

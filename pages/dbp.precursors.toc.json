@@ -1,0 +1,810 @@
+{
+  "schema_version": "drinking-water-profile/v0.1",
+  "type": "concept",
+  "page_id": "dbp.precursors.toc",
+  "title": "Treatment technique for DBP precursors: enhanced coagulation or enhanced softening, the Step 1 TOC removal table, alternative compliance criteria, Step 2, compliance calculation and paired-sample monitoring",
+  "status": "draft",
+  "assurance_profile": "drinking-water/v0.1",
+  "use_class": "regulatory-reference",
+  "jurisdiction": "US-federal",
+  "applicability": {
+    "system_types": [
+      "community-water-system",
+      "nontransient-noncommunity-water-system"
+    ],
+    "source_water_types": [
+      "surface-water",
+      "ground-water-under-direct-influence"
+    ],
+    "conditions": [
+      "Subpart H systems (surface water or ground water under the direct influence of surface water) using conventional filtration treatment as defined in 141.2 (141.135(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant (141.130(a)(1))"
+    ],
+    "exclusions": [
+      "Systems that meet one of the alternative compliance criteria in 141.135(a)(2) or (a)(3) are not required to operate with enhanced coagulation or enhanced softening; they still monitor under 141.132(d)"
+    ]
+  },
+  "generated": {
+    "by": "cc",
+    "at": "2026-11-05T17:54:04Z"
+  },
+  "review_payload": {
+    "canonicalization": "dw-review-payload/v0.1",
+    "sha256": "a92cc63032db70aa325129bb9a1f13b1fd76349f356095f46f4536ad32f90b94"
+  },
+  "normalization": "dw-quote-normalization/v0.1",
+  "verified": [
+    {
+      "by": "process:quote-tool/v0.1-interim",
+      "actor_type": "process",
+      "at": "2026-11-05T17:54:04Z",
+      "review_payload_sha256": "a92cc63032db70aa325129bb9a1f13b1fd76349f356095f46f4536ad32f90b94",
+      "scopes": [
+        "source-capture",
+        "quote-fidelity"
+      ]
+    }
+  ],
+  "stale_after": "2027-01-31",
+  "source_watch": {
+    "watch_id": "watch.dbp.precursors.toc",
+    "last_result": "unchanged",
+    "last_checked_at": "2026-11-02T07:10:07Z",
+    "next_due_at": "2026-12-02T07:10:07Z"
+  },
+  "source_refs": [
+    {
+      "source_id": "source.ecfr.2026-07-01.141-135",
+      "captured_sha256": "b6344112bef59ef28267c25414f33f5356ff512e1ce2a7339e9fc9ce91240c48",
+      "licensing_decision_payload_sha256": "4ab7635bfc69140e0d409a76d1cd8afa9f65b294776eb06ef50d9bf01c2833ad"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "licensing_decision_payload_sha256": "a99aef52bd75ce57929c25ea48d0839c5d65d1dd2ef5068159c90da0dbcdd045"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "licensing_decision_payload_sha256": "e40a6d648819e123a5fee502351324de387c8c363e13a373a99d6a21e7d2a7e0"
+    }
+  ],
+  "quotes": [
+    {
+      "quote_id": "quote.dbp.precursors.toc.applicability",
+      "source_id": "source.ecfr.2026-07-01.141-135",
+      "captured_source_sha256": "b6344112bef59ef28267c25414f33f5356ff512e1ce2a7339e9fc9ce91240c48",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:86-466"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "3222bd286263b0ced2b3c3bf44bd2ac3f817c37c5ef16c1d82a65a6e7d54be72",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.precursors.toc.alternative-criteria",
+      "source_id": "source.ecfr.2026-07-01.141-135",
+      "captured_source_sha256": "b6344112bef59ef28267c25414f33f5356ff512e1ce2a7339e9fc9ce91240c48",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:467-1920"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "adf8852a4564a874f4c9cf3a42bd8f7c2009250778bcf223364a0dbc0dbc3c8c",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.precursors.toc.alternative-criteria-iv-vi",
+      "source_id": "source.ecfr.2026-07-01.141-135",
+      "captured_source_sha256": "b6344112bef59ef28267c25414f33f5356ff512e1ce2a7339e9fc9ce91240c48",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:2473-3067"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "bc7c7283aeda2e0b62fe22233de8ec09e174524bb7a62cd76be05f78f44b2d5e",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.precursors.toc.softening-alternatives",
+      "source_id": "source.ecfr.2026-07-01.141-135",
+      "captured_source_sha256": "b6344112bef59ef28267c25414f33f5356ff512e1ce2a7339e9fc9ce91240c48",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:3068-3871"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "fb5ee04dd225051a9dffa127f08b7d7408f2436e9376fcfa8c5b6cb661f2b07b",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.precursors.toc.performance-requirement",
+      "source_id": "source.ecfr.2026-07-01.141-135",
+      "captured_source_sha256": "b6344112bef59ef28267c25414f33f5356ff512e1ce2a7339e9fc9ce91240c48",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:3872-4245"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "55e75bea7a57af6e5c2970913a4794928f9ee1e5471a1be8550559160964f38a",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.precursors.toc.step1-table",
+      "source_id": "source.ecfr.2026-07-01.141-135",
+      "captured_source_sha256": "b6344112bef59ef28267c25414f33f5356ff512e1ce2a7339e9fc9ce91240c48",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:4246-5271"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "bae7a998f3cc76cc23866f4ca855cd43e4912700330fbb0200a03dae9bf00775",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.precursors.toc.step2-application",
+      "source_id": "source.ecfr.2026-07-01.141-135",
+      "captured_source_sha256": "b6344112bef59ef28267c25414f33f5356ff512e1ce2a7339e9fc9ce91240c48",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:5272-6038"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "1bd19e5d9bb65a71fc7ada5133322f38a9635d1f12dd77ca63371fb1a09f4f09",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.precursors.toc.alternate-enhanced-coagulation-level",
+      "source_id": "source.ecfr.2026-07-01.141-135",
+      "captured_source_sha256": "b6344112bef59ef28267c25414f33f5356ff512e1ce2a7339e9fc9ce91240c48",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:6500-7118"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "b9da7806a234835afb15b27cfff4145dd8db6a20ac9f8139ac69eed8eea97485",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.precursors.toc.compliance-calculation",
+      "source_id": "source.ecfr.2026-07-01.141-135",
+      "captured_source_sha256": "b6344112bef59ef28267c25414f33f5356ff512e1ce2a7339e9fc9ce91240c48",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:8760-9792"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "b173c2c2b71bf98b0e2338481afed0e7437d1a8eb19509016f896165d0e29a97",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.precursors.toc.compliance-credits",
+      "source_id": "source.ecfr.2026-07-01.141-135",
+      "captured_source_sha256": "b6344112bef59ef28267c25414f33f5356ff512e1ce2a7339e9fc9ce91240c48",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:9793-11650"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "824b75a1820b537d8a652aa7230612c6538c1449c235dc7e8ab11aca07fccb77",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.precursors.toc.treatment-technique",
+      "source_id": "source.ecfr.2026-07-01.141-135",
+      "captured_source_sha256": "b6344112bef59ef28267c25414f33f5356ff512e1ce2a7339e9fc9ce91240c48",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:11824-12155"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "c8d2194f5932f9c427d7bd06bcea104b24d93f41eef7d299444578cec91539d8",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.precursors.toc.paired-samples",
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_source_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:15750-16677"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "f6d72cf9e4f62d476b394607e6bac2678e95dbcdd7d957ffdc27829ca6e3763a",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.precursors.toc.reduced-toc-monitoring",
+      "source_id": "source.ecfr.2026-07-01.141-132",
+      "captured_source_sha256": "931d76fd4387a2589b0bc26186d4191882101b164c215e369102e88edeff9854",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:16678-17104"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "a4ab38ad4265df00f3bfce0ce4ce7498ddb4aa560f385193f21033b27feee847",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.precursors.toc.subpart-l-scope",
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_source_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:127-571"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "5c625225f1c040697f42072df193282d638401bd9a16f02fa6a60dc4600c524c",
+      "verified_at": "2026-11-05T17:54:04Z"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "claim.dbp.precursors.toc.applies-to-conventional-filtration",
+      "kind": "qualitative",
+      "subject": "Systems subject to the DBP precursor treatment technique",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "treatment-technique"
+      },
+      "value": "Subpart H systems using conventional filtration treatment as defined in 141.2 must operate with enhanced coagulation or enhanced softening to achieve the TOC percent removal levels of 141.135(b), unless the system meets at least one alternative compliance criterion in 141.135(a)(2) or (a)(3)",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "source_water_types": [
+          "surface-water",
+          "ground-water-under-direct-influence"
+        ],
+        "conditions": [
+          "Subpart H systems (surface water or ground water under the direct influence of surface water) using conventional filtration treatment as defined in 141.2 (141.135(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant (141.130(a)(1))"
+        ],
+        "exclusions": [
+          "Systems that meet one of the alternative compliance criteria in 141.135(a)(2) or (a)(3) are not required to operate with enhanced coagulation or enhanced softening; they still monitor under 141.132(d)"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.precursors.toc.applicability",
+        "quote.dbp.precursors.toc.treatment-technique",
+        "quote.dbp.precursors.toc.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.precursors.toc.treatment-technique",
+      "kind": "qualitative",
+      "subject": "Treatment techniques for control of disinfection byproduct precursors",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "treatment-technique"
+      },
+      "value": "Enhanced coagulation or enhanced softening, for subpart H systems using conventional treatment",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "source_water_types": [
+          "surface-water",
+          "ground-water-under-direct-influence"
+        ],
+        "conditions": [
+          "Subpart H systems (surface water or ground water under the direct influence of surface water) using conventional filtration treatment as defined in 141.2 (141.135(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant (141.130(a)(1))"
+        ],
+        "exclusions": [
+          "Systems that meet one of the alternative compliance criteria in 141.135(a)(2) or (a)(3) are not required to operate with enhanced coagulation or enhanced softening; they still monitor under 141.132(d)"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.precursors.toc.treatment-technique",
+        "quote.dbp.precursors.toc.applicability",
+        "quote.dbp.precursors.toc.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.precursors.toc.step1-toc-removal",
+      "kind": "table",
+      "subject": "Step 1 required removal of TOC by enhanced coagulation and enhanced softening, by source-water TOC and source-water alkalinity",
+      "relation": {
+        "operator": "gte",
+        "regulatory_metric": "treatment-technique"
+      },
+      "table_value": {
+        "row_dimension": {
+          "dimension_id": "dimension.source-water-toc",
+          "name": "Source-water TOC",
+          "unit": "mg/L",
+          "bands": [
+            {
+              "band_id": "toc-above-2-0-to-4-0",
+              "label": ">2.0-4.0",
+              "minimum": 2.0,
+              "minimum_inclusive": false,
+              "maximum": 4.0,
+              "maximum_inclusive": true
+            },
+            {
+              "band_id": "toc-above-4-0-to-8-0",
+              "label": ">4.0-8.0",
+              "minimum": 4.0,
+              "minimum_inclusive": false,
+              "maximum": 8.0,
+              "maximum_inclusive": true
+            },
+            {
+              "band_id": "toc-above-8-0",
+              "label": ">8.0",
+              "minimum": 8.0,
+              "minimum_inclusive": false
+            }
+          ]
+        },
+        "column_dimension": {
+          "dimension_id": "dimension.source-water-alkalinity",
+          "name": "Source-water alkalinity",
+          "unit": "mg/L as CaCO3",
+          "bands": [
+            {
+              "band_id": "alk-0-to-60",
+              "label": "0-60",
+              "minimum": 0,
+              "minimum_inclusive": true,
+              "maximum": 60,
+              "maximum_inclusive": true
+            },
+            {
+              "band_id": "alk-above-60-to-120",
+              "label": ">60-120",
+              "minimum": 60,
+              "minimum_inclusive": false,
+              "maximum": 120,
+              "maximum_inclusive": true
+            },
+            {
+              "band_id": "alk-above-120",
+              "label": ">120",
+              "minimum": 120,
+              "minimum_inclusive": false
+            }
+          ]
+        },
+        "cell_unit": "percent",
+        "cells": [
+          {
+            "cell_id": "cell.toc-above-2-0-to-4-0.alk-0-to-60",
+            "row_band": "toc-above-2-0-to-4-0",
+            "column_band": "alk-0-to-60",
+            "value": 35.0
+          },
+          {
+            "cell_id": "cell.toc-above-2-0-to-4-0.alk-above-60-to-120",
+            "row_band": "toc-above-2-0-to-4-0",
+            "column_band": "alk-above-60-to-120",
+            "value": 25.0
+          },
+          {
+            "cell_id": "cell.toc-above-2-0-to-4-0.alk-above-120",
+            "row_band": "toc-above-2-0-to-4-0",
+            "column_band": "alk-above-120",
+            "value": 15.0
+          },
+          {
+            "cell_id": "cell.toc-above-4-0-to-8-0.alk-0-to-60",
+            "row_band": "toc-above-4-0-to-8-0",
+            "column_band": "alk-0-to-60",
+            "value": 45.0
+          },
+          {
+            "cell_id": "cell.toc-above-4-0-to-8-0.alk-above-60-to-120",
+            "row_band": "toc-above-4-0-to-8-0",
+            "column_band": "alk-above-60-to-120",
+            "value": 35.0
+          },
+          {
+            "cell_id": "cell.toc-above-4-0-to-8-0.alk-above-120",
+            "row_band": "toc-above-4-0-to-8-0",
+            "column_band": "alk-above-120",
+            "value": 25.0
+          },
+          {
+            "cell_id": "cell.toc-above-8-0.alk-0-to-60",
+            "row_band": "toc-above-8-0",
+            "column_band": "alk-0-to-60",
+            "value": 50.0
+          },
+          {
+            "cell_id": "cell.toc-above-8-0.alk-above-60-to-120",
+            "row_band": "toc-above-8-0",
+            "column_band": "alk-above-60-to-120",
+            "value": 40.0
+          },
+          {
+            "cell_id": "cell.toc-above-8-0.alk-above-120",
+            "row_band": "toc-above-8-0",
+            "column_band": "alk-above-120",
+            "value": 30.0
+          }
+        ]
+      },
+      "conditions": [
+        "The percent reduction of TOC is measured between the source water and the combined filter effluent (141.135(b)(1))",
+        "Systems practicing softening meet the Step 1 reductions in the far-right column (source water alkalinity >120 mg/L) for their source water TOC, whatever their measured alkalinity (141.135(b)(2) and table note 3); see claim.dbp.precursors.toc.softening-far-right-column",
+        "Systems meeting an alternative compliance criterion in 141.135(a)(2)(i)-(vi) are not required to operate with enhanced coagulation, and softening systems meeting a criterion in 141.135(a)(3) are not required to operate with enhanced softening (table notes 1 and 2)",
+        "A State-approved alternate minimum TOC removal (Step 2) under 141.135(b)(3) supersedes the table for that system; until approval the Step 1 values apply"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "source_water_types": [
+          "surface-water",
+          "ground-water-under-direct-influence"
+        ],
+        "conditions": [
+          "Subpart H systems (surface water or ground water under the direct influence of surface water) using conventional filtration treatment as defined in 141.2 (141.135(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant (141.130(a)(1))"
+        ],
+        "exclusions": [
+          "Systems that meet one of the alternative compliance criteria in 141.135(a)(2) or (a)(3) are not required to operate with enhanced coagulation or enhanced softening; they still monitor under 141.132(d)"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.precursors.toc.step1-table",
+        "quote.dbp.precursors.toc.performance-requirement",
+        "quote.dbp.precursors.toc.applicability",
+        "quote.dbp.precursors.toc.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.precursors.toc.softening-far-right-column",
+      "kind": "qualitative",
+      "subject": "Step 1 TOC removal column for systems practicing softening",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "treatment-technique"
+      },
+      "value": "Systems practicing softening are required to meet the Step 1 TOC reductions in the far-right column of the table, source water alkalinity greater than 120 mg/L, for the specified source water TOC",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "source_water_types": [
+          "surface-water",
+          "ground-water-under-direct-influence"
+        ],
+        "conditions": [
+          "Subpart H systems (surface water or ground water under the direct influence of surface water) using conventional filtration treatment as defined in 141.2 (141.135(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant (141.130(a)(1))"
+        ],
+        "exclusions": [
+          "Systems that meet one of the alternative compliance criteria in 141.135(a)(2) or (a)(3) are not required to operate with enhanced coagulation or enhanced softening; they still monitor under 141.132(d)"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.precursors.toc.step1-table",
+        "quote.dbp.precursors.toc.applicability",
+        "quote.dbp.precursors.toc.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.precursors.toc.alternative-compliance-criteria",
+      "kind": "qualitative",
+      "subject": "Alternative compliance criteria that replace the Step 1 TOC removal requirement",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "treatment-technique"
+      },
+      "value": "Any one of: source water TOC below 2.0 mg/L (quarterly running annual average); treated water TOC below 2.0 mg/L; source water TOC below 4.0 mg/L with source water alkalinity above 60 mg/L as CaCO3 and either TTHM and HAA5 running annual averages no greater than 0.040 and 0.030 mg/L or a pre-compliance-date irrevocable financial commitment to technologies limiting them to those levels; TTHM and HAA5 running annual averages no greater than 0.040 and 0.030 mg/L with chlorine as the only primary and residual disinfectant; source water SUVA at or below 2.0 L/mg-m; or finished water SUVA at or below 2.0 L/mg-m, each calculated quarterly as a running annual average",
+      "conditions": [
+        "A system using a criterion still monitors under 141.132(d); the measurements are made according to 141.131(d)"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "source_water_types": [
+          "surface-water",
+          "ground-water-under-direct-influence"
+        ],
+        "conditions": [
+          "Subpart H systems (surface water or ground water under the direct influence of surface water) using conventional filtration treatment as defined in 141.2 (141.135(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant (141.130(a)(1))"
+        ],
+        "exclusions": [
+          "Systems that meet one of the alternative compliance criteria in 141.135(a)(2) or (a)(3) are not required to operate with enhanced coagulation or enhanced softening; they still monitor under 141.132(d)"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.precursors.toc.alternative-criteria",
+        "quote.dbp.precursors.toc.alternative-criteria-iv-vi",
+        "quote.dbp.precursors.toc.applicability",
+        "quote.dbp.precursors.toc.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.precursors.toc.softening-alternative-criteria",
+      "kind": "qualitative",
+      "subject": "Additional alternative compliance criteria for softening systems",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "treatment-technique"
+      },
+      "value": "A system practicing enhanced softening that cannot achieve the required TOC removals may instead lower treated water alkalinity to below 60 mg/L as CaCO3, or remove at least 10 mg/L of magnesium hardness as CaCO3, each measured monthly and calculated quarterly as a running annual average",
+      "conditions": [
+        "A system using a criterion still monitors under 141.132(d)"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "source_water_types": [
+          "surface-water",
+          "ground-water-under-direct-influence"
+        ],
+        "conditions": [
+          "Subpart H systems (surface water or ground water under the direct influence of surface water) using conventional filtration treatment as defined in 141.2 (141.135(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant (141.130(a)(1))"
+        ],
+        "exclusions": [
+          "Systems that meet one of the alternative compliance criteria in 141.135(a)(2) or (a)(3) are not required to operate with enhanced coagulation or enhanced softening; they still monitor under 141.132(d)"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.precursors.toc.softening-alternatives",
+        "quote.dbp.precursors.toc.applicability",
+        "quote.dbp.precursors.toc.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.precursors.toc.step2-application",
+      "kind": "qualitative",
+      "subject": "Alternate minimum TOC removal (Step 2) when Step 1 cannot be achieved",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "treatment-technique"
+      },
+      "value": "A subpart H conventional treatment system that cannot achieve the Step 1 removals because of water quality parameters or operational constraints applies to the State within three months of the failure for approval of alternative minimum TOC (Step 2) removal requirements; the State may make approved requirements retroactive for compliance; until approval the system must meet Step 1",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "source_water_types": [
+          "surface-water",
+          "ground-water-under-direct-influence"
+        ],
+        "conditions": [
+          "Subpart H systems (surface water or ground water under the direct influence of surface water) using conventional filtration treatment as defined in 141.2 (141.135(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant (141.130(a)(1))"
+        ],
+        "exclusions": [
+          "Systems that meet one of the alternative compliance criteria in 141.135(a)(2) or (a)(3) are not required to operate with enhanced coagulation or enhanced softening; they still monitor under 141.132(d)"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.precursors.toc.step2-application",
+        "quote.dbp.precursors.toc.applicability",
+        "quote.dbp.precursors.toc.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.precursors.toc.alternate-enhanced-coagulation-level",
+      "kind": "qualitative",
+      "subject": "Alternate enhanced coagulation level",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "treatment-technique"
+      },
+      "value": "Coagulation at the coagulant dose and pH at which an incremental addition of 10 mg/L of alum, or the equivalent ferric salt, removes 0.3 mg/L of TOC or less; the percent TOC removal at that point on the TOC-removal-versus-coagulant-dose curve becomes the system's minimum required TOC removal once the State approves it, superseding the Step 1 table",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "source_water_types": [
+          "surface-water",
+          "ground-water-under-direct-influence"
+        ],
+        "conditions": [
+          "Subpart H systems (surface water or ground water under the direct influence of surface water) using conventional filtration treatment as defined in 141.2 (141.135(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant (141.130(a)(1))"
+        ],
+        "exclusions": [
+          "Systems that meet one of the alternative compliance criteria in 141.135(a)(2) or (a)(3) are not required to operate with enhanced coagulation or enhanced softening; they still monitor under 141.132(d)"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.precursors.toc.alternate-enhanced-coagulation-level",
+        "quote.dbp.precursors.toc.applicability",
+        "quote.dbp.precursors.toc.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.precursors.toc.compliance-calculation",
+      "kind": "qualitative",
+      "subject": "Compliance calculation for TOC percent removal",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "treatment-technique"
+      },
+      "value": "Quarterly, after 12 months of data: each month's actual TOC percent removal, (1 minus treated water TOC over source water TOC) times 100, divided by that month's required removal from the Step 1 table or the approved Step 2 value; the twelve monthly ratios added and divided by 12; a result below 1.00 is noncompliance with the TOC percent removal requirements",
+      "conditions": [
+        "Applies to subpart H systems not meeting an alternative compliance criterion in 141.135(a)(2) or (a)(3)"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "source_water_types": [
+          "surface-water",
+          "ground-water-under-direct-influence"
+        ],
+        "conditions": [
+          "Subpart H systems (surface water or ground water under the direct influence of surface water) using conventional filtration treatment as defined in 141.2 (141.135(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant (141.130(a)(1))"
+        ],
+        "exclusions": [
+          "Systems that meet one of the alternative compliance criteria in 141.135(a)(2) or (a)(3) are not required to operate with enhanced coagulation or enhanced softening; they still monitor under 141.132(d)"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.precursors.toc.compliance-calculation",
+        "quote.dbp.precursors.toc.applicability",
+        "quote.dbp.precursors.toc.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.precursors.toc.compliance-calculation-credits",
+      "kind": "qualitative",
+      "subject": "Monthly values of 1.0 a system may assign in the TOC compliance calculation",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "treatment-technique"
+      },
+      "value": "In any month in which treated or source water TOC is below 2.0 mg/L, a softening system removes at least 10 mg/L of magnesium hardness as CaCO3, source water SUVA is at or below 2.0 L/mg-m, finished water SUVA is at or below 2.0 L/mg-m, or enhanced softening lowers alkalinity below 60 mg/L as CaCO3, the system may assign a monthly value of 1.0 in place of the calculated monthly ratio",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "source_water_types": [
+          "surface-water",
+          "ground-water-under-direct-influence"
+        ],
+        "conditions": [
+          "Subpart H systems (surface water or ground water under the direct influence of surface water) using conventional filtration treatment as defined in 141.2 (141.135(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant (141.130(a)(1))"
+        ],
+        "exclusions": [
+          "Systems that meet one of the alternative compliance criteria in 141.135(a)(2) or (a)(3) are not required to operate with enhanced coagulation or enhanced softening; they still monitor under 141.132(d)"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.precursors.toc.compliance-credits",
+        "quote.dbp.precursors.toc.applicability",
+        "quote.dbp.precursors.toc.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.precursors.toc.paired-samples-monthly",
+      "kind": "qualitative",
+      "subject": "Routine TOC and alkalinity monitoring for the precursor treatment technique",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "One paired sample (source water TOC before any treatment and treated water TOC no later than the point of combined filter effluent turbidity monitoring, taken at the same time) and one source water alkalinity sample per month per plant, at a time representative of normal operating conditions and influent water quality",
+      "conditions": [
+        "Applies to subpart H systems using conventional filtration treatment as defined in 141.2"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "source_water_types": [
+          "surface-water",
+          "ground-water-under-direct-influence"
+        ],
+        "conditions": [
+          "Subpart H systems (surface water or ground water under the direct influence of surface water) using conventional filtration treatment as defined in 141.2 (141.135(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant (141.130(a)(1))"
+        ],
+        "exclusions": [
+          "Systems that meet one of the alternative compliance criteria in 141.135(a)(2) or (a)(3) are not required to operate with enhanced coagulation or enhanced softening; they still monitor under 141.132(d)"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.precursors.toc.paired-samples",
+        "quote.dbp.precursors.toc.applicability",
+        "quote.dbp.precursors.toc.subpart-l-scope"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.precursors.toc.reduced-toc-monitoring",
+      "kind": "qualitative",
+      "subject": "Reduced TOC and alkalinity monitoring",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "monitoring-trigger"
+      },
+      "value": "A subpart H system with an average treated water TOC below 2.0 mg/L for two consecutive years, or below 1.0 mg/L for one year, may reduce TOC and alkalinity monitoring to one paired sample and one source water alkalinity sample per plant per quarter, and must revert to routine monitoring in the month following a quarter in which the annual average treated water TOC is 2.0 mg/L or more",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system"
+        ],
+        "source_water_types": [
+          "surface-water",
+          "ground-water-under-direct-influence"
+        ],
+        "conditions": [
+          "Subpart H systems (surface water or ground water under the direct influence of surface water) using conventional filtration treatment as defined in 141.2 (141.135(a)(1)); subpart L reaches community and nontransient noncommunity systems that add a chemical disinfectant (141.130(a)(1))"
+        ],
+        "exclusions": [
+          "Systems that meet one of the alternative compliance criteria in 141.135(a)(2) or (a)(3) are not required to operate with enhanced coagulation or enhanced softening; they still monitor under 141.132(d)"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.precursors.toc.reduced-toc-monitoring",
+        "quote.dbp.precursors.toc.applicability",
+        "quote.dbp.precursors.toc.subpart-l-scope"
+      ]
+    }
+  ]
+}

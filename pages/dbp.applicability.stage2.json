@@ -1,0 +1,529 @@
+{
+  "schema_version": "drinking-water-profile/v0.1",
+  "type": "concept",
+  "page_id": "dbp.applicability.stage2",
+  "title": "Who the DBP rules cover: subpart V (Stage 2) and subpart L applicability, compliance dates, consecutive systems, qualified operators and the residual-increase allowance",
+  "status": "draft",
+  "assurance_profile": "drinking-water/v0.1",
+  "use_class": "regulatory-reference",
+  "jurisdiction": "US-federal",
+  "applicability": {
+    "system_types": [
+      "community-water-system",
+      "nontransient-noncommunity-water-system",
+      "transient-noncommunity-water-system"
+    ],
+    "conditions": [
+      "Subpart V: community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b)); subpart L: community and nontransient noncommunity systems that add a chemical disinfectant in any part of treatment (141.130(a)(1)), and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL only (141.130(a)(2))"
+    ],
+    "exclusions": [
+      "Transient noncommunity water systems are outside subpart V and are reached by subpart L only for the chlorine dioxide MRDL"
+    ]
+  },
+  "generated": {
+    "by": "cc",
+    "at": "2026-11-05T17:54:04Z"
+  },
+  "review_payload": {
+    "canonicalization": "dw-review-payload/v0.1",
+    "sha256": "3d534a3e22486b99c5fa598b5c871fad813e774a41410befc01c07c3f0db8347"
+  },
+  "normalization": "dw-quote-normalization/v0.1",
+  "verified": [
+    {
+      "by": "process:quote-tool/v0.1-interim",
+      "actor_type": "process",
+      "at": "2026-11-05T17:54:04Z",
+      "review_payload_sha256": "3d534a3e22486b99c5fa598b5c871fad813e774a41410befc01c07c3f0db8347",
+      "scopes": [
+        "source-capture",
+        "quote-fidelity"
+      ]
+    }
+  ],
+  "stale_after": "2027-01-31",
+  "source_watch": {
+    "watch_id": "watch.dbp.applicability.stage2",
+    "last_result": "unchanged",
+    "last_checked_at": "2026-11-02T07:10:07Z",
+    "next_due_at": "2026-12-02T07:10:07Z"
+  },
+  "source_refs": [
+    {
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "captured_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "licensing_decision_payload_sha256": "f3b39502bbfbaa850eb4cfeab711de70381c64f8a07e8cf649e719d96f119eb2"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-624",
+      "captured_sha256": "1d1dc31f75464c5bbed4e8d8b691ddc657dd5ec2d7a18a540786cdb998c6cd9c",
+      "licensing_decision_payload_sha256": "c39312ea79a57e6a54adde50b2da0b954e1688cfa79d29b493dda993f6c2d388"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "licensing_decision_payload_sha256": "e40a6d648819e123a5fee502351324de387c8c363e13a373a99d6a21e7d2a7e0"
+    }
+  ],
+  "quotes": [
+    {
+      "quote_id": "quote.dbp.applicability.stage2.subpart-v-general",
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "captured_source_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:32-530"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "4cf9aa1113a1e81696124b80f17200ff8c2c33d76b210c898e2c752afe29ec76",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.applicability.stage2.applicability",
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "captured_source_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:531-858"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "b4547ef8236f43f059cf8e5a3df041aeed9e19461fed9c433c26a3eba26a5926",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.applicability.stage2.schedule",
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "captured_source_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:859-1937"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "53c9c5461563b59a866b8aab6e85b34529ae714c46ab2c53d83aa9cde7eb5f49",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.applicability.stage2.consecutive-systems",
+      "source_id": "source.ecfr.2026-07-01.141-624",
+      "captured_source_sha256": "1d1dc31f75464c5bbed4e8d8b691ddc657dd5ec2d7a18a540786cdb998c6cd9c",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:59-523"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "fcbbbaa43fbf9e5ffde3a65e52ec0d20be4eb00c21c20c4039f1055106871f46",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.applicability.stage2.subpart-l-scope-cws-ntncws",
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_source_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:127-571"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "5c625225f1c040697f42072df193282d638401bd9a16f02fa6a60dc4600c524c",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.applicability.stage2.subpart-l-scope-tncws",
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_source_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:572-788"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "f201e81015157395127256f22f8e35e30429bbe7dd158e8d5752224e05d50513",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.applicability.stage2.subpart-l-compliance-dates-cws-ntncws",
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_source_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:1171-1606"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "e3bd6b4efaaa418973db25664bf097fbde0b0dc0e9934421c636f2e1db5941ea",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.applicability.stage2.subpart-l-compliance-dates-tncws",
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_source_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:1607-2176"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "6c2f65c9e0392a5bd7d4bdc1ff8e53bc854310b36b10c4e12ff338219947d4b7",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.applicability.stage2.qualified-operators",
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_source_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:2177-2396"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "ccd77ec2f99b5fe5371cc75943635afb1046e4c3d7617e3060bb34b5a56b22f9",
+      "verified_at": "2026-11-05T17:54:04Z"
+    },
+    {
+      "quote_id": "quote.dbp.applicability.stage2.residual-increase-allowance",
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_source_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:2397-2890"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "036479509497842775b39b6035bcbf7b06a328dbccfa7b0f399df1754ad8105f",
+      "verified_at": "2026-11-05T17:54:04Z"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "claim.dbp.applicability.stage2.subpart-v-applicability",
+      "kind": "qualitative",
+      "subject": "Systems subject to subpart V (the Stage 2 LRAA requirements)",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Community water systems and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water that has been treated with a primary or residual disinfectant other than ultraviolet light",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V: community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b)); subpart L: community and nontransient noncommunity systems that add a chemical disinfectant in any part of treatment (141.130(a)(1)), and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL only (141.130(a)(2))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are outside subpart V and are reached by subpart L only for the chlorine dioxide MRDL"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.applicability.stage2.applicability",
+        "quote.dbp.applicability.stage2.subpart-v-general",
+        "quote.dbp.applicability.stage2.subpart-l-scope-cws-ntncws"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.applicability.stage2.ultraviolet-light-not-a-trigger",
+      "kind": "qualitative",
+      "subject": "Disinfection that the subpart V applicability sentence excludes: ultraviolet light",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Subpart V applies to systems that use, or deliver water treated with, a primary or residual disinfectant other than ultraviolet light; ultraviolet light is the one disinfectant the applicability sentence names as not triggering subpart V",
+      "conditions": [
+        "The sentence says what triggers subpart V; a system that uses only ultraviolet light is outside it by the words 'other than ultraviolet light', and no further exclusion is stated"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V: community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b)); subpart L: community and nontransient noncommunity systems that add a chemical disinfectant in any part of treatment (141.130(a)(1)), and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL only (141.130(a)(2))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are outside subpart V and are reached by subpart L only for the chlorine dioxide MRDL"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.applicability.stage2.applicability",
+        "quote.dbp.applicability.stage2.subpart-l-scope-cws-ntncws"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.applicability.stage2.consecutive-systems",
+      "kind": "qualitative",
+      "subject": "Consecutive systems that deliver disinfected water without adding a disinfectant",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "A consecutive system that does not add a disinfectant but delivers water treated with a primary or residual disinfectant other than ultraviolet light complies with the chlorine and chloramine analytical and monitoring requirements of 141.131(c) and 141.132(c)(1) and the compliance requirements of 141.133(c)(1) beginning April 1, 2009, unless the State requires it earlier, and reports results under 141.134(c)",
+      "conditions": [
+        "Such a system is also within subpart V's applicability because it delivers water treated with a disinfectant other than ultraviolet light (141.620(b)); subpart V's general paragraph names compliance with the chlorine and chloramine MRDLs for certain consecutive systems (141.620(a))"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V: community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b)); subpart L: community and nontransient noncommunity systems that add a chemical disinfectant in any part of treatment (141.130(a)(1)), and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL only (141.130(a)(2))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are outside subpart V and are reached by subpart L only for the chlorine dioxide MRDL"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.applicability.stage2.consecutive-systems",
+        "quote.dbp.applicability.stage2.applicability",
+        "quote.dbp.applicability.stage2.subpart-l-scope-cws-ntncws"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.applicability.stage2.subpart-v-compliance-schedule",
+      "kind": "qualitative",
+      "subject": "Subpart V compliance dates by system size",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Systems serving 100,000 or more: April 1, 2012; 50,000 to 99,999: October 1, 2012; 10,000 to 49,999: October 1, 2013; fewer than 10,000: October 1, 2013, or October 1, 2014 if Cryptosporidium monitoring is required under 141.701(a)(4) or (a)(6); consecutive and wholesale systems in a combined distribution system: the earliest compliance date in that combined distribution system",
+      "conditions": [
+        "The dates apply to systems not in a combined distribution system and to the system serving the largest population in one; the State may grant up to 24 additional months for compliance with MCLs and operational evaluation levels where capital improvements are required",
+        "The captured eCFR text reads 'orOctober 1, 2014' with no space (sic); the quote reproduces the capture exactly"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V: community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b)); subpart L: community and nontransient noncommunity systems that add a chemical disinfectant in any part of treatment (141.130(a)(1)), and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL only (141.130(a)(2))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are outside subpart V and are reached by subpart L only for the chlorine dioxide MRDL"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.applicability.stage2.schedule",
+        "quote.dbp.applicability.stage2.applicability",
+        "quote.dbp.applicability.stage2.subpart-l-scope-cws-ntncws"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.applicability.stage2.subpart-l-scope-cws-ntncws",
+      "kind": "qualitative",
+      "subject": "Systems subject to subpart L",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Community water systems and nontransient noncommunity water systems that add a chemical disinfectant to the water in any part of the drinking water treatment process; they must meet the MCLs in 141.64, the MRDLs in 141.65 and the treatment technique requirements for disinfection byproduct precursors in 141.135",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V: community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b)); subpart L: community and nontransient noncommunity systems that add a chemical disinfectant in any part of treatment (141.130(a)(1)), and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL only (141.130(a)(2))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are outside subpart V and are reached by subpart L only for the chlorine dioxide MRDL"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.applicability.stage2.subpart-l-scope-cws-ntncws",
+        "quote.dbp.applicability.stage2.applicability"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.applicability.stage2.subpart-l-scope-tncws-chlorine-dioxide",
+      "kind": "qualitative",
+      "subject": "Transient noncommunity water systems under subpart L",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Transient noncommunity water systems that use chlorine dioxide as a disinfectant or oxidant must meet the MRDL for chlorine dioxide in 141.65; that is the one subpart L requirement reaching transient systems",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V: community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b)); subpart L: community and nontransient noncommunity systems that add a chemical disinfectant in any part of treatment (141.130(a)(1)), and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL only (141.130(a)(2))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are outside subpart V and are reached by subpart L only for the chlorine dioxide MRDL"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.applicability.stage2.subpart-l-scope-tncws",
+        "quote.dbp.applicability.stage2.applicability",
+        "quote.dbp.applicability.stage2.subpart-l-scope-cws-ntncws"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.applicability.stage2.subpart-l-compliance-dates-cws-ntncws",
+      "kind": "qualitative",
+      "subject": "Subpart L compliance dates for community and nontransient noncommunity systems",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Subpart H systems serving 10,000 or more persons from January 1, 2002; subpart H systems serving fewer than 10,000 persons and systems using only ground water not under the direct influence of surface water from January 1, 2004, unless otherwise noted",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V: community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b)); subpart L: community and nontransient noncommunity systems that add a chemical disinfectant in any part of treatment (141.130(a)(1)), and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL only (141.130(a)(2))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are outside subpart V and are reached by subpart L only for the chlorine dioxide MRDL"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.applicability.stage2.subpart-l-compliance-dates-cws-ntncws",
+        "quote.dbp.applicability.stage2.applicability",
+        "quote.dbp.applicability.stage2.subpart-l-scope-cws-ntncws"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.applicability.stage2.subpart-l-compliance-dates-tncws",
+      "kind": "qualitative",
+      "subject": "Subpart L compliance dates for transient noncommunity systems using chlorine dioxide",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Subpart H systems serving 10,000 or more persons and using chlorine dioxide from January 1, 2002; subpart H systems serving fewer than 10,000 persons and using chlorine dioxide, and ground water systems not under the direct influence of surface water using chlorine dioxide, from January 1, 2004, for any chlorine dioxide requirements of subpart L",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V: community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b)); subpart L: community and nontransient noncommunity systems that add a chemical disinfectant in any part of treatment (141.130(a)(1)), and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL only (141.130(a)(2))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are outside subpart V and are reached by subpart L only for the chlorine dioxide MRDL"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.applicability.stage2.subpart-l-compliance-dates-tncws",
+        "quote.dbp.applicability.stage2.applicability",
+        "quote.dbp.applicability.stage2.subpart-l-scope-cws-ntncws"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.applicability.stage2.qualified-operators",
+      "kind": "qualitative",
+      "subject": "Operation of regulated systems by qualified personnel",
+      "relation": {
+        "operator": "required",
+        "regulatory_metric": "other"
+      },
+      "value": "Each community and nontransient noncommunity water system regulated under 141.130(a) must be operated by qualified personnel who meet the requirements specified by the State and are included in a State register of qualified operators",
+      "conditions": [],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V: community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b)); subpart L: community and nontransient noncommunity systems that add a chemical disinfectant in any part of treatment (141.130(a)(1)), and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL only (141.130(a)(2))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are outside subpart V and are reached by subpart L only for the chlorine dioxide MRDL"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.applicability.stage2.qualified-operators",
+        "quote.dbp.applicability.stage2.applicability",
+        "quote.dbp.applicability.stage2.subpart-l-scope-cws-ntncws"
+      ]
+    },
+    {
+      "claim_id": "claim.dbp.applicability.stage2.residual-increase-allowance",
+      "kind": "qualitative",
+      "subject": "Residual increase allowed notwithstanding the chlorine and chloramine MRDLs",
+      "relation": {
+        "operator": "eq",
+        "regulatory_metric": "other"
+      },
+      "value": "Systems may increase chlorine or chloramine residual levels in the distribution system to a level and for a time necessary to protect public health, to address specific microbiological contamination problems caused by circumstances such as, but not limited to, distribution line breaks, storm run-off events, source water contamination events, or cross-connection events",
+      "conditions": [
+        "The allowance names chlorine or chloramines and expressly excludes chlorine dioxide (141.130(d)); it is bounded by the level and time necessary to protect public health against the specific problem; the same allowance is recorded on page dbp.mrdl.chlorine-chloramine"
+      ],
+      "exceptions": [],
+      "jurisdiction": "US-federal",
+      "applicability": {
+        "system_types": [
+          "community-water-system",
+          "nontransient-noncommunity-water-system",
+          "transient-noncommunity-water-system"
+        ],
+        "conditions": [
+          "Subpart V: community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b)); subpart L: community and nontransient noncommunity systems that add a chemical disinfectant in any part of treatment (141.130(a)(1)), and transient noncommunity systems that use chlorine dioxide, for the chlorine dioxide MRDL only (141.130(a)(2))"
+        ],
+        "exclusions": [
+          "Transient noncommunity water systems are outside subpart V and are reached by subpart L only for the chlorine dioxide MRDL"
+        ]
+      },
+      "supporting_quote_ids": [
+        "quote.dbp.applicability.stage2.residual-increase-allowance",
+        "quote.dbp.applicability.stage2.applicability",
+        "quote.dbp.applicability.stage2.subpart-l-scope-cws-ntncws"
+      ]
+    }
+  ]
+}
