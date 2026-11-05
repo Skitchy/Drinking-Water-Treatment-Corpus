@@ -3,7 +3,7 @@
   "type": "concept",
   "page_id": "dbp.mcl.haa5",
   "title": "HAA5 maximum contaminant level: 0.060 mg/L as a locational running annual average",
-  "status": "draft",
+  "status": "stable",
   "assurance_profile": "drinking-water/v0.1",
   "use_class": "regulatory-reference",
   "jurisdiction": "US-federal",
@@ -37,6 +37,17 @@
       "scopes": [
         "source-capture",
         "quote-fidelity"
+      ]
+    },
+    {
+      "by": "human.skitch",
+      "actor_type": "human",
+      "at": "2026-11-05T17:06:12Z",
+      "review_payload_sha256": "6c5af9f478b80c985fd7806aff57a1869c3fcba86e1e7dd30707f8ce11310642",
+      "scopes": [
+        "editorial-accuracy",
+        "applicability",
+        "context-completeness"
       ]
     }
   ],

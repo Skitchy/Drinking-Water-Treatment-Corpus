@@ -3,7 +3,7 @@
   "type": "concept",
   "page_id": "dbp.mcl.tthm",
   "title": "TTHM maximum contaminant level: 0.080 mg/L as a locational running annual average",
-  "status": "draft",
+  "status": "stable",
   "assurance_profile": "drinking-water/v0.1",
   "use_class": "regulatory-reference",
   "jurisdiction": "US-federal",
@@ -37,6 +37,17 @@
       "scopes": [
         "source-capture",
         "quote-fidelity"
+      ]
+    },
+    {
+      "by": "human.skitch",
+      "actor_type": "human",
+      "at": "2026-11-05T17:06:12Z",
+      "review_payload_sha256": "8cf53362d15beda923d4f6f8e6d0db157bdf94db0e9b9407a6b873954316a6cb",
+      "scopes": [
+        "editorial-accuracy",
+        "applicability",
+        "context-completeness"
       ]
     }
   ],

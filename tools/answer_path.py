@@ -595,7 +595,7 @@ def selftest(today):
     far = dt.date(2099, 1, 1)
     _, inel_far, _ = load_corpus(far, allow_stale_dev=False)
     inel_far_stable = {k: v for k, v in inel_far.items() if k in stable_ids}
-    results.append(("renewal cannot outlive its new_stale_after (2099 -> stale)", len(inel_far_stable) == len(stable_ids) == 2 and all("STALE_EVIDENCE" in v for v in inel_far_stable.values())))
+    results.append(("renewal cannot outlive its new_stale_after (2099 -> stale)", len(inel_far_stable) == len(stable_ids) >= 2 and all("STALE_EVIDENCE" in v for v in inel_far_stable.values())))
     # retrieval floor: off-topic probes must miss (not in the frozen bank)
     probes = ["What is the lead action level under the Lead and Copper Rule?",
               "How do I replace the mechanical seal on a vertical turbine pump?",

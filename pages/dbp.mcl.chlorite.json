@@ -3,7 +3,7 @@
   "type": "concept",
   "page_id": "dbp.mcl.chlorite",
   "title": "Chlorite maximum contaminant level: 1.0 mg/L for systems using chlorine dioxide, three-sample set average",
-  "status": "draft",
+  "status": "stable",
   "assurance_profile": "drinking-water/v0.1",
   "use_class": "regulatory-reference",
   "jurisdiction": "US-federal",
@@ -37,6 +37,17 @@
       "scopes": [
         "source-capture",
         "quote-fidelity"
+      ]
+    },
+    {
+      "by": "human.skitch",
+      "actor_type": "human",
+      "at": "2026-11-05T17:06:12Z",
+      "review_payload_sha256": "b1b980c870d5dd19ad503d3ba6c26a1eda31879a3fd0aa6d79c56c61676cc4c1",
+      "scopes": [
+        "editorial-accuracy",
+        "applicability",
+        "context-completeness"
       ]
     }
   ],
