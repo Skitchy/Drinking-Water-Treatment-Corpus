@@ -3,7 +3,7 @@
   "type": "concept",
   "page_id": "dbp.violations.notification",
   "title": "Public notification of DBP violations: who notifies, the tier of each DBP violation, timing by tier, and the mandatory health effects language",
-  "status": "draft",
+  "status": "stable",
   "assurance_profile": "drinking-water/v0.1",
   "use_class": "regulatory-reference",
   "jurisdiction": "US-federal",
@@ -36,6 +36,17 @@
       "scopes": [
         "source-capture",
         "quote-fidelity"
+      ]
+    },
+    {
+      "by": "human.skitch",
+      "actor_type": "human",
+      "at": "2026-11-05T18:32:38Z",
+      "review_payload_sha256": "9156a233958c182b7234b235bcab9963735438140e88bd89578d04d28ca4a85c",
+      "scopes": [
+        "editorial-accuracy",
+        "applicability",
+        "context-completeness"
       ]
     }
   ],
