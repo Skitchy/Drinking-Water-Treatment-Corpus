@@ -16,24 +16,24 @@
       "Community and nontransient noncommunity water systems using chlorine dioxide for disinfection or oxidation (141.132(b)(2))"
     ],
     "exclusions": [
-      "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are subject to the chlorine dioxide MRDL in 141.65, not the chlorite MCL"
+      "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are reached by subpart L for the chlorine dioxide MRDL in 141.65 (141.130(a)(2)), while chlorite monitoring applies to community and nontransient noncommunity systems (141.132(b)(2))"
     ]
   },
   "generated": {
     "by": "cc",
-    "at": "2026-11-03T19:18:48Z"
+    "at": "2026-11-04T23:59:40Z"
   },
   "review_payload": {
     "canonicalization": "dw-review-payload/v0.1",
-    "sha256": "d4ccb38143b6bfdfd5e32a50738bb51f690e899f481df1c4d986f9e87b135200"
+    "sha256": "b1b980c870d5dd19ad503d3ba6c26a1eda31879a3fd0aa6d79c56c61676cc4c1"
   },
   "normalization": "dw-quote-normalization/v0.1",
   "verified": [
     {
       "by": "process:quote-tool/v0.1-interim",
       "actor_type": "process",
-      "at": "2026-11-03T19:18:48Z",
-      "review_payload_sha256": "d4ccb38143b6bfdfd5e32a50738bb51f690e899f481df1c4d986f9e87b135200",
+      "at": "2026-11-04T23:59:40Z",
+      "review_payload_sha256": "b1b980c870d5dd19ad503d3ba6c26a1eda31879a3fd0aa6d79c56c61676cc4c1",
       "scopes": [
         "source-capture",
         "quote-fidelity"
@@ -62,6 +62,11 @@
       "source_id": "source.ecfr.2026-07-01.141-133",
       "captured_sha256": "4b773cefc584399af240124de5887ba45088b428f3a242dffe1ad43ed6edba82",
       "licensing_decision_payload_sha256": "d6ec1d0234a47c5182c72e45fb04196e4e433d2da71315fdca65a5a605d7c1c4"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "licensing_decision_payload_sha256": "e40a6d648819e123a5fee502351324de387c8c363e13a373a99d6a21e7d2a7e0"
     }
   ],
   "quotes": [
@@ -77,7 +82,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "9b53babf170a06a6772c3378f5335549405ad77af71e20c9010efa8444d1a82f",
-      "verified_at": "2026-11-03T19:18:48Z"
+      "verified_at": "2026-11-04T23:59:40Z"
     },
     {
       "quote_id": "quote.dbp.mcl.chlorite.compliance-dates",
@@ -91,7 +96,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "e970fb820e550c043c8b49fcb0e65fb13464cebe5ccb4bcdcf7da0b6b7c69ffe",
-      "verified_at": "2026-11-03T19:18:48Z"
+      "verified_at": "2026-11-04T23:59:40Z"
     },
     {
       "quote_id": "quote.dbp.mcl.chlorite.bat",
@@ -105,7 +110,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "404886689b1faa7f9e23fedb12cc9b3ff2650b6e09de21bac22538dbe76bd3ef",
-      "verified_at": "2026-11-03T19:18:48Z"
+      "verified_at": "2026-11-04T23:59:40Z"
     },
     {
       "quote_id": "quote.dbp.mcl.chlorite.scope-and-daily-monitoring",
@@ -119,7 +124,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "2f527a9955cd263de7631388e45b27be53e35ee055c4fb417f21e54530ff2798",
-      "verified_at": "2026-11-03T19:18:48Z"
+      "verified_at": "2026-11-04T23:59:40Z"
     },
     {
       "quote_id": "quote.dbp.mcl.chlorite.monthly-three-sample-set",
@@ -133,7 +138,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "7a9e7d975bc87dfd15eff6ca66468189c3c4625400475ffca43645efb815ff89",
-      "verified_at": "2026-11-03T19:18:48Z"
+      "verified_at": "2026-11-04T23:59:40Z"
     },
     {
       "quote_id": "quote.dbp.mcl.chlorite.additional-monitoring",
@@ -147,7 +152,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "67fe6e704ac544a88c3e5b9a5c748b4c159c458547a74c4ef0b271dde78178d2",
-      "verified_at": "2026-11-03T19:18:48Z"
+      "verified_at": "2026-11-04T23:59:40Z"
     },
     {
       "quote_id": "quote.dbp.mcl.chlorite.reduced-monitoring",
@@ -161,7 +166,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "741901050b89375b1c3a14e3c7008610cd914f3170f2bbe96ece04870f5412e1",
-      "verified_at": "2026-11-03T19:18:48Z"
+      "verified_at": "2026-11-04T23:59:40Z"
     },
     {
       "quote_id": "quote.dbp.mcl.chlorite.compliance",
@@ -175,7 +180,21 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "95d58289b87f39250f15b6a34f124b5dcaf4ea87d6595dbf8d7d5f9220242bcb",
-      "verified_at": "2026-11-03T19:18:48Z"
+      "verified_at": "2026-11-04T23:59:40Z"
+    },
+    {
+      "quote_id": "quote.dbp.mcl.chlorite.subpart-l-scope",
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_source_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:127-788"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "785c6d8db78847643350da721d92b0dd73833f31684eb2ae3e4cc5520397cb64",
+      "verified_at": "2026-11-04T23:59:40Z"
     }
   ],
   "claims": [
@@ -203,11 +222,13 @@
           "Community and nontransient noncommunity water systems using chlorine dioxide for disinfection or oxidation (141.132(b)(2))"
         ],
         "exclusions": [
-          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are subject to the chlorine dioxide MRDL in 141.65, not the chlorite MCL"
+          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are reached by subpart L for the chlorine dioxide MRDL in 141.65 (141.130(a)(2)), while chlorite monitoring applies to community and nontransient noncommunity systems (141.132(b)(2))"
         ]
       },
       "supporting_quote_ids": [
-        "quote.dbp.mcl.chlorite.mcl-table"
+        "quote.dbp.mcl.chlorite.mcl-table",
+        "quote.dbp.mcl.chlorite.scope-and-daily-monitoring",
+        "quote.dbp.mcl.chlorite.subpart-l-scope"
       ],
       "unit": "mg/L"
     },
@@ -232,11 +253,12 @@
           "Community and nontransient noncommunity water systems using chlorine dioxide for disinfection or oxidation (141.132(b)(2))"
         ],
         "exclusions": [
-          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are subject to the chlorine dioxide MRDL in 141.65, not the chlorite MCL"
+          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are reached by subpart L for the chlorine dioxide MRDL in 141.65 (141.130(a)(2)), while chlorite monitoring applies to community and nontransient noncommunity systems (141.132(b)(2))"
         ]
       },
       "supporting_quote_ids": [
-        "quote.dbp.mcl.chlorite.scope-and-daily-monitoring"
+        "quote.dbp.mcl.chlorite.scope-and-daily-monitoring",
+        "quote.dbp.mcl.chlorite.subpart-l-scope"
       ]
     },
     {
@@ -260,11 +282,12 @@
           "Community and nontransient noncommunity water systems using chlorine dioxide for disinfection or oxidation (141.132(b)(2))"
         ],
         "exclusions": [
-          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are subject to the chlorine dioxide MRDL in 141.65, not the chlorite MCL"
+          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are reached by subpart L for the chlorine dioxide MRDL in 141.65 (141.130(a)(2)), while chlorite monitoring applies to community and nontransient noncommunity systems (141.132(b)(2))"
         ]
       },
       "supporting_quote_ids": [
-        "quote.dbp.mcl.chlorite.scope-and-daily-monitoring"
+        "quote.dbp.mcl.chlorite.scope-and-daily-monitoring",
+        "quote.dbp.mcl.chlorite.subpart-l-scope"
       ]
     },
     {
@@ -275,7 +298,7 @@
         "operator": "required",
         "regulatory_metric": "monitoring-trigger"
       },
-      "value": "A three-sample set each month in the distribution system: one sample near the first customer, one at a location representative of average residence time, one at a location reflecting maximum residence time",
+      "value": "A three-sample set each month in the distribution system: one sample near the first customer, one at a location representative of average residence time, one at a location reflecting maximum residence time; any additional routine sampling is conducted in the same manner, as three-sample sets at those locations",
       "conditions": [
         "The term three-sample set is also recorded on page dbp.definitions (claim.dbp.definitions.chlorite-three-sample-set)"
       ],
@@ -290,11 +313,13 @@
           "Community and nontransient noncommunity water systems using chlorine dioxide for disinfection or oxidation (141.132(b)(2))"
         ],
         "exclusions": [
-          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are subject to the chlorine dioxide MRDL in 141.65, not the chlorite MCL"
+          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are reached by subpart L for the chlorine dioxide MRDL in 141.65 (141.130(a)(2)), while chlorite monitoring applies to community and nontransient noncommunity systems (141.132(b)(2))"
         ]
       },
       "supporting_quote_ids": [
-        "quote.dbp.mcl.chlorite.monthly-three-sample-set"
+        "quote.dbp.mcl.chlorite.monthly-three-sample-set",
+        "quote.dbp.mcl.chlorite.scope-and-daily-monitoring",
+        "quote.dbp.mcl.chlorite.subpart-l-scope"
       ]
     },
     {
@@ -318,11 +343,13 @@
           "Community and nontransient noncommunity water systems using chlorine dioxide for disinfection or oxidation (141.132(b)(2))"
         ],
         "exclusions": [
-          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are subject to the chlorine dioxide MRDL in 141.65, not the chlorite MCL"
+          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are reached by subpart L for the chlorine dioxide MRDL in 141.65 (141.130(a)(2)), while chlorite monitoring applies to community and nontransient noncommunity systems (141.132(b)(2))"
         ]
       },
       "supporting_quote_ids": [
-        "quote.dbp.mcl.chlorite.additional-monitoring"
+        "quote.dbp.mcl.chlorite.additional-monitoring",
+        "quote.dbp.mcl.chlorite.scope-and-daily-monitoring",
+        "quote.dbp.mcl.chlorite.subpart-l-scope"
       ]
     },
     {
@@ -333,7 +360,7 @@
         "operator": "eq",
         "regulatory_metric": "monitoring-trigger"
       },
-      "value": "Entrance monitoring may not be reduced; distribution system monitoring may be reduced to one three-sample set per quarter after one year with no individual distribution system sample above the MCL and no triggered additional monitoring",
+      "value": "Entrance monitoring may not be reduced; distribution system monitoring may be reduced to one three-sample set per quarter after one year of monitoring in which no individual routine distribution system sample taken under 141.132(b)(2)(i)(B) exceeded the chlorite MCL and the system was not required to conduct additional monitoring under 141.132(b)(2)(ii)",
       "conditions": [
         "The system must revert to routine monitoring if any of the three quarterly distribution system samples exceeds the MCL or additional monitoring is triggered (141.132(b)(2)(iii)(B), second sentence)"
       ],
@@ -348,11 +375,13 @@
           "Community and nontransient noncommunity water systems using chlorine dioxide for disinfection or oxidation (141.132(b)(2))"
         ],
         "exclusions": [
-          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are subject to the chlorine dioxide MRDL in 141.65, not the chlorite MCL"
+          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are reached by subpart L for the chlorine dioxide MRDL in 141.65 (141.130(a)(2)), while chlorite monitoring applies to community and nontransient noncommunity systems (141.132(b)(2))"
         ]
       },
       "supporting_quote_ids": [
-        "quote.dbp.mcl.chlorite.reduced-monitoring"
+        "quote.dbp.mcl.chlorite.reduced-monitoring",
+        "quote.dbp.mcl.chlorite.scope-and-daily-monitoring",
+        "quote.dbp.mcl.chlorite.subpart-l-scope"
       ]
     },
     {
@@ -376,11 +405,13 @@
           "Community and nontransient noncommunity water systems using chlorine dioxide for disinfection or oxidation (141.132(b)(2))"
         ],
         "exclusions": [
-          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are subject to the chlorine dioxide MRDL in 141.65, not the chlorite MCL"
+          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are reached by subpart L for the chlorine dioxide MRDL in 141.65 (141.130(a)(2)), while chlorite monitoring applies to community and nontransient noncommunity systems (141.132(b)(2))"
         ]
       },
       "supporting_quote_ids": [
-        "quote.dbp.mcl.chlorite.compliance"
+        "quote.dbp.mcl.chlorite.compliance",
+        "quote.dbp.mcl.chlorite.scope-and-daily-monitoring",
+        "quote.dbp.mcl.chlorite.subpart-l-scope"
       ]
     },
     {
@@ -393,7 +424,7 @@
       },
       "value": "The arithmetic average of any three-sample set exceeds the MCL; the system must notify the public under subpart Q and report to the State under 141.134",
       "conditions": [
-        "A single daily entrance sample above the MCL triggers additional monitoring; it is not by itself an MCL violation"
+        "A single daily entrance sample above the MCL triggers additional monitoring the following day (141.132(b)(2)(i)(A)); it is not by itself an MCL violation"
       ],
       "exceptions": [],
       "jurisdiction": "US-federal",
@@ -406,11 +437,13 @@
           "Community and nontransient noncommunity water systems using chlorine dioxide for disinfection or oxidation (141.132(b)(2))"
         ],
         "exclusions": [
-          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are subject to the chlorine dioxide MRDL in 141.65, not the chlorite MCL"
+          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are reached by subpart L for the chlorine dioxide MRDL in 141.65 (141.130(a)(2)), while chlorite monitoring applies to community and nontransient noncommunity systems (141.132(b)(2))"
         ]
       },
       "supporting_quote_ids": [
-        "quote.dbp.mcl.chlorite.compliance"
+        "quote.dbp.mcl.chlorite.compliance",
+        "quote.dbp.mcl.chlorite.scope-and-daily-monitoring",
+        "quote.dbp.mcl.chlorite.subpart-l-scope"
       ]
     },
     {
@@ -434,11 +467,13 @@
           "Community and nontransient noncommunity water systems using chlorine dioxide for disinfection or oxidation (141.132(b)(2))"
         ],
         "exclusions": [
-          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are subject to the chlorine dioxide MRDL in 141.65, not the chlorite MCL"
+          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are reached by subpart L for the chlorine dioxide MRDL in 141.65 (141.130(a)(2)), while chlorite monitoring applies to community and nontransient noncommunity systems (141.132(b)(2))"
         ]
       },
       "supporting_quote_ids": [
-        "quote.dbp.mcl.chlorite.compliance-dates"
+        "quote.dbp.mcl.chlorite.compliance-dates",
+        "quote.dbp.mcl.chlorite.scope-and-daily-monitoring",
+        "quote.dbp.mcl.chlorite.subpart-l-scope"
       ]
     },
     {
@@ -462,11 +497,13 @@
           "Community and nontransient noncommunity water systems using chlorine dioxide for disinfection or oxidation (141.132(b)(2))"
         ],
         "exclusions": [
-          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are subject to the chlorine dioxide MRDL in 141.65, not the chlorite MCL"
+          "Systems that do not use chlorine dioxide are not required to monitor for chlorite; transient noncommunity systems using chlorine dioxide are reached by subpart L for the chlorine dioxide MRDL in 141.65 (141.130(a)(2)), while chlorite monitoring applies to community and nontransient noncommunity systems (141.132(b)(2))"
         ]
       },
       "supporting_quote_ids": [
-        "quote.dbp.mcl.chlorite.bat"
+        "quote.dbp.mcl.chlorite.bat",
+        "quote.dbp.mcl.chlorite.scope-and-daily-monitoring",
+        "quote.dbp.mcl.chlorite.subpart-l-scope"
       ]
     }
   ]

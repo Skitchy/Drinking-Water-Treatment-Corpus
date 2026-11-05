@@ -16,24 +16,24 @@
       "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
     ],
     "exclusions": [
-      "Transient noncommunity water systems are not subject to the TTHM and HAA5 MCLs"
+      "Transient noncommunity water systems are reached by subpart L only for the chlorine dioxide MRDL (141.130(a)(2)); the TTHM and HAA5 MCL criteria are set for community and nontransient noncommunity systems (141.130(a)(1), 141.620(b))"
     ]
   },
   "generated": {
     "by": "cc",
-    "at": "2026-11-03T19:18:48Z"
+    "at": "2026-11-04T23:59:40Z"
   },
   "review_payload": {
     "canonicalization": "dw-review-payload/v0.1",
-    "sha256": "e33f5b15508f59d1bace1f8da37e524a6f6b69f520feab42e3081f64ace18c06"
+    "sha256": "8cf53362d15beda923d4f6f8e6d0db157bdf94db0e9b9407a6b873954316a6cb"
   },
   "normalization": "dw-quote-normalization/v0.1",
   "verified": [
     {
       "by": "process:quote-tool/v0.1-interim",
       "actor_type": "process",
-      "at": "2026-11-03T19:18:48Z",
-      "review_payload_sha256": "e33f5b15508f59d1bace1f8da37e524a6f6b69f520feab42e3081f64ace18c06",
+      "at": "2026-11-04T23:59:40Z",
+      "review_payload_sha256": "8cf53362d15beda923d4f6f8e6d0db157bdf94db0e9b9407a6b873954316a6cb",
       "scopes": [
         "source-capture",
         "quote-fidelity"
@@ -57,6 +57,16 @@
       "source_id": "source.ecfr.2026-07-01.141-620",
       "captured_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
       "licensing_decision_payload_sha256": "f3b39502bbfbaa850eb4cfeab711de70381c64f8a07e8cf649e719d96f119eb2"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "licensing_decision_payload_sha256": "e40a6d648819e123a5fee502351324de387c8c363e13a373a99d6a21e7d2a7e0"
+    },
+    {
+      "source_id": "source.ecfr.2026-07-01.141-133",
+      "captured_sha256": "4b773cefc584399af240124de5887ba45088b428f3a242dffe1ad43ed6edba82",
+      "licensing_decision_payload_sha256": "d6ec1d0234a47c5182c72e45fb04196e4e433d2da71315fdca65a5a605d7c1c4"
     }
   ],
   "quotes": [
@@ -72,7 +82,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "453c52d256e63be4da55c5a1cb6bd9ebe8a99b95ffb30c73875f5a36ba12941d",
-      "verified_at": "2026-11-03T19:18:48Z"
+      "verified_at": "2026-11-04T23:59:40Z"
     },
     {
       "quote_id": "quote.dbp.mcl.tthm.mcl-subpart-l",
@@ -86,7 +96,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "1abd8b2004bc016d62d1bb040f6f6e92e83e8e8e5e27847916b4de3329749805",
-      "verified_at": "2026-11-03T19:18:48Z"
+      "verified_at": "2026-11-04T23:59:40Z"
     },
     {
       "quote_id": "quote.dbp.mcl.tthm.bat-subpart-v",
@@ -100,7 +110,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "22cb1c235d0a1c6d2d17a3143b389fcf27d51003db6832c97d5adeb863eede2b",
-      "verified_at": "2026-11-03T19:18:48Z"
+      "verified_at": "2026-11-04T23:59:40Z"
     },
     {
       "quote_id": "quote.dbp.mcl.tthm.bat-subpart-v-consecutive",
@@ -114,7 +124,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "85c1249967628203951f39c3e45e40eb4f1e2cf841896508e6ce2587db96ccb2",
-      "verified_at": "2026-11-03T19:18:48Z"
+      "verified_at": "2026-11-04T23:59:40Z"
     },
     {
       "quote_id": "quote.dbp.mcl.tthm.lraa-quarterly",
@@ -128,7 +138,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "d5e00a20cf29cb4dab98c3c075b12b3777d8f39977dbbaebd52c47a12ac1ed44",
-      "verified_at": "2026-11-03T19:18:48Z"
+      "verified_at": "2026-11-04T23:59:40Z"
     },
     {
       "quote_id": "quote.dbp.mcl.tthm.lraa-less-than-quarterly",
@@ -142,7 +152,7 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "f7dba7bef79850ffa493d4b112bad4a641f2c3e8237a3df9060be39dd36ef0fb",
-      "verified_at": "2026-11-03T19:18:48Z"
+      "verified_at": "2026-11-04T23:59:40Z"
     },
     {
       "quote_id": "quote.dbp.mcl.tthm.first-compliance-calculation",
@@ -156,7 +166,63 @@
       "source_version": "eCFR point-in-time 2026-07-01",
       "normalization": "dw-quote-normalization/v0.1",
       "span_sha256": "e2675c81f386656195f8ff3401bd4327b323ad162ae9f319e1d97c0d6b486a38",
-      "verified_at": "2026-11-03T19:18:48Z"
+      "verified_at": "2026-11-04T23:59:40Z"
+    },
+    {
+      "quote_id": "quote.dbp.mcl.tthm.applicability",
+      "source_id": "source.ecfr.2026-07-01.141-620",
+      "captured_source_sha256": "3534de542f521df06b479c1daa82e768e14730cfe090e94ea0c3fcdd96672267",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:531-858"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "b4547ef8236f43f059cf8e5a3df041aeed9e19461fed9c433c26a3eba26a5926",
+      "verified_at": "2026-11-04T23:59:40Z"
+    },
+    {
+      "quote_id": "quote.dbp.mcl.tthm.subpart-l-scope",
+      "source_id": "source.ecfr.2026-07-01.141-130",
+      "captured_source_sha256": "ac52496b12163dd91bbeb2e99677fe47c90b2d25a166303630087a2d54175dd7",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:127-788"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "785c6d8db78847643350da721d92b0dd73833f31684eb2ae3e4cc5520397cb64",
+      "verified_at": "2026-11-04T23:59:40Z"
+    },
+    {
+      "quote_id": "quote.dbp.mcl.tthm.raa-subpart-l",
+      "source_id": "source.ecfr.2026-07-01.141-133",
+      "captured_source_sha256": "4b773cefc584399af240124de5887ba45088b428f3a242dffe1ad43ed6edba82",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:1181-1479"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "3b41dda198eaa568f5e5a6f36610e0e21afbb1ec68e9637c1a086da8a6e426ab",
+      "verified_at": "2026-11-04T23:59:40Z"
+    },
+    {
+      "quote_id": "quote.dbp.mcl.tthm.raa-subpart-l-less-than-quarterly",
+      "source_id": "source.ecfr.2026-07-01.141-133",
+      "captured_source_sha256": "4b773cefc584399af240124de5887ba45088b428f3a242dffe1ad43ed6edba82",
+      "anchor": {
+        "selector_type": "text-position",
+        "selector_version": "v0.1",
+        "value": "normalized:1480-2111"
+      },
+      "source_version": "eCFR point-in-time 2026-07-01",
+      "normalization": "dw-quote-normalization/v0.1",
+      "span_sha256": "1dfa2ac749d5004321b3a8795b76d474ddd33ba2fc14a051970b3061637bc025",
+      "verified_at": "2026-11-04T23:59:40Z"
     }
   ],
   "claims": [
@@ -184,12 +250,14 @@
           "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
         ],
         "exclusions": [
-          "Transient noncommunity water systems are not subject to the TTHM and HAA5 MCLs"
+          "Transient noncommunity water systems are reached by subpart L only for the chlorine dioxide MRDL (141.130(a)(2)); the TTHM and HAA5 MCL criteria are set for community and nontransient noncommunity systems (141.130(a)(1), 141.620(b))"
         ]
       },
       "supporting_quote_ids": [
         "quote.dbp.mcl.tthm.mcl-subpart-v",
-        "quote.dbp.mcl.tthm.mcl-subpart-l"
+        "quote.dbp.mcl.tthm.mcl-subpart-l",
+        "quote.dbp.mcl.tthm.applicability",
+        "quote.dbp.mcl.tthm.subpart-l-scope"
       ],
       "unit": "mg/L"
     },
@@ -203,7 +271,7 @@
       },
       "value": "Locational running annual average (LRAA) at each monitoring location, beginning the date specified for subpart V compliance in 141.620(c)",
       "conditions": [
-        "Before the subpart V compliance date the MCL is met as a system-wide running annual average under subpart L (141.64(b)(1))"
+        "Before the subpart V compliance date the MCL is met under subpart L (141.64(b)(1)); for systems monitoring quarterly that is a running annual arithmetic average, computed quarterly, of quarterly arithmetic averages of all samples collected by the system (system-wide) (141.133(b)(1)(i))"
       ],
       "exceptions": [],
       "jurisdiction": "US-federal",
@@ -216,12 +284,15 @@
           "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
         ],
         "exclusions": [
-          "Transient noncommunity water systems are not subject to the TTHM and HAA5 MCLs"
+          "Transient noncommunity water systems are reached by subpart L only for the chlorine dioxide MRDL (141.130(a)(2)); the TTHM and HAA5 MCL criteria are set for community and nontransient noncommunity systems (141.130(a)(1), 141.620(b))"
         ]
       },
       "supporting_quote_ids": [
         "quote.dbp.mcl.tthm.mcl-subpart-v",
-        "quote.dbp.mcl.tthm.mcl-subpart-l"
+        "quote.dbp.mcl.tthm.mcl-subpart-l",
+        "quote.dbp.mcl.tthm.raa-subpart-l",
+        "quote.dbp.mcl.tthm.applicability",
+        "quote.dbp.mcl.tthm.subpart-l-scope"
       ]
     },
     {
@@ -232,8 +303,9 @@
         "operator": "eq",
         "regulatory_metric": "other"
       },
-      "value": "System-wide running annual average (RAA), required until the date specified for subpart V compliance in 141.620(c)",
+      "value": "Running annual arithmetic average (RAA), computed quarterly, of quarterly arithmetic averages of all samples collected by the system (system-wide), required until the date specified for subpart V compliance in 141.620(c)",
       "conditions": [
+        "The quoted 141.133(b)(1)(i) basis is for systems monitoring quarterly; systems monitoring less frequently than quarterly demonstrate compliance if the average of that year's samples does not exceed the MCL, and an exceedance moves them to quarterly monitoring per treatment plant (141.133(b)(1)(ii))",
         "Subpart L compliance dates: subpart H systems serving 10,000 or more persons from January 1, 2002; subpart H systems serving fewer than 10,000 and ground water systems not under the direct influence of surface water from January 1, 2004"
       ],
       "exceptions": [],
@@ -247,11 +319,15 @@
           "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
         ],
         "exclusions": [
-          "Transient noncommunity water systems are not subject to the TTHM and HAA5 MCLs"
+          "Transient noncommunity water systems are reached by subpart L only for the chlorine dioxide MRDL (141.130(a)(2)); the TTHM and HAA5 MCL criteria are set for community and nontransient noncommunity systems (141.130(a)(1), 141.620(b))"
         ]
       },
       "supporting_quote_ids": [
-        "quote.dbp.mcl.tthm.mcl-subpart-l"
+        "quote.dbp.mcl.tthm.mcl-subpart-l",
+        "quote.dbp.mcl.tthm.raa-subpart-l",
+        "quote.dbp.mcl.tthm.raa-subpart-l-less-than-quarterly",
+        "quote.dbp.mcl.tthm.applicability",
+        "quote.dbp.mcl.tthm.subpart-l-scope"
       ]
     },
     {
@@ -275,11 +351,13 @@
           "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
         ],
         "exclusions": [
-          "Transient noncommunity water systems are not subject to the TTHM and HAA5 MCLs"
+          "Transient noncommunity water systems are reached by subpart L only for the chlorine dioxide MRDL (141.130(a)(2)); the TTHM and HAA5 MCL criteria are set for community and nontransient noncommunity systems (141.130(a)(1), 141.620(b))"
         ]
       },
       "supporting_quote_ids": [
-        "quote.dbp.mcl.tthm.lraa-quarterly"
+        "quote.dbp.mcl.tthm.lraa-quarterly",
+        "quote.dbp.mcl.tthm.applicability",
+        "quote.dbp.mcl.tthm.subpart-l-scope"
       ]
     },
     {
@@ -290,8 +368,10 @@
         "operator": "required",
         "regulatory_metric": "other"
       },
-      "value": "Each sample must be less than the MCL; a sample at or above the MCL triggers the increased-monitoring requirements of 141.625; when no sample exceeds the MCL, each location's sample result is its LRAA",
-      "conditions": [],
+      "value": "Each sample must be less than the MCL; a sample that exceeds the MCL triggers the increased-monitoring requirements of 141.625; when no sample exceeds the MCL, each location's sample result is its LRAA",
+      "conditions": [
+        "Equality edge flagged, not resolved: the quote requires each sample to be less than the MCL but uses 'exceeds' for the 141.625 trigger, so a sample exactly equal to the MCL is not classified by this page"
+      ],
       "exceptions": [],
       "jurisdiction": "US-federal",
       "applicability": {
@@ -303,11 +383,13 @@
           "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
         ],
         "exclusions": [
-          "Transient noncommunity water systems are not subject to the TTHM and HAA5 MCLs"
+          "Transient noncommunity water systems are reached by subpart L only for the chlorine dioxide MRDL (141.130(a)(2)); the TTHM and HAA5 MCL criteria are set for community and nontransient noncommunity systems (141.130(a)(1), 141.620(b))"
         ]
       },
       "supporting_quote_ids": [
-        "quote.dbp.mcl.tthm.lraa-less-than-quarterly"
+        "quote.dbp.mcl.tthm.lraa-less-than-quarterly",
+        "quote.dbp.mcl.tthm.applicability",
+        "quote.dbp.mcl.tthm.subpart-l-scope"
       ]
     },
     {
@@ -331,11 +413,13 @@
           "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
         ],
         "exclusions": [
-          "Transient noncommunity water systems are not subject to the TTHM and HAA5 MCLs"
+          "Transient noncommunity water systems are reached by subpart L only for the chlorine dioxide MRDL (141.130(a)(2)); the TTHM and HAA5 MCL criteria are set for community and nontransient noncommunity systems (141.130(a)(1), 141.620(b))"
         ]
       },
       "supporting_quote_ids": [
-        "quote.dbp.mcl.tthm.first-compliance-calculation"
+        "quote.dbp.mcl.tthm.first-compliance-calculation",
+        "quote.dbp.mcl.tthm.applicability",
+        "quote.dbp.mcl.tthm.subpart-l-scope"
       ]
     },
     {
@@ -361,11 +445,13 @@
           "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
         ],
         "exclusions": [
-          "Transient noncommunity water systems are not subject to the TTHM and HAA5 MCLs"
+          "Transient noncommunity water systems are reached by subpart L only for the chlorine dioxide MRDL (141.130(a)(2)); the TTHM and HAA5 MCL criteria are set for community and nontransient noncommunity systems (141.130(a)(1), 141.620(b))"
         ]
       },
       "supporting_quote_ids": [
-        "quote.dbp.mcl.tthm.bat-subpart-v"
+        "quote.dbp.mcl.tthm.bat-subpart-v",
+        "quote.dbp.mcl.tthm.applicability",
+        "quote.dbp.mcl.tthm.subpart-l-scope"
       ]
     },
     {
@@ -391,11 +477,13 @@
           "Subpart V applies to community and nontransient noncommunity water systems that use a primary or residual disinfectant other than ultraviolet light, or deliver water treated with one (141.620(b))"
         ],
         "exclusions": [
-          "Transient noncommunity water systems are not subject to the TTHM and HAA5 MCLs"
+          "Transient noncommunity water systems are reached by subpart L only for the chlorine dioxide MRDL (141.130(a)(2)); the TTHM and HAA5 MCL criteria are set for community and nontransient noncommunity systems (141.130(a)(1), 141.620(b))"
         ]
       },
       "supporting_quote_ids": [
-        "quote.dbp.mcl.tthm.bat-subpart-v-consecutive"
+        "quote.dbp.mcl.tthm.bat-subpart-v-consecutive",
+        "quote.dbp.mcl.tthm.applicability",
+        "quote.dbp.mcl.tthm.subpart-l-scope"
       ]
     }
   ]
